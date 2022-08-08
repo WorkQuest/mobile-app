@@ -16,142 +16,154 @@ const TextStyle _style = TextStyle(
   fontSize: 16.0,
 );
 
-const SizedBox _divider = SizedBox(
-  height: 10,
-);
+const SizedBox _divider = SizedBox(height: 10);
 
-class ConfirmEmail extends StatelessWidget {
-  final email;
+class ConfirmEmail extends StatefulWidget {
+  final ConfirmEmailArguments arguments;
 
-  const ConfirmEmail(this.email);
+  const ConfirmEmail(this.arguments);
 
   static const String routeName = '/confirmEmailPage';
 
-  Widget build(BuildContext context) {
-    final store = context.read<ChooseRoleStore>();
+  @override
+  State<ConfirmEmail> createState() => _ConfirmEmailState();
+}
 
+class _ConfirmEmailState extends State<ConfirmEmail> {
+  late ChooseRoleStore store;
+
+  @override
+  void initState() {
+    store = context.read<ChooseRoleStore>();
+    if (widget.arguments.code != null) {
+      store.setCode(widget.arguments.code!);
+      store.confirmEmail().then(
+            (value) => Navigator.pushReplacementNamed(
+              context,
+              ChooseRolePage.routeName,
+            ),
+          );
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         return alertDialog(context);
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CupertinoNavigationBar(
-          previousPageTitle: "  " + "meta.back".tr(),
-          border: Border.fromBorderSide(BorderSide.none),
-        ),
+        appBar: widget.arguments.code != null
+            ? null
+            : CupertinoNavigationBar(
+                previousPageTitle: "  " + "meta.back".tr(),
+                border: Border.fromBorderSide(BorderSide.none),
+              ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Observer(
-              builder: (context) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "registration.confirmYourEmail".tr(),
-                      style: TextStyle(
-                        color: Color(0xFF1D2127),
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "registration.emailConfirm".tr(),
-                      style: _style,
-                    ),
-                    _divider,
-                    Text(
-                      "$email",
-                      style: _style.copyWith(
-                        color: Colors.blue,
-                      ),
-                    ),
-                    _divider,
-                    Text(
-                      "registration.emailConfirmTitle".tr(),
-                      style: _style,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TimerWidget(
-                      startTimer: () => store.startTimer(email),
-                      seconds: store.secondsCodeAgain,
-                      isActiveTimer:
-                          store.timer != null && store.timer!.isActive,
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    TextFormField(
-                      onChanged: store.setCode,
-                      decoration: InputDecoration(
-                        hintText: "modals.code".tr(),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    ObserverListener<ChooseRoleStore>(
-                      onSuccess: () {
-                        Navigator.pushNamed(
-                          context,
-                          ChooseRolePage.routeName,
-                        );
-                      },
-                      child: Observer(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: store.canSubmitCode
-                                ? () async {
-                                    await store.confirmEmail();
-                                  }
-                                : null,
-                            child: store.isLoading
-                                ? CircularProgressIndicator.adaptive()
-                                : Text(
-                                    "meta.submit".tr(),
-                                  ),
-                          );
-                        },
-                      ),
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16.0, bottom: 20.0),
-                      child: Row(
+          child: widget.arguments.code != null
+              ? Center(child: CircularProgressIndicator.adaptive())
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Observer(
+                    builder: (context) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const SizedBox(height: 20),
                           Text(
-                            "signUp.didntCode".tr(),
+                            "registration.confirmYourEmail".tr(),
+                            style: TextStyle(
+                              color: Color(0xFF1D2127),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            "registration.emailConfirm".tr(),
                             style: _style,
                           ),
-                          SizedBox(
-                            width: 10,
+                          _divider,
+                          Text(
+                            "${widget.arguments.email}",
+                            style: _style.copyWith(
+                              color: Colors.blue,
+                            ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
+                          _divider,
+                          Text(
+                            "registration.emailConfirmTitle".tr(),
+                            style: _style,
+                          ),
+                          const SizedBox(height: 5),
+                          TimerWidget(
+                            startTimer: () =>
+                                store.startTimer(widget.arguments.email!),
+                            seconds: store.secondsCodeAgain,
+                            isActiveTimer:
+                                store.timer != null && store.timer!.isActive,
+                          ),
+                          const SizedBox(height: 40.0),
+                          TextFormField(
+                            onChanged: store.setCode,
+                            decoration: InputDecoration(
+                              hintText: "modals.code".tr(),
+                            ),
+                          ),
+                          const SizedBox(height: 40.0),
+                          ObserverListener<ChooseRoleStore>(
+                            onSuccess: () {
+                              Navigator.pushNamed(
+                                context,
+                                ChooseRolePage.routeName,
+                              );
                             },
-                            child: Text(
-                              "signUp.changeEmail".tr(),
-                              style: _style.copyWith(color: Colors.blue),
+                            child: Observer(
+                              builder: (context) {
+                                return ElevatedButton(
+                                  onPressed: store.canSubmitCode
+                                      ? () async {
+                                          await store.confirmEmail();
+                                        }
+                                      : null,
+                                  child: store.isLoading
+                                      ? CircularProgressIndicator.adaptive()
+                                      : Text(
+                                          "meta.submit".tr(),
+                                        ),
+                                );
+                              },
+                            ),
+                          ),
+                          Spacer(),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16.0, bottom: 20.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "signUp.didntCode".tr(),
+                                  style: _style,
+                                ),
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "signUp.changeEmail".tr(),
+                                    style: _style.copyWith(color: Colors.blue),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                      );
+                    },
+                  ),
+                ),
         ),
       ),
     );
@@ -169,4 +181,11 @@ class ConfirmEmail extends StatelessWidget {
     );
     return true;
   }
+}
+
+class ConfirmEmailArguments {
+  ConfirmEmailArguments({this.email, this.code});
+
+  String? email;
+  String? code;
 }

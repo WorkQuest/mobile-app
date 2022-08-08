@@ -101,7 +101,7 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      child: WorkQuestApp(await Storage.toLoginCheck()),
+      child: WorkQuestApp(),
       supportedLocales: [
         Locale('en', 'US'),
         // Locale('ru', 'RU'),

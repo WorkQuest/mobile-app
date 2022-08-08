@@ -98,7 +98,9 @@ class _StartPageState extends State<StartPage> {
                         onPressedNext: () {
                           if (_pageController.page! < 2.0) {
                             _pageController.nextPage(
-                                duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
                           } else {
                             Navigator.pushNamed(context, SignInPage.routeName);
                           }
@@ -333,4 +335,11 @@ class _StartPageState extends State<StartPage> {
           ],
         ),
       );
+
+  @override
+  void dispose() {
+    _currentPageController.close();
+    _opacityController.close();
+    super.dispose();
+  }
 }

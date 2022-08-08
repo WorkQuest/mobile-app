@@ -70,7 +70,7 @@ class _SignInPageState extends State<SignInPage> {
         if (store.errorMessage == "unconfirmed") {
           AlertDialogUtils.showSuccessDialog(context).then((value) {
             Navigator.pushNamed(context, ConfirmEmail.routeName,
-                arguments: store.getUsername());
+                arguments: ConfirmEmailArguments(email: store.getUsername()));
           });
           return true;
         }
@@ -154,7 +154,8 @@ class _SignInPageState extends State<SignInPage> {
                                 ? () {}
                                 : () async {
                                     if (_formKey.currentState!.validate()) {
-                                      store.signIn(Platform.isIOS ? "iOS" : "Android");
+                                      store.signIn(
+                                          Platform.isIOS ? "iOS" : "Android");
                                     }
                                   }
                             : null,
@@ -424,7 +425,8 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
               minSize: 22.0,
               padding: EdgeInsets.zero,
               onPressed: () async {
-                ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                ClipboardData? data =
+                    await Clipboard.getData(Clipboard.kTextPlain);
                 mnemonicController.text = data?.text ?? "";
                 widget.signInStore.setMnemonic(data?.text ?? "");
               },

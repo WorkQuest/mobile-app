@@ -15,7 +15,6 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/shimmer/shimmer_wor
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/utils/deep_link_util.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +63,6 @@ class _QuestListState extends State<QuestList> {
       questsStore!.role = profileMeStore!.userData!.role;
       role = profileMeStore!.userData!.role;
     });
-    DeepLinkUtil().initDeepLink(context: context, store: profileMeStore!);
   }
 
   @override
