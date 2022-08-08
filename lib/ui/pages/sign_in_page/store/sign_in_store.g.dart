@@ -94,7 +94,7 @@ mixin _$SignInStore on _SignInStore, Store {
   final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
 
   @override
-  Future<dynamic> refreshToken() {
+  Future refreshToken() {
     return _$refreshTokenAsyncAction.run(() => super.refreshToken());
   }
 
@@ -109,7 +109,7 @@ mixin _$SignInStore on _SignInStore, Store {
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
 
   @override
-  Future<dynamic> signIn(String platform) {
+  Future signIn(String platform) {
     return _$signInAsyncAction.run(() => super.signIn(platform));
   }
 

@@ -4,6 +4,7 @@ import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/wallet.dart';
@@ -18,7 +19,7 @@ class SignInStore extends _SignInStore with _$SignInStore {
   SignInStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _SignInStore extends IStore<bool> with Store {
+abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   final ApiProvider _apiProvider;
 
   _SignInStore(this._apiProvider);
@@ -49,7 +50,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @computed
   bool get canSignIn =>
-      !isLoading && _username.isNotEmpty && _password.isNotEmpty && mnemonic.isNotEmpty;
+      !isLoading && _username.isNotEmpty && _password.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -61,14 +62,14 @@ abstract class _SignInStore extends IStore<bool> with Store {
   void setPassword(String value) => _password = value;
 
   @action
-  Future refreshToken() async {
+  refreshToken() async {
     try {
       this.onLoading();
       String? token = await Storage.readRefreshToken();
       BearerToken bearerToken = await _apiProvider.refreshToken(token!, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
-      this.onSuccess(true);
+      this.onSuccess(SignInStoreState.refreshToken);
     } catch (e) {
       this.onError(e.toString());
     }
@@ -76,40 +77,39 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @action
   signInWallet({bool isMain = false, String? walletAddress}) async {
-    if (isMain) {
-      try {
-        await _checkWallet(isMain: isMain);
-      } on FormatException catch (e) {
-        this.onError(e.message);
-        AccountRepository().clearData();
-      } catch (e) {
-        this.onError(e.toString());
-        AccountRepository().clearData();
-      }
-    } else {
-      await _checkWallet(walletAddress: walletAddress);
+    try {
+      onLoading();
+      await _checkWallet(isMain: isMain);
+      onSuccess(SignInStoreState.signInWallet);
+    } on FormatException catch (e) {
+      this.onError(e.message);
+      AccountRepository().clearData();
+    } catch (e) {
+      this.onError(e.toString());
+      AccountRepository().clearData();
     }
   }
 
   @action
-  Future signIn(String platform) async {
+  signIn(String platform) async {
     try {
       this.onLoading();
-      print('totp test: $totp');
       BearerToken bearerToken = await _apiProvider.login(
         email: _username.trim(),
         password: _password,
         platform: platform,
         totp: totp,
       );
-
-      if (bearerToken.status == 0) {
-        this.onError("unconfirmed");
-        return;
-      }
-      await signInWallet(walletAddress: bearerToken.address!);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
+      if (bearerToken.status == ProfileConstants.unconfirmedStatus) {
+        onSuccess(SignInStoreState.unconfirmedProfile);
+        return;
+      }
+      if (bearerToken.status == ProfileConstants.needSetRoleStatus) {
+        onSuccess(SignInStoreState.needSetRole);
+        return;
+      }
       if (totp.isNotEmpty) {
         if (!await _apiProvider.validateTotp(totp: totp)) {
           this.onError("Invalid TOTP");
@@ -123,7 +123,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
           return;
         }
       }
-      onSuccess(true);
+      onSuccess(SignInStoreState.signIn);
     } on FormatException catch (e, trace) {
       print('e: $e\ntrace: $trace');
       this.onError(e.message);
@@ -146,9 +146,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
     AccountRepository().setWallet(wallet);
     AccountRepository().connectClient();
     if (isMain) {
-      final signature = await AccountRepository()
-          .getClient()
-          .getSignature(wallet.privateKey!);
+      final signature =
+          await AccountRepository().getClient().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
     } else {
       if (wallet.address != walletAddress) {
@@ -156,7 +155,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
       }
     }
     await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-    await Storage.write(StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
+    await Storage.write(
+        StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
   }
 
   Future<void> deletePushToken() async {
@@ -165,9 +165,18 @@ abstract class _SignInStore extends IStore<bool> with Store {
       final token = await Storage.readPushToken();
       if (token != null) await _apiProvider.deletePushToken(token: token);
       FirebaseMessaging.instance.deleteToken();
-      this.onSuccess(true);
+      this.onSuccess(SignInStoreState.deletePushToken);
     } catch (e) {
       this.onError(e.toString());
     }
   }
+}
+
+enum SignInStoreState {
+  refreshToken,
+  signIn,
+  unconfirmedProfile,
+  needSetRole,
+  deletePushToken,
+  signInWallet
 }
