@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants.dart';
 
-class UserAvatar extends StatelessWidget {
+class UserAvatar extends StatefulWidget {
   final double width;
   final double height;
   final String? url;
@@ -19,14 +19,38 @@ class UserAvatar extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<UserAvatar> createState() => _UserAvatarState();
+}
+
+class _UserAvatarState extends State<UserAvatar> {
+  bool loading = false;
+  @override
   Widget build(BuildContext context) {
     return Image.network(
-      url ?? Constants.defaultImageNetwork,
-      fit: fit,
-      width: width,
-      height: height,
+      widget.url ?? Constants.defaultImageNetwork,
+      fit: widget.fit,
+      width: widget.width,
+      height: widget.height,
+      frameBuilder:
+          (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) {
+          return child;
+        }
+        return AnimatedOpacity(
+          child: child,
+          opacity: loading ? 0 : 1,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeOut,
+        );
+      },
       loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
+        if (loadingProgress == null) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
+            setState(() => loading = false);
+          });
+          return child;
+        }
+        loading = true;
         final _circular = CircularProgressIndicator(
           value: loadingProgress.expectedTotalBytes != null
               ? loadingProgress.cumulativeBytesLoaded /
@@ -34,10 +58,10 @@ class UserAvatar extends StatelessWidget {
               : null,
         );
         return Center(
-          child: loadingFitSize
+          child: widget.loadingFitSize
               ? SizedBox(
-                  width: width,
-                  height: height,
+                  width: widget.width,
+                  height: widget.height,
                   child: _circular,
                 )
               : _circular,
