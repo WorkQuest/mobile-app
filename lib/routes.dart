@@ -344,8 +344,15 @@ class Routes {
 
       case ProfileQuestsPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ProfileQuestsStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ProfileQuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ProfileQuestsPage(
