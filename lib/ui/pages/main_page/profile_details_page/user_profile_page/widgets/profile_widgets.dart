@@ -298,13 +298,28 @@ Widget appBarTitle(String name, double padding, int status, double width) {
           left: 0.0,
           child: Container(
             width: width,
-            child: Text(
-              name,
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.white,
-              ),
-              overflow: TextOverflow.ellipsis,
+            child: Stack(
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    foreground: Paint()
+                      ..style = PaintingStyle.stroke
+                      ..strokeWidth = 1
+                      ..color = Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
         ),

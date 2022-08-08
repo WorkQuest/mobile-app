@@ -85,6 +85,22 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
     });
   }
 
+  final _$oldPhoneNumberAtom =
+      Atom(name: 'ChangeProfileStoreBase.oldPhoneNumber');
+
+  @override
+  PhoneNumber? get oldPhoneNumber {
+    _$oldPhoneNumberAtom.reportRead();
+    return super.oldPhoneNumber;
+  }
+
+  @override
+  set oldPhoneNumber(PhoneNumber? value) {
+    _$oldPhoneNumberAtom.reportWrite(value, super.oldPhoneNumber, () {
+      super.oldPhoneNumber = value;
+    });
+  }
+
   final _$getPredictionAsyncAction =
       AsyncAction('ChangeProfileStoreBase.getPrediction');
 
@@ -153,7 +169,8 @@ userData: ${userData},
 media: ${media},
 address: ${address},
 phoneNumber: ${phoneNumber},
-secondPhoneNumber: ${secondPhoneNumber}
+secondPhoneNumber: ${secondPhoneNumber},
+oldPhoneNumber: ${oldPhoneNumber}
     ''';
   }
 }

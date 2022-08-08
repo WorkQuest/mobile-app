@@ -236,13 +236,28 @@ class MyProfileImage extends StatelessWidget {
                 left: 16.0,
                 child: Container(
                   width: 300,
-                  child: Text(
-                    " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                    overflow: TextOverflow.clip,
+                  child: Stack(
+                    children: [
+                      Text(
+                        " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 1
+                            ..color = Colors.black,
+                        ),
+                        overflow: TextOverflow.clip,
+                      ),
+                      Text(
+                        " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                        overflow: TextOverflow.clip,
+                      ),
+                    ],
                   ),
                 ),
               ),

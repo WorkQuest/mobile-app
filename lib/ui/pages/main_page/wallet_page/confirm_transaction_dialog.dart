@@ -36,12 +36,12 @@ Future confirmTransaction(
             ),
             actions: [
               CupertinoDialogAction(
-                onPressed: onPressConfirm,
-                child: Text('meta.confirm'.tr()),
-              ),
-              CupertinoDialogAction(
                 onPressed: () => onPressCancel(),
                 child: Text('meta.cancel'.tr()),
+              ),
+              CupertinoDialogAction(
+                onPressed: onPressConfirm,
+                child: Text('meta.confirm'.tr()),
               ),
             ],
           ),
@@ -62,12 +62,12 @@ Future confirmTransaction(
             ),
             actions: [
               TextButton(
-                onPressed: onPressConfirm,
-                child: Text('meta.confirm'.tr()),
-              ),
-              TextButton(
                 onPressed: () => onPressCancel(),
                 child: Text('meta.cancel'.tr()),
+              ),
+              TextButton(
+                onPressed: onPressConfirm,
+                child: Text('meta.confirm'.tr()),
               ),
             ],
           ),
