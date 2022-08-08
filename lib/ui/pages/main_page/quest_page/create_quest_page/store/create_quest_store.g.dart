@@ -343,21 +343,47 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
   }
 
-  final _$getGasApproveAsyncAction =
-      AsyncAction('_CreateQuestStore.getGasApprove');
+  final _$checkAllowanceAsyncAction =
+      AsyncAction('_CreateQuestStore.checkAllowance');
 
   @override
-  Future<String?> getGasApprove({String? addressQuest}) {
-    return _$getGasApproveAsyncAction
-        .run(() => super.getGasApprove(addressQuest: addressQuest));
+  Future checkAllowance({String? addressQuest}) {
+    return _$checkAllowanceAsyncAction
+        .run(() => super.checkAllowance(addressQuest: addressQuest));
+  }
+
+  final _$approveAsyncAction = AsyncAction('_CreateQuestStore.approve');
+
+  @override
+  Future approve({String? contractAddress}) {
+    return _$approveAsyncAction
+        .run(() => super.approve(contractAddress: contractAddress));
   }
 
   final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
 
   @override
-  Future<void> createQuest({bool isEdit = false, String questId = ""}) {
+  Future createQuest({bool isEdit = false, String questId = ""}) {
     return _$createQuestAsyncAction
         .run(() => super.createQuest(isEdit: isEdit, questId: questId));
+  }
+
+  final _$getGasApproveAsyncAction =
+      AsyncAction('_CreateQuestStore.getGasApprove');
+
+  @override
+  Future getGasApprove({String? addressQuest}) {
+    return _$getGasApproveAsyncAction
+        .run(() => super.getGasApprove(addressQuest: addressQuest));
+  }
+
+  final _$getGasEditOrCreateQuestAsyncAction =
+      AsyncAction('_CreateQuestStore.getGasEditOrCreateQuest');
+
+  @override
+  Future getGasEditOrCreateQuest({bool isEdit = false}) {
+    return _$getGasEditOrCreateQuestAsyncAction
+        .run(() => super.getGasEditOrCreateQuest(isEdit: isEdit));
   }
 
   final _$_CreateQuestStoreActionController =
