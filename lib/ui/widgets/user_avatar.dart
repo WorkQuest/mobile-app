@@ -24,6 +24,7 @@ class UserAvatar extends StatefulWidget {
 
 class _UserAvatarState extends State<UserAvatar> {
   bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Image.network(
@@ -46,7 +47,9 @@ class _UserAvatarState extends State<UserAvatar> {
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
           WidgetsBinding.instance?.addPostFrameCallback((_) {
-            setState(() => loading = false);
+            if (mounted) {
+              setState(() => loading = false);
+            }
           });
           return child;
         }
