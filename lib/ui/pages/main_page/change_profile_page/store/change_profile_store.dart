@@ -33,6 +33,7 @@ abstract class ChangeProfileStoreBase with Store {
   @observable
   PhoneNumber? secondPhoneNumber;
 
+  @observable
   PhoneNumber? oldPhoneNumber;
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
