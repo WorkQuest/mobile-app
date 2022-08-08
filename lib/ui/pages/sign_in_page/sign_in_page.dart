@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:app/constants.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
+import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
+import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
@@ -59,21 +60,31 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return ObserverListener<SignInStore>(
       onSuccess: () async {
-        await AlertDialogUtils.showSuccessDialog(context);
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          PinCodePage.routeName,
-          (_) => false,
-        );
+        if (store.successData == SignInStoreState.unconfirmedProfile) {
+          AlertDialogUtils.showSuccessDialog(context).then((value) {
+            Navigator.pushNamed(
+              context,
+              ConfirmEmail.routeName,
+              arguments: store.getUsername(),
+            );
+          });
+        } else if (store.successData == SignInStoreState.needSetRole) {
+          AlertDialogUtils.showSuccessDialog(context).then((value) {
+            Navigator.pushNamed(
+              context,
+              ChooseRolePage.routeName,
+            );
+          });
+        } else if (store.successData == SignInStoreState.signIn) {
+          await AlertDialogUtils.showSuccessDialog(context);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            MnemonicPage.routeName,
+            (_) => false,
+          );
+        }
       },
       onFailure: () {
-        if (store.errorMessage == "unconfirmed") {
-          AlertDialogUtils.showSuccessDialog(context).then((value) {
-            Navigator.pushNamed(context, ConfirmEmail.routeName,
-                arguments: ConfirmEmailArguments(email: store.getUsername()));
-          });
-          return true;
-        }
         if (store.errorMessage == "TOTP is invalid" ||
             store.errorMessage == "User must pass 2FA") {
           _showAlertTotp(context, store);
@@ -154,8 +165,7 @@ class _SignInPageState extends State<SignInPage> {
                                 ? () {}
                                 : () async {
                                     if (_formKey.currentState!.validate()) {
-                                      store.signIn(
-                                          Platform.isIOS ? "iOS" : "Android");
+                                      store.signIn(Platform.isIOS ? "iOS" : "Android");
                                     }
                                   }
                             : null,
@@ -373,7 +383,6 @@ class _InputFieldsWidget extends StatefulWidget {
 class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
   final TextEditingController usernameController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController mnemonicController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -412,32 +421,6 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             ),
             hint: "signIn.password".tr(),
             suffixIcon: null,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-          child: DefaultTextField(
-            controller: mnemonicController,
-            isPassword: true,
-            onChanged: widget.signInStore.setMnemonic,
-            validator: Validators.mnemonicValidator,
-            suffixIcon: CupertinoButton(
-              minSize: 22.0,
-              padding: EdgeInsets.zero,
-              onPressed: () async {
-                ClipboardData? data =
-                    await Clipboard.getData(Clipboard.kTextPlain);
-                mnemonicController.text = data?.text ?? "";
-                widget.signInStore.setMnemonic(data?.text ?? "");
-              },
-              child: Icon(
-                Icons.paste,
-                size: 22.0,
-                color: AppColor.primary,
-              ),
-            ),
-            hint: "signIn.enterMnemonicPhrase".tr(),
-            inputFormatters: [],
           ),
         ),
         Align(

@@ -136,7 +136,7 @@ class Configs {
             ),
             DataCoins(
               symbolToken: TokenSymbols.wETH,
-              addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
+              addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
               iconPath: 'assets/eth_coin_icon.svg',
             ),
             DataCoins(
