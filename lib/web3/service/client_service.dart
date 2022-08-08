@@ -307,7 +307,6 @@ extension CreateQuestContract on ClientService {
           contract: contract,
           function: function,
           gasPrice: _gasPrice,
-          maxGas: 3000000,
           parameters: params,
           from: from,
           value: value,
