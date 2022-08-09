@@ -24,10 +24,8 @@ import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
-import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -236,8 +234,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               CreateQuestPage.routeName,
               arguments: widget.arguments.questInfo,
             );
-          } else if (store.successData ==
-              EmployerStoreState.validateTotpDelete) {
+          } else if (store.successData == EmployerStoreState.validateTotpDelete) {
             await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
                 WQContractFunctions.cancelJob.name);
             AlertDialogUtils.showAlertTxConfirm(
@@ -255,8 +252,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 );
               },
             );
-          } else if (store.successData ==
-              EmployerStoreState.acceptCompletedWork) {
+          } else if (store.successData == EmployerStoreState.acceptCompletedWork) {
             store.setQuestStatus(5);
             setState(() {});
             Navigator.pop(context);
@@ -608,7 +604,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.message);
       return;
-    } catch (e) {
+    } catch (e, trace) {
+      print('$e\n$trace');
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.toString());
       return;
@@ -629,12 +626,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   _checkPossibilityTx(String functionName) async {
     await store.getFee(store.selectedResponders?.workerId ?? '', functionName);
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WQT,
-      fee: Decimal.parse(store.fee),
-      amount: 0.0,
-      isMain: true,
-    );
   }
 
   _showSecurityTOTPDialog({

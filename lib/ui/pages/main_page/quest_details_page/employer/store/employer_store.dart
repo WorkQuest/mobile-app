@@ -1,10 +1,13 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/utils/quest_util.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -87,32 +90,31 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
     }
   }
 
-  Future<void> getFee(String userId, String functionName) async {
-    try {
-      this.onLoading();
-      final _needParams = functionName == WQContractFunctions.assignJob.name;
-      List<dynamic> _params = [];
-      final _client = AccountRepository().getClientWorkNet();
-      final _contract = await _client.getDeployedContract(
-        "WorkQuest",
-        quest.value!.contractAddress!,
-      );
-      final _function = _contract.function(functionName);
-      if (_needParams) {
-        final _user = await _apiProvider.getProfileUser(userId: userId);
-        _params = [EthereumAddress.fromHex(_user.walletAddress!)];
-      }
-      final _gas = await _client.getEstimateGasCallContract(
-          contract: _contract,
-          function: _function,
-          params: _params,
-          value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
-      fee = _gas.toStringAsFixed(17);
-      this.onSuccess(EmployerStoreState.getFee);
-    } catch (e) {
-      onError(e.toString());
-      throw Exception(e.toString());
+  getFee(String userId, String functionName) async {
+    final _needParams = functionName == WQContractFunctions.assignJob.name;
+    List<dynamic> _params = [];
+    final _client = AccountRepository().getClientWorkNet();
+    final _contract = await _client.getDeployedContract(
+      "WorkQuest",
+      quest.value!.contractAddress!,
+    );
+    final _function = _contract.function(functionName);
+    if (_needParams) {
+      final _user = await _apiProvider.getProfileUser(userId: userId);
+      _params = [EthereumAddress.fromHex(_user.walletAddress!)];
     }
+    final _gas = await _client.getEstimateGasCallContract(
+        contract: _contract,
+        function: _function,
+        params: _params,
+        value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      fee: Decimal.parse(_gas.toString()),
+      amount: 0.0,
+      isMain: true,
+    );
+    fee = _gas.toStringAsFixed(17);
   }
 
   @action
