@@ -87,7 +87,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
         role,
         true,
       );
-
     } else {
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.quests.clear();
@@ -108,7 +107,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
             portfolioStore!
                 .getPortfolio(userId: viewOtherUser!.userData!.id, isForce: true);
           portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
-
         });
       });
     }
@@ -159,6 +157,26 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double scrollPosition = 0.0;
 
+  int? prevColor;
+
+  _scrollListener() {
+    final params = AppBarParams.initial();
+    int color = (controllerMain.offset.round() / 200 * 255).round();
+    int newColor = color < 0
+        ? 0
+        : color > 255
+            ? 255
+            : color;
+    params.color = newColor;
+    if (controllerMain.offset < 180) {
+      params.width = 240 + (controllerMain.offset.round() / 200 * 60);
+      params.appBarPosition = controllerMain.offset.round() / 200 * 28;
+      params.appBarPositionVertical = (controllerMain.offset.round() / 200 * 10);
+      _streamController.sink.add(params);
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,22 +185,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 (viewOtherUser?.isLoading ?? false)
             ? ProfileShimmer()
             : NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (controllerMain.offset < 180) {
-                    double width = 240 + (controllerMain.offset.round() / 200 * 60);
-                    double appBarPosition = controllerMain.offset.round() / 200 * 28;
-                    double appBarPositionVertical =
-                        (controllerMain.offset.round() / 200 * 10);
-                    _streamController.sink.add(
-                      AppBarParams(
-                        width,
-                        appBarPosition,
-                        appBarPositionVertical,
-                      ),
-                    );
-                  }
-                  return false;
-                },
+                onNotification: (scrollNotification) => _scrollListener(),
                 child: NestedScrollView(
                   controller: controllerMain,
                   headerSliverBuilder: (
@@ -327,11 +330,12 @@ class AppBarParams {
   double width;
   double appBarPosition;
   double appBarPositionVertical;
+  int color;
 
-  AppBarParams(this.width, this.appBarPosition, this.appBarPositionVertical);
+  AppBarParams(this.width, this.appBarPosition, this.appBarPositionVertical, this.color);
 
   factory AppBarParams.initial() {
-    return AppBarParams(240.0, 0.0, 16.0);
+    return AppBarParams(240.0, 0.0, 16.0, 0);
   }
 }
 
