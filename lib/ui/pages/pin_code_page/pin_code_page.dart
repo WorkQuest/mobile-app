@@ -303,7 +303,7 @@ class PinCodeKeyboard extends StatelessWidget {
               onTabSensor,
             )
           else
-            Expanded(child: Container()),
+            SizedBox.shrink(),
           KeyboardButton(
             const Text(
               "0",
