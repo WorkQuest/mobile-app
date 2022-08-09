@@ -141,7 +141,7 @@ class Configs {
             ),
             DataCoins(
               symbolToken: TokenSymbols.wBNB,
-              addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+              addressToken: '0x9C9fE9A77A3B0ed1d3584afaDd5873843bAF0E12',
               iconPath: 'assets/bsc_logo.svg',
             ),
             DataCoins(
