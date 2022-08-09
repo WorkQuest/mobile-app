@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
@@ -8,6 +10,7 @@ import 'package:app/ui/widgets/layout_with_scroll.dart';
 import 'package:app/ui/widgets/selected_item.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/bottom_sheet.dart';
+import 'package:app/utils/utils.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/address_service.dart';
@@ -19,27 +22,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:majascan/majascan.dart';
 import 'package:provider/provider.dart';
-import '../../../../../constants.dart';
-import '../../../../../observer_consumer.dart';
 import 'confirm_page/confirm_transfer_page.dart';
 import 'mobx/transfer_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
-
-class DecimalFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    String truncated = newValue.text;
-    TextSelection newSelection = newValue.selection;
-    if (newValue.text.contains(",")) {
-      truncated = newValue.text.replaceFirst(RegExp(','), '.');
-    }
-    return TextEditingValue(
-      text: truncated,
-      selection: newSelection,
-    );
-  }
-}
 
 class TransferPage extends StatefulWidget {
   const TransferPage({
