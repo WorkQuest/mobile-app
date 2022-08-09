@@ -173,6 +173,7 @@ class _QuestListState extends State<QuestList> {
           SliverAppBar(
             pinned: true,
             title: TextFormField(
+              initialValue: questsStore!.searchWord,
               onChanged: (value) => questsStore!.setSearchWord(value),
               decoration: InputDecoration(
                 fillColor: Color(0xFFF7F8FA),
@@ -295,13 +296,13 @@ class _QuestListState extends State<QuestList> {
             ),
           ),
           SliverToBoxAdapter(
-            child: Observer(
-              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
+            child: Observer(builder: (_) {
+              return (questsStore!.isLoading || questsStore!.isLoadingMore)
                   ? Center(
                       child: CircularProgressIndicator.adaptive(),
                     )
-                  : const SizedBox(),
-            ),
+                  : const SizedBox();
+            }),
           ),
         ],
       ),

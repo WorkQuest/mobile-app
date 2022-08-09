@@ -32,8 +32,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> selectedSkill = [];
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
-      ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
@@ -73,8 +72,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setEmployment(List<String> employment) => employments = employment;
 
-  setEmployeeRating(List<int> employeeRating) =>
-      employeeRatings = employeeRating;
+  setEmployeeRating(List<int> employeeRating) => employeeRatings = employeeRating;
 
   setWorkplace(List<String> workplace) => workplaces = workplace;
 
@@ -119,19 +117,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     String result = '';
     if (role == UserRole.Worker) {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        final _fromPrice =
-            Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
-                Decimal.fromInt(10).pow(18);
+        final _fromPrice = Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
+            Decimal.fromInt(10).pow(18);
         result += '&priceBetween[from]=${_fromPrice.toBigInt()}';
-        final _toPrice =
-            Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
-                Decimal.fromInt(10).pow(18);
+        final _toPrice = Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
+            Decimal.fromInt(10).pow(18);
         result += '&priceBetween[to]=${_toPrice.toBigInt()}';
       }
     } else {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        result +=
-            '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
         result +=
             '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
       }
@@ -174,17 +169,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onSuccess(true);
     }
     if (searchWord.length > 0)
-      role == UserRole.Worker
-          ? getSearchedQuests(true)
-          : getSearchedWorkers(true);
+      role == UserRole.Worker ? getSearchedQuests(true) : getSearchedWorkers(true);
     else {
       role == UserRole.Worker ? getQuests(true) : getWorkers(true);
     }
   }
 
   @computed
-  bool get emptySearch =>
-      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
+  bool get emptySearch => workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests(bool newList) async {
@@ -214,10 +206,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   Future getSearchedWorkers(bool newList) async {
+    print('getSearchedWorkers $newList');
     if (newList) {
+      this.onLoading();
       workersList.clear();
+    } else {
+      isLoadingMore = true;
     }
-    this.onLoading();
+    print("getSearchedWorkers loadingMore $isLoadingMore");
     debounce = Timer(const Duration(milliseconds: 300), () async {
       workersList.addAll(await _apiProvider.getWorkers(
         searchWord: this.searchWord,
@@ -231,6 +227,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         specializations: selectedSkill,
       ));
       this.onSuccess(true);
+      isLoadingMore = false;
     });
   }
 
@@ -268,6 +265,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
+      print('getWorkers $newList');
       if (newList) {
         this.onLoading();
         workersList.clear();

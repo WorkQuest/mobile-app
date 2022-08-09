@@ -11,8 +11,7 @@ import '../../../../widgets/user_avatar.dart';
 import '../../../../widgets/user_rating.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore,
-      {this.showRating = false});
+  const WorkersItem(this.workersInfo, this.questsStore, {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
   final QuestsStore questsStore;
@@ -133,8 +132,7 @@ class WorkersItem extends StatelessWidget {
             Text("workers.aboutMe".tr()),
             const SizedBox(height: 5),
             Text(
-              workersInfo.additionalInfo?.description ??
-                  "modals.noDescription".tr(),
+              workersInfo.additionalInfo?.description ?? "modals.noDescription".tr(),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
               ),
@@ -142,9 +140,9 @@ class WorkersItem extends StatelessWidget {
               maxLines: 3,
             ),
             const SizedBox(height: 10),
-            workersInfo.additionalInfo!.address != null
+            workersInfo.locationPlaceName != null
                 ? Text(
-                    workersInfo.additionalInfo?.address ?? "",
+                    workersInfo.locationPlaceName ?? "",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       color: Color(0xFF7C838D),
