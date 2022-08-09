@@ -25,7 +25,8 @@ import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-const _divider = const SizedBox(height: 6, child: ColoredBox(color: AppColor.disabledButton));
+const _divider =
+    const SizedBox(height: 6, child: ColoredBox(color: AppColor.disabledButton));
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -172,11 +173,7 @@ class _QuestListState extends State<QuestList> {
           SliverAppBar(
             pinned: true,
             title: TextFormField(
-              onChanged: (value) => value.isNotEmpty
-                  ? questsStore!.setSearchWord(value)
-                  : profileMeStore!.userData!.role == UserRole.Worker
-                      ? questsStore!.getQuests(true)
-                      : questsStore!.getWorkers(true),
+              onChanged: (value) => questsStore!.setSearchWord(value),
               decoration: InputDecoration(
                 fillColor: Color(0xFFF7F8FA),
                 hintText: profileMeStore!.userData!.role == UserRole.Worker
