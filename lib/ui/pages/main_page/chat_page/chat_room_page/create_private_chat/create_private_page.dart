@@ -1,6 +1,7 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/store/create_private_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';
@@ -127,5 +128,6 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
 
   _onPressedSend() {
     store.sendMessage(widget.userId);
+    context.read<ChatStore>().refreshChats();
   }
 }

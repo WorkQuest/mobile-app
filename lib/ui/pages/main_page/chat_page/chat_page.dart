@@ -40,14 +40,12 @@ class _ChatPageState extends State<ChatPage>
     _searchTextController = TextEditingController();
     _tabController = TabController(vsync: this, length: 6)
       ..addListener(() {
-        print('tab index: ${_tabController.index}');
         store.setChatType(_tabController.index);
         setState(() {});
       });
     _searchTextController.addListener(() {
       if (_timer?.isActive ?? false) _timer!.cancel();
       _timer = Timer(const Duration(milliseconds: 300), () {
-        print('typeChat: ${store.typeChat}');
         store.loadChats(
           query: _searchTextController.text,
           type: store.typeChat,
@@ -241,13 +239,11 @@ class _ChatPageState extends State<ChatPage>
       store.setChatSelected(false);
     } else {
       if (chat.chatData.lastMessage?.sender?.userId != store.myId &&
-          chat.chatData.lastMessage?.senderStatus == "Unread") {
+          chat.chatData.lastMessage?.senderStatus == "Unread")
         store.setMessageRead(
           chat.id,
           chat.chatData.lastMessageId,
         );
-        chat.chatData.lastMessage?.senderStatus = "Read";
-      }
       Navigator.of(context, rootNavigator: true).pushNamed(
         ChatRoomPage.routeName,
         arguments: ChatRoomArguments(chat.id, false),

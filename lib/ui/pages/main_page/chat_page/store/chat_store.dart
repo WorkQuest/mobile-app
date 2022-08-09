@@ -50,9 +50,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
     streamChatNotification = StreamController<bool>.broadcast();
   }
 
-  void initialSetup(String myId) async {
-    WebSocket().connect();
-  }
+  void initialSetup(String myId) async => WebSocket().connect();
 
   void setMyId(String value) => myId = value;
 
@@ -77,8 +75,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
         questChatStatus: questChatStatus,
         starred: type == TypeChat.favourites ? true : null,
       );
-      print('type: $type');
-      print('message first: ${listChats.first.chatData.lastMessage?.text}');
       chats[type]!.setChats(listChats);
 
       listChats.forEach((element) {
@@ -116,10 +112,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  setChatType(int indexTab) {
-    typeChat = getChatTypeFromIndex(indexTab);
-    print('typeChat: $typeChat');
-  }
+  setChatType(int indexTab) => typeChat = getChatTypeFromIndex(indexTab);
 
   @action
   void setChatSelected(bool value) => chatSelected = value;
@@ -188,9 +181,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
         return;
       else if (json["message"]["action"] == "employerInvitedWorkerToQuest")
         return;
-      else if (json["message"]["action"] == "workerRespondedToQuest")
+      else if (json["message"]["action"] == "workerRespondedToQuest") {
+        refreshChats();
         return;
-      else if (json["message"]["action"] == "groupChatCreate") {
+      } else if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]);
       } else if (json["type"] == "pub" ||
           json["message"]["action"] == "messageReadByRecipient") {
@@ -257,7 +251,22 @@ abstract class _ChatStore extends IStore<bool> with Store {
   @action
   Future<void> setMessageRead(String chatId, String messageId) async {
     try {
+      chats = ObservableMap.of(chats.map((key, value) {
+        value.chat.map((element) {
+          if (element.id == chatId) {
+            final _old =
+                chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+            _old.chatData.lastMessage!.senderStatus = "Read";
+            final index =
+                chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
+            chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
+            chats[key]!.chat.insert(index, _old);
+          }
+        }).toList();
+        return MapEntry(key, value);
+      }));
       await _apiProvider.setMessageRead(chatId: chatId, messageId: messageId);
+      checkMessage();
     } catch (e) {
       this.onError(e.toString());
     }
