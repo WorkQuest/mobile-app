@@ -279,10 +279,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 await sendTransaction(
                   onPressedConfirm: () async {
                     Navigator.pop(context);
-                    await store.startQuest(
+                    store.startQuest(
                       userId: store.selectedResponders!.workerId,
                       questId: store.quest.value!.id,
                     );
+                    AlertDialogUtils.showLoadingDialog(context);
                   },
                   functionName: WQContractFunctions.assignJob.name,
                 );
@@ -496,6 +497,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   store.acceptCompletedWork(
                                     questId: store.quest.value!.id,
                                   );
+                                  AlertDialogUtils.showLoadingDialog(context);
                                 },
                                 functionName:
                                     WQContractFunctions.acceptJobResult.name,
@@ -623,7 +625,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         Navigator.pop(context);
       },
     );
-    AlertDialogUtils.showLoadingDialog(context);
   }
 
   _checkPossibilityTx(String functionName) async {
