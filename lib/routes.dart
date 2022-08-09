@@ -748,8 +748,15 @@ class Routes {
 
       case CreatePrivatePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<CreatePrivateStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<CreatePrivateStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreatePrivatePage(settings.arguments as String),
