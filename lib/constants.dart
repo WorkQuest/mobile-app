@@ -136,12 +136,12 @@ class Configs {
             ),
             DataCoins(
               symbolToken: TokenSymbols.wETH,
-              addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
+              addressToken: '0xD9679C4Bc6E1546cfCb9c70AC81A4CBf400E7D24',
               iconPath: 'assets/eth_coin_icon.svg',
             ),
             DataCoins(
               symbolToken: TokenSymbols.wBNB,
-              addressToken: '0x9C9fE9A77A3B0ed1d3584afaDd5873843bAF0E12',
+              addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
               iconPath: 'assets/bsc_logo.svg',
             ),
             DataCoins(
