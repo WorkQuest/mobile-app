@@ -48,6 +48,11 @@ class QuestConstants {
   static const int questWaitWorker = 3;
   static const int questWaitEmployerConfirm = 4;
   static const int questDone = 5;
+
+  static const int questResponseRejected = -1;
+  static const int questResponseOpen = 0;
+  static const int questResponseAccepted = 1;
+  static const int questResponseClosed = 2;
 }
 
 class QuestUtils {
