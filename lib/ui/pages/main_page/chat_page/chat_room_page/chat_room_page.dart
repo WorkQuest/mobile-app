@@ -92,7 +92,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('_store.chatRoom!.questChat: ${_store.chatRoom!.questChat?.toJson()}');
     return Observer(
       builder: (_) => _store.initPage || _store.isLoading
           ? Scaffold(
