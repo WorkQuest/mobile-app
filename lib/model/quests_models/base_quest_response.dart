@@ -115,7 +115,7 @@ class BaseQuestResponse with ClusterItem {
       }([...json["questSpecializations"] ?? []]),
       workplace: json["workplace"] ?? "",
       invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
-      responded: json["responded"] == null ? null : Responded.fromJson(json["responded"]),
+      responded: json["response"] == null ? null : Responded.fromJson(json["response"]),
       yourReview:
           json["yourReview"] == null ? null : YourReview.fromJson(json["yourReview"]),
       questChat: json["questChat"] == null ? null : QuestChat.fromJson(json["questChat"]),
