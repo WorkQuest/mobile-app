@@ -146,7 +146,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
             } else {
               _url =
-                  "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+                  "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
             }
             Share.share(_url);
           },
@@ -179,7 +179,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               final result = await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
-                arguments: CreateReviewArguments(storeQuest.questInfo, null),
+                arguments: CreateReviewArguments(store.quest.value, null),
               );
               if (result != null && result is YourReview) {
                 store.quest.value!.yourReview = result;
@@ -208,8 +208,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     }
     if (showReview) {
       return _ReviewCard(
-        message: storeQuest.questInfo!.yourReview!.message,
-        mark: storeQuest.questInfo!.yourReview!.mark,
+        message: store.quest.value!.yourReview!.message,
+        mark: store.quest.value!.yourReview!.mark,
       );
     }
     return SizedBox();

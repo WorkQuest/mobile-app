@@ -68,16 +68,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign;
 
   bool get canCreateReview =>
-      storeQuest.questInfo!.status == QuestConstants.questDone &&
-      storeQuest.questInfo!.yourReview == null &&
-      (storeQuest.questInfo!.userId == profile!.userData!.id ||
-          storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
+      store.quest.value!.status == QuestConstants.questDone &&
+          store.quest.value!.yourReview == null &&
+      (store.quest.value!.userId == profile!.userData!.id ||
+          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
 
   bool get showReview =>
-      storeQuest.questInfo!.status == QuestConstants.questDone &&
-      storeQuest.questInfo!.yourReview != null &&
-      (storeQuest.questInfo!.userId == profile!.userData!.id ||
-          storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
+      store.quest.value!.status == QuestConstants.questDone &&
+          store.quest.value!.yourReview != null &&
+      (store.quest.value!.userId == profile!.userData!.id ||
+          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
 
   bool get canPushToDispute =>
       store.quest.value?.userId == profile!.userData!.id &&
@@ -126,7 +126,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
           } else {
             _url =
-                "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+                "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
           }
           Share.share(_url);
         },
@@ -310,7 +310,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   null,
                 ),
               );
+
               if (result != null && result is YourReview) {
+                print('review: ${result.toJson()}');
                 store.quest.value!.yourReview = result;
                 store.quest.reportChanged();
               }
@@ -336,8 +338,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       );
     } else if (showReview) {
       return _ReviewCard(
-        message: storeQuest.questInfo!.yourReview!.message,
-        mark: storeQuest.questInfo!.yourReview!.mark,
+        message: store.quest.value!.yourReview!.message,
+        mark: store.quest.value!.yourReview!.mark,
       );
     } else if (canPushToDispute) {
       return LoginButton(
@@ -404,8 +406,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    "${store.quest.value!.assignedWorker!.firstName} "
-                    "${store.quest.value!.assignedWorker!.lastName}",
+                    "${store.quest.value?.assignedWorker?.firstName} "
+                    "${store.quest.value?.assignedWorker?.lastName}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
