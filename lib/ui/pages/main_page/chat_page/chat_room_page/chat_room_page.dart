@@ -12,6 +12,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -73,8 +74,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           _store.getQuest(_store.chatRoom!.questChat!.quest!.id);
           _store.getDispute(_store.chatRoom!.questChat!.quest!.openDispute!.id);
         }
-        if (members.length > 2)
-          members.removeWhere((element) => element.type == "Admin");
+        if (members.length > 2) members.removeWhere((element) => element.type == "Admin");
         id1 = members[0].userId;
         firstName1 = members[0].user!.firstName;
         lastName1 = members[0].user!.lastName;
@@ -92,14 +92,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('_store.chatRoom!.questChat: ${_store.chatRoom!.questChat?.toJson()}');
     return Observer(
       builder: (_) => _store.initPage || _store.isLoading
           ? Scaffold(
               body: Center(child: CircularProgressIndicator.adaptive()),
             )
           : Scaffold(
-              appBar:
-                  _store.messageSelected ? _selectedMessages() : _appBar(),
+              appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
               body: Container(
                 alignment: Alignment.bottomLeft,
                 height: MediaQuery.of(context).size.height,
@@ -134,11 +134,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                       _store.chatRoom!.questChat?.status != -1 &&
-                              (_store.chatRoom!.meMember?.status == 0 ||
-                                  meMember)
+                              (_store.chatRoom!.meMember?.status == 0 || meMember)
                           ? InputToolbar(_store)
                           : profile!.userData!.role == UserRole.Employer &&
-                                  _store.chatRoom!.questChat != null
+                                  _store.chatRoom!.questChat != null &&
+                                  _store.chatRoom!.questChat!.status !=
+                                      QuestConstants.questRejected
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 16,
@@ -152,9 +153,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                       ).pushNamed(
                                         ChooseQuestPage.routeName,
                                         arguments:
-                                            profile!.userData!.id != id1
-                                                ? id1!
-                                                : id2!,
+                                            profile!.userData!.id != id1 ? id1! : id2!,
                                       );
                                     },
                                   ),
