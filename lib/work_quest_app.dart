@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'dart:ui';
 
+import 'package:app/model/notification_model.dart';
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/widgets/CustomBanner.dart';
+import 'package:app/utils/open_screen_from_push.dart';
+import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:firebase_notifications_handler/firebase_notifications_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -14,55 +19,81 @@ import 'main.dart';
 
 class WorkQuestApp extends StatelessWidget {
   final bool isToken;
+
   WorkQuestApp(this.isToken);
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Network>(
-        valueListenable: AccountRepository().notifierNetwork,
-        builder: (_, value, child) {
-          final name = value.name;
-          final visible = name != Network.mainnet.name;
-          return CustomBanner(
-            text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
-            visible: false,
-            color: visible ? Colors.grey : Colors.transparent,
-            textStyle: visible
-                ? const TextStyle(
-                    color: AppColor.enabledText,
-                    fontWeight: FontWeight.bold,
-                  )
-                : const TextStyle(
-                    color: Colors.transparent,
-                    fontWeight: FontWeight.bold,
-                  ),
-            child: child!,
-          );
-        },
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          theme: _theme,
-          builder: (context, child) {
-            final mq = MediaQuery.of(context);
-            double fontScale;
-            if (window.textScaleFactor > 1.1) {
-              fontScale = 1.1;
-            } else if (window.textScaleFactor < 0.9) {
-              fontScale = 0.8;
-            } else {
-              fontScale = window.textScaleFactor;
-            }
-            return MediaQuery(
-              data: mq.copyWith(textScaleFactor: fontScale),
+    return FirebaseNotificationsHandler(
+      onTap: _onTap,
+      child: ValueListenableBuilder<Network>(
+          valueListenable: AccountRepository().notifierNetwork,
+          builder: (_, value, child) {
+            final name = value.name;
+            final visible = name != Network.mainnet.name;
+            return CustomBanner(
+              text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
+              visible: false,
+              color: visible ? Colors.grey : Colors.transparent,
+              textStyle: visible
+                  ? const TextStyle(
+                      color: AppColor.enabledText,
+                      fontWeight: FontWeight.bold,
+                    )
+                  : const TextStyle(
+                      color: Colors.transparent,
+                      fontWeight: FontWeight.bold,
+                    ),
               child: child!,
             );
           },
-          debugShowCheckedModeBanner: false,
-          onGenerateRoute: Routes.generateRoute,
-          initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-        ));
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            theme: _theme,
+            builder: (context, child) {
+              final mq = MediaQuery.of(context);
+              double fontScale;
+              if (window.textScaleFactor > 1.1) {
+                fontScale = 1.1;
+              } else if (window.textScaleFactor < 0.9) {
+                fontScale = 0.8;
+              } else {
+                fontScale = window.textScaleFactor;
+              }
+              return MediaQuery(
+                data: mq.copyWith(textScaleFactor: fontScale),
+                child: child!,
+              );
+            },
+            debugShowCheckedModeBanner: false,
+            onGenerateRoute: Routes.generateRoute,
+            initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+          )),
+    );
+  }
+
+  _onTap(
+    GlobalKey<NavigatorState> navigatorState,
+    AppState appState,
+    Map<dynamic, dynamic> payload,
+  ) {
+    final notification = NotificationNotification.fromJson(
+      payload as Map<String, dynamic>,
+    );
+    final response = {
+      "data": notification.data,
+      "action": notification.action,
+    };
+    if (appState.name == "closed") {
+      Storage.writePushPayload(
+        JsonEncoder.withIndent('  ').convert(response),
+      );
+    } else {
+      OpenScreeFromPush().openScreen(notification);
+    }
   }
 }
 

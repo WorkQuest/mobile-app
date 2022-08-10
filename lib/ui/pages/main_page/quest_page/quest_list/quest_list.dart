@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/notification_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -16,6 +18,7 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/deep_link_util.dart';
+import 'package:app/utils/open_screen_from_push.dart';
 import 'package:app/utils/storage.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -25,7 +28,10 @@ import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-const _divider = const SizedBox(height: 6, child: ColoredBox(color: AppColor.disabledButton));
+const _divider = const SizedBox(
+  height: 6,
+  child: ColoredBox(color: AppColor.disabledButton),
+);
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -46,7 +52,6 @@ class _QuestListState extends State<QuestList> {
   final QuestsType questItemPriorityType = QuestsType.Favorites;
   final scrollKey = new GlobalKey();
 
-  // String id = "";
   UserRole? role;
 
   @override
@@ -72,6 +77,7 @@ class _QuestListState extends State<QuestList> {
         Storage.writeDeepLinkCheck("1");
       }
     });
+    _checkPush();
   }
 
   @override
@@ -198,9 +204,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          FilterQuestsPage.routeName,
-                          arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -299,11 +305,12 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(
-              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
-                  ? Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    )
-                  : const SizedBox(),
+              builder: (_) =>
+                  (questsStore!.isLoading || questsStore!.isLoadingMore)
+                      ? Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : const SizedBox(),
             ),
           ),
         ],
@@ -318,6 +325,16 @@ class _QuestListState extends State<QuestList> {
     }
     if (object is ProfileMeResponse) {
       object.showAnimation = false;
+    }
+  }
+
+  Future<void> _checkPush() async {
+    final payload = await Storage.readPushPayload();
+    if (payload != null) {
+      final response = jsonDecode(payload);
+      final notification = NotificationNotification.fromJson(response);
+      OpenScreeFromPush().openScreen(notification);
+      Storage.delete("pushPayload");
     }
   }
 }

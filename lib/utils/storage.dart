@@ -63,6 +63,14 @@ class Storage {
     _secureStorage.write(key: "pushToken", value: config);
   }
 
+  static Future<void> writePushPayload(String payload) async {
+    _secureStorage.write(key: "pushPayload", value: payload);
+  }
+
+  static Future<String?> readPushPayload() async {
+    return await _secureStorage.read(key: "pushPayload");
+  }
+
   static Future<String?> readPushToken() async {
     return await _secureStorage.read(key: "pushToken");
   }
