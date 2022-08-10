@@ -36,7 +36,6 @@ class OpenScreeFromPush {
           con!,
           QuestDetails.routeName,
           arguments: QuestArguments(
-            questInfo: null,
             id: notification.data.id,
           ),
         );
