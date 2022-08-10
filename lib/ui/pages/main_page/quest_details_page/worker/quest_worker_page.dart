@@ -65,7 +65,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   bool get canSendRequest =>
       store.quest.value?.status == QuestConstants.questCreated &&
       store.quest.value?.invited == null &&
-      (store.quest.value?.responded?.status != QuestConstants.questResponseRejected);
+      (store.quest.value?.responded?.status != QuestConstants.questResponseOpen);
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
