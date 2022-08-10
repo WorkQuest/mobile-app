@@ -101,15 +101,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 
-    if (widget.arguments.questInfo != null) {
-      store.quest.value = widget.arguments.questInfo;
-      getResponded();
-      if (store.quest.value!.status == QuestConstants.questDispute) {
-        store.getQuest(widget.arguments.questInfo!.id);
-      }
-    } else {
-      store.getQuest(widget.arguments.id!).then((value) => getResponded());
-    }
+    store.getQuest(widget.arguments.id!).then((value) => getResponded());
 
     controller = BottomSheet.createAnimationController(this);
 
@@ -232,7 +224,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             await Navigator.pushNamed(
               context,
               CreateQuestPage.routeName,
-              arguments: widget.arguments.questInfo,
+              arguments: store.quest.value,
             );
           } else if (store.successData == EmployerStoreState.validateTotpDelete) {
             await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
@@ -248,7 +240,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               onTabOk: () async {
                 AlertDialogUtils.showLoadingDialog(context);
                 store.deleteQuest(
-                  questId: widget.arguments.questInfo!.id,
+                  questId: store.quest.value!.id,
                 );
               },
             );

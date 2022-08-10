@@ -1,6 +1,5 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -41,14 +40,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   @override
   void initState() {
     storeQuest = context.read<QuestDetailsStore>();
-    if (widget.arguments.questInfo != null) {
-      storeQuest.initQuest(widget.arguments.questInfo!);
-    } else {
-      storeQuest.initQuestId(widget.arguments.id!);
-      storeQuest.updateQuest().then((value) {
-        storeQuest.initQuest(storeQuest.questInfo!);
-      });
-    }
+    storeQuest.initQuestId(widget.arguments.id!);
+    storeQuest.updateQuest().then((value) {
+      storeQuest.initQuest(storeQuest.questInfo!);
+    });
+
     profile = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -369,10 +365,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 
 class QuestArguments {
   QuestArguments({
-    required this.questInfo,
     required this.id,
   });
 
-  BaseQuestResponse? questInfo;
   String? id;
 }

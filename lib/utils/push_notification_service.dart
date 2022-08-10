@@ -144,7 +144,6 @@ class PushNotificationService {
           navigatorKey.currentState!.context,
           QuestDetails.routeName,
           arguments: QuestArguments(
-            questInfo: null,
             id: notification.data.id,
           ),
         );

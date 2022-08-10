@@ -38,7 +38,6 @@ class DeepLinkUtil {
             Navigator.of(context, rootNavigator: true).pushNamed(
               QuestDetails.routeName,
               arguments: QuestArguments(
-                questInfo: null,
                 id: argument,
               ),
             );
@@ -79,7 +78,6 @@ class DeepLinkUtil {
         Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: QuestArguments(
-            questInfo: null,
             id: argument,
           ),
         );

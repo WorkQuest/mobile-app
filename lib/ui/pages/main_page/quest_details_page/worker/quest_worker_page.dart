@@ -65,7 +65,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   bool get canSendRequest =>
       store.quest.value?.status == QuestConstants.questCreated &&
       store.quest.value?.invited == null &&
-      store.quest.value?.responded?.status != 0;
+      (store.quest.value?.responded?.status != QuestConstants.questResponseRejected);
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
@@ -95,15 +95,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 
-    if (widget.arguments.questInfo != null) {
-      store.quest.value = widget.arguments.questInfo;
-      final needUpdate = store.quest.value!.status == QuestConstants.questDispute;
-      if (needUpdate) {
-        store.getQuest(widget.arguments.questInfo!.id);
-      }
-    } else {
-      store.getQuest(widget.arguments.id ?? "");
-    }
+    store.getQuest(widget.arguments.id ?? "");
+
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
 
@@ -115,7 +108,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   List<Widget>? actionAppBar() {
-    print("store.quest.value?.star: ${store.quest.value?.star}");
     return <Widget>[
       Observer(
         builder: (_) => IconButton(
@@ -153,7 +145,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             if (AccountRepository().notifierNetwork.value == Network.mainnet) {
               _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
             } else {
-              _url = "https://${Constants.isTestnet ? 'testnet': 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+              _url =
+                  "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
             }
             Share.share(_url);
           },
