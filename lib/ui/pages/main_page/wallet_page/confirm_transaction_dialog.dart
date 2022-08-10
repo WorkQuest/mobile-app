@@ -11,6 +11,8 @@ final TextStyle titleTextStyle = TextStyle(
   fontSize: 17.0,
 );
 
+const alignText = TextAlign.start;
+
 Future confirmTransaction(
   BuildContext context, {
   required String transaction,
@@ -94,13 +96,16 @@ Widget content({
           Text(
             "Recipient's address",
             style: titleTextStyle,
+            textAlign: alignText,
           ),
           Text(
             "$address",
             style: valueTextStyle,
+            textAlign: alignText,
           ),
           if (amount != null)
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
                   height: 10.0,
@@ -108,10 +113,12 @@ Widget content({
                 Text(
                   "modals.amount".tr(),
                   style: titleTextStyle,
+                  textAlign: alignText,
                 ),
                 Text(
                   "$amount WUSD",
                   style: valueTextStyle,
+                  textAlign: alignText,
                 ),
               ],
             ),
@@ -121,10 +128,12 @@ Widget content({
           Text(
             "Transaction fee",
             style: titleTextStyle,
+            textAlign: alignText,
           ),
           Text(
             "$fee WQT",
             style: valueTextStyle,
+            textAlign: alignText,
           ),
         ],
       ),
