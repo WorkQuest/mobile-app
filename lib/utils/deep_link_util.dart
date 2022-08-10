@@ -99,6 +99,8 @@ class DeepLinkUtil {
         ),
       );
     } else if (path.contains("sign-in")) {
+      final isToken = await Storage.toLoginCheck();
+      if (isToken) return;
       final code = path.split("=").last;
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
