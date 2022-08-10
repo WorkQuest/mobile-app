@@ -1,6 +1,16 @@
+import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/widgets/default_app_bar.dart';
+import 'package:app/ui/widgets/default_button.dart';
+import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:app/ui/widgets/selected_item.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/bottom_sheet.dart';
+import 'package:app/utils/utils.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +19,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../constants.dart';
-import '../../../../../observer_consumer.dart';
-import '../../../../../utils/alert_dialog.dart';
-import '../../../../../utils/bottom_sheet.dart';
-import '../../../../../web3/repository/account_repository.dart';
-import '../../../../widgets/default_app_bar.dart';
-import '../../../../widgets/default_button.dart';
-import '../../../../widgets/default_textfield.dart';
-import '../../../../widgets/dismiss_keyboard.dart';
-import '../../../../widgets/selected_item.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 const _divider = SizedBox(

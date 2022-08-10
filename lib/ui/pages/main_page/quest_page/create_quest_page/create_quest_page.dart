@@ -16,6 +16,7 @@ import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
+import 'package:app/utils/utils.dart';
 import 'package:app/utils/validator.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -139,8 +140,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
               context,
               QuestDetails.routeName,
               arguments: QuestArguments(
-                questInfo: updatedQuest,
-                id: null,
+                id: updatedQuest.id,
               ),
             );
             await AlertDialogUtils.showSuccessDialog(context);
@@ -590,6 +590,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       .tr(namedArgs: {'name': 'Price'})),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               inputFormatters: [
+                                DecimalFormatter(),
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r'^\d+\.?\d{0,18}')),
                               ],

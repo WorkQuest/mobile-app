@@ -24,125 +24,129 @@ extension CustomAppBar on UserProfileState {
     return StreamBuilder<AppBarParams>(
       initialData: AppBarParams.initial(),
       stream: streamController.stream,
-      builder: (_, snapshot) => SliverAppBar(
-        backgroundColor: Color(0xFF0083C7),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          if (info.id == userStore!.userData!.id)
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                final result = await Navigator.of(context, rootNavigator: true).pushNamed(
-                  ChangeProfilePage.routeName,
-                );
-                if (result != null && result as bool) {
-                  updateState.call();
-                }
-              },
+      builder: (_, snapshot) {
+        final _color = Color.lerp(AppColor.enabledButton, Colors.white, snapshot.data!.color / 255);
+        return SliverAppBar(
+          backgroundColor: Color(0xFF0083C7),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: _color,
             ),
-          if (info.id != userStore!.userData!.id)
-            IconButton(
-              icon: Icon(
-                Icons.warning_amber_outlined,
-                color: Color(0xFFD8DFE3),
-              ),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                  ReportPage.routeName,
-                  arguments: ReportPageArguments(
-                    entityType: ReportEntityType.user,
-                    entityId: info.id,
-                  ),
-                );
-              },
-            ),
-        ],
-        centerTitle: false,
-        pinned: true,
-        expandedHeight: 250,
-        flexibleSpace: FlexibleSpaceBar(
-          titlePadding: EdgeInsets.only(
-            left: 16.0,
-            bottom: 3,
-            top: 0.0,
+            onPressed: () => Navigator.pop(context),
           ),
-          collapseMode: CollapseMode.pin,
+          actions: [
+            if (info.id == userStore!.userData!.id)
+              IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: _color,
+                ),
+                onPressed: () async {
+                  final result =
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                    ChangeProfilePage.routeName,
+                  );
+                  if (result != null && result as bool) {
+                    updateState.call();
+                  }
+                },
+              ),
+            if (info.id != userStore!.userData!.id)
+              IconButton(
+                icon: Icon(
+                  Icons.warning_amber_outlined,
+                  color: _color,
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                    ReportPage.routeName,
+                    arguments: ReportPageArguments(
+                      entityType: ReportEntityType.user,
+                      entityId: info.id,
+                    ),
+                  );
+                },
+              ),
+          ],
           centerTitle: false,
-          background: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fill(
-                  child: ColoredBox(
-                color: Colors.black,
-              )),
-              UserAvatar(
-                url: info.avatar?.url,
-                fit: BoxFit.fitHeight,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                loadingFitSize: false,
-              ),
-              Positioned(
-                bottom: info.ratingStatistic!.status == 1 ? 67.0 : 85.0,
-                left: 15.0,
-                child: Row(
-                  children: [
-                    for (int i = 0; i < markDev; i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE8D20D),
-                        size: 20.0,
-                      ),
-                    if (markDev != 5)
-                      ShaderMask(
-                        blendMode: BlendMode.srcATop,
-                        shaderCallback: (Rect rect) {
-                          return LinearGradient(
-                            stops: [0, markMod, markMod],
-                            colors: [
-                              Color(0xFFE8D20D),
-                              Color(0xFFE8D20D),
-                              Color(0xFFE8D20D).withOpacity(0)
-                            ],
-                          ).createShader(rect);
-                        },
-                        child: SizedBox(
-                          child: Icon(
-                            Icons.star,
-                            color: Color(0xFFE9EDF2),
-                            size: 20.0,
+          pinned: true,
+          expandedHeight: 250,
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: EdgeInsets.only(
+              left: 16.0,
+              bottom: 3,
+              top: 0.0,
+            ),
+            collapseMode: CollapseMode.pin,
+            centerTitle: false,
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                    child: ColoredBox(
+                  color: Colors.black,
+                )),
+                UserAvatar(
+                  url: info.avatar?.url,
+                  fit: BoxFit.fitHeight,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  loadingFitSize: false,
+                ),
+                Positioned(
+                  bottom: info.ratingStatistic!.status == 1 ? 67.0 : 85.0,
+                  left: 15.0,
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < markDev; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 20.0,
+                        ),
+                      if (markDev != 5)
+                        ShaderMask(
+                          blendMode: BlendMode.srcATop,
+                          shaderCallback: (Rect rect) {
+                            return LinearGradient(
+                              stops: [0, markMod, markMod],
+                              colors: [
+                                Color(0xFFE8D20D),
+                                Color(0xFFE8D20D),
+                                Color(0xFFE8D20D).withOpacity(0)
+                              ],
+                            ).createShader(rect);
+                          },
+                          child: SizedBox(
+                            child: Icon(
+                              Icons.star,
+                              color: Color(0xFFE9EDF2),
+                              size: 20.0,
+                            ),
                           ),
                         ),
-                      ),
-                    for (int i = 0; i < 4 - markDev; i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
-                      ),
-                  ],
+                      for (int i = 0; i < 4 - markDev; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 20.0,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            title: appBarTitle(
+              "${info.firstName} ${info.lastName}",
+              snapshot.data!.appBarPosition,
+              info.ratingStatistic?.status ?? 1,
+              snapshot.data!.width,
+            ),
           ),
-          title: appBarTitle(
-            "${info.firstName} ${info.lastName}",
-            snapshot.data!.appBarPosition,
-            info.ratingStatistic?.status ?? 1,
-            snapshot.data!.width,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -43,10 +43,9 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final result =
-            await Navigator.of(context, rootNavigator: true).pushNamed(
+        final result = await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
-          arguments: QuestArguments(questInfo: widget.questInfo, id: null),
+          arguments: QuestArguments(id: widget.questInfo.id),
         );
         if (result != null && result as bool) {
           store.deleteQuestFromList(widget.itemType, widget.questInfo.id);
@@ -73,8 +72,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded: widget.questInfo.responded ??
-                    widget.questInfo.questChat?.response,
+                responded:
+                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
                 invited: widget.questInfo.invited,
                 role: store.role,
               ),
@@ -120,7 +119,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                       Icons.star,
                       color: widget.questInfo.star
                           ? AppColor.gold
-                          : Colors.white,
+                          : Color(0xFFE9EDF2),
                     ),
                     onPressed: () async {
                       await store.setStar(
@@ -196,9 +195,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 Row(
                   children: [
                     PriorityView(
-                      widget.questInfo.priority != 0
-                          ? widget.questInfo.priority - 1
-                          : 0,
+                      widget.questInfo.priority != 0 ? widget.questInfo.priority - 1 : 0,
                     ),
                     const SizedBox(width: 5),
                     PayPeriodView(widget.questInfo.payPeriod),

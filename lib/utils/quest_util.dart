@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:app/constants.dart';
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -49,6 +48,11 @@ class QuestConstants {
   static const int questWaitWorker = 3;
   static const int questWaitEmployerConfirm = 4;
   static const int questDone = 5;
+
+  static const int questResponseRejected = -1;
+  static const int questResponseOpen = 0;
+  static const int questResponseAccepted = 1;
+  static const int questResponseClosed = 2;
 }
 
 class QuestUtils {
@@ -168,7 +172,8 @@ class QuestUtils {
 
   static String getPrice(String price) {
     try {
-      return (BigInt.parse(price).toDouble() * pow(10, -18)).toStringAsFixed(2);
+      final _price = (Decimal.parse(price) / Decimal.fromInt(10).pow(18)).toDouble();
+      return _price.toStringAsFixed(_price.truncateToDouble() == _price ? 0 : 4);
     } catch (e) {
       return '0.00';
     }

@@ -58,11 +58,11 @@ class QuestChat {
         "disputeAdminId": disputeAdminId,
         "questId": questId,
         "responseId": responseId,
-        "response": response!.toJson(),
+        "response": response?.toJson(),
         "chatId": chatId,
         "status": status,
-        "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
         "quest": quest == null ? null : quest!.toJson(),
       };
 }

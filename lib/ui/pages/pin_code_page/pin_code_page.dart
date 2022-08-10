@@ -146,6 +146,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                             ? store.biometricScan
                             : null,
                     canBiometric: store.canCheckBiometrics,
+                    showButtonBiometric: store.statePin == StatePinCode.Check,
                     isFaceId: store.isFaceId,
                   ),
                 ],
@@ -260,6 +261,7 @@ class PinCodeKeyboard extends StatelessWidget {
   final Function(int) onTabNumber;
   final Function()? onTabSensor;
   final Function()? onTabRemove;
+  final bool showButtonBiometric;
   final bool canBiometric;
   final bool isFaceId;
 
@@ -268,6 +270,7 @@ class PinCodeKeyboard extends StatelessWidget {
     this.onTabSensor,
     this.onTabRemove,
     this.canBiometric = false,
+    this.showButtonBiometric = true,
     required this.isFaceId,
   });
 
@@ -289,15 +292,18 @@ class PinCodeKeyboard extends StatelessWidget {
               ),
               () => onTabNumber(i),
             ),
-          KeyboardButton(
-            SvgPicture.asset(
-              isFaceId ? 'assets/face_id.svg' : "assets/biometric.svg",
-              width: 30,
-              height: 30,
-              color: canBiometric ? Color(0xFF0083C7) : Colors.grey[500],
-            ),
-            onTabSensor,
-          ),
+          if (showButtonBiometric)
+            KeyboardButton(
+              SvgPicture.asset(
+                isFaceId ? 'assets/face_id.svg' : "assets/biometric.svg",
+                width: 30,
+                height: 30,
+                color: canBiometric ? Color(0xFF0083C7) : Colors.grey[500],
+              ),
+              onTabSensor,
+            )
+          else
+            SizedBox.shrink(),
           KeyboardButton(
             const Text(
               "0",

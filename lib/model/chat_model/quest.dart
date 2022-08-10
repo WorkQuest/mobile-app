@@ -22,6 +22,6 @@ class Quest {
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
-        "openDispute": openDispute!.toJson(),
+        "openDispute": openDispute?.toJson(),
       };
 }

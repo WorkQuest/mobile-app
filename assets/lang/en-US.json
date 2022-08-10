@@ -1412,6 +1412,7 @@
       "EmployerInviteOnQuest": "The employer invited on quest",
       "WorkerResponseOnQuest": "The worker responded to the quest",
       "WorkerAcceptInviteOnQuest": "The worker accepted invite on quest",
+      "WorkerRejectInviteOnQuest": "The worker rejected invite on quest",
       "GroupChatAddUser": "User added",
       "GroupChatAddMember": "User added",
       "GroupChatDeleteUser": "User deleted",
