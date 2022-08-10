@@ -73,7 +73,7 @@ class _QuestListState extends State<QuestList> {
 
     Storage.readDeepLinkCheck().then((value) {
       if (value == "0") {
-        DeepLinkUtil().initDeepLink(context: context);
+        DeepLinkUtil().initDeepLink();
         Storage.writeDeepLinkCheck("1");
       }
     });

@@ -56,7 +56,7 @@ class _SignInPageState extends State<SignInPage> {
     store.setPlatform(Platform.isIOS ? "iOS" : "Android");
     Storage.readDeepLinkCheck().then((value) {
       if (value != "0") return;
-      DeepLinkUtil().initDeepLink(context: context);
+      DeepLinkUtil().initDeepLink();
       Storage.writeDeepLinkCheck("1");
     });
     super.initState();
