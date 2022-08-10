@@ -16,6 +16,14 @@ import 'package:maps_launcher/maps_launcher.dart';
 import '../../../../widgets/image_viewer_widget.dart';
 import '../../../../widgets/priority_view.dart';
 
+class QuestArguments {
+  QuestArguments({
+    required this.id,
+  });
+
+  String? id;
+}
+
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
 
@@ -61,7 +69,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        appBar: storeQuest.questInfo == null ? null : AppBar(actions: actionAppBar()),
+        appBar: AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
                 child: Transform.scale(
@@ -71,12 +79,118 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   ),
                 ),
               )
-            : _getBody(),
+            : _BodyQuestDetails(
+                storeQuest: storeQuest,
+                profileUserId: profile!.userData!.id,
+                update: update,
+                header: questHeader(),
+                tabItem: tagItem(
+                  profile!.parser(storeQuest.questInfo!.questSpecializations),
+                ),
+                inProgressBy: inProgressBy(),
+                getBody: getBody(),
+                review: review(),
+              ),
       ),
     );
   }
 
-  Widget _getBody() {
+  Widget inProgressBy() {
+    return const SizedBox();
+  }
+
+  Widget questHeader() {
+    return const SizedBox();
+  }
+
+  Widget review() {
+    return const SizedBox();
+  }
+
+  Widget tagItem(List<String> skills) {
+    return Wrap(
+      children: skills
+          .map(
+            (item) => ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 10.0,
+              ),
+              onPressed: () => null,
+              label: Text(
+                item,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Color(0xFF0083C7),
+                ),
+              ),
+              backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget tagEmployment() {
+    String employment = "";
+    switch (storeQuest.questInfo!.employment) {
+      case "FullTime":
+        employment = "quests.employment.fullTime".tr();
+        break;
+      case "PartTime":
+        employment = "quests.employment.partTime".tr();
+        break;
+      case "FixedTerm":
+        employment = "quests.employment.fixedTerm".tr();
+        break;
+      case "RemoteWork":
+        employment = "quests.employment.RemoteWork".tr();
+        break;
+      case "EmploymentContract":
+        employment = "quests.employment.EmploymentContract".tr();
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: Color(0xFF22CC14).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        employment,
+        style: TextStyle(
+          color: Color(0xFF22CC14),
+        ),
+      ),
+    );
+  }
+}
+
+class _BodyQuestDetails extends StatelessWidget {
+  final QuestDetailsStore storeQuest;
+  final String profileUserId;
+  final Future Function() update;
+  final Widget header;
+  final Widget tabItem;
+  final Widget inProgressBy;
+  final Widget getBody;
+  final Widget review;
+
+  const _BodyQuestDetails({
+    Key? key,
+    required this.storeQuest,
+    required this.profileUserId,
+    required this.update,
+    required this.header,
+    required this.tabItem,
+    required this.inProgressBy,
+    required this.getBody,
+    required this.review,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: update,
       child: SingleChildScrollView(
@@ -84,13 +198,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         child: Observer(
           builder: (_) => Column(
             children: [
-              questHeader(),
+              header,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    storeQuest.questInfo!.userId == profile!.userData!.id
+                    storeQuest.questInfo!.userId == profileUserId
                         ? Text("quests.yourQuest".tr())
                         : GestureDetector(
                             onTap: () async {
@@ -129,7 +243,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     const SizedBox(height: 17),
                     Row(
                       children: [
-                        if (storeQuest.questInfo!.userId != profile!.userData!.id)
+                        if (storeQuest.questInfo!.userId != profileUserId)
                           Icon(
                             Icons.location_on_rounded,
                             color: Color(0xFF7C838D),
@@ -148,15 +262,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ],
                     ),
                     const SizedBox(height: 17),
-                    tagItem(
-                      profile!.parser(
-                        storeQuest.questInfo!.questSpecializations,
-                      ),
-                    ),
+                    tabItem,
                     if (storeQuest.questInfo!.assignedWorker != null &&
                         (storeQuest.questInfo!.status == QuestConstants.questCreated ||
                             storeQuest.questInfo!.status == QuestConstants.questDone))
-                      inProgressBy(),
+                      inProgressBy,
                     const SizedBox(height: 15),
                     GestureDetector(
                       onTap: () {},
@@ -278,8 +388,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ),
                       ],
                     ),
-                    getBody(),
-                    review(),
+                    getBody,
+                    review,
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -290,83 +400,4 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       ),
     );
   }
-
-  Widget inProgressBy() {
-    return const SizedBox();
-  }
-
-  Widget questHeader() {
-    return const SizedBox();
-  }
-
-  Widget review() {
-    return const SizedBox();
-  }
-
-  Widget tagItem(List<String> skills) {
-    return Wrap(
-      children: skills
-          .map(
-            (item) => ActionChip(
-              padding: EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 10.0,
-              ),
-              onPressed: () => null,
-              label: Text(
-                item,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Color(0xFF0083C7),
-                ),
-              ),
-              backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget tagEmployment() {
-    String employment = "";
-    switch (storeQuest.questInfo!.employment) {
-      case "FullTime":
-        employment = "quests.employment.fullTime".tr();
-        break;
-      case "PartTime":
-        employment = "quests.employment.partTime".tr();
-        break;
-      case "FixedTerm":
-        employment = "quests.employment.fixedTerm".tr();
-        break;
-      case "RemoteWork":
-        employment = "quests.employment.RemoteWork".tr();
-        break;
-      case "EmploymentContract":
-        employment = "quests.employment.EmploymentContract".tr();
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: Color(0xFF22CC14).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        employment,
-        style: TextStyle(
-          color: Color(0xFF22CC14),
-        ),
-      ),
-    );
-  }
-}
-
-class QuestArguments {
-  QuestArguments({
-    required this.id,
-  });
-
-  String? id;
 }
