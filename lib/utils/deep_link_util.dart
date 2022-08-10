@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
@@ -57,14 +58,16 @@ class DeepLinkUtil {
   }
 
   bool _checkHost(String host) {
-    if (_network == "testnet") {
+    if (_network == Network.testnet.name) {
       if (!host.contains("testnet")) {
-        _showDialog(network: _network);
+        _showDialog(network: Network.mainnet.name);
         return false;
       }
-    } else if (_network == "mainnet") if (host != "app.workquest.co") {
-      _showDialog(network: _network);
-      return false;
+    } else if (_network == Network.mainnet.name) {
+      if (host != "app.workquest.co") {
+        _showDialog(network: Network.testnet.name);
+        return false;
+      }
     }
     return true;
   }
