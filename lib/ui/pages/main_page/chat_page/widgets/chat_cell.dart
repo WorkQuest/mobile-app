@@ -34,13 +34,11 @@ class ChatCell extends StatelessWidget {
 
     Member? member;
     chat.members?.forEach((element) {
-      if (element.type != "Admin" || chat.type != TypeChat.active)
-        member = element;
+      if (element.type != "Admin" || chat.type != TypeChat.active) member = element;
     });
 
     final text = chat.chatData.lastMessage?.sender?.userId == userId
-        ? "chat.you".tr() +
-            " ${chat.chatData.lastMessage?.text ?? infoActionMessage} "
+        ? "chat.you".tr() + " ${chat.chatData.lastMessage?.text ?? infoActionMessage} "
         : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? chat.meMember?.deletionData?.message.sender?.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
             " ${chat.chatData.lastMessage?.text ?? infoActionMessage} ";
     return GestureDetector(
@@ -59,78 +57,13 @@ class ChatCell extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: chat.type != TypeChat.group
-                          ? UserAvatar(
-                              width: 56,
-                              height: 56,
-                              url: member!.user?.avatar?.url ??
-                                  Constants.defaultImageNetwork,
-                            )
-                          : Stack(
-                              children: [
-                                Container(
-                                  color: _getRandomColor(chat.id),
-                                  height: 56,
-                                  width: 56,
-                                ),
-                                Positioned.fill(
-                                  child: Center(
-                                    child: Text(
-                                      chat.groupChat!.name.length == 1
-                                          ? "${chat.groupChat!.name[0].toUpperCase()}"
-                                          : "${chat.groupChat!.name[0].toUpperCase()}" +
-                                              "${chat.groupChat!.name[1]}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 32,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
+                  _ImageWidget(chat: chat, member: member),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                chat.type == TypeChat.group
-                                    ? "${chat.groupChat!.name}"
-                                    : "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
-                                        "${member!.user?.lastName ?? member!.admin?.lastName ?? "--"}",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (chat.type == TypeChat.active ||
-                                chat.type == TypeChat.completed)
-                              Expanded(
-                                child: Text(
-                                  "Quest: ${chat.questChat?.quest?.title}",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColor.enabledButton,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                          ],
-                        ),
+                        _TopTitleWidget(chat: chat, member: member),
                         const SizedBox(height: 5),
                         Text(
                           text,
@@ -142,21 +75,14 @@ class ChatCell extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          differenceTime == 0
-                              ? "chat.today".tr()
-                              : differenceTime == 1
-                                  ? "$differenceTime " + "chat.day".tr()
-                                  : "$differenceTime " + "chat.days".tr(),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFD8DFE3),
-                          ),
-                        )
+                        _BottomTitleWidget(
+                          differenceTime: differenceTime,
+                          questName: chat.questChat?.quest?.title,
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 50),
+                  const SizedBox(width: 15),
                   Column(
                     children: [
                       if (chat.chatData.lastMessage?.senderStatus == "Unread")
@@ -170,11 +96,10 @@ class ChatCell extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: Color(0xFF0083C7),
                           ),
-                        ),
-                      if (chat.star != null)
+                        )
+                      else if (chat.star != null)
                         Container(
-                          margin: chat.chatData.lastMessage?.senderStatus ==
-                                  "Unread"
+                          margin: chat.chatData.lastMessage?.senderStatus == "Unread"
                               ? const EdgeInsets.only(top: 3, right: 16)
                               : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(
@@ -182,6 +107,12 @@ class ChatCell extends StatelessWidget {
                             color: Color(0xFFE8D20D),
                             size: 20.0,
                           ),
+                        )
+                      else
+                        Container(
+                          width: 11.0,
+                          height: 11.0,
+                          margin: const EdgeInsets.only(top: 25, right: 16),
                         ),
                     ],
                   )
@@ -194,6 +125,58 @@ class ChatCell extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+  final ChatModel chat;
+  final Member? member;
+
+  const _ImageWidget({
+    Key? key,
+    required this.chat,
+    required this.member,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: chat.type != TypeChat.group
+            ? UserAvatar(
+                width: 56,
+                height: 56,
+                url: member!.user?.avatar?.url ?? Constants.defaultImageNetwork,
+              )
+            : Stack(
+                children: [
+                  Container(
+                    color: _getRandomColor(chat.id),
+                    height: 56,
+                    width: 56,
+                  ),
+                  Positioned.fill(
+                    child: Center(
+                      child: Text(
+                        chat.groupChat!.name.length == 1
+                            ? "${chat.groupChat!.name[0].toUpperCase()}"
+                            : "${chat.groupChat!.name[0].toUpperCase()}" +
+                                "${chat.groupChat!.name[1]}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -214,5 +197,74 @@ class ChatCell extends StatelessWidget {
     ];
 
     return colors[random.nextInt(colors.length)];
+  }
+}
+
+class _TopTitleWidget extends StatelessWidget {
+  final ChatModel chat;
+  final Member? member;
+
+  const _TopTitleWidget({
+    Key? key,
+    required this.chat,
+    required this.member,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      chat.type == TypeChat.group
+          ? "${chat.groupChat!.name}"
+          : "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
+              "${member!.user?.lastName ?? member!.admin?.lastName ?? "--"}",
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class _BottomTitleWidget extends StatelessWidget {
+  final int differenceTime;
+  final String? questName;
+
+  const _BottomTitleWidget({
+    Key? key,
+    required this.differenceTime,
+    required this.questName,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            "$questName",
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColor.subtitleText,
+              fontWeight: FontWeight.w400,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Text(
+          differenceTime == 0
+              ? "chat.today".tr()
+              : differenceTime == 1
+                  ? "$differenceTime " + "chat.day".tr()
+                  : "$differenceTime " + "chat.days".tr(),
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFFD8DFE3),
+          ),
+        ),
+      ],
+    );
   }
 }
