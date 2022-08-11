@@ -132,7 +132,7 @@ class ProfileMeResponse with ClusterItem {
           : (List<Map<String, dynamic>> skills) {
               List<String> skillsString = [];
               for (var skill in skills) {
-                skillsString.add(skill.values.toString());
+                skillsString.add(skill['path']);
               }
               return skillsString;
             }([...json["userSpecializations"]]),
