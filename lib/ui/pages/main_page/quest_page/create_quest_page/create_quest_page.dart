@@ -140,7 +140,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
               context,
               QuestDetails.routeName,
               arguments: QuestArguments(
-                id: updatedQuest.id,
+                questInfo: updatedQuest,
+                id: null,
               ),
             );
             await AlertDialogUtils.showSuccessDialog(context);

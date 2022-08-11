@@ -55,34 +55,34 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   bool get canActionsQuest =>
       isMyQuest &&
-      (store.quest.value!.status == QuestConstants.questCreated ||
-          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign);
+          (store.quest.value!.status == QuestConstants.questCreated ||
+              store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign);
 
   bool get canRaiseView =>
       (store.quest.value!.status == QuestConstants.questCreated ||
           store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign) &&
-      store.quest.value!.raiseView?.status != 0;
+          store.quest.value!.raiseView?.status != 0;
 
   bool get canEditOrDelete =>
       store.quest.value!.status == QuestConstants.questCreated ||
-      store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign;
+          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign;
 
   bool get canCreateReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-          store.quest.value!.yourReview == null &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      storeQuest.questInfo!.status == QuestConstants.questDone &&
+          storeQuest.questInfo!.yourReview == null &&
+          (storeQuest.questInfo!.userId == profile!.userData!.id ||
+              storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
 
   bool get showReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-          store.quest.value!.yourReview != null &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      storeQuest.questInfo!.status == QuestConstants.questDone &&
+          storeQuest.questInfo!.yourReview != null &&
+          (storeQuest.questInfo!.userId == profile!.userData!.id ||
+              storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
 
   bool get canPushToDispute =>
       store.quest.value?.userId == profile!.userData!.id &&
-      store.quest.value?.status == QuestConstants.questDispute &&
-      store.quest.value!.openDispute != null;
+          store.quest.value?.status == QuestConstants.questDispute &&
+          store.quest.value!.openDispute != null;
 
   void getResponded() {
     if (store.quest.value!.userId == profile!.userData!.id) {
@@ -101,7 +101,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 
-    store.getQuest(widget.arguments.id!).then((value) => getResponded());
+    if (widget.arguments.questInfo != null) {
+      store.quest.value = widget.arguments.questInfo;
+      getResponded();
+      if (store.quest.value!.status == QuestConstants.questDispute) {
+        store.getQuest(widget.arguments.questInfo!.id);
+      }
+    } else {
+      store.getQuest(widget.arguments.id!).then((value) => getResponded());
+    }
 
     controller = BottomSheet.createAnimationController(this);
 
@@ -126,7 +134,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
           } else {
             _url =
-                "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
+            "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
           }
           Share.share(_url);
         },
@@ -224,7 +232,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             await Navigator.pushNamed(
               context,
               CreateQuestPage.routeName,
-              arguments: store.quest.value,
+              arguments: widget.arguments.questInfo,
             );
           } else if (store.successData == EmployerStoreState.validateTotpDelete) {
             await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
@@ -240,7 +248,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               onTabOk: () async {
                 AlertDialogUtils.showLoadingDialog(context);
                 store.deleteQuest(
-                  questId: store.quest.value!.id,
+                  questId: widget.arguments.questInfo!.id,
                 );
               },
             );
@@ -310,9 +318,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   null,
                 ),
               );
-
               if (result != null && result is YourReview) {
-                print('review: ${result.toJson()}');
                 store.quest.value!.yourReview = result;
                 store.quest.reportChanged();
               }
@@ -326,7 +332,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 Size(double.maxFinite, 43),
               ),
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
+                    (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
                     return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                   return const Color(0xFF0083C7);
@@ -338,8 +344,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       );
     } else if (showReview) {
       return _ReviewCard(
-        message: store.quest.value!.yourReview!.message,
-        mark: store.quest.value!.yourReview!.mark,
+        message: storeQuest.questInfo!.yourReview!.message,
+        mark: storeQuest.questInfo!.yourReview!.mark,
       );
     } else if (canPushToDispute) {
       return LoginButton(
@@ -406,8 +412,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    "${store.quest.value?.assignedWorker?.firstName} "
-                    "${store.quest.value?.assignedWorker?.lastName}",
+                    "${store.quest.value!.assignedWorker!.firstName} "
+                        "${store.quest.value!.assignedWorker!.lastName}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -477,18 +483,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       onPressed: store.isLoading
                           ? null
                           : () async {
-                              await sendTransaction(
-                                onPressedConfirm: () async {
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                  store.acceptCompletedWork(
-                                    questId: store.quest.value!.id,
-                                  );
-                                  AlertDialogUtils.showLoadingDialog(context);
-                                },
-                                functionName: WQContractFunctions.acceptJobResult.name,
-                              );
-                            },
+                        await sendTransaction(
+                          onPressedConfirm: () async {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            store.acceptCompletedWork(
+                              questId: store.quest.value!.id,
+                            );
+                            AlertDialogUtils.showLoadingDialog(context);
+                          },
+                          functionName: WQContractFunctions.acceptJobResult.name,
+                        );
+                      },
                       child: Text(
                         "quests.answerOnQuest.acceptWork".tr(),
                         style: TextStyle(color: Colors.white),
@@ -498,7 +504,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           Size(double.maxFinite, 43),
                         ),
                         backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                              (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
                                   .colorScheme
@@ -516,40 +522,40 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       onPressed: store.isLoading
                           ? null
                           : () async {
-                              await store.getFee(
-                                store.quest.value!.assignedWorkerId!,
-                                WQContractFunctions.arbitration.name,
-                              );
-                              await AlertDialogUtils.showAlertDialog(
-                                context,
-                                title: Text("Dispute payment"),
-                                content: Text(
-                                  "You need to pay\n"
-                                  "${double.parse(store.fee) + 1.0} WUSD\n"
-                                  "to open a dispute",
-                                ),
-                                needCancel: true,
-                                titleCancel: "Cancel",
-                                titleOk: "Ok",
-                                onTabCancel: () => Navigator.pop(context),
-                                onTabOk: () async {
-                                  final _result = await Navigator.pushNamed(
-                                    context,
-                                    OpenDisputePage.routeName,
-                                    arguments: store.quest.value!,
-                                  );
-                                  if (_result != null && _result is OpenDispute) {
-                                    Navigator.pop(context);
-                                    store.quest.value!.status =
-                                        QuestConstants.questDispute;
-                                    store.quest.value!.openDispute = _result;
-                                    store.quest.reportChanged();
-                                  }
-                                },
-                                colorCancel: Colors.blue,
-                                colorOk: Colors.red,
-                              );
-                            },
+                        await store.getFee(
+                          store.quest.value!.assignedWorkerId!,
+                          WQContractFunctions.arbitration.name,
+                        );
+                        await AlertDialogUtils.showAlertDialog(
+                          context,
+                          title: Text("Dispute payment"),
+                          content: Text(
+                            "You need to pay\n"
+                                "${double.parse(store.fee) + 1.0} WUSD\n"
+                                "to open a dispute",
+                          ),
+                          needCancel: true,
+                          titleCancel: "Cancel",
+                          titleOk: "Ok",
+                          onTabCancel: () => Navigator.pop(context),
+                          onTabOk: () async {
+                            final _result = await Navigator.pushNamed(
+                              context,
+                              OpenDisputePage.routeName,
+                              arguments: store.quest.value!,
+                            );
+                            if (_result != null && _result is OpenDispute) {
+                              Navigator.pop(context);
+                              store.quest.value!.status =
+                                  QuestConstants.questDispute;
+                              store.quest.value!.openDispute = _result;
+                              store.quest.reportChanged();
+                            }
+                          },
+                          colorCancel: Colors.blue,
+                          colorOk: Colors.red,
+                        );
+                      },
                       child: Text(
                         "btn.dispute".tr(),
                         style: TextStyle(color: Colors.white),
@@ -559,7 +565,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           Size(double.maxFinite, 43),
                         ),
                         backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                              (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
                                   .colorScheme
@@ -705,7 +711,7 @@ class _RespondedListState extends State<_RespondedList> {
               Size(double.maxFinite, 43),
             ),
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+                  (Set<MaterialState> states) {
                 if (states.contains(MaterialState.pressed))
                   return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                 return const Color(0xFF0083C7);
@@ -733,9 +739,9 @@ class _RespondedListState extends State<_RespondedList> {
             Observer(
               builder: (_) => TextButton(
                 onPressed:
-                    widget.store.selectedResponders == null || widget.store.isLoading
-                        ? null
-                        : widget.chooseWorkerPressed,
+                widget.store.selectedResponders == null || widget.store.isLoading
+                    ? null
+                    : widget.chooseWorkerPressed,
                 child: Text(
                   "quests.chooseWorker".tr(),
                   style: TextStyle(
@@ -746,7 +752,7 @@ class _RespondedListState extends State<_RespondedList> {
                 ),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                       if (states.contains(MaterialState.disabled))
                         return const Color(0xFFF7F8FA);
                       if (states.contains(MaterialState.pressed))
@@ -794,7 +800,7 @@ class _RespondedListState extends State<_RespondedList> {
                   value: respond,
                   groupValue: widget.store.selectedResponders,
                   onChanged: (RespondModel? user) =>
-                      widget.store.selectedResponders = user,
+                  widget.store.selectedResponders = user,
                 ),
               ),
             ],

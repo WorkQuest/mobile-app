@@ -392,7 +392,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         gas = _gas.toStringAsFixed(17);
         onSuccess(CreateQuestStoreState.getGasEditOrCreateQuest);
       }
-    } catch (e) {
+    } catch (e, trace) {
+      print('test $e\n$trace');
       onError(e.toString());
     }
   }
