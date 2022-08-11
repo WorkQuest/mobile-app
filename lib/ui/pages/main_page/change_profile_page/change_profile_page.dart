@@ -51,6 +51,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     profile!.workplaceToValue();
     profile!.priorityToValue();
     profile!.payPeriodToValue();
+    print('qweasd: ${store.userData.userSpecializations}');
     if (profile!.userData!.additionalInfo?.address != null)
       store.address = profile!.userData!.additionalInfo!.address!;
     store
@@ -73,6 +74,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('qweasd: ${store.userData.userSpecializations}');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -345,6 +347,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       if (!profile!.isLoading)
         store.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();
+            print('test: ${_controller!.getSkillAndSpecialization()}');
       await profile!.changeProfile(
         store.userData,
         media: store.media,

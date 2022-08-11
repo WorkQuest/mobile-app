@@ -312,13 +312,12 @@ class SkillSpecializationController {
   setStore(SkillSpecializationStore store) {
     this.store = store;
     Map<int, int> equivalent = {};
-
     if (initialValue != null) {
       print(initialValue);
       initialValue!.forEach((text) {
         text = text.replaceAll("(", "").replaceAll(")", "");
         List<String> pars = text.split('.');
-        int index = int.parse(pars.first);
+        int index = int.tryParse(pars.first) ?? 0;
         if (!equivalent.containsKey(index)) {
           if (store.selectedSpices[store.numberOfSpices] == null) {
             store.selectedSpices[store.numberOfSpices] = store.allSpices[index - 1];
