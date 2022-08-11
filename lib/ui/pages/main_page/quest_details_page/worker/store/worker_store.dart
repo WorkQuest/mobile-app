@@ -123,7 +123,11 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
       quest.value!.status = QuestConstants.questCreated;
-      quest.value!.responded = Responded(id: quest.value!.responded!.id, status: 1);
+      quest.value!.responded = Responded(
+        id: quest.value!.responded!.id,
+        status: QuestConstants.questResponseAccepted,
+        type: QuestConstants.questResponseTypeResponded,
+      );
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
@@ -144,9 +148,10 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
           );
       quest.value!.status = QuestConstants.questWaitWorkerOnAssign;
       quest.value!.responded = Responded(
-        id: '0',
+        id: responseId,
         workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
-        status: -1,
+        status: QuestConstants.questResponseRejected,
+        type: QuestConstants.questResponseTypeResponded,
       );
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.rejectInvite);
@@ -178,7 +183,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();
-      await _apiProvider.respondOnQuest(
+      final _id = await _apiProvider.respondOnQuest(
         id: quest.value!.id,
         message: message,
         media: mediaIds.map((e) => e.id).toList() +
@@ -188,9 +193,9 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       );
       quest.value!.status = QuestConstants.questCreated;
       quest.value!.responded = Responded(
-        id: '0',
+        id: _id,
         workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
-        status: 0,
+        status: QuestConstants.questResponseAccepted,
       );
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendRespondOnQuest);

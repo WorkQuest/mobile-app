@@ -72,8 +72,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       (store.quest.value?.responded != null &&
           store.quest.value?.status == QuestConstants.questCreated &&
           store.quest.value?.responded?.status == 0 &&
-          store.quest.value!.responded?.type !=
-              QuestConstants.questResponseTypeResponded);
+          store.quest.value!.responded?.type != QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
