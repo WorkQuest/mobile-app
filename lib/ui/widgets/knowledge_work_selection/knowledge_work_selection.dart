@@ -58,8 +58,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
               onPressed: () {
                 if (widget.controller!.store!.numberOfFiled.isEmpty)
                   widget.controller!.store!.addField(KnowledgeWork());
-                if (widget
-                    .controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
+                if (widget.controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
                   widget.controller!.store!.addField(KnowledgeWork());
                 }
               },
@@ -107,12 +106,10 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   children: [
                     dateField(
                       date: kng.dateFrom.isEmpty
-                          ? widget
-                              .controller!.store!.numberOfFiled.last.dateFrom
+                          ? widget.controller!.store!.numberOfFiled.last.dateFrom
                           : kng.dateFrom,
                       onChanged: (value) {
-                        kng.dateFrom =
-                            '${value.year}-${value.month}-${value.day}';
+                        kng.dateFrom = '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: true,
@@ -133,8 +130,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           ? widget.controller!.store!.numberOfFiled.last.dateTo
                           : kng.dateTo,
                       onChanged: (value) {
-                        kng.dateTo =
-                            '${value.year}-${value.month}-${value.day}';
+                        kng.dateTo = '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: false,
@@ -153,8 +149,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: TextFormField(
-                    initialValue:
-                        widget.controller!.store!.numberOfFiled.last.place,
+                    initialValue: widget.controller!.store!.numberOfFiled.last.place,
                     onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
                       // isDense: true,
@@ -210,7 +205,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
     if (dateFrom != null) {
       if (dateFrom.contains("-")) minTime.addAll(dateFrom.split("-"));
       if (dateFrom.contains(".")) minTime.addAll(dateFrom.split("."));
-      if (int.parse(minTime[0]) > 31) minTime = minTime.reversed.toList();
+      if (minTime.isNotEmpty) if (int.parse(minTime[0]) > 31)
+        minTime = minTime.reversed.toList();
     }
     return Container(
       height: 43,
@@ -234,9 +230,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     int.parse(minTime[1]),
                     int.parse(minTime[0]),
                   ),
-            maxTime: from
-                ? DateTime.now()
-                : DateTime(DateTime.now().year + 20, 12, 31),
+            maxTime: from ? DateTime.now() : DateTime(DateTime.now().year + 20, 12, 31),
             onConfirm: onChanged,
             currentTime: DateTime.now(),
             locale: _localeCode,
@@ -256,8 +250,7 @@ class KnowledgeWorkSelectionController {
 
   KnowledgeWorkSelectionController({this.initialValue});
 
-  void setStore(
-      KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
+  void setStore(KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
     this.store = store;
     if (initialValue != null && initialValue != []) {
       store.numberOfFiled.clear();
