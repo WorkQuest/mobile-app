@@ -64,15 +64,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   bool get canSendRequest =>
       store.quest.value?.status == QuestConstants.questCreated &&
-      store.quest.value?.invited == null &&
-      (store.quest.value?.responded?.status != QuestConstants.questResponseOpen);
+      store.quest.value!.responded == null;
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
           store.quest.value?.assignedWorker?.id == profile!.userData!.id) ||
-      (store.quest.value?.invited != null &&
+      (store.quest.value?.responded != null &&
           store.quest.value?.status == QuestConstants.questCreated &&
-          store.quest.value?.invited?.status == 0);
+          store.quest.value?.responded?.status == 0 &&
+          store.quest.value!.responded?.type !=
+              QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
@@ -163,7 +164,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         rounded: false,
         role: UserRole.Worker,
         responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
-        invited: store.quest.value?.invited,
       ),
     );
   }
@@ -217,19 +217,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget getBody() {
+    print('body: ${store.quest.value?.toJson()}');
     if (isMyQuest) return const SizedBox();
     final _dif = DateTime.now()
         .toUtc()
         .difference(store.quest.value?.startedAt ?? DateTime.now().toUtc())
         .inHours;
-    print('dif: $_dif');
-    print('canPush: $canPushToDispute');
-    print(
-        'store.quest.value?.assignedWorker?.id == profile!.userData!.id: ${store.quest.value?.assignedWorker?.id == profile!.userData!.id}');
-    print(
-        'store.quest.value?.status == QuestConstants.questDispute: ${store.quest.value?.status == QuestConstants.questDispute}');
-    print(
-        'store.quest.value!.openDispute != null: ${store.quest.value?.openDispute != null}');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -579,7 +572,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             withColumn: true,
             enabled: store.isLoading,
             onTap: () async {
-              if (store.quest.value!.invited == null) {
+              print('assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
+              print('id: ${profile!.userData!.id}');
+              if (store.quest.value!.assignedWorkerId == profile!.userData!.id) {
                 await sendTransaction(
                   onPress: () async {
                     Navigator.pop(context);
@@ -589,14 +584,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   functionName: WQContractFunctions.acceptJob.name,
                 );
               } else {
-                store.acceptInvite(store.quest.value!.invited!.id);
+                store.acceptInvite(store.quest.value!.responded!.id);
               }
             },
             title: "quests.answerOnQuest.accept".tr(),
           ),
         ),
         const SizedBox(height: 15),
-        if (store.quest.value!.invited != null)
+        if (store.quest.value!.responded != null &&
+            store.quest.value!.responded?.status == QuestConstants.questResponseOpen &&
+            store.quest.value!.assignedWorkerId != profile!.userData!.id)
           Column(
             children: [
               Observer(
@@ -604,7 +601,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   withColumn: true,
                   enabled: store.isLoading,
                   onTap: () async {
-                    store.rejectInvite(store.quest.value!.invited!.id);
+                    store.rejectInvite(store.quest.value!.responded!.id);
                   },
                   title: "quests.answerOnQuest.reject".tr(),
                 ),

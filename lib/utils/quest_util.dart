@@ -53,6 +53,9 @@ class QuestConstants {
   static const int questResponseOpen = 0;
   static const int questResponseAccepted = 1;
   static const int questResponseClosed = 2;
+
+  static const int questResponseTypeResponded = 0;
+  static const int questResponseTypeInvited = 1;
 }
 
 class QuestUtils {

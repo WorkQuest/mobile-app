@@ -289,7 +289,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       questStatus: store.quest.value?.status ?? 10,
       rounded: false,
       responded: store.quest.value?.responded,
-      invited: store.quest.value?.invited,
       role: UserRole.Employer,
     );
   }

@@ -36,7 +36,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       (questItem.responded!.workerId == myId &&
               (questItem.status == QuestConstants.questCreated ||
                   questItem.status == QuestConstants.questWaitWorkerOnAssign) ||
-          questItem.invited != null && questItem.invited?.status == 1) &&
+          questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeResponded) &&
       role == UserRole.Worker;
 
   bool isLocation(BaseQuestResponse questItem) =>
@@ -45,7 +45,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       questItem.status != QuestConstants.questDone;
 
   bool isInvited(BaseQuestResponse questItem) =>
-      questItem.invited != null && questItem.invited?.status == 0;
+      questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeInvited;
 
   bool isRaised(BaseQuestResponse questItem) =>
       questItem.raiseView != null &&
@@ -65,6 +65,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       (json["recipients"] as List).forEach((element) {
         if (element == myId)
           quest.responded = Responded(
+            id: '0',
             workerId: myId,
             status: 0,
           );
@@ -214,33 +215,33 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     } else if (quest.status == 1) {
       if (quest.responded?.status == 0 && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
-      else if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+      else if ((quest.responded?.status == -1) &&
           role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
-      else if (quest.invited?.status == 1 && role == UserRole.Worker)
+      else if (quest.responded?.status == QuestConstants.questResponseTypeInvited && role == UserRole.Worker)
         questsType.add(QuestsType.Invited);
       else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
     } else if (quest.status == 2) {
-      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+      if ((quest.responded?.status == -1) &&
           role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
     } else if (quest.status == 3) {
-      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+      if ((quest.responded?.status == -1) &&
           role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else
         questsType.add(QuestsType.Active);
     } else if (quest.status == 4) {
-      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+      if ((quest.responded?.status == -1) &&
           role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else
         questsType.add(QuestsType.Active);
     } else if (quest.status == 5) {
-      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+      if ((quest.responded?.status == -1) &&
           role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Worker)

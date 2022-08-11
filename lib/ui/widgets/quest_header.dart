@@ -1,5 +1,4 @@
 import 'package:app/constants.dart';
-import 'package:app/model/quests_models/invited.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ class QuestHeader extends StatelessWidget {
     required this.questStatus,
     required this.rounded,
     required this.responded,
-    required this.invited,
     required this.role,
   });
 
@@ -21,102 +19,104 @@ class QuestHeader extends StatelessWidget {
   final int questStatus;
   final bool rounded;
   final Responded? responded;
-  final Invited? invited;
   final UserRole? role;
+
+  Widget get headerQuestClosed =>
+      header(color: Colors.red, title: "quests.headers.closed");
+
+  Widget get headerQuestDispute =>
+      header(color: Colors.red, title: "quests.disputeQuest");
+
+  Widget get headerQuestRejected =>
+      header(color: Colors.red, title: "quests.headers.blocked");
+
+  Widget get headerQuestResponded => header(
+        color: Color(0xFFE9EFF5),
+        title: "quests.headers.responded",
+        textColor: Color(0xFF4C5767),
+      );
+
+  Widget get headerQuestPending =>
+      header(color: Color(0xFFE8D20D), title: "quests.headers.pending");
+
+  Widget get headerQuestInvited =>
+      header(color: Color(0xFFE8D20D), title: "quests.headers.invited");
+
+  Widget get headerQuestActive =>
+      header(color: AppColor.green, title: "quests.headers.active");
+
+  Widget get headerQuestPerformed =>
+      header(color: Color(0xFF0083C7), title: "quests.headers.performed");
+
+  Widget get headerQuestCompleted =>
+      header(color: Color(0xFF0083C7), title: "quests.headers.completed");
+
+  Widget get headerQuestPendingConsideration =>
+      header(color: Colors.green, title: "quests.headers.pendingConsideration");
+
+  Widget get headerQuestResponseRejected =>
+      header(color: Colors.red, title: "quests.headers.rejected");
 
   @override
   Widget build(BuildContext context) {
     if (itemType == QuestsType.All || itemType == QuestsType.Favorites) {
       switch (questStatus) {
         case QuestConstants.questClosed:
-          return header(
-            color: Colors.red,
-            title: "quests.headers.closed",
-          );
+          return headerQuestClosed;
         case QuestConstants.questDispute:
-          return header(
-            color: Colors.red,
-            title: "quests.disputeQuest",
-          );
+          return headerQuestDispute;
         case QuestConstants.questRejected:
-          return header(
-            color: Colors.red,
-            title: "quests.headers.blocked",
-          );
+          return headerQuestRejected;
         case QuestConstants.questCreated:
-          if (invited != null && invited!.status != -1 && role == UserRole.Worker)
-            return header(
-              color: Color(0xFFE8D20D),
-              title: "quests.headers.pending",
-            );
-          else if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if (responded?.status == QuestConstants.questResponseOpen &&
+              responded?.type == QuestConstants.questResponseTypeResponded &&
+              role == UserRole.Worker) {
+            return headerQuestResponded;
+          }
+          if ((responded?.status == QuestConstants.questResponseOpen ||
+                  responded?.status == QuestConstants.questResponseAccepted) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
-          else if (responded?.status == QuestConstants.questResponseOpen && role == UserRole.Worker)
-            return header(
-              color: Color(0xFFE9EFF5),
-              title: "quests.headers.responded",
-              textColor: Color(0xFF4C5767),
-            );
+            return headerQuestPending;
+          else if ((responded?.status == QuestConstants.questResponseRejected) &&
+              role == UserRole.Worker)
+            return headerQuestResponseRejected;
+          else if (responded?.status == QuestConstants.questResponseTypeResponded &&
+              role == UserRole.Worker)
+            return headerQuestResponded;
           else
             return SizedBox(
               height: 16,
             );
         case QuestConstants.questWaitWorkerOnAssign:
-          if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if ((responded?.status == QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestResponseRejected;
           else if (role == UserRole.Worker)
-            return header(
-              color: Color(0xFFE8D20D),
-              title: "quests.headers.invited",
-            );
+            return headerQuestInvited;
           else
             return SizedBox(
               height: 16,
             );
         case QuestConstants.questWaitWorker:
-          if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if ((responded?.status == QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestResponseRejected;
           else
-            return header(
-              color: AppColor.green,
-              title: "quests.headers.active",
-            );
+            return headerQuestActive;
         case QuestConstants.questWaitEmployerConfirm:
-          if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if ((responded?.status == QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestResponseRejected;
           else
-            return header(
-              color: Colors.green,
-              title: "quests.headers.pendingConsideration",
-            );
+            return headerQuestPendingConsideration;
         case QuestConstants.questDone:
-          if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if ((responded?.status == QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestResponseRejected;
+          else if (role == UserRole.Worker)
+            return headerQuestPerformed;
           else
-            return header(
-              color: Color(0xFF0083C7),
-              title: "quests.performed",
-            );
+            return headerQuestCompleted;
         default:
           return SizedBox(
             height: 16,
@@ -125,79 +125,39 @@ class QuestHeader extends StatelessWidget {
     } else {
       switch (itemType) {
         case QuestsType.Responded:
-          if ((responded?.status == QuestConstants.questResponseRejected || invited?.status == -1) &&
+          if ((responded?.status == QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestResponseRejected;
           else if (questStatus == 1 && role == UserRole.Worker)
-            return header(
-              color: Color(0xFFE9EFF5),
-              title: "quests.headers.responded",
-              textColor: Color(0xFF4C5767),
-            );
+            return headerQuestResponded;
           else if (questStatus == 2 && role == UserRole.Worker)
-            return header(
-              color: Color(0xFFE8D20D),
-              title: "quests.headers.invited",
-            );
-          else if (role == UserRole.Worker)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.rejected",
-            );
+            return headerQuestInvited;
+          else if (role == UserRole.Worker) return headerQuestResponseRejected;
           return SizedBox(
             height: 16,
           );
         case QuestsType.Invited:
-          return header(
-            color: Color(0xFFE8D20D),
-            title: "quests.headers.pending",
-          );
+          return headerQuestPending;
         case QuestsType.Active:
           if (questStatus == -2)
-            return header(
-              color: Colors.red,
-              title: "quests.headers.dispute",
-            );
+            return headerQuestDispute;
           else if (questStatus == 4)
-            return header(
-              color: Colors.green,
-              title: "quests.headers.pendingConsideration",
-            );
+            return headerQuestPendingConsideration;
           else if (questStatus == 3)
-            return header(
-              color: AppColor.green,
-              title: "quests.headers.active",
-            );
+            return headerQuestActive;
           else
-            return header(
-              color: Color(0xFFE9EFF5),
-              title: "quests.headers.blocked",
-              textColor: Color(0xFF4C5767),
-            );
+            return headerQuestRejected;
         case QuestsType.Performed:
-          return header(
-            color: Color(0xFF0083C7),
-            title: "quests.headers.performed",
-          );
+          return headerQuestPerformed;
         case QuestsType.Created:
           if (questStatus == -3)
-            return header(
-              color: Color(0xFFE9EFF5),
-              title: "quests.headers.blocked",
-              textColor: Color(0xFF4C5767),
-            );
+            return headerQuestRejected;
           else
             return SizedBox(
               height: 16,
             );
         case QuestsType.Completed:
-          return header(
-            color: Color(0xFF0083C7),
-            title: "quests.headers.completed",
-          );
+          return headerQuestCompleted;
         default:
           return SizedBox(
             height: 16,

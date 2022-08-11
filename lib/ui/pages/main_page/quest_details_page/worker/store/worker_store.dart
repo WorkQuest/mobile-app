@@ -4,7 +4,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
-import 'package:app/model/quests_models/invited.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/quest_util.dart';
@@ -85,6 +84,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
 
   @action
   sendAcceptOnQuest() async {
+    print('sendAcceptOnQuest');
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
@@ -123,7 +123,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
       quest.value!.status = QuestConstants.questCreated;
-      quest.value!.invited = Invited(id: quest.value!.invited!.id, status: 1);
+      quest.value!.responded = Responded(id: quest.value!.responded!.id, status: 1);
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
@@ -144,6 +144,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
           );
       quest.value!.status = QuestConstants.questWaitWorkerOnAssign;
       quest.value!.responded = Responded(
+        id: '0',
         workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
         status: -1,
       );
@@ -187,6 +188,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       );
       quest.value!.status = QuestConstants.questCreated;
       quest.value!.responded = Responded(
+        id: '0',
         workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
         status: 0,
       );
