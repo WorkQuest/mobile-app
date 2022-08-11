@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../chat_model/quest_chat.dart';
 import '../user_model.dart';
 import 'assigned_worker.dart';
-import 'invited.dart';
 import 'location_full.dart';
 import 'open_dispute.dart';
 
@@ -37,7 +36,6 @@ class BaseQuestResponse with ClusterItem {
     required this.questSpecializations,
     required this.workplace,
     required this.payPeriod,
-    required this.invited,
     required this.responded,
     required this.yourReview,
     required this.questChat,
@@ -68,7 +66,6 @@ class BaseQuestResponse with ClusterItem {
   List<String> questSpecializations;
   String workplace;
   String payPeriod;
-  Invited? invited;
   Responded? responded;
   YourReview? yourReview;
   QuestChat? questChat;
@@ -114,7 +111,6 @@ class BaseQuestResponse with ClusterItem {
         return skillsString;
       }([...json["questSpecializations"] ?? []]),
       workplace: json["workplace"] ?? "",
-      invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["response"] == null ? null : Responded.fromJson(json["response"]),
       yourReview:
           json["yourReview"] == null ? null : YourReview.fromJson(json["yourReview"]),
@@ -146,7 +142,6 @@ class BaseQuestResponse with ClusterItem {
     this.questSpecializations = updateQuest.questSpecializations;
     this.workplace = updateQuest.workplace;
     this.payPeriod = updateQuest.payPeriod;
-    this.invited = updateQuest.invited;
     this.responded = updateQuest.responded;
     this.yourReview = updateQuest.yourReview;
     this.questChat = updateQuest.questChat;
@@ -204,7 +199,6 @@ class BaseQuestResponse with ClusterItem {
       questSpecializations: [],
       workplace: 'workplace',
       payPeriod: 'payPeriod',
-      invited: null,
       responded: null,
       yourReview: null,
       questChat: null,
