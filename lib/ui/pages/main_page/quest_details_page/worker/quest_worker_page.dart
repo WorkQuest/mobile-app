@@ -186,9 +186,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               final result = await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
-                arguments: CreateReviewArguments(storeQuest.questInfo, null),
+                arguments: CreateReviewArguments(store.quest.value!, null),
               );
               if (result != null && result is YourReview) {
+                print('review: ${result.toJson()}');
                 store.quest.value!.yourReview = result;
                 store.quest.reportChanged();
               }
@@ -215,8 +216,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     }
     if (showReview) {
       return _ReviewCard(
-        message: storeQuest.questInfo!.yourReview!.message,
-        mark: storeQuest.questInfo!.yourReview!.mark,
+        message: store.quest.value!.yourReview!.message,
+        mark: store.quest.value!.yourReview!.mark,
       );
     }
     return SizedBox();
