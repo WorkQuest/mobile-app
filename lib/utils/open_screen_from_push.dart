@@ -37,6 +37,7 @@ class OpenScreeFromPush {
           QuestDetails.routeName,
           arguments: QuestArguments(
             id: notification.data.id,
+            questInfo: null,
           ),
         );
       } else if (notification.action.toLowerCase().contains("dispute")) {
