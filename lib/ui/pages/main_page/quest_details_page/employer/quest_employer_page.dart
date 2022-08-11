@@ -51,44 +51,44 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   AnimationController? controller;
 
   bool get isMyQuest =>
-      store.quest.value != null && store.quest.value!.userId == profile!.userData!.id;
+      store.quest.value != null && store.quest.value?.userId == profile?.userData?.id;
 
   bool get canActionsQuest =>
       isMyQuest &&
-      (store.quest.value!.status == QuestConstants.questCreated ||
-          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign);
+      (store.quest.value?.status == QuestConstants.questCreated ||
+          store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign);
 
   bool get canRaiseView =>
-      (store.quest.value!.status == QuestConstants.questCreated ||
-          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign) &&
-      store.quest.value!.raiseView?.status != 0;
+      (store.quest.value?.status == QuestConstants.questCreated ||
+          store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign) &&
+      store.quest.value?.raiseView?.status != 0;
 
   bool get canEditOrDelete =>
-      store.quest.value!.status == QuestConstants.questCreated ||
-      store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign;
+      store.quest.value?.status == QuestConstants.questCreated ||
+      store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign;
 
   bool get canCreateReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-          store.quest.value!.yourReview == null &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      store.quest.value?.status == QuestConstants.questDone &&
+          store.quest.value?.yourReview == null &&
+      (store.quest.value?.userId == profile?.userData?.id ||
+          store.quest.value?.assignedWorker?.id == profile?.userData?.id);
 
   bool get showReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-          store.quest.value!.yourReview != null &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      store.quest.value?.status == QuestConstants.questDone &&
+          store.quest.value?.yourReview != null &&
+      (store.quest.value?.userId == profile?.userData?.id ||
+          store.quest.value?.assignedWorker?.id == profile?.userData?.id);
 
   bool get canPushToDispute =>
-      store.quest.value?.userId == profile!.userData!.id &&
+      store.quest.value?.userId == profile?.userData?.id &&
       store.quest.value?.status == QuestConstants.questDispute &&
-      store.quest.value!.openDispute != null;
+      store.quest.value?.openDispute != null;
 
   void getResponded() {
-    if (store.quest.value!.userId == profile!.userData!.id) {
+    if (store.quest.value?.userId == profile?.userData?.id) {
       store.getRespondedList(
         store.quest.value!.id,
-        store.quest.value!.assignedWorker?.id ?? "",
+        store.quest.value?.assignedWorker?.id ?? "",
       );
     }
   }
