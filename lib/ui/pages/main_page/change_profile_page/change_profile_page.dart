@@ -302,11 +302,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onBackPressed() {
-    if (profile!.isLoading) return;
-    if (!store.areThereAnyChanges(profile!.userData))
-      Navigator.pop(context);
-    else
-      AlertDialogUtils.showProfileDialog(context, onSave: _onSave());
+    Navigator.pop(context);
+    // if (profile!.isLoading) return;
+    // if (!store.areThereAnyChanges(profile!.userData))
+    //   Navigator.pop(context);
+    // else
+    //   AlertDialogUtils.showProfileDialog(context, onSave: _onSave());
   }
 
   _onSave() async {

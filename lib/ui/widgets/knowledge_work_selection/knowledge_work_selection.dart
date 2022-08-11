@@ -112,7 +112,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           : kng.dateFrom,
                       onChanged: (value) {
                         kng.dateFrom =
-                            '${value.year}.${value.month}.${value.day}';
+                            '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: true,
@@ -134,7 +134,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           : kng.dateTo,
                       onChanged: (value) {
                         kng.dateTo =
-                            '${value.year}.${value.month}.${value.day}';
+                            '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: false,

@@ -138,15 +138,16 @@ abstract class ChangeProfileStoreBase with Store {
       }
 
       String dateFrom = "";
-      element["from"]!.split(".").forEach((element) {
-        if (int.parse(element) < 10) element = "0" + element;
+      element["from"]!.split("-").forEach((element) {
+        print('element from: $element');
+        if (element.length < 2) element = "0" + element;
         dateFrom += element + "-";
       });
       dateFrom = dateFrom.substring(0, dateFrom.length - 1);
 
       String dateTo = "";
-      element["to"]!.split(".").forEach((element) {
-        if (int.parse(element) < 10) element = "0" + element;
+      element["to"]!.split("-").forEach((element) {
+        if (element.length < 2) element = "0" + element;
         dateTo += element + "-";
       });
       dateTo = dateTo.substring(0, dateTo.length - 1);
