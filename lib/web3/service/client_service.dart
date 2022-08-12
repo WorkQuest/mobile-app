@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/model/web3/transactions_response.dart';
@@ -284,10 +283,9 @@ class ClientService implements ClientServiceI {
 
 extension CreateQuestContract on ClientService {
   Uint8List stringToBytes32(String text) {
-    Uint8List bytes32 = Uint8List.fromList(
-      utf8.encode(text.padRight(32).substring(0, 32)),
-    );
-    return bytes32;
+    final _bytes = text.padRight(32).codeUnits;
+    final result = Uint8List.fromList(_bytes);
+    return result;
   }
 
   Future<TransactionReceipt> handleContract({
