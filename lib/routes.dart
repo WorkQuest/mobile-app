@@ -812,6 +812,9 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<DisputeStore>(),
               ),
               Provider(

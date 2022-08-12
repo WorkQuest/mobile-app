@@ -272,7 +272,7 @@ class SettingsPage extends StatelessWidget {
                     urlArgument: "referral",
                     iconPath: "assets/settings_referral_icon.svg",
                     title: "ui.menu.referral.title".tr(),
-                    enable: false,
+                    enable: true,
                   ),
                   InstrumentCard(
                     urlArgument: "insuring",

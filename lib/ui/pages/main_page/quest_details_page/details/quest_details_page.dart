@@ -1,5 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -15,14 +16,6 @@ import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../../widgets/image_viewer_widget.dart';
 import '../../../../widgets/priority_view.dart';
-
-class QuestArguments {
-  QuestArguments({
-    required this.id,
-  });
-
-  String? id;
-}
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
@@ -48,11 +41,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   @override
   void initState() {
     storeQuest = context.read<QuestDetailsStore>();
-    storeQuest.initQuestId(widget.arguments.id!);
-    storeQuest.updateQuest().then((value) {
-      storeQuest.initQuest(storeQuest.questInfo!);
-    });
-
+    if (widget.arguments.questInfo != null) {
+      storeQuest.initQuest(widget.arguments.questInfo!);
+    } else {
+      storeQuest.initQuestId(widget.arguments.id!);
+      storeQuest.updateQuest().then((value) {
+        storeQuest.initQuest(storeQuest.questInfo!);
+      });
+    }
     profile = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -69,128 +65,22 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        appBar: AppBar(actions: actionAppBar()),
+        appBar: storeQuest.questInfo == null ? null : AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
-                child: Transform.scale(
-                  scale: 1.5,
-                  child: CircularProgressIndicator.adaptive(
-                    strokeWidth: 2.0,
-                  ),
-                ),
-              )
-            : _BodyQuestDetails(
-                storeQuest: storeQuest,
-                profileUserId: profile!.userData!.id,
-                update: update,
-                header: questHeader(),
-                tabItem: tagItem(
-                  profile!.parser(storeQuest.questInfo!.questSpecializations),
-                ),
-                inProgressBy: inProgressBy(),
-                getBody: getBody(),
-                review: review(),
-              ),
-      ),
-    );
-  }
-
-  Widget inProgressBy() {
-    return const SizedBox();
-  }
-
-  Widget questHeader() {
-    return const SizedBox();
-  }
-
-  Widget review() {
-    return const SizedBox();
-  }
-
-  Widget tagItem(List<String> skills) {
-    return Wrap(
-      children: skills
-          .map(
-            (item) => ActionChip(
-              padding: EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 10.0,
-              ),
-              onPressed: () => null,
-              label: Text(
-                item,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Color(0xFF0083C7),
-                ),
-              ),
-              backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+          child: Transform.scale(
+            scale: 1.5,
+            child: CircularProgressIndicator.adaptive(
+              strokeWidth: 2.0,
             ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget tagEmployment() {
-    String employment = "";
-    switch (storeQuest.questInfo!.employment) {
-      case "FullTime":
-        employment = "quests.employment.fullTime".tr();
-        break;
-      case "PartTime":
-        employment = "quests.employment.partTime".tr();
-        break;
-      case "FixedTerm":
-        employment = "quests.employment.fixedTerm".tr();
-        break;
-      case "RemoteWork":
-        employment = "quests.employment.RemoteWork".tr();
-        break;
-      case "EmploymentContract":
-        employment = "quests.employment.EmploymentContract".tr();
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: Color(0xFF22CC14).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        employment,
-        style: TextStyle(
-          color: Color(0xFF22CC14),
-        ),
+          ),
+        )
+            : _getBody(),
       ),
     );
   }
-}
 
-class _BodyQuestDetails extends StatelessWidget {
-  final QuestDetailsStore storeQuest;
-  final String profileUserId;
-  final Future Function() update;
-  final Widget header;
-  final Widget tabItem;
-  final Widget inProgressBy;
-  final Widget getBody;
-  final Widget review;
-
-  const _BodyQuestDetails({
-    Key? key,
-    required this.storeQuest,
-    required this.profileUserId,
-    required this.update,
-    required this.header,
-    required this.tabItem,
-    required this.inProgressBy,
-    required this.getBody,
-    required this.review,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _getBody() {
     return RefreshIndicator(
       onRefresh: update,
       child: SingleChildScrollView(
@@ -198,52 +88,52 @@ class _BodyQuestDetails extends StatelessWidget {
         child: Observer(
           builder: (_) => Column(
             children: [
-              header,
+              questHeader(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    storeQuest.questInfo!.userId == profileUserId
+                    storeQuest.questInfo!.userId == profile!.userData!.id
                         ? Text("quests.yourQuest".tr())
                         : GestureDetector(
-                            onTap: () async {
-                              Navigator.of(context, rootNavigator: true).pushNamed(
-                                UserProfile.routeName,
-                                arguments: ProfileArguments(
-                                  role: UserRole.Employer,
-                                  userId: storeQuest.questInfo!.userId,
-                                ),
-                              );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.network(
-                                    storeQuest.questInfo!.user!.avatar?.url ??
-                                        Constants.defaultImageNetwork,
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    "${storeQuest.questInfo!.user!.firstName} ${storeQuest.questInfo!.user!.lastName}",
-                                    style: TextStyle(fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                      onTap: () async {
+                        Navigator.of(context, rootNavigator: true).pushNamed(
+                          UserProfile.routeName,
+                          arguments: ProfileArguments(
+                            role: UserRole.Employer,
+                            userId: storeQuest.questInfo!.userId,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.network(
+                              storeQuest.questInfo!.user!.avatar?.url ??
+                                  Constants.defaultImageNetwork,
+                              width: 30,
+                              height: 30,
+                              fit: BoxFit.cover,
                             ),
                           ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              "${storeQuest.questInfo!.user!.firstName} ${storeQuest.questInfo!.user!.lastName}",
+                              style: TextStyle(fontSize: 16),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 17),
                     Row(
                       children: [
-                        if (storeQuest.questInfo!.userId != profileUserId)
+                        if (storeQuest.questInfo!.userId != profile!.userData!.id)
                           Icon(
                             Icons.location_on_rounded,
                             color: Color(0xFF7C838D),
@@ -262,11 +152,15 @@ class _BodyQuestDetails extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 17),
-                    tabItem,
+                    tagItem(
+                      profile!.parser(
+                        storeQuest.questInfo!.questSpecializations,
+                      ),
+                    ),
                     if (storeQuest.questInfo!.assignedWorker != null &&
                         (storeQuest.questInfo!.status == QuestConstants.questCreated ||
                             storeQuest.questInfo!.status == QuestConstants.questDone))
-                      inProgressBy,
+                      inProgressBy(),
                     const SizedBox(height: 15),
                     GestureDetector(
                       onTap: () {},
@@ -388,8 +282,8 @@ class _BodyQuestDetails extends StatelessWidget {
                         ),
                       ],
                     ),
-                    getBody,
-                    review,
+                    getBody(),
+                    review(),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -400,4 +294,85 @@ class _BodyQuestDetails extends StatelessWidget {
       ),
     );
   }
+
+  Widget inProgressBy() {
+    return const SizedBox();
+  }
+
+  Widget questHeader() {
+    return const SizedBox();
+  }
+
+  Widget review() {
+    return const SizedBox();
+  }
+
+  Widget tagItem(List<String> skills) {
+    return Wrap(
+      children: skills
+          .map(
+            (item) => ActionChip(
+          padding: EdgeInsets.symmetric(
+            vertical: 8.0,
+            horizontal: 10.0,
+          ),
+          onPressed: () => null,
+          label: Text(
+            item,
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF0083C7),
+            ),
+          ),
+          backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+        ),
+      )
+          .toList(),
+    );
+  }
+
+  Widget tagEmployment() {
+    String employment = "";
+    switch (storeQuest.questInfo!.employment) {
+      case "FullTime":
+        employment = "quests.employment.fullTime".tr();
+        break;
+      case "PartTime":
+        employment = "quests.employment.partTime".tr();
+        break;
+      case "FixedTerm":
+        employment = "quests.employment.fixedTerm".tr();
+        break;
+      case "RemoteWork":
+        employment = "quests.employment.RemoteWork".tr();
+        break;
+      case "EmploymentContract":
+        employment = "quests.employment.EmploymentContract".tr();
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: Color(0xFF22CC14).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        employment,
+        style: TextStyle(
+          color: Color(0xFF22CC14),
+        ),
+      ),
+    );
+  }
+}
+
+class QuestArguments {
+  QuestArguments({
+    required this.questInfo,
+    required this.id,
+  });
+
+  BaseQuestResponse? questInfo;
+  String? id;
 }
