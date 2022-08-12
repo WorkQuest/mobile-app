@@ -531,9 +531,9 @@ extension Notification on ApiProvider {
     final _notificationsPath = AccountRepository().notifierNetwork.value ==
             Network.testnet
         ? Constants.isTestnet
-            ? 'https://testnet-notification.workquest.co/api/v1/notifications'
-            : 'https://notifications.workquest.co/api/v1/notifications'
-        : 'https://mainnet-notification.workquest.co/api/v1/notifications';
+            ? 'https://testnet-notification.workquest.co/api/notifications'
+            : 'https://notifications.workquest.co/api/notifications'
+        : 'https://mainnet-notification.workquest.co/api/notifications';
     final responseData = await httpClient.get(
       query: '$_notificationsPath?exclude=bridge&exclude=proposal&'
           'exclude=daily_liquidity&exclude=dao&exclude=referral'
