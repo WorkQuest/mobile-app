@@ -288,4 +288,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
         return TypeChat.favourites;
     }
   }
+
+  clearData() {
+    streamChatNotification?.close();
+  }
 }

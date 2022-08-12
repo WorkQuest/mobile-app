@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_item.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';

@@ -48,7 +48,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   AnimationController? controller;
 
-  bool get isMyQuest => (store.quest.value?.userId ?? '') == profile!.userData!.id;
+  bool get isMyQuest =>
+      (store.quest.value?.userId ?? '') == profile!.userData!.id;
 
   bool get canCreateReview =>
       store.quest.value?.status == QuestConstants.questDone &&
@@ -72,7 +73,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       (store.quest.value?.responded != null &&
           store.quest.value?.status == QuestConstants.questCreated &&
           store.quest.value?.responded?.status == 0 &&
-          store.quest.value!.responded?.type != QuestConstants.questResponseTypeResponded);
+          store.quest.value!.responded?.type !=
+              QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
@@ -113,11 +115,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
-            color:
-                store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            color: store.quest.value?.star ?? false
+                ? Color(0xFFE8D20D)
+                : Color(0xFFD8DFE3),
           ),
           onPressed: () async {
-            await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
+            await myQuestStore.setStar(
+                store.quest.value!, !store.quest.value!.star);
             store.onStar();
           },
         ),
@@ -162,7 +166,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         questStatus: store.quest.value?.status ?? 0,
         rounded: false,
         role: UserRole.Worker,
-        responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
+        responded: store.quest.value?.responded ??
+            store.quest.value?.questChat?.response,
       ),
     );
   }
@@ -196,7 +201,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
-                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
                   return const Color(0xFF0083C7);
                 },
               ),
@@ -303,7 +311,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
@@ -327,7 +338,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -354,7 +366,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -373,13 +386,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       builder: (_) => TextButton(
                         onPressed: store.isLoading
                             ? null
-                            // : _dif < 24 /// TODO: Don't forget remove that
-                            : false
+                            : _dif < 24
                                 ? () {
                                     AlertDialogUtils.showInfoAlertDialog(
                                       context,
                                       title: "Error",
-                                      content: "You cannot create a dispute until 24"
+                                      content:
+                                          "You cannot create a dispute until 24"
                                           " hours have passed from the start of "
                                           "this quest",
                                     );
@@ -396,16 +409,19 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                       titleOk: "Ok",
                                       onTabCancel: null,
                                       onTabOk: () async {
-                                        final result = await Navigator.pushNamed(
+                                        final result =
+                                            await Navigator.pushNamed(
                                           context,
                                           OpenDisputePage.routeName,
                                           arguments: store.quest.value!,
                                         );
-                                        if (result != null && result is OpenDispute) {
+                                        if (result != null &&
+                                            result is OpenDispute) {
                                           print('result: ${result.toJson()}');
                                           store.quest.value!.status =
                                               QuestConstants.questDispute;
-                                          store.quest.value!.openDispute = result;
+                                          store.quest.value!.openDispute =
+                                              result;
                                           store.quest.reportChanged();
                                         }
                                       },
@@ -421,7 +437,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           fixedSize: MaterialStateProperty.all(
                             Size(double.maxFinite, 43),
                           ),
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
                                 return Theme.of(context)
@@ -573,7 +590,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             onTap: () async {
               print('assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
               print('id: ${profile!.userData!.id}');
-              if (store.quest.value!.assignedWorkerId == profile!.userData!.id) {
+              if (store.quest.value!.assignedWorkerId ==
+                  profile!.userData!.id) {
                 await sendTransaction(
                   onPress: () async {
                     Navigator.pop(context);
@@ -591,7 +609,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         if (store.quest.value!.responded != null &&
-            store.quest.value!.responded?.status == QuestConstants.questResponseOpen &&
+            store.quest.value!.responded?.status ==
+                QuestConstants.questResponseOpen &&
             store.quest.value!.assignedWorkerId != profile!.userData!.id)
           Column(
             children: [

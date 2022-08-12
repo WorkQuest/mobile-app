@@ -165,15 +165,13 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                   onTap: () async {
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
-                      arguments: widget.id == GetIt.I
-                          .get<ProfileMeStore>()
-                          .userData
-                          ?.id
+                      arguments: widget.id ==
+                              GetIt.I.get<ProfileMeStore>().userData?.id
                           ? null
                           : ProfileArguments(
-                        role: widget.role,
-                        userId: widget.id,
-                      ),
+                              role: widget.role,
+                              userId: widget.id,
+                            ),
                     );
                     profile.assignedWorker = null;
                   },
@@ -266,18 +264,18 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                 ),
                 child: widget.message.length < 50
                     ? Text(
-                  widget.message,
-                  overflow: TextOverflow.ellipsis,
-                )
+                        widget.message,
+                        overflow: TextOverflow.ellipsis,
+                      )
                     : AnimationShowMore(
-                  text: widget.message,
-                  enabled: enabled,
-                  onShowMore: (value) {
-                    setState(() {
-                      this.enabled = value;
-                    });
-                  },
-                ),
+                        text: widget.message,
+                        enabled: enabled,
+                        onShowMore: (value) {
+                          setState(() {
+                            this.enabled = value;
+                          });
+                        },
+                      ),
               ),
             ],
           ),
@@ -401,8 +399,9 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color:
-                      completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
+                      color: completedQuests != "0"
+                          ? Color(0xFF00AA5B)
+                          : Color(0xFFF7F8FA),
                       fontSize: 12.0,
                     ),
                   ),
@@ -477,62 +476,61 @@ Widget workerQuestStats({
   Color textColor = const Color(0xFF00AA5B),
 }) {
   final viewOtherUser = context.read<UserProfileStore>();
-  return
-    Flexible(
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        height: 140,
-        width: 161,
-        decoration: BoxDecoration(
-          color: Color(0xFFF7F8FA),
-          borderRadius: BorderRadius.all(
-            Radius.circular(6.0),
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title.tr(),
-              style: TextStyle(fontSize: 16.0),
-            ),
-            Text(
-              rate,
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-              ),
-            ),
-            GestureDetector(
-              onTap: () async {
-                if (userId != profile.userData?.id) {
-                  await Navigator.pushNamed(
-                    context,
-                    ProfileQuestsPage.routeName,
-                    arguments: ProfileQuestsArguments(
-                      profile: viewOtherUser.userData == null
-                          ? profile.userData!
-                          : viewOtherUser.userData!,
-                      active: active,
-                    ),
-                  );
-                }
-              },
-              child: Text(
-                "workers.showAll".tr(),
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Color(0xFFD8DFE3),
-                  fontSize: 12.0,
-                ),
-              ),
-            ),
-          ],
+  return Flexible(
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      height: 140,
+      width: 161,
+      decoration: BoxDecoration(
+        color: Color(0xFFF7F8FA),
+        borderRadius: BorderRadius.all(
+          Radius.circular(6.0),
         ),
       ),
-    );
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.tr(),
+            style: TextStyle(fontSize: 16.0),
+          ),
+          Text(
+            rate,
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              if (userId != profile.userData?.id) {
+                await Navigator.pushNamed(
+                  context,
+                  ProfileQuestsPage.routeName,
+                  arguments: ProfileQuestsArguments(
+                    profile: viewOtherUser.userData == null
+                        ? profile.userData!
+                        : viewOtherUser.userData!,
+                    active: active,
+                  ),
+                );
+              }
+            },
+            child: Text(
+              "workers.showAll".tr(),
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                color: Color(0xFFD8DFE3),
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 Widget workerRating({
@@ -650,8 +648,8 @@ Widget _socialMediaIcon({
         child: IconButton(
           onPressed: title != null
               ? () {
-            _launchSocial(launchUrl, fallbackUrl);
-          }
+                  _launchSocial(launchUrl, fallbackUrl);
+                }
               : null,
           icon: icon,
         ),
@@ -696,18 +694,18 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
           launchUrl: '',
           icon: instagram != null
               ? GradientIcon(
-            SvgPicture.asset(
-              "assets/instagram_disabled.svg",
-            ),
-            20.0,
-            const <Color>[
-              Color(0xFFAD00FF),
-              Color(0xFFFF9900),
-            ],
-          )
+                  SvgPicture.asset(
+                    "assets/instagram_disabled.svg",
+                  ),
+                  20.0,
+                  const <Color>[
+                    Color(0xFFAD00FF),
+                    Color(0xFFFF9900),
+                  ],
+                )
               : SvgPicture.asset(
-            "assets/instagram_disabled.svg",
-          ),
+                  "assets/instagram_disabled.svg",
+                ),
         ),
         _socialMediaIcon(
           title: linkedin,
@@ -725,23 +723,17 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
 
 void _launchSocial(String url, String fallbackUrl) async {
   try {
-    bool launched = await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-    );
-    if (!launched) {
-      await launch(
-        fallbackUrl,
-        forceSafariVC: false,
-        forceWebView: false,
+    final canLaunch = await canLaunchUrl(Uri.parse(url));
+    if (canLaunch) {
+      launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
       );
     }
   } catch (e) {
-    await launch(
-      fallbackUrl,
-      forceSafariVC: false,
-      forceWebView: false,
+    await launchUrl(
+      Uri.parse(fallbackUrl),
+      mode: LaunchMode.externalApplication,
     );
   }
 }
@@ -1033,7 +1025,9 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded
+                ? widget.skills
+                : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),
@@ -1060,77 +1054,75 @@ Widget skills({
     runSpacing: 0.0,
     children: isProfileMy
         ? (skills!
-        .map(
-          (item) =>
-      new ActionChip(
-        padding: EdgeInsets.symmetric(
-          vertical: 8.0,
-          horizontal: 10.0,
-        ),
-        onPressed: () => null,
-        label: Text(
-          item,
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Color(0xFF0083C7),
-          ),
-        ),
-        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-      ),
-    )
-        .toList()
-      ..add(
-        ActionChip(
-          padding: EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 10.0,
-          ),
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              ChangeProfilePage.routeName,
-            );
-          },
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "settings.add".tr(),
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
+            .map(
+              (item) => new ActionChip(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
                 ),
+                onPressed: () => null,
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF0083C7),
+                  ),
+                ),
+                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
               ),
-              Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20,
+            )
+            .toList()
+          ..add(
+            ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 10.0,
               ),
-            ],
-          ),
-          backgroundColor: Color(0xFF0083C7),
-        ),
-      ))
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ChangeProfilePage.routeName,
+                );
+              },
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "settings.add".tr(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
+              ),
+              backgroundColor: Color(0xFF0083C7),
+            ),
+          ))
         : skills!
-        .map(
-          (item) =>
-      new ActionChip(
-        padding: EdgeInsets.symmetric(
-          vertical: 8.0,
-          horizontal: 10.0,
-        ),
-        onPressed: () => null,
-        label: Text(
-          item,
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Color(0xFF0083C7),
-          ),
-        ),
-        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-      ),
-    )
-        .toList(),
+            .map(
+              (item) => new ActionChip(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                onPressed: () => null,
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF0083C7),
+                  ),
+                ),
+                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+              ),
+            )
+            .toList(),
   );
 }
 

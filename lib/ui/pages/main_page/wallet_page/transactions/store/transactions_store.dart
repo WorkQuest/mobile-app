@@ -149,16 +149,16 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       transaction.coin = increase
           ? _getTitleCoin(
               transaction.fromAddressHash!.hex!,
-              transaction.token_contract_address_hash?.hex,
+              transaction.tokenContractAddressHash?.hex,
               fromSocket: true,
             )
           : _getTitleCoin(
               transaction.toAddressHash!.hex!,
-              transaction.token_contract_address_hash?.hex,
+              transaction.tokenContractAddressHash?.hex,
               fromSocket: true,
             );
-      final _index =
-          transactions.indexWhere((element) => element.hash == transaction.hash);
+      final _index = transactions
+          .indexWhere((element) => element.hash == transaction.hash);
       if (_index == -1) {
         transactions.insert(0, transaction);
       }
@@ -174,9 +174,9 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           (AccountRepository().userWallet?.address ?? '1234');
       tran.coin = increase
           ? _getTitleCoin(
-              tran.fromAddressHash!.hex!, tran.token_contract_address_hash?.hex)
+              tran.fromAddressHash!.hex!, tran.tokenContractAddressHash?.hex)
           : _getTitleCoin(
-              tran.toAddressHash!.hex!, tran.token_contract_address_hash?.hex);
+              tran.toAddressHash!.hex!, tran.tokenContractAddressHash?.hex);
     }).toList();
   }
 
@@ -186,7 +186,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     bool fromSocket = false,
   }) {
     if (type == TokenSymbols.WQT || fromSocket) {
-      final _dataTokens = AccountRepository().getConfigNetworkWorknet().dataCoins;
+      final _dataTokens =
+          AccountRepository().getConfigNetworkWorknet().dataCoins;
       final _address = contractAddress ?? addressContract;
       if (_address ==
           _dataTokens
@@ -216,22 +217,26 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
         if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.WUSD)
                 .addressToken) {
           return TokenSymbols.WUSD;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.wBNB)
                 .addressToken) {
           return TokenSymbols.wBNB;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.wETH)
                 .addressToken) {
           return TokenSymbols.wETH;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.USDT)
                 .addressToken) {
           return TokenSymbols.USDT;
         } else {
