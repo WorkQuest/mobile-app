@@ -316,8 +316,12 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   }
 
   _connectSocket() {
-    _notificationChannel = IOWebSocketChannel.connect(
-        "wss://notifications.workquest.co/api/v1/notifications");
+    final _wsPath = AccountRepository().notifierNetwork.value == Network.testnet
+        ? Constants.isTestnet
+        ? 'wss://testnet-notification.workquest.co/api/v1/notifications'
+        : 'wss://notifications.workquest.co/api/v1/notifications'
+        : 'wss://mainnet-notification.workquest.co/api/v1/notifications';
+    _notificationChannel = IOWebSocketChannel.connect(_wsPath);
 
     _notificationChannel!.sink.add("""{
                   "type": "hello",

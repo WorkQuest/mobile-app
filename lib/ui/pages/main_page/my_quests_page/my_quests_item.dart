@@ -45,7 +45,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
       onTap: () async {
         final result = await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
-          arguments: QuestArguments(id: widget.questInfo.id),
+          arguments: QuestArguments(questInfo: widget.questInfo, id: null),
         );
         if (result != null && result as bool) {
           store.deleteQuestFromList(widget.itemType, widget.questInfo.id);
