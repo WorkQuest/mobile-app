@@ -36,7 +36,7 @@ const _prefixConstraints = const BoxConstraints(
 );
 
 class SignInPage extends StatefulWidget {
-  static const String routeName = "/";
+  static const String routeName = "/startPage";
 
   SignInPage();
 
@@ -56,6 +56,7 @@ class _SignInPageState extends State<SignInPage> {
     store.setPlatform(Platform.isIOS ? "iOS" : "Android");
     Storage.readDeepLinkCheck().then((value) {
       if (value != "0") return;
+      print('init deep link is sign in');
       DeepLinkUtil().initDeepLink();
       Storage.writeDeepLinkCheck("1");
     });

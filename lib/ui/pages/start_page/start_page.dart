@@ -9,7 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 class StartPage extends StatefulWidget {
   final CarouselController carouselController;
 
-  static const String routeName = '/startPage';
+  static const String routeName = '/';
 
   StartPage() : this.carouselController = new CarouselController();
 

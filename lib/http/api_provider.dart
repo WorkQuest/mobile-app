@@ -438,12 +438,11 @@ extension QuestService on ApiProvider {
     return isSuccess == null;
   }
 
-  Future<bool> respondOnQuest({
+  Future<String> respondOnQuest({
     required String id,
     required String message,
     required List media,
   }) async {
-    try {
       final responseData = await httpClient.post(
         query: '/v1/quest/$id/response',
         data: {
@@ -451,10 +450,7 @@ extension QuestService on ApiProvider {
           "medias": media,
         },
       );
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
+      return responseData['id'];
   }
 
   Future<List<BaseQuestResponse>> responsesQuests() async {

@@ -139,18 +139,18 @@ class QuestHeader extends StatelessWidget {
         case QuestsType.Invited:
           return headerQuestPending;
         case QuestsType.Active:
-          if (questStatus == -2)
+          if (questStatus == QuestConstants.questDispute)
             return headerQuestDispute;
-          else if (questStatus == 4)
+          else if (questStatus == QuestConstants.questWaitEmployerConfirm)
             return headerQuestPendingConsideration;
-          else if (questStatus == 3)
+          else if (questStatus == QuestConstants.questWaitWorker)
             return headerQuestActive;
           else
             return headerQuestRejected;
         case QuestsType.Performed:
           return headerQuestPerformed;
         case QuestsType.Created:
-          if (questStatus == -3)
+          if (questStatus == QuestConstants.questClosed)
             return headerQuestRejected;
           else
             return SizedBox(

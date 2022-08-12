@@ -72,8 +72,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded:
-                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
+                responded: widget.questInfo.responded ?? widget.questInfo.questChat?.response,
                 role: store.role,
               ),
             Row(

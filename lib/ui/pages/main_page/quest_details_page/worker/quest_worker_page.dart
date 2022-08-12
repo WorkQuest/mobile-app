@@ -52,40 +52,40 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   bool get canCreateReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-          ((store.quest.value?.userId == profile!.userData!.id ||
+      ((store.quest.value?.userId == profile!.userData!.id ||
               store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
-              store.quest.value?.yourReview == null);
+          store.quest.value?.yourReview == null);
 
   bool get showReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-          ((store.quest.value?.userId == profile!.userData!.id ||
+      ((store.quest.value?.userId == profile!.userData!.id ||
               store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
-              store.quest.value?.yourReview != null);
+          store.quest.value?.yourReview != null);
 
   bool get canSendRequest =>
       store.quest.value?.status == QuestConstants.questCreated &&
-          store.quest.value?.invited == null &&
-          store.quest.value?.responded?.status != 0;
+      store.quest.value!.responded == null;
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
           store.quest.value?.assignedWorker?.id == profile!.userData!.id) ||
-          (store.quest.value?.invited != null &&
-              store.quest.value?.status == QuestConstants.questCreated &&
-              store.quest.value?.invited?.status == 0);
+      (store.quest.value?.responded != null &&
+          store.quest.value?.status == QuestConstants.questCreated &&
+          store.quest.value?.responded?.status == 0 &&
+          store.quest.value!.responded?.type != QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
-          store.quest.value?.assignedWorker?.id == profile!.userData!.id;
+      store.quest.value?.assignedWorker?.id == profile!.userData!.id;
 
   bool get canCreateDispute =>
       store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
-          store.quest.value?.status == QuestConstants.questWaitEmployerConfirm;
+      store.quest.value?.status == QuestConstants.questWaitEmployerConfirm;
 
   bool get canPushToDispute =>
       store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
-          store.quest.value?.status == QuestConstants.questDispute &&
-          store.quest.value?.openDispute != null;
+      store.quest.value?.status == QuestConstants.questDispute &&
+      store.quest.value?.openDispute != null;
 
   @override
   void initState() {
@@ -95,15 +95,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 
-    if (widget.arguments.questInfo != null) {
-      store.quest.value = widget.arguments.questInfo;
-      final needUpdate = store.quest.value!.status == QuestConstants.questDispute;
-      if (needUpdate) {
-        store.getQuest(widget.arguments.questInfo!.id);
-      }
-    } else {
-      store.getQuest(widget.arguments.id ?? "");
-    }
+    store.getQuest(widget.arguments.id ?? "");
+
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
 
@@ -115,14 +108,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   List<Widget>? actionAppBar() {
-    print("store.quest.value?.star: ${store.quest.value?.star}");
     return <Widget>[
       Observer(
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
             color:
-            store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+                store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
           onPressed: () async {
             await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
@@ -153,7 +145,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             if (AccountRepository().notifierNetwork.value == Network.mainnet) {
               _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
             } else {
-              _url = "https://${Constants.isTestnet ? 'testnet': 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+              _url =
+                  "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
             }
             Share.share(_url);
           },
@@ -170,7 +163,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         rounded: false,
         role: UserRole.Worker,
         responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
-        invited: store.quest.value?.invited,
       ),
     );
   }
@@ -186,10 +178,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               final result = await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
-                arguments: CreateReviewArguments(store.quest.value!, null),
+                arguments: CreateReviewArguments(store.quest.value, null),
               );
               if (result != null && result is YourReview) {
-                print('review: ${result.toJson()}');
                 store.quest.value!.yourReview = result;
                 store.quest.reportChanged();
               }
@@ -203,7 +194,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 Size(double.maxFinite, 43),
               ),
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
                     return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                   return const Color(0xFF0083C7);
@@ -225,19 +216,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget getBody() {
+    print('body: ${store.quest.value?.toJson()}');
     if (isMyQuest) return const SizedBox();
     final _dif = DateTime.now()
         .toUtc()
         .difference(store.quest.value?.startedAt ?? DateTime.now().toUtc())
         .inHours;
-    print('dif: $_dif');
-    print('canPush: $canPushToDispute');
-    print(
-        'store.quest.value?.assignedWorker?.id == profile!.userData!.id: ${store.quest.value?.assignedWorker?.id == profile!.userData!.id}');
-    print(
-        'store.quest.value?.status == QuestConstants.questDispute: ${store.quest.value?.status == QuestConstants.questDispute}');
-    print(
-        'store.quest.value!.openDispute != null: ${store.quest.value?.openDispute != null}');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -317,7 +301,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       Size(double.maxFinite, 43),
                     ),
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                      (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
                           return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                         return const Color(0xFF0083C7);
@@ -332,138 +316,138 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               store.isLoading
                   ? Center(child: CircularProgressIndicator.adaptive())
                   : TextButton(
-                onPressed: () {
-                  bottomForm(child: bottomAcceptReject());
-                },
-                child: Text(
-                  "quests.answerOnQuest.title".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                    Size(double.maxFinite, 43),
-                  ),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5);
-                      return const Color(0xFF0083C7);
-                    },
-                  ),
-                ),
-              ),
+                      onPressed: () {
+                        bottomForm(child: bottomAcceptReject());
+                      },
+                      child: Text(
+                        "quests.answerOnQuest.title".tr(),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          Size(double.maxFinite, 43),
+                        ),
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
+                            return const Color(0xFF0083C7);
+                          },
+                        ),
+                      ),
+                    ),
             if (canCompleteQuest)
               store.isLoading
                   ? Center(child: CircularProgressIndicator.adaptive())
                   : TextButton(
-                onPressed: () {
-                  bottomForm(child: bottomComplete());
-                },
-                child: Text(
-                  "quests.completeTheQuest".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                    Size(double.maxFinite, 43),
-                  ),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5);
-                      return const Color(0xFF0083C7);
-                    },
-                  ),
-                ),
-              ),
+                      onPressed: () {
+                        bottomForm(child: bottomComplete());
+                      },
+                      child: Text(
+                        "quests.completeTheQuest".tr(),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          Size(double.maxFinite, 43),
+                        ),
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
+                            return const Color(0xFF0083C7);
+                          },
+                        ),
+                      ),
+                    ),
             if (canCreateDispute)
               store.isLoading
                   ? Center(child: CircularProgressIndicator.adaptive())
                   : Observer(
-                builder: (_) => TextButton(
-                  onPressed: store.isLoading
-                      ? null
-                  // : _dif < 24 /// TODO: Don't forget remove that
-                      : false
-                      ? () {
-                    AlertDialogUtils.showInfoAlertDialog(
-                      context,
-                      title: "Error",
-                      content: "You cannot create a dispute until 24"
-                          " hours have passed from the start of "
-                          "this quest",
-                    );
-                  }
-                      : () async {
-                    await AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: Text("Dispute payment"),
-                      content: Text(
-                        "You need to pay to open a dispute",
+                      builder: (_) => TextButton(
+                        onPressed: store.isLoading
+                            ? null
+                            // : _dif < 24 /// TODO: Don't forget remove that
+                            : false
+                                ? () {
+                                    AlertDialogUtils.showInfoAlertDialog(
+                                      context,
+                                      title: "Error",
+                                      content: "You cannot create a dispute until 24"
+                                          " hours have passed from the start of "
+                                          "this quest",
+                                    );
+                                  }
+                                : () async {
+                                    await AlertDialogUtils.showAlertDialog(
+                                      context,
+                                      title: Text("Dispute payment"),
+                                      content: Text(
+                                        "You need to pay to open a dispute",
+                                      ),
+                                      needCancel: true,
+                                      titleCancel: "Cancel",
+                                      titleOk: "Ok",
+                                      onTabCancel: null,
+                                      onTabOk: () async {
+                                        final result = await Navigator.pushNamed(
+                                          context,
+                                          OpenDisputePage.routeName,
+                                          arguments: store.quest.value!,
+                                        );
+                                        if (result != null && result is OpenDispute) {
+                                          print('result: ${result.toJson()}');
+                                          store.quest.value!.status =
+                                              QuestConstants.questDispute;
+                                          store.quest.value!.openDispute = result;
+                                          store.quest.reportChanged();
+                                        }
+                                      },
+                                      colorCancel: Colors.blue,
+                                      colorOk: Colors.red,
+                                    );
+                                  },
+                        child: Text(
+                          "btn.dispute".tr(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            Size(double.maxFinite, 43),
+                          ),
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
+                              return const Color(0xFF0083C7);
+                            },
+                          ),
+                        ),
                       ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Ok",
-                      onTabCancel: null,
-                      onTabOk: () async {
-                        final result = await Navigator.pushNamed(
-                          context,
-                          OpenDisputePage.routeName,
-                          arguments: store.quest.value!,
-                        );
-                        if (result != null && result is OpenDispute) {
-                          print('result: ${result.toJson()}');
-                          store.quest.value!.status =
-                              QuestConstants.questDispute;
-                          store.quest.value!.openDispute = result;
-                          store.quest.reportChanged();
-                        }
-                      },
-                      colorCancel: Colors.blue,
-                      colorOk: Colors.red,
-                    );
-                  },
-                  child: Text(
-                    "btn.dispute".tr(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ButtonStyle(
-                    fixedSize: MaterialStateProperty.all(
-                      Size(double.maxFinite, 43),
                     ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed))
-                          return Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.5);
-                        return const Color(0xFF0083C7);
-                      },
-                    ),
-                  ),
-                ),
-              ),
             if (canPushToDispute)
               store.isLoading
                   ? Center(child: CircularProgressIndicator.adaptive())
                   : LoginButton(
-                enabled: store.isLoading,
-                title: 'modals.openADispute'.tr(),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    DisputePage.routeName,
-                    arguments: store.quest.value!.openDispute!.id,
-                  );
-                },
-              ),
+                      enabled: store.isLoading,
+                      title: 'modals.openADispute'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          DisputePage.routeName,
+                          arguments: store.quest.value!.openDispute!.id,
+                        );
+                      },
+                    ),
           ],
         ),
       ),
@@ -516,7 +500,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         );
       },
     ).whenComplete(
-          () => controller = BottomSheet.createAnimationController(this),
+      () => controller = BottomSheet.createAnimationController(this),
     );
   }
 
@@ -555,11 +539,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             withColumn: true,
             enabled: store.isLoading,
             onTap: store.opinion.isNotEmpty ||
-                store.mediaFile.isNotEmpty ||
-                store.mediaIds.isNotEmpty
+                    store.mediaFile.isNotEmpty ||
+                    store.mediaIds.isNotEmpty
                 ? () async {
-              store.sendRespondOnQuest(store.opinion);
-            }
+                    store.sendRespondOnQuest(store.opinion);
+                  }
                 : null,
             title: "modals.sendARequest".tr(),
           ),
@@ -587,7 +571,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             withColumn: true,
             enabled: store.isLoading,
             onTap: () async {
-              if (store.quest.value!.invited == null) {
+              print('assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
+              print('id: ${profile!.userData!.id}');
+              if (store.quest.value!.assignedWorkerId == profile!.userData!.id) {
                 await sendTransaction(
                   onPress: () async {
                     Navigator.pop(context);
@@ -597,14 +583,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   functionName: WQContractFunctions.acceptJob.name,
                 );
               } else {
-                store.acceptInvite(store.quest.value!.invited!.id);
+                store.acceptInvite(store.quest.value!.responded!.id);
               }
             },
             title: "quests.answerOnQuest.accept".tr(),
           ),
         ),
         const SizedBox(height: 15),
-        if (store.quest.value!.invited != null)
+        if (store.quest.value!.responded != null &&
+            store.quest.value!.responded?.status == QuestConstants.questResponseOpen &&
+            store.quest.value!.assignedWorkerId != profile!.userData!.id)
           Column(
             children: [
               Observer(
@@ -612,7 +600,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   withColumn: true,
                   enabled: store.isLoading,
                   onTap: () async {
-                    store.rejectInvite(store.quest.value!.invited!.id);
+                    store.rejectInvite(store.quest.value!.responded!.id);
                   },
                   title: "quests.answerOnQuest.reject".tr(),
                 ),
