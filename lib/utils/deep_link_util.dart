@@ -34,8 +34,7 @@ class DeepLinkUtil {
         if (token == null) return;
         var initialURI = await getInitialUri();
         if (initialURI != null) {
-          final path = initialURI.path;
-          if (_checkHost(initialURI.host)) _goToPage(path);
+          if (_checkHost(initialURI.host)) _goToPage(initialURI);
         }
       } on PlatformException {
         print("Failed to receive initial uri");
@@ -50,8 +49,7 @@ class DeepLinkUtil {
       if (uri == null) return;
       final token = await Storage.readAccessToken();
       if (token == null) return;
-      final path = uri.path;
-      if (_checkHost(uri.host)) _goToPage(path);
+      if (_checkHost(uri.host)) _goToPage(uri);
     }, onError: (Object err) {
       print('Error occurred: $err');
     });
@@ -80,9 +78,9 @@ class DeepLinkUtil {
             " to $network",
       );
 
-  Future<void> _goToPage(String path) async {
-    final argument = path.split("/").last;
-    if (path.contains("quests"))
+  Future<void> _goToPage(Uri uri) async {
+    final argument = uri.path.split("/").last;
+    if (uri.path.contains("quests"))
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
         QuestDetails.routeName,
@@ -91,7 +89,7 @@ class DeepLinkUtil {
           questInfo: null
         ),
       );
-    else if (path.contains("profile")) {
+    else if (uri.path.contains("profile")) {
       await store.getQuestHolder(argument);
       await Navigator.of(navigatorKey.currentState!.context,
               rootNavigator: true)
@@ -102,10 +100,10 @@ class DeepLinkUtil {
           userId: store.questHolder!.id,
         ),
       );
-    } else if (path.contains("sign-in")) {
+    } else if (uri.path.contains("sign-in")) {
       final isToken = await Storage.toLoginCheck();
       if (isToken) return;
-      final code = path.split("=").last;
+      final code = uri.query.split("=").last;
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
         ConfirmEmail.routeName,
