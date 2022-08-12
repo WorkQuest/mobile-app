@@ -1,8 +1,9 @@
+import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 
 import 'package:app/utils/validator.dart';
@@ -131,13 +132,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     await store.changePassword();
     if (store.isSuccess) {
       await store.deleteToken();
-      SuccessDialog();
       Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
         SignInPage.routeName,
         (route) => false,
       );
       AccountRepository().clearData();
       Storage.deleteAllFromSecureStorage();
+      AlertDialogUtils.showInfoAlertDialog(
+        navigatorKey.currentState!.context,
+        title: "Success",
+        content: "Login with new password",
+      );
     }
   }
 }
