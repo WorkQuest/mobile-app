@@ -95,11 +95,12 @@ class WebSocket {
   }
 
   void _connectSender() {
-    final _wssPath = AccountRepository().notifierNetwork.value == Network.testnet
-        ? Constants.isTestnet
-            ? "wss://testnet-app.workquest.co/api"
-            : "wss://dev-app.workquest.co/api"
-        : "wss://app.workquest.co/api";
+    final _wssPath =
+        AccountRepository().notifierNetwork.value == Network.testnet
+            ? Constants.isTestnet
+                ? "wss://testnet-app.workquest.co/api"
+                : "wss://dev-app.workquest.co/api"
+            : "wss://app.workquest.co/api";
     _senderChannel = IOWebSocketChannel.connect(_wssPath);
     _senderChannel?.sink.add("""{
           "type": "hello",
@@ -166,7 +167,8 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      if (json["path"] == "/notifications/quest") questNotification(json["message"]);
+      if (json["path"] == "/notifications/quest")
+        questNotification(json["message"]);
       getMessage(json);
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
@@ -232,7 +234,8 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag)
+      connectNotify ? _connectSender() : _connectListen();
   }
 
   String get myAddress => AccountRepository().userAddress;
@@ -253,7 +256,8 @@ class WebSocket {
       final _blockNumber = _events?['tx.height']?[0];
       final _block = DateTime.now();
       final _value = _events?['ethereum_tx.amount']?[0];
-      final _transactionFee = _events?['tx.fee']?[0].toString().split('a').first;
+      final _transactionFee =
+          _events?['tx.fee']?[0].toString().split('a').first;
 
       if (_recipient.toString().toLowerCase() == myAddress.toLowerCase()) {
         if (double.parse(_value) == 0.0) {
@@ -281,13 +285,13 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
         }
       } else {
-        final _txLog = json.decode(transaction.result!.events!['tx_log.txLog']![0]
+        final _txLog = json.decode(transaction
+            .result!.events!['tx_log.txLog']![0]
             .toString()
             .replaceAll('\\', ""));
         final _address = _txLog['topics'][2].toString().split('x').first +
             'x' +
             _txLog['topics'][2].toString().split('x').last.substring(24);
-        print('token _address: $_address');
         if (_address.toLowerCase() == myAddress) {
           await Future.delayed(const Duration(seconds: 9));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
