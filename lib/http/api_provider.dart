@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
@@ -11,6 +12,7 @@ import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -443,14 +445,14 @@ extension QuestService on ApiProvider {
     required String message,
     required List media,
   }) async {
-      final responseData = await httpClient.post(
-        query: '/v1/quest/$id/response',
-        data: {
-          "message": message,
-          "medias": media,
-        },
-      );
-      return responseData['id'];
+    final responseData = await httpClient.post(
+      query: '/v1/quest/$id/response',
+      data: {
+        "message": message,
+        "medias": media,
+      },
+    );
+    return responseData['id'];
   }
 
   Future<List<BaseQuestResponse>> responsesQuests() async {
@@ -526,10 +528,16 @@ extension Notification on ApiProvider {
   Future<Notifications> getNotifications({
     required int offset,
   }) async {
+    final _notificationsPath = AccountRepository().notifierNetwork.value ==
+            Network.testnet
+        ? Constants.isTestnet
+            ? 'https://testnet-notification.workquest.co/api/v1/notifications'
+            : 'https://notifications.workquest.co/api/v1/notifications'
+        : 'https://mainnet-notification.workquest.co/api/v1/notifications';
     final responseData = await httpClient.get(
-      query: 'https://notifications.workquest.co/api/notifications?'
-          'exclude=bridge&exclude=proposal&exclude=daily_liquidity&exclude=dao&'
-          'exclude=referral&exclude=pension_fund&exclude=bridge_usdt',
+      query: '$_notificationsPath?exclude=bridge&exclude=proposal&'
+          'exclude=daily_liquidity&exclude=dao&exclude=referral'
+          '&exclude=pension_fund&exclude=bridge_usdt',
       queryParameters: {
         "offset": offset,
       },
@@ -542,9 +550,15 @@ extension Notification on ApiProvider {
     required String notificationId,
   }) async {
     try {
+      final _notificationsPath =
+          AccountRepository().notifierNetwork.value == Network.testnet
+              ? Constants.isTestnet
+                  ? 'testnet-notification'
+                  : 'notifications'
+              : 'mainnet-notification';
       final responseData = await httpClient.delete(
         query:
-            'https://notifications.workquest.co/api/notifications/delete/$notificationId',
+            'https://$_notificationsPath.workquest.co/api/notifications/delete/$notificationId',
         useBaseUrl: false,
       );
       return responseData == null;
@@ -559,8 +573,15 @@ extension Notification on ApiProvider {
     required List<String> notificationId,
   }) async {
     try {
+      final _notificationsPath =
+          AccountRepository().notifierNetwork.value == Network.testnet
+              ? Constants.isTestnet
+                  ? 'testnet-notification'
+                  : 'notifications'
+              : 'mainnet-notification';
       await httpClient.post(
-        query: 'https://notifications.workquest.co/api/notifications/mark-read',
+        query:
+            'https://$_notificationsPath.workquest.co/api/notifications/mark-read',
         data: {
           "notificationId": notificationId,
         },
@@ -578,8 +599,14 @@ extension Push on ApiProvider {
     required String token,
   }) async {
     try {
+      final _notificationsPath =
+          AccountRepository().notifierNetwork.value == Network.testnet
+              ? Constants.isTestnet
+                  ? 'testnet-notification'
+                  : 'notifications'
+              : 'mainnet-notification';
       await httpClient.post(
-        query: 'https://notifications.workquest.co/api/push/register',
+        query: 'https://$_notificationsPath.workquest.co/api/push/register',
         data: {
           "token": token,
         },
@@ -594,8 +621,14 @@ extension Push on ApiProvider {
     required String token,
   }) async {
     try {
+      final _notificationsPath =
+          AccountRepository().notifierNetwork.value == Network.testnet
+              ? Constants.isTestnet
+                  ? 'testnet-notification'
+                  : 'notifications'
+              : 'mainnet-notification';
       await httpClient.delete(
-        query: 'https://notifications.workquest.co/api/push/delete',
+        query: 'https://$_notificationsPath.workquest.co/api/push/delete',
         data: {
           "token": token,
         },
