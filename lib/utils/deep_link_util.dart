@@ -112,4 +112,8 @@ class DeepLinkUtil {
       );
     }
   }
+
+  clearData() {
+    _streamSubscription?.cancel();
+  }
 }

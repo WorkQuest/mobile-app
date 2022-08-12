@@ -2,7 +2,6 @@ import 'package:app/constants.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/utils/bottom_sheet.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,7 +22,8 @@ class DropDownAdaptiveWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState<T> createState() => _DropDownAdaptiveWidgetState<T>();
+  _DropDownAdaptiveWidgetState<T> createState() =>
+      _DropDownAdaptiveWidgetState<T>();
 }
 
 class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
@@ -132,7 +132,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                             widget.onChanged(widget.items[i]);
                             Navigator.of(context, rootNavigator: true).pop();
                           },
-                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                          title: _getName(
+                              _getTitleItem(widget.items[i].toString())),
                         )
                       else
                         _ItemNetworkWidget(
@@ -141,12 +142,15 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                             widget.onChanged(widget.items[i]);
                             Navigator.of(context, rootNavigator: true).pop();
                           },
-                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                          title: _getName(
+                              _getTitleItem(widget.items[i].toString())),
                           pathIcon: widget.haveIcon
-                              ? _getPathIcons(_getTitleItem(widget.items[i].toString()))
+                              ? _getPathIcons(
+                                  _getTitleItem(widget.items[i].toString()))
                               : null,
                           haveGradient:
-                              _getTitleItem(widget.items[i].toString()) == 'WORKNET',
+                              _getTitleItem(widget.items[i].toString()) ==
+                                  'WORKNET',
                         )
                   ],
                 ),
@@ -221,7 +225,8 @@ class _ItemEnvironmentWidget extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (isEnabled) Icon(Icons.check, color: AppColor.enabledButton, size: 25),
+            if (isEnabled)
+              Icon(Icons.check, color: AppColor.enabledButton, size: 25),
             const SizedBox(
               width: 4.0,
             )

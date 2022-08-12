@@ -112,7 +112,8 @@ class ClientService implements ClientServiceI {
     final _isETH = Web3Utils.isETH();
     final _gasPrice = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0'))
+      ((Decimal.fromBigInt(_gas.getInWei) *
+              Decimal.parse(_isETH ? '1.05' : '1.0'))
           .toBigInt()),
     );
     if (!isToken) {
@@ -134,8 +135,8 @@ class ClientService implements ClientServiceI {
         chainId: _chainId.toInt(),
       );
     } else {
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(_addressToken), client: client!);
       degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
@@ -159,7 +160,8 @@ class ClientService implements ClientServiceI {
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
       if (attempts == 20) {
-        throw FormatException("The waiting time is over. Expect a balance update.");
+        throw FormatException(
+            "The waiting time is over. Expect a balance update.");
       }
     }
     final _tx = Tx(
@@ -182,7 +184,8 @@ class ClientService implements ClientServiceI {
           : [
               TokenTransfer(
                 amount:
-                    (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!)).toString(),
+                    (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!))
+                        .toString(),
               ),
             ],
     );
@@ -193,11 +196,13 @@ class ClientService implements ClientServiceI {
   Future<Decimal> getBalanceFromContract(String address,
       {bool otherNetwork = false, bool isUSDT = false}) async {
     address = address.toLowerCase();
-    final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
-    final balance = await contract
-        .balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(address), client: client!);
+    final balance = await contract.balanceOf(
+        EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
-    return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
+    return (Decimal.parse(balance.toString()) /
+            Decimal.fromInt(10).pow(_degree))
         .toDecimal();
   }
 
@@ -344,7 +349,8 @@ extension CreateContract on ClientService {
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract(
         "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-    final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
+    final ethFunction =
+        contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     await handleContract(
       contract: contract,
@@ -389,7 +395,8 @@ extension GetContract on ClientService {
     String contractAddress,
   ) async {
     try {
-      final _abiJson = await rootBundle.loadString("assets/contracts/$contractName.json");
+      final _abiJson =
+          await rootBundle.loadString("assets/contracts/$contractName.json");
       // dev.log(_abiJson);
       final _contractAbi = ContractAbi.fromJson(_abiJson, contractName);
       final _contractAddress = EthereumAddress.fromHex(
@@ -413,7 +420,8 @@ extension ApproveCoin on ClientService {
     final contract =
         Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final hashTx = await contract.approve(
-      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+      address ??
+          EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
       price,
       credentials: credentials,
     );
@@ -434,10 +442,12 @@ extension ApproveCoin on ClientService {
   Future<BigInt> allowanceCoin({EthereumAddress? address}) async {
     final _address = Web3Utils.getAddressWUSD();
 
-    final _contract = Erc20(address: EthereumAddress.fromHex(_address), client: client!);
+    final _contract =
+        Erc20(address: EthereumAddress.fromHex(_address), client: client!);
     final _result = await _contract.allowance(
       EthereumAddress.fromHex(AccountRepository().userAddress),
-      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+      address ??
+          EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
     );
     return _result;
   }
@@ -465,7 +475,8 @@ extension CheckAddres on ClientService {
     try {
       final contract = await getDeployedContract(
           "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-      final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
+      final ethFunction =
+          contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await client!.call(
         contract: contract,
         function: ethFunction,
@@ -577,6 +588,8 @@ extension Promote on ClientService {
     }
     return result;
   }
-}
 
-extension Custom on EtherAmount {}
+  clearData() {
+    stream?.cancel();
+  }
+}

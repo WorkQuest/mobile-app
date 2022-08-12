@@ -50,7 +50,9 @@ class ApproveRolePage extends StatelessWidget {
                       ? "role.yourRole".tr() +
                           " ${store.userRole.toString().split(".").last} " +
                           "role.right".tr()
-                      : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
+                      : "role.change".tr() +
+                          " ${store.getRole()} " +
+                          "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -126,7 +128,8 @@ class ApproveRolePage extends StatelessWidget {
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
                                                     create: (context) =>
-                                                        getIt.get<CreateWalletStore>(),
+                                                        getIt.get<
+                                                            CreateWalletStore>(),
                                                     child: ImportWalletPage(),
                                                   ),
                                                 ),
@@ -135,7 +138,8 @@ class ApproveRolePage extends StatelessWidget {
                                             child: Text(
                                               "wallet.importWallet".tr(),
                                               style: TextStyle(
-                                                  color: AppColor.enabledButton),
+                                                  color:
+                                                      AppColor.enabledButton),
                                             ),
                                           ),
                                           TextButton(
@@ -146,7 +150,8 @@ class ApproveRolePage extends StatelessWidget {
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
                                                     create: (context) =>
-                                                        getIt.get<CreateWalletStore>(),
+                                                        getIt.get<
+                                                            CreateWalletStore>(),
                                                     child: CreateWalletPage(),
                                                   ),
                                                 ),
@@ -155,7 +160,8 @@ class ApproveRolePage extends StatelessWidget {
                                             child: Text(
                                               "wallet.createWallet".tr(),
                                               style: TextStyle(
-                                                  color: AppColor.enabledButton),
+                                                  color:
+                                                      AppColor.enabledButton),
                                             ),
                                           ),
                                         ],
@@ -198,7 +204,7 @@ class ApproveRolePage extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () async {
-            await launch(_baseUrl + urlLink);
+            launchUrl(Uri.parse(_baseUrl + urlLink));
           },
           child: Text(
             title,
@@ -228,7 +234,9 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
+                      color: role == UserRole.Worker
+                          ? Colors.white
+                          : Color(0xFF1D2127),
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -238,7 +246,9 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
+                    color: role == UserRole.Worker
+                        ? Colors.white
+                        : Color(0xFF1D2127),
                   ),
                 ),
               ],
