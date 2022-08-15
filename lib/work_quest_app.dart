@@ -117,9 +117,6 @@ final _theme = ThemeData(
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: AppColor.primary,
   ),
-  accentIconTheme: IconThemeData(
-    color: AppColor.primary,
-  ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: AppColor.primary,
     foregroundColor: Colors.white,

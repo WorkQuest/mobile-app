@@ -33,6 +33,7 @@ class _WebViewPageState extends State<WebViewPage> {
     }
     return "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/";
   }
+
   final storage = new FlutterSecureStorage();
   WebViewController? _controller;
   bool loading = false;
@@ -102,7 +103,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
                 if (url.contains('token?code=') ||
                     url.contains('token?state=')) {
-                  _controller!.evaluateJavascript(
+                  _controller!.runJavascript(
                       "(function(){Flutter.postMessage(window.document.body.outerHTML)})();");
                 }
               },
@@ -202,72 +203,71 @@ class _WebViewPageState extends State<WebViewPage> {
   //   }
   // }
 
-  void _onShowUserAgent(
-      WebViewController controller, BuildContext context) async {
-    // Send a message with the user agent string to the Toaster JavaScript channel we registered
-    // with the WebView.
-    await controller.evaluateJavascript(
-        'Toaster.postMessage("User Agent: " + navigator.userAgent);');
-  }
+  // void _onShowUserAgent(
+  //     WebViewController controller, BuildContext context) async {
+  //   // Send a message with the user agent string to the Toaster JavaScript channel we registered
+  //   // with the WebView.
+  //   await controller.evaluateJavascript(
+  //       'Toaster.postMessage("User Agent: " + navigator.userAgent);');
+  // }
 
-  void _onListCookies(
-      WebViewController controller, BuildContext context) async {
-    final String cookies =
-        await controller.evaluateJavascript('document.cookie');
-    // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const Text('Cookies:'),
-          _getCookieList(cookies),
-        ],
-      ),
-    ));
-  }
+  // void _onListCookies(
+  //     WebViewController controller, BuildContext context) async {
+  //   final String cookies =
+  //       await controller.evaluateJavascript('document.cookie');
+  //   // ignore: deprecated_member_use
+  //   Scaffold.of(context).showSnackBar(SnackBar(
+  //     content: Column(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: <Widget>[
+  //         const Text('Cookies:'),
+  //         _getCookieList(cookies),
+  //       ],
+  //     ),
+  //   ));
+  // }
 
-  void _onAddToCache(WebViewController controller, BuildContext context) async {
-    await controller.evaluateJavascript(
-        'caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
-    // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
-      content: Text('Added a test entry to cache.'),
-    ));
-  }
+  // void _onAddToCache(WebViewController controller, BuildContext context) async {
+  //   await controller.evaluateJavascript(
+  //       'caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
+  //   // ignore: deprecated_member_use
+  //   Scaffold.of(context).showSnackBar(const SnackBar(
+  //     content: Text('Added a test entry to cache.'),
+  //   ));
+  // }
 
-  void _onListCache(WebViewController controller, BuildContext context) async {
-    await controller.evaluateJavascript('caches.keys()'
-        '.then((cacheKeys) => JSON.stringify({"cacheKeys" : cacheKeys, "localStorage" : localStorage}))'
-        '.then((caches) => Toaster.postMessage(caches))');
-  }
+  // void _onListCache(WebViewController controller, BuildContext context) async {
+  //   await controller.evaluateJavascript('caches.keys()'
+  //       '.then((cacheKeys) => JSON.stringify({"cacheKeys" : cacheKeys, "localStorage" : localStorage}))'
+  //       '.then((caches) => Toaster.postMessage(caches))');
+  // }
 
-  void _onClearCache(WebViewController controller, BuildContext context) async {
-    await controller.clearCache();
-    // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
-      content: Text("Cache cleared."),
-    ));
-  }
+  // void _onClearCache(WebViewController controller, BuildContext context) async {
+  //   await controller.clearCache();
+  //   // ignore: deprecated_member_use
+  //   Scaffold.of(context).showSnackBar(const SnackBar(
+  //     content: Text("Cache cleared."),
+  //   ));
+  // }
 
-  Widget _getCookieList(String cookies) {
-    if (cookies == null || cookies == '""') {
-      return Container();
-    }
-    final List<String> cookieList = cookies.split(';');
-    final Iterable<Text> cookieWidgets =
-        cookieList.map((String cookie) => Text(cookie));
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: cookieWidgets.toList(),
-    );
-  }
+  // Widget _getCookieList(String cookies) {
+  //   if (cookies == null || cookies == '""') {
+  //     return Container();
+  //   }
+  //   final List<String> cookieList = cookies.split(';');
+  //   final Iterable<Text> cookieWidgets =
+  //       cookieList.map((String cookie) => Text(cookie));
+  //   return Column(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: cookieWidgets.toList(),
+  //   );
+  // }
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture)
-      : assert(_webViewControllerFuture != null);
+  const NavigationControls(this._webViewControllerFuture);
 
   final Future<WebViewController> _webViewControllerFuture;
 

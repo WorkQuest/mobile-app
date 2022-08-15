@@ -112,16 +112,11 @@ class _DepositPageState extends State<DepositPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-              child: AccountRepository().userAddress != null
-                  ? QrImage(
-                      data: AccountRepository().userAddress,
-                      version: QrVersions.auto,
-                      size: 200.0,
-                    )
-                  : CircularProgressIndicator(),
-              // Image.asset(
-              //   "assets/qr_code_placeholder.jpg",
-              // ),
+              child: QrImage(
+                data: AccountRepository().userAddress,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
             ),
             _divider,
             Text(
@@ -163,9 +158,8 @@ class _DepositPageState extends State<DepositPage>
                   child: SizedBox(
                     height: 43.0,
                     child: OutlinedButton(
-                      onPressed: () => AccountRepository().userAddress != null
-                          ? Share.share(AccountRepository().userAddress)
-                          : null,
+                      onPressed: () =>
+                          Share.share(AccountRepository().userAddress),
                       child: Text(
                         "sharing.title".tr(),
                       ),
@@ -183,22 +177,20 @@ class _DepositPageState extends State<DepositPage>
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => AccountRepository().userAddress != null
-                        ? Clipboard.setData(
-                            new ClipboardData(
-                              text: AccountRepository().userAddress,
-                            ),
-                          ).then((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                duration: Duration(seconds: 1),
-                                content: Text(
-                                  "wallet.copy".tr(),
-                                ),
-                              ),
-                            );
-                          })
-                        : null,
+                    onPressed: () => Clipboard.setData(
+                      new ClipboardData(
+                        text: AccountRepository().userAddress,
+                      ),
+                    ).then((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 1),
+                          content: Text(
+                            "wallet.copy".tr(),
+                          ),
+                        ),
+                      );
+                    }),
                     child: Text(
                       "modals.copy".tr(),
                     ),
@@ -226,7 +218,9 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   @override
   void initState() {
-    _format = AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    _format = AccountRepository().isOtherNetwork
+        ? FormatAddress.HEX
+        : FormatAddress.BECH32;
     super.initState();
   }
 
@@ -278,7 +272,8 @@ class _WalletAddressState extends State<_WalletAddress> {
             ),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(
@@ -357,4 +352,3 @@ class _WalletAddressState extends State<_WalletAddress> {
     );
   }
 }
-

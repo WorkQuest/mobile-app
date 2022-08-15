@@ -185,10 +185,10 @@ class _ImageViewerWidgetState extends State<ImageViewerWidget> {
           dir = (await getApplicationDocumentsDirectory()).path;
         }
         if (widget.medias[index].type == TypeMedia.Pdf)
-          final f = downloadFile(widget.medias[index].url,
+          downloadFile(widget.medias[index].url,
               widget.medias[index].url.split("/").reversed.first + ".pdf", dir);
         if (widget.medias[index].type == TypeMedia.Doc)
-          final f = downloadFile(widget.medias[index].url,
+          downloadFile(widget.medias[index].url,
               widget.medias[index].url.split("/").reversed.first + ".doc", dir);
       },
       child: Column(

@@ -4,7 +4,6 @@ import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_pa
 import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';

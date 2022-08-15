@@ -484,22 +484,26 @@ class _Confirm2FAPagesState extends State<Confirm2FAPages> {
       );
 
   Future<void> openGoogleAuth() async {
+    final link = Platform.isIOS
+        ? "https://apps.apple.com/ru/app/google-authenticator/id388497605"
+        : "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
     try {
-      if (!(await launch(
-          "otpauth://totp/${widget.mail}?secret=${widget.store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
-        Platform.isIOS
-            ? launch(
-                "https://apps.apple.com/ru/app/google-authenticator/id388497605")
-            : launch("https://play.google.com/store/apps/details?id=" +
-                "com.google.android.apps.authenticator2");
+      final canLaunch = await canLaunchUrl(Uri.parse(
+          "otpauth://totp/${widget.mail}?secret=${widget.store.googleAuthenticatorSecretCode}&issuer=WorkQuest"));
+      if (canLaunch) {
+        if (await canLaunchUrl(Uri.parse(link))) {
+          launchUrl(
+            Uri.parse(link),
+            mode: LaunchMode.externalApplication,
+          );
+        }
       }
     } catch (e) {
       print(e);
-      Platform.isIOS
-          ? launch(
-              "https://apps.apple.com/ru/app/google-authenticator/id388497605")
-          : launch("https://play.google.com/store/apps/details?id=" +
-              "com.google.android.apps.authenticator2");
+      launchUrl(
+        Uri.parse(link),
+        mode: LaunchMode.externalApplication,
+      );
     }
   }
 }
