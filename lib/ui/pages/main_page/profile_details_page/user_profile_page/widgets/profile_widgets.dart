@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/store/profile_quests_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -165,8 +166,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                   onTap: () async {
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
-                      arguments: widget.id ==
-                              GetIt.I.get<ProfileMeStore>().userData?.id
+                      arguments: widget.id == GetIt.I.get<ProfileMeStore>().userData?.id
                           ? null
                           : ProfileArguments(
                               role: widget.role,
@@ -390,7 +390,7 @@ Widget employerRating({
                           profile: viewOtherUser.userData == null
                               ? profile.userData!
                               : viewOtherUser.userData!,
-                          active: false,
+                          type: ProfileQuestsType.completed,
                         ),
                       );
                     }
@@ -399,9 +399,8 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: completedQuests != "0"
-                          ? Color(0xFF00AA5B)
-                          : Color(0xFFF7F8FA),
+                      color:
+                          completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
                       fontSize: 12.0,
                     ),
                   ),
@@ -513,7 +512,7 @@ Widget workerQuestStats({
                     profile: viewOtherUser.userData == null
                         ? profile.userData!
                         : viewOtherUser.userData!,
-                    active: active,
+                    type: active ? ProfileQuestsType.active : ProfileQuestsType.completed,
                   ),
                 );
               }
@@ -1025,9 +1024,7 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded
-                ? widget.skills
-                : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),

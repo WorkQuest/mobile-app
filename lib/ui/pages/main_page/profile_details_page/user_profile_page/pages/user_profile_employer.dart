@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/store/profile_quests_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -62,7 +63,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                     profile: viewOtherUser?.userData == null
                         ? userStore!.userData!
                         : viewOtherUser!.userData!,
-                    active: false,
+                    type: ProfileQuestsType.all,
                   ),
                 );
               },
