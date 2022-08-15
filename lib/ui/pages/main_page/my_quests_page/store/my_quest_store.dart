@@ -15,7 +15,7 @@ class MyQuestStore extends _MyQuestStore with _$MyQuestStore {
   MyQuestStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _MyQuestStore extends IStore<bool> with Store {
+abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
   final ApiProvider _apiProvider;
 
   _MyQuestStore(this._apiProvider) {
@@ -36,7 +36,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       (questItem.responded!.workerId == myId &&
               (questItem.status == QuestConstants.questCreated ||
                   questItem.status == QuestConstants.questWaitWorkerOnAssign) ||
-          questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeResponded) &&
+          questItem.responded != null &&
+              questItem.responded?.type == QuestConstants.questResponseTypeResponded) &&
       role == UserRole.Worker;
 
   bool isLocation(BaseQuestResponse questItem) =>
@@ -45,7 +46,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       questItem.status != QuestConstants.questDone;
 
   bool isInvited(BaseQuestResponse questItem) =>
-      questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeInvited;
+      questItem.responded != null &&
+      questItem.responded?.type == QuestConstants.questResponseTypeInvited;
 
   bool isRaised(BaseQuestResponse questItem) =>
       questItem.raiseView != null &&
@@ -60,8 +62,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   dynamic changeLists(dynamic json) async {
     try {
       print("MyQuestStore");
-      var quest =
-          BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+      var quest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
       (json["recipients"] as List).forEach((element) {
         if (element == myId)
           quest.responded = Responded(
@@ -90,18 +91,16 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         for (int i = 0; i < value.length; i++)
           if (value[i].id == quest.id) {
             quests[key]![i].star = set;
-            if (set) {
-              quests[QuestsType.Favorites]?.add(quest);
-              if (key == QuestsType.Favorites) {
-                value.length -= 1;
-              }
-            } else
-              quests[QuestsType.Favorites]
-                  ?.removeWhere((element) => element.id == quest.id);
           }
       });
+      if (set) {
+        quests[QuestsType.Favorites]?.add(quest);
+      } else {
+        quests[QuestsType.Favorites]
+            ?.removeWhere((element) => element.id == quest.id);
+      }
       sortQuests();
-      this.onSuccess(true);
+      this.onSuccess(MyQuestStoreState.setStar);
     } catch (e) {
       this.onError(e.toString());
     }
@@ -167,7 +166,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
               ));
       }
 
-      this.onSuccess(true);
+      this.onSuccess(MyQuestStoreState.getQuests);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
@@ -215,34 +214,30 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     } else if (quest.status == 1) {
       if (quest.responded?.status == 0 && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
-      else if ((quest.responded?.status == -1) &&
-          role == UserRole.Worker)
+      else if ((quest.responded?.status == -1) && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
-      else if (quest.responded?.status == QuestConstants.questResponseTypeInvited && role == UserRole.Worker)
+      else if (quest.responded?.status == QuestConstants.questResponseTypeInvited &&
+          role == UserRole.Worker)
         questsType.add(QuestsType.Invited);
       else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
     } else if (quest.status == 2) {
-      if ((quest.responded?.status == -1) &&
-          role == UserRole.Worker)
+      if ((quest.responded?.status == -1) && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
     } else if (quest.status == 3) {
-      if ((quest.responded?.status == -1) &&
-          role == UserRole.Worker)
+      if ((quest.responded?.status == -1) && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else
         questsType.add(QuestsType.Active);
     } else if (quest.status == 4) {
-      if ((quest.responded?.status == -1) &&
-          role == UserRole.Worker)
+      if ((quest.responded?.status == -1) && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else
         questsType.add(QuestsType.Active);
     } else if (quest.status == 5) {
-      if ((quest.responded?.status == -1) &&
-          role == UserRole.Worker)
+      if ((quest.responded?.status == -1) && role == UserRole.Worker)
         questsType.add(QuestsType.Responded);
       else if (role == UserRole.Worker)
         questsType.add(QuestsType.Performed);
@@ -250,3 +245,5 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     }
   }
 }
+
+enum MyQuestStoreState { getQuests, setStar }

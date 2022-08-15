@@ -123,6 +123,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             await myQuestStore.setStar(
                 store.quest.value!, !store.quest.value!.star);
             store.onStar();
+            questStore.setStar(store.quest.value!.id, store.quest.value!.star);
           },
         ),
       ),

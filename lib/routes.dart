@@ -103,9 +103,7 @@ import 'ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA"
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -334,8 +332,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -360,6 +357,9 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<MyQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<QuestsStore>(),
               ),
             ],
             child: Directionality(
@@ -452,14 +452,15 @@ class Routes {
                 create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<QuestsStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<PortfolioStore>(),
               ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: _isWorker
-                  ? WorkerProfile(arguments)
-                  : EmployerProfile(arguments),
+              child: _isWorker ? WorkerProfile(arguments) : EmployerProfile(arguments),
             ),
           ),
         );
@@ -819,6 +820,9 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<QuestsStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ChatRoomStore>(),
