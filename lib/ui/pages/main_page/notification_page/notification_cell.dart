@@ -196,7 +196,6 @@ class _NotificationCellState extends State<NotificationCell> {
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     QuestDetails.routeName,
                     arguments: QuestArguments(
-                      questInfo: null,
                       id: widget.body.notification.data.id,
                     ),
                   );

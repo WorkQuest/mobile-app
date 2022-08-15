@@ -86,7 +86,6 @@ class DeepLinkUtil {
         QuestDetails.routeName,
         arguments: QuestArguments(
           id: argument,
-          questInfo: null
         ),
       );
     else if (uri.path.contains("profile")) {
