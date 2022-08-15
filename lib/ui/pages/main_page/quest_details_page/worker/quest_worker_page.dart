@@ -111,6 +111,19 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   List<Widget>? actionAppBar() {
     return <Widget>[
+      IconButton(
+        icon: Icon(Icons.share_outlined, color: Color(0xFFD8DFE3),),
+        onPressed: () {
+          late String _url;
+          if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+            _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+          } else {
+            _url =
+            "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
+          }
+          Share.share(_url);
+        },
+      ),
       Observer(
         builder: (_) => IconButton(
           icon: Icon(
