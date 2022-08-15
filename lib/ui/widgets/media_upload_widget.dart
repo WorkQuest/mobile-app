@@ -85,8 +85,10 @@ class _MediaUploadState extends State<MediaUpload> {
             allowMultiple: true,
             type: FileType.image,
           );
-          List<File> files = result!.paths.map((path) => File(path!)).toList();
-          widget.mediaFile.addAll(files);
+          if (result != null) {
+            List<File> files = result.paths.map((path) => File(path!)).toList();
+            widget.mediaFile.addAll(files);
+          }
         },
         child: SizedBox(
           width: double.infinity,

@@ -103,8 +103,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           } else {
             store.getGasEditOrCreateQuest(isEdit: isEdit);
           }
-        } else
-        if (store.successData == CreateQuestStoreState.getGasApprove) {
+        } else if (store.successData == CreateQuestStoreState.getGasApprove) {
           Navigator.of(context, rootNavigator: true).pop();
           _approve();
         } else if (store.successData == CreateQuestStoreState.getGasEditOrCreateQuest) {
@@ -513,9 +512,20 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             key: _warningFields[_descriptionIndex].key,
                             initialValue: store.description,
                             onChanged: store.setAboutQuest,
-                            validator: (value) => Validators.emptyValidator(value,
-                                customMessage: 'errors.fieldRequired'
-                                    .tr(namedArgs: {'name': 'Description'})),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'errors.fieldRequired'
+                                    .tr(namedArgs: {'name': 'Description'});
+                              }
+                              if (value.isEmpty) {
+                                return 'errors.fieldRequired'
+                                    .tr(namedArgs: {'name': 'Description'});
+                              }
+                              if (value.length < 6) {
+                                return 'Description must be at least 6 characters long';
+                              }
+                              return null;
+                            },
                             keyboardType: TextInputType.multiline,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             enabled: !isEdit,
@@ -611,7 +621,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           child: Observer(
                             builder: (context) => LoginButton(
                               withColumn: true,
-                              enabled: store.isLoading,
                               onTap:
                                   store.isLoading ? null : _onPressedOnCreateOrEditQuest,
                               title: isEdit

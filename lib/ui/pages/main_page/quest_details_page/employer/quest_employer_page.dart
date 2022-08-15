@@ -180,9 +180,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (canRaiseView) 'quests.raiseViews',
+              if (canRaiseView) 'Raise views',
               if (canEditOrDelete) 'registration.edit',
-              if (canEditOrDelete) 'settings.delete',
+              if (canEditOrDelete) 'Close quest',
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,

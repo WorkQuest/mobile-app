@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
@@ -14,6 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/web_socket.dart';
+import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 
 part 'worker_store.g.dart';
 
@@ -22,7 +22,7 @@ class WorkerStore extends _WorkerStore with _$WorkerStore {
   WorkerStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
+abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
   final ApiProvider _apiProvider;
 
   _WorkerStore(this._apiProvider) {
@@ -183,19 +183,17 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();
+      await sendImages(_apiProvider);
       final _id = await _apiProvider.respondOnQuest(
         id: quest.value!.id,
         message: message,
-        media: mediaIds.map((e) => e.id).toList() +
-            await _apiProvider.uploadMedia(
-              medias: mediaFile,
-            ),
-      );
+        media: medias.map((media) => media.id).toList());
       quest.value!.status = QuestConstants.questCreated;
       quest.value!.responded = Responded(
         id: _id,
         workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
-        status: QuestConstants.questResponseAccepted,
+        status: QuestConstants.questResponseOpen,
+        type: QuestConstants.questResponseTypeResponded,
       );
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendRespondOnQuest);
