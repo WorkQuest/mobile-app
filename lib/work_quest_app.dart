@@ -80,20 +80,13 @@ class WorkQuestApp extends StatelessWidget {
     AppState appState,
     Map<dynamic, dynamic> payload,
   ) {
-    final notification = NotificationNotification.fromJson(
-      payload as Map<String, dynamic>,
-    );
-    final response = {
-      "data": notification.data,
-      "action": notification.action,
-    };
-    if (appState.name == "closed") {
-      Storage.writePushPayload(
-        JsonEncoder.withIndent('  ').convert(response),
-      );
-    } else {
+    final pushPayload = JsonEncoder.withIndent('  ').convert(payload);
+    Map<String, dynamic> response = jsonDecode(pushPayload);
+    final notification = NotificationNotification.fromJson(response);
+    if (appState.name == "closed")
+      Storage.writePushPayload(pushPayload);
+    else
       OpenScreeFromPush().openScreen(notification);
-    }
   }
 }
 
