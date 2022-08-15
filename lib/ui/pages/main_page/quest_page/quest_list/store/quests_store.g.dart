@@ -235,6 +235,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
+  dynamic setStar(String questId, bool star) {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.setStar');
+    try {
+      return super.setStar(questId, star);
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic clearData() {
     final _$actionInfo = _$_QuestsStoreActionController.startAction(
         name: '_QuestsStore.clearData');

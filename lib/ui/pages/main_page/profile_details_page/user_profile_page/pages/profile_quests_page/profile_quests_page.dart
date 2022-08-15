@@ -17,11 +17,11 @@ const _physics = BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
 class ProfileQuestsArguments {
   ProfileQuestsArguments({
     required this.profile,
-    required this.active,
+    required this.type,
   });
 
   final ProfileMeResponse profile;
-  final bool active;
+  final ProfileQuestsType type;
 }
 
 class ProfileQuestsPage extends StatefulWidget {
@@ -41,29 +41,19 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
 
   String get myId => GetIt.I.get<ProfileMeStore>().userData!.id;
 
-  bool get isActiveQuest => widget.arguments.active;
-
   bool get isMyProfile => profile.id == myId;
 
   @override
   void initState() {
     store = context.read<ProfileQuestsStore>();
     profile = widget.arguments.profile;
-    if (isActiveQuest) {
-      store.getActiveQuests(
-        userRole: profile.role,
-        userId: profile.id,
-        isProfileYours: isMyProfile,
-        isForce: true,
-      );
-    } else {
-      store.getCompletedQuests(
-        userRole: profile.role,
-        userId: profile.id,
-        isProfileYours: isMyProfile,
-        isForce: true,
-      );
-    }
+    store.getQuests(
+      userRole: profile.role,
+      userId: profile.id,
+      isProfileYours: isMyProfile,
+      typeQuests: widget.arguments.type,
+      isForce: true,
+    );
     super.initState();
   }
 
@@ -79,21 +69,13 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            if (isActiveQuest) {
-              store.getActiveQuests(
-                userId: profile.id,
-                isForce: true,
-                isProfileYours: isMyProfile,
-                userRole: profile.role,
-              );
-            } else {
-              store.getCompletedQuests(
-                userRole: profile.role,
-                userId: profile.id,
-                isForce: true,
-                isProfileYours: isMyProfile,
-              );
-            }
+            store.getQuests(
+              userRole: profile.role,
+              userId: profile.id,
+              isProfileYours: isMyProfile,
+              typeQuests: widget.arguments.type,
+              isForce: true,
+            );
           },
           child: Observer(
             builder: (_) {
@@ -137,24 +119,18 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                   final metrics = scrollEnd.metrics;
                   if (metrics.atEdge ||
                       metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
-                    if (isActiveQuest) {
-                      store.getActiveQuests(
-                        userId: profile.id,
-                        isProfileYours: isMyProfile,
-                        userRole: profile.role,
-                      );
-                    } else {
-                      store.getCompletedQuests(
-                        userRole: profile.role,
-                        userId: profile.id,
-                        isProfileYours: isMyProfile,
-                      );
-                    }
+                    store.getQuests(
+                      userRole: profile.role,
+                      userId: profile.id,
+                      isProfileYours: isMyProfile,
+                      typeQuests: widget.arguments.type,
+                      isForce: false,
+                    );
                   }
                   return true;
                 },
                 child: QuestsList(
-                  widget.arguments.active ? QuestsType.Active : QuestsType.Performed,
+                  _getType(),
                   store.quests,
                   isLoading: store.isLoading,
                   from: FromQuestList.questSearch,
@@ -168,15 +144,37 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
     );
   }
 
+  QuestsType _getType() {
+    switch (widget.arguments.type) {
+      case ProfileQuestsType.active:
+        return QuestsType.Active;
+      case ProfileQuestsType.completed:
+        return QuestsType.Completed;
+      case ProfileQuestsType.all:
+        return QuestsType.All;
+    }
+  }
+
   String _getEmptyText() {
     if (isMyProfile) {
-      return isActiveQuest
-          ? 'profiler.dontHaveActiveQuest'.tr()
-          : 'profiler.dontHaveCompletedQuest'.tr();
+      switch (widget.arguments.type) {
+
+        case ProfileQuestsType.active:
+          return 'profiler.dontHaveActiveQuest'.tr();
+        case ProfileQuestsType.completed:
+          return 'profiler.dontHaveCompletedQuest'.tr();
+        case ProfileQuestsType.all:
+          return 'You don\'t have any quests';
+      }
     } else {
-      return isActiveQuest
-          ? 'profiler.dontHaveActiveQuestOtherUser'.tr()
-          : 'profiler.dontHaveCompletedQuestOtherUser'.tr();
+      switch (widget.arguments.type) {
+        case ProfileQuestsType.active:
+          return 'profiler.dontHaveActiveQuestOtherUser'.tr();
+        case ProfileQuestsType.completed:
+          return 'profiler.dontHaveCompletedQuestOtherUser'.tr();
+        case ProfileQuestsType.all:
+          return 'User not have any quests';
+      }
     }
   }
 }

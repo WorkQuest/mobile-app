@@ -24,35 +24,20 @@ mixin _$ProfileQuestsStore on _ProfileQuestsStore, Store {
     });
   }
 
-  final _$getCompletedQuestsAsyncAction =
-      AsyncAction('_ProfileQuestsStore.getCompletedQuests');
+  final _$getQuestsAsyncAction = AsyncAction('_ProfileQuestsStore.getQuests');
 
   @override
-  Future getCompletedQuests(
+  Future getQuests(
       {required UserRole userRole,
       required String userId,
       required bool isProfileYours,
+      required ProfileQuestsType typeQuests,
       bool isForce = false}) {
-    return _$getCompletedQuestsAsyncAction.run(() => super.getCompletedQuests(
+    return _$getQuestsAsyncAction.run(() => super.getQuests(
         userRole: userRole,
         userId: userId,
         isProfileYours: isProfileYours,
-        isForce: isForce));
-  }
-
-  final _$getActiveQuestsAsyncAction =
-      AsyncAction('_ProfileQuestsStore.getActiveQuests');
-
-  @override
-  Future getActiveQuests(
-      {required UserRole userRole,
-      required String userId,
-      required bool isProfileYours,
-      bool isForce = false}) {
-    return _$getActiveQuestsAsyncAction.run(() => super.getActiveQuests(
-        userRole: userRole,
-        userId: userId,
-        isProfileYours: isProfileYours,
+        typeQuests: typeQuests,
         isForce: isForce));
   }
 

@@ -294,6 +294,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
+  setStar(String questId, bool star) {
+    final index = questsList.indexWhere((element) => element.id == questId);
+    if (index != -1) {
+      final old = questsList.removeAt(index);
+      old.star = star;
+      questsList.insert(index, old);
+    }
+  }
+
+  @action
   clearData() {
     role = UserRole.Worker;
     isLoadingMore = false;

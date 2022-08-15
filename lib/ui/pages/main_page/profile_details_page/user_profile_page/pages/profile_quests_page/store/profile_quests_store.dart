@@ -8,6 +8,8 @@ import 'package:app/http/api_provider.dart';
 
 part 'profile_quests_store.g.dart';
 
+enum ProfileQuestsType { active, completed, all }
+
 @injectable
 class ProfileQuestsStore extends _ProfileQuestsStore with _$ProfileQuestsStore {
   ProfileQuestsStore(ApiProvider apiProvider) : super(apiProvider);
@@ -22,10 +24,11 @@ abstract class _ProfileQuestsStore extends IStore<bool> with Store {
   ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   @action
-  getCompletedQuests({
+  getQuests({
     required UserRole userRole,
     required String userId,
     required bool isProfileYours,
+    required ProfileQuestsType typeQuests,
     bool isForce = false,
   }) async {
     try {
@@ -38,13 +41,13 @@ abstract class _ProfileQuestsStore extends IStore<bool> with Store {
             ? await _apiProvider.getEmployerQuests(
                 userId: userId,
                 offset: quests.length,
-                statuses: [QuestConstants.questDone],
+                statuses: convertTypeToStatuses(typeQuests),
                 me: isProfileYours,
               )
             : await _apiProvider.getWorkerQuests(
                 userId: userId,
                 offset: quests.length,
-                statuses: [QuestConstants.questDone],
+                statuses: convertTypeToStatuses(typeQuests),
                 me: isProfileYours,
               ),
       );
@@ -54,44 +57,18 @@ abstract class _ProfileQuestsStore extends IStore<bool> with Store {
     }
   }
 
-  @action
-  getActiveQuests({
-    required UserRole userRole,
-    required String userId,
-    required bool isProfileYours,
-    bool isForce = false,
-  }) async {
-    try {
-      this.onLoading();
-      if (isForce) {
-        quests.clear();
-      }
-      quests.addAll(
-        userRole == UserRole.Employer
-            ? await _apiProvider.getEmployerQuests(
-                offset: quests.length,
-                userId: userId,
-                statuses: [
-                  QuestConstants.questDispute,
-                  QuestConstants.questWaitWorker,
-                  QuestConstants.questWaitEmployerConfirm
-                ],
-                me: isProfileYours,
-              )
-            : await _apiProvider.getWorkerQuests(
-                offset: quests.length,
-                userId: userId,
-                statuses: [
-                  QuestConstants.questDispute,
-                  QuestConstants.questWaitWorker,
-                  QuestConstants.questWaitEmployerConfirm
-                ],
-                me: isProfileYours,
-              ),
-      );
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
+  List<int> convertTypeToStatuses(ProfileQuestsType type) {
+    switch (type) {
+      case ProfileQuestsType.active:
+        return [
+          QuestConstants.questDispute,
+          QuestConstants.questWaitWorker,
+          QuestConstants.questWaitEmployerConfirm
+        ];
+      case ProfileQuestsType.completed:
+        return [QuestConstants.questDone];
+      case ProfileQuestsType.all:
+        return [];
     }
   }
 }

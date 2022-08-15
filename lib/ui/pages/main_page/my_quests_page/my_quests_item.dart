@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
@@ -32,11 +33,13 @@ class MyQuestsItem extends StatefulWidget {
 
 class _MyQuestsItemState extends State<MyQuestsItem> {
   late final MyQuestStore store;
+  late final QuestsStore searchStore;
 
   @override
   void initState() {
     super.initState();
     store = context.read<MyQuestStore>();
+    searchStore = context.read<QuestsStore>();
   }
 
   @override
@@ -72,7 +75,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded: widget.questInfo.responded ?? widget.questInfo.questChat?.response,
+                responded:
+                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
                 role: store.role,
               ),
             Row(
@@ -115,15 +119,16 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   IconButton(
                     icon: Icon(
                       Icons.star,
-                      color: widget.questInfo.star
-                          ? AppColor.gold
-                          : Color(0xFFE9EDF2),
+                      color: widget.questInfo.star ? AppColor.gold : Color(0xFFE9EDF2),
                     ),
                     onPressed: () async {
                       await store.setStar(
                         widget.questInfo,
                         !widget.questInfo.star,
                       );
+                      if (store.errorMessage == null) {
+                        searchStore.setStar(widget.questInfo.id, widget.questInfo.star);
+                      }
                     },
                   ),
               ],
@@ -193,7 +198,9 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 Row(
                   children: [
                     PriorityView(
-                      widget.questInfo.priority != 0 ? widget.questInfo.priority - 1 : 0,
+                      widget.questInfo.priority != 0
+                          ? widget.questInfo.priority - 1
+                          : 0,
                     ),
                     const SizedBox(width: 5),
                     PayPeriodView(widget.questInfo.payPeriod),
