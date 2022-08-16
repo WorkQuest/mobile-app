@@ -7,6 +7,7 @@ import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/utils/map_utils.dart';
 import 'package:app/utils/marker_loader_for_map.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,8 +18,6 @@ import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import '../../../../../../constants.dart';
 
 part 'quest_map_store.g.dart';
 
@@ -86,8 +85,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     );
     if (p != null) {
       address = p.description!;
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId!);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
       controller.moveCamera(
         CameraUpdate.newLatLng(
           LatLng(
@@ -120,32 +118,6 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     }
   }
 
-  ClusterManager<ClusterItem> initClusterManager() {
-    final List<double> level = const [
-      1,
-      4.25,
-      6.75,
-      8.25,
-      11.5,
-      14.5,
-      16.0,
-      16.5,
-      20.0
-    ];
-
-    if (isWorker!)
-      return ClusterManager<BaseQuestResponse>(questsOnMap, _updateMarkers,
-          markerBuilder: questMarkerBuilder,
-          levels: level,
-          extraPercent: 0.5,
-          stopClusteringZoom: 25.0);
-    return ClusterManager<ProfileMeResponse>(workersOnMap, _updateMarkers,
-        markerBuilder: workersMarkerBuilder,
-        levels: level,
-        extraPercent: 0.5,
-        stopClusteringZoom: 25.0);
-  }
-
   void _updateMarkers(Set<Marker> markers) {
     this.markers = ObservableSet.of(markers);
   }
@@ -157,46 +129,20 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     this.markerLoader = new MarkerLoader(context);
     // assign value here, null if assigned in constructor
     isWorker = getIt.get<ProfileMeStore>().userData?.role == UserRole.Worker;
-    clusterManager = initClusterManager();
+    clusterManager = MapUtils.initClusterManager(
+        questsOnMap: questsOnMap,
+        workersOnMap: workersOnMap,
+        updateMarkers: _updateMarkers,
+        onTapMarker: isWorker!
+            ? (cluster) {
+                hideInfo = false;
+                currentQuestCluster = ObservableList.of((cluster as Cluster<BaseQuestResponse>).items.toList());
+              }
+            : (cluster) {
+                hideInfo = false;
+                currentWorkerCluster = ObservableList.of((cluster as Cluster<ProfileMeResponse>).items.toList());
+              },
+        markerLoader: markerLoader,
+        isWorker: isWorker);
   }
-
-  Future<Marker> Function(Cluster<BaseQuestResponse>) get questMarkerBuilder =>
-      (cluster) async {
-        return Marker(
-          markerId: MarkerId(cluster.getId()),
-          position: cluster.location,
-          onTap: () {
-            hideInfo = false;
-            currentQuestCluster = ObservableList.of(cluster.items.toList());
-          },
-          icon: cluster.isMultiple
-              ? await MarkerLoader.getClusterMarkerBitmap(
-                  cluster.count.toString())
-              : markerLoader!.icons[cluster.items.toList()[0].priority],
-        );
-      };
-
-  Future<Marker> Function(Cluster<ProfileMeResponse>)
-      get workersMarkerBuilder => (cluster) async {
-            return Marker(
-                markerId: MarkerId(cluster.getId()),
-                position: cluster.location,
-                onTap: () {
-                  hideInfo = false;
-                  currentWorkerCluster =
-                      ObservableList.of(cluster.items.toList());
-                },
-                icon: cluster.isMultiple
-                    ? await MarkerLoader.getClusterMarkerBitmap(
-                        cluster.count.toString())
-                    : await MarkerLoader.getMarkerImageFromUrl(
-                        cluster.items.toList()[0].avatar?.url ??
-                            Constants.defaultImageNetwork,
-                        Constants
-                            .workerRatingTag[cluster.items
-                                .toList()[0]
-                                .ratingStatistic
-                                ?.status]
-                            ?.color));
-          };
 }
