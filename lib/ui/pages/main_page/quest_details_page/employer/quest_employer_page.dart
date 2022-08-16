@@ -139,7 +139,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (value == "quests.raiseViews") {
+            if (value == "Raise views") {
               final result = await Navigator.pushNamed(
                 context,
                 RaiseViews.routeName,
@@ -162,7 +162,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   content: "modals.errorEditQuest2FA".tr(),
                 );
               }
-            } else if (value == "settings.delete") {
+            } else if (value == "Close quest") {
               if (profile?.userData?.isTotpActive == true) {
                 _showSecurityTOTPDialog(
                   onTabOk: () async {
@@ -180,9 +180,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (canRaiseView) 'quests.raiseViews',
+              if (canRaiseView) 'Raise views',
               if (canEditOrDelete) 'registration.edit',
-              if (canEditOrDelete) 'settings.delete',
+              if (canEditOrDelete) 'Close quest',
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,

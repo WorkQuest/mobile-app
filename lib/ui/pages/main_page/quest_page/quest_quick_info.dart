@@ -23,7 +23,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
             mapStore.currentWorkerCluster.isNotEmpty);
 
     return AnimatedContainer(
-      height: showInfo ? 324.0 : 0.0,
+      height: showInfo ? 370.0 : 0.0,
       width: MediaQuery.of(context).size.width,
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
@@ -39,6 +39,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                   questInfo: mapStore.currentQuestCluster[index],
                   itemType: QuestsType.All,
                   isExpanded: true,
+                  showStar: false,
                 );
               return WorkersItem(
                 mapStore.currentWorkerCluster[index],

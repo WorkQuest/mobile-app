@@ -84,9 +84,8 @@ class _RaiseViewsState extends State<RaiseViews> {
           persistentFooterButtons: [
             LoginButton(
               withColumn: true,
-              enabled: store.isLoading,
               title: "wallet.pay".tr(),
-              onTap: _onPressedPay,
+              onTap: store.isLoading? null: _onPressedPay,
             )
           ],
           body: CustomScrollView(

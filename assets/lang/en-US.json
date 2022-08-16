@@ -421,7 +421,7 @@
       "fixedPeriod": "Fixed period",
       "byAgreement": "By agreement"
     },
-    "chooseWorker": "Choose a worker",
+    "chooseWorker": "Start quest",
     "employment": {
       "title": "Employment",
       "fullTime": "Full time",
@@ -444,7 +444,7 @@
     "active": "Active",
     "performed": "Completed",
     "areYouSureTheQuestIsComplete": "Are you sure the quest is complete?",
-    "completeTheQuest": "Complete the quest",
+    "completeTheQuest": "Complete work",
     "requested": "Requested",
     "youRequested": "You requested",
     "youInvited": "You invited",
@@ -482,9 +482,9 @@
     "uploadQuestMaterials": "Add a detailed description",
     "answerOnQuest": {
       "title": "Answer on quest",
-      "accept": "Accept quest",
+      "accept": "Agree",
       "questAccepted": "Quest accepted",
-      "reject": "Reject quest",
+      "reject": "Disagree",
       "questRejected": "Quest rejected",
       "questCompleted": "Quest completed",
       "acceptWork": "Accept work",
