@@ -89,22 +89,22 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (widget.type == MediaType.images) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: imagesExtensions,
+                          type: Platform.isIOS ? FileType.image : FileType.custom,
+                          allowedExtensions: Platform.isIOS ? null : imagesExtensions,
                         );
                       }
                       if (widget.type == MediaType.video) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: videosExtensions,
+                          type: Platform.isIOS ? FileType.video : FileType.custom,
+                          allowedExtensions: Platform.isIOS ? null : videosExtensions,
                         );
                       }
                       if (widget.type == MediaType.any) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png'],
+                          type: Platform.isIOS ? FileType.any : FileType.custom,
+                          allowedExtensions: Platform.isIOS ? null : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png'],
                         );
                       }
                       if (result != null) {
@@ -154,8 +154,7 @@ class ListMediaView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           ...store.progressImages
-              .where(
-                  (element) => element.value.url != null && element.value.url!.isNotEmpty)
+              .where((element) => element.value.url != null && element.value.url!.isNotEmpty)
               .toList()
               .map(
                 (notifier) => _ImageNetworkEntity(
@@ -203,22 +202,22 @@ class _GalleryView extends StatelessWidget {
         if (type == MediaType.images) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
-            type: FileType.custom,
-            allowedExtensions: imagesExtensions,
+            type: Platform.isIOS ? FileType.image : FileType.custom,
+            allowedExtensions: Platform.isIOS ? null : imagesExtensions,
           );
         }
         if (type == MediaType.video) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
-            type: FileType.custom,
-            allowedExtensions: videosExtensions,
+            type: Platform.isIOS ? FileType.video : FileType.custom,
+            allowedExtensions: Platform.isIOS ? null : videosExtensions,
           );
         }
         if (type == MediaType.any) {
           result = await FilePicker.platform.pickFiles(
               allowMultiple: true,
-              type: FileType.custom,
-              allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']);
+              type: Platform.isIOS ? FileType.any : FileType.custom,
+              allowedExtensions: Platform.isIOS ? null : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']);
         }
         if (result != null) {
           result.files.map((file) {
