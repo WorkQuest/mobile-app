@@ -46,9 +46,12 @@ class PermissionUtil {
     return result;
   }
 
-  static Future<bool> permissionIsGranted(Permission permission) async {
+  static Future<bool> permissionIsGranted(Permission permission, {bool isIOS = false}) async {
     final status = await getStatusPermission(permission);
 
+    if (isIOS) {
+      return status.isGranted || status.isLimited;
+    }
     return status.isGranted;
   }
 }

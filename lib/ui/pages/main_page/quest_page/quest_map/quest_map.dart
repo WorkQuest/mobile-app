@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/handler_permission_map.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/quick_info_widget.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/search_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -28,7 +30,6 @@ class _QuestMapState extends State<QuestMap> {
   void initState() {
     mapStore = context.read<QuestMapStore>();
     mapStore!.createMarkerLoader(context);
-    _getLocation();
     super.initState();
   }
 
@@ -38,63 +39,75 @@ class _QuestMapState extends State<QuestMap> {
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator.adaptive())
-            : SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Visibility(
-                    visible: hasPermission,
-                    maintainState: false,
-                    replacement: GoogleMap(
-                      mapType: MapType.normal,
-                      rotateGesturesEnabled: false,
-                      initialCameraPosition: mapStore!.initialCameraPosition!,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        GoogleMap(
-                          onCameraMove: (CameraPosition position) {
-                            if (mapStore?.debounce != null)
-                              mapStore!.debounce!.cancel();
-                            mapStore!.debounce = Timer(
-                              const Duration(milliseconds: 200),
-                              () async {
-                                LatLngBounds bounds =
-                                    await _controller.getVisibleRegion();
-                                mapStore!.getQuestsOnMap(bounds);
+            : HandlerPermissionMapWidget(
+              callbackPosition: (position) {
+                if (mapStore!.initialCameraPosition != null) {
+                  return;
+                }
+                mapStore!.initialCameraPosition = position;
+              },
+              child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Visibility(
+                      visible: hasPermission,
+                      maintainState: false,
+                      replacement: GoogleMap(
+                        mapType: MapType.normal,
+                        rotateGesturesEnabled: false,
+                        initialCameraPosition: mapStore!.initialCameraPosition!,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          GoogleMap(
+                            onCameraMove: (CameraPosition position) {
+                              if (mapStore?.debounce != null) mapStore!.debounce!.cancel();
+                              mapStore!.debounce = Timer(
+                                const Duration(milliseconds: 200),
+                                () async {
+                                  LatLngBounds bounds = await _controller.getVisibleRegion();
+                                  mapStore!.getQuestsOnMap(bounds);
+                                },
+                              );
+                              mapStore!.clusterManager.onCameraMove(position);
+                            },
+                            mapType: MapType.normal,
+                            zoomControlsEnabled: false,
+                            rotateGesturesEnabled: false,
+                            myLocationEnabled: true,
+                            minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                            initialCameraPosition: mapStore!.initialCameraPosition!,
+                            myLocationButtonEnabled: false,
+                            markers: mapStore!.markers,
+                            onCameraIdle: mapStore!.clusterManager.updateMap,
+                            onMapCreated: (GoogleMapController controller) async {
+                              _controller = controller;
+                              LatLngBounds bounds = await _controller.getVisibleRegion();
+                              await mapStore!.getQuestsOnMap(bounds);
+                              mapStore!.clusterManager.setMapId(controller.mapId);
+                              _onMyLocationPressed();
+                            },
+                          ),
+                          QuestQuickInfo(),
+                          Observer(
+                            builder: (_) => SearchBarMapWidget(
+                              onTap: () {
+                                mapStore!.getPrediction(context, _controller);
                               },
-                            );
-                            mapStore!.clusterManager.onCameraMove(position);
-                          },
-                          mapType: MapType.normal,
-                          zoomControlsEnabled: false,
-                          rotateGesturesEnabled: false,
-                          myLocationEnabled: true,
-                          minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                          initialCameraPosition: mapStore!.initialCameraPosition!,
-                          myLocationButtonEnabled: false,
-                          markers: mapStore!.markers,
-                          onCameraIdle: mapStore!.clusterManager.updateMap,
-                          onMapCreated: (GoogleMapController controller) async {
-                            _controller = controller;
-                            LatLngBounds bounds =
-                                await _controller.getVisibleRegion();
-                            await mapStore!.getQuestsOnMap(bounds);
-                            mapStore!.clusterManager.setMapId(controller.mapId);
-                            _onMyLocationPressed();
-                          },
-                        ),
-                        QuestQuickInfo(),
-                        searchBar(),
-                      ],
+                              hintText: mapStore!.address.isNotEmpty ? mapStore!.address : "quests.ui.search".tr(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-              ),
+                ),
             ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedPadding(
@@ -117,9 +130,7 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.hideInfo
-                    ? _onMyLocationPressed
-                    : mapStore!.closeInfo,
+                onPressed: mapStore!.hideInfo ? _onMyLocationPressed : mapStore!.closeInfo,
                 child: Icon(
                   mapStore!.hideInfo ? Icons.location_on : Icons.close,
                 ),
@@ -130,33 +141,6 @@ class _QuestMapState extends State<QuestMap> {
       ),
     );
   }
-
-  Widget searchBar() => Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 54),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Observer(
-              builder: (_) => TextFormField(
-                onTap: () {
-                  mapStore!.getPrediction(context, _controller);
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                  fillColor: Color(0xFFF7F8FA),
-                  hintText: mapStore!.address.isNotEmpty
-                      ? mapStore!.address
-                      : "quests.ui.search".tr(),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    size: 25.0,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
 
   Future<void> _getLocation() async {
     hasPermission = await _handlePermission();
