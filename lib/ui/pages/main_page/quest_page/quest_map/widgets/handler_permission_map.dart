@@ -1,17 +1,23 @@
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/quest_map.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+const _defaultPosition = CameraPosition(
+  bearing: 0,
+  target: LatLng(59.43634169219954, 24.72916993898239),
+  zoom: 17.0,
+);
+
 class HandlerPermissionMapWidget extends StatefulWidget {
-  final Function(CameraPosition) callbackPosition;
-  final Widget child;
+  final Function() changePage;
 
   const HandlerPermissionMapWidget({
     Key? key,
-    required this.callbackPosition,
-    required this.child,
+    required this.changePage,
   }) : super(key: key);
 
   @override
@@ -26,24 +32,24 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
 
   bool get hasPosition => _currentPosition != null;
 
+  AppLifecycleState? state;
+
   Future<CameraPosition?> getPosition() async {
+    await Future.delayed(Duration.zero);
     if (hasPosition) {
+      setState(() {});
       return _currentPosition;
     }
     LocationPermission permission = await _geoLocatorPlatform.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await _geoLocatorPlatform.requestPermission();
       if (permission == LocationPermission.denied) {
-        return CameraPosition(
-          bearing: 0,
-          target: LatLng(59.43634169219954, 24.72916993898239),
-          zoom: 17.0,
-        );
+        return _defaultPosition;
       }
     }
     if (permission == LocationPermission.deniedForever) {
       _requestPermissionDialog();
-      return null;
+      return _defaultPosition;
     }
 
     final position = await _geoLocatorPlatform.getCurrentPosition();
@@ -69,9 +75,12 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _positionOnMap = getPosition();
+    if (this.state != null) {
+      if (state == AppLifecycleState.resumed && this.state == AppLifecycleState.paused) {
+        _positionOnMap = getPosition();
+      }
     }
+    this.state = state;
   }
 
   @override
@@ -84,45 +93,32 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
           return Center(child: CircularProgressIndicator.adaptive());
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          _currentPosition = position;
-          widget.callbackPosition.call(position);
-          return widget.child;
+          return QuestMap(
+            widget.changePage,
+            position,
+            (position) => _currentPosition = position,
+          );
         }
-        print('FutureBuilder skip all states');
         return Center(child: CircularProgressIndicator.adaptive());
       },
     );
   }
 
-  Future<void> _requestPermissionDialog() {
-    return showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text(
-            "quests.ui.access".tr(),
-          ),
-          content: Text(
-            "quests.ui.openSettings".tr(),
-          ),
-          actions: [
-            CupertinoDialogAction(
-              child: Text(
-                "meta.close".tr(),
-              ),
-              onPressed: Navigator.of(context).pop,
-            ),
-            CupertinoDialogAction(
-              child: Text(
-                "ui.profile.settings".tr(),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
-                _geoLocatorPlatform.openAppSettings();
-              },
-            ),
-          ],
-        );
+  _requestPermissionDialog() {
+    return AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text(
+        "quests.ui.access".tr(),
+      ),
+      content: Text(
+        "quests.ui.openSettings".tr(),
+      ),
+      needCancel: true,
+      titleOk: "ui.profile.settings".tr(),
+      colorCancel: Colors.red,
+      colorOk: AppColor.enabledButton,
+      onTabOk: () {
+        _geoLocatorPlatform.openAppSettings();
       },
     );
   }
