@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/quick_info_widget.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/search_bar_widget.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,16 +13,18 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 class QuestMap extends StatefulWidget {
-  final void Function() changePage;
+  final Function() changePage;
+  final CameraPosition position;
+  final Function(CameraPosition) callbackPosition;
 
-  QuestMap(this.changePage);
+  QuestMap(this.changePage, this.position, this.callbackPosition);
 
   @override
   _QuestMapState createState() => _QuestMapState();
 }
 
 class _QuestMapState extends State<QuestMap> {
-  QuestMapStore? mapStore;
+  late QuestMapStore mapStore;
   late GoogleMapController _controller;
   bool hasPermission = false;
   final GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
@@ -27,8 +32,8 @@ class _QuestMapState extends State<QuestMap> {
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
-    mapStore!.createMarkerLoader(context);
-    _getLocation();
+    mapStore.createMarkerLoader(context);
+    mapStore.initialCameraPosition = widget.position;
     super.initState();
   }
 
@@ -36,71 +41,63 @@ class _QuestMapState extends State<QuestMap> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        body: mapStore?.initialCameraPosition == null
-            ? Center(child: CircularProgressIndicator.adaptive())
-            : SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Visibility(
-                    visible: hasPermission,
-                    maintainState: false,
-                    replacement: GoogleMap(
-                      mapType: MapType.normal,
-                      rotateGesturesEnabled: false,
-                      initialCameraPosition: mapStore!.initialCameraPosition!,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        GoogleMap(
-                          onCameraMove: (CameraPosition position) {
-                            if (mapStore?.debounce != null)
-                              mapStore!.debounce!.cancel();
-                            mapStore!.debounce = Timer(
-                              const Duration(milliseconds: 200),
-                              () async {
-                                LatLngBounds bounds =
-                                    await _controller.getVisibleRegion();
-                                mapStore!.getQuestsOnMap(bounds);
-                              },
-                            );
-                            mapStore!.clusterManager.onCameraMove(position);
-                          },
-                          mapType: MapType.normal,
-                          zoomControlsEnabled: false,
-                          rotateGesturesEnabled: false,
-                          myLocationEnabled: true,
-                          minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                          initialCameraPosition: mapStore!.initialCameraPosition!,
-                          myLocationButtonEnabled: false,
-                          markers: mapStore!.markers,
-                          onCameraIdle: mapStore!.clusterManager.updateMap,
-                          onMapCreated: (GoogleMapController controller) async {
-                            _controller = controller;
-                            LatLngBounds bounds =
-                                await _controller.getVisibleRegion();
-                            await mapStore!.getQuestsOnMap(bounds);
-                            mapStore!.clusterManager.setMapId(controller.mapId);
-                            _onMyLocationPressed();
-                          },
-                        ),
-                        QuestQuickInfo(),
-                        searchBar(),
-                      ],
-                    ),
+        body: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                GoogleMap(
+                  onCameraMove: (CameraPosition position) {
+                    if (mapStore.debounce != null) mapStore.debounce!.cancel();
+                    mapStore.debounce = Timer(
+                      const Duration(milliseconds: 200),
+                      () async {
+                        LatLngBounds bounds = await _controller.getVisibleRegion();
+                        mapStore.getQuestsOnMap(bounds);
+                      },
+                    );
+                    mapStore.clusterManager.onCameraMove(position);
+                    widget.callbackPosition.call(position);
+                  },
+                  mapType: MapType.normal,
+                  zoomControlsEnabled: false,
+                  rotateGesturesEnabled: false,
+                  myLocationEnabled: true,
+                  minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                  initialCameraPosition: mapStore.initialCameraPosition!,
+                  myLocationButtonEnabled: false,
+                  markers: mapStore.markers,
+                  onCameraIdle: mapStore.clusterManager.updateMap,
+                  onMapCreated: (GoogleMapController controller) async {
+                    _controller = controller;
+                    LatLngBounds bounds = await _controller.getVisibleRegion();
+                    await mapStore.getQuestsOnMap(bounds);
+                    mapStore.clusterManager.setMapId(controller.mapId);
+                    widget.callbackPosition.call(mapStore.initialCameraPosition!);
+                    // _onMyLocationPressed();
+                  },
+                ),
+                QuestQuickInfo(),
+                Observer(
+                  builder: (_) => SearchBarMapWidget(
+                    onTap: () {
+                      mapStore.getPrediction(context, _controller);
+                    },
+                    hintText: mapStore.address.isNotEmpty ? mapStore.address : "quests.ui.search".tr(),
                   ),
-              ),
+                ),
+              ],
             ),
+          ),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedPadding(
           padding: EdgeInsets.only(
             left: 25,
-            bottom: mapStore!.hideInfo ? 0.0 : 324.0,
+            bottom: mapStore.hideInfo ? 0.0 : 324.0,
           ),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
@@ -117,11 +114,9 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.hideInfo
-                    ? _onMyLocationPressed
-                    : mapStore!.closeInfo,
+                onPressed: mapStore.hideInfo ? _onMyLocationPressed : mapStore.closeInfo,
                 child: Icon(
-                  mapStore!.hideInfo ? Icons.location_on : Icons.close,
+                  mapStore.hideInfo ? Icons.location_on : Icons.close,
                 ),
               ),
             ],
@@ -129,59 +124,6 @@ class _QuestMapState extends State<QuestMap> {
         ),
       ),
     );
-  }
-
-  Widget searchBar() => Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 54),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Observer(
-              builder: (_) => TextFormField(
-                onTap: () {
-                  mapStore!.getPrediction(context, _controller);
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                  fillColor: Color(0xFFF7F8FA),
-                  hintText: mapStore!.address.isNotEmpty
-                      ? mapStore!.address
-                      : "quests.ui.search".tr(),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    size: 25.0,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Future<void> _getLocation() async {
-    hasPermission = await _handlePermission();
-
-    setState(() {});
-
-    if (!hasPermission) {
-      mapStore!.initialCameraPosition = CameraPosition(
-        bearing: 0,
-        target: LatLng(59.43634169219954, 24.72916993898239),
-        zoom: 19,
-      );
-      return;
-    }
-    await updatePosition();
-
-    mapStore!.initialCameraPosition = CameraPosition(
-      bearing: 0,
-      target: LatLng(
-        mapStore!.locationPosition?.latitude ?? 90.0,
-        mapStore!.locationPosition?.longitude ?? 90.0,
-      ),
-      zoom: 17.0,
-    );
-    return;
   }
 
   Future<void> _onMyLocationPressed() async {
@@ -194,8 +136,8 @@ class _QuestMapState extends State<QuestMap> {
           CameraPosition(
             bearing: 0,
             target: LatLng(
-              mapStore?.locationPosition?.latitude ?? 90.0,
-              mapStore!.locationPosition?.longitude ?? 90,
+              mapStore.locationPosition?.latitude ?? 90.0,
+              mapStore.locationPosition?.longitude ?? 90,
             ),
             zoom: 17.0,
           ),
@@ -206,11 +148,11 @@ class _QuestMapState extends State<QuestMap> {
 
   Future<void> updatePosition() async {
     _geoLocatorPlatform.getCurrentPosition().then((position) {
-      mapStore?.locationPosition = position;
+      mapStore.locationPosition = position;
     });
 
     await _geoLocatorPlatform.getLastKnownPosition().then((position) {
-      mapStore?.locationPosition = position;
+      mapStore.locationPosition = position;
     });
   }
 
@@ -250,36 +192,20 @@ class _QuestMapState extends State<QuestMap> {
   }
 
   Future<void> _requestPermissionDialog() {
-    return showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text(
-            "quests.ui.access".tr(),
-          ),
-          content: Text(
-            "quests.ui.openSettings".tr(),
-          ),
-          actions: [
-            CupertinoDialogAction(
-              child: Text(
-                "meta.close".tr(),
-              ),
-              onPressed: Navigator.of(context).pop,
-            ),
-            CupertinoDialogAction(
-              child: Text(
-                "ui.profile.settings".tr(),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
-                await _geoLocatorPlatform.openAppSettings();
-                print("pop");
-                await _onMyLocationPressed();
-              },
-            ),
-          ],
-        );
+    return AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text(
+        "quests.ui.access".tr(),
+      ),
+      content: Text(
+        "quests.ui.openSettings".tr(),
+      ),
+      needCancel: true,
+      titleOk: "ui.profile.settings".tr(),
+      colorCancel: Colors.red,
+      colorOk: AppColor.enabledButton,
+      onTabOk: () {
+        _geoLocatorPlatform.openAppSettings();
       },
     );
   }
