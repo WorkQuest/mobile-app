@@ -8,19 +8,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PushNotificationService {
-  PushNotificationService(
-    this._fcm,
-    this.channel,
-    this.flutterLocalNotificationsPlugin,
-  ) {
+  PushNotificationService() {
     _initialise();
     _getRemoteNotification();
     _onMessageOpenApp();
   }
 
-  final FirebaseMessaging _fcm;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  final AndroidNotificationChannel channel;
+  FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notification',
+    description: 'This channel is used for important notifications',
+    importance: Importance.max,
+    playSound: true,
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future _initialise() async {
     try {
@@ -39,12 +43,15 @@ class PushNotificationService {
       var initializationSettings = new InitializationSettings(
           android: initializationSettingsAndroid,
           iOS: initializationSettingsIOS);
+
       flutterLocalNotificationsPlugin.initialize(initializationSettings,
           onSelectNotification: onSelectNotification);
+
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         Platform.isAndroid
             ? implementAndroidNotificationPlugin()
             : implementIOSNotificationPlugin();
+
         messaging();
       } else {
         print('User declined or has not accepted permission');
@@ -55,7 +62,8 @@ class PushNotificationService {
   }
 
   Future onSelectNotification(String? payload) async {
-    final notification = NotificationNotification.fromJson(jsonDecode(payload!));
+    final notification =
+        NotificationNotification.fromJson(jsonDecode(payload!));
     OpenScreeFromPush().openScreen(notification);
   }
 
@@ -86,9 +94,7 @@ class PushNotificationService {
         RemoteNotification? notification = message.notification;
         AndroidNotification? androidNotification =
             message.notification?.android;
-        AppleNotification? appleNotification = message.notification?.apple;
-        if (notification != null &&
-            (androidNotification != null || appleNotification != null)) {
+        if (notification != null && androidNotification != null) {
           Map<String, dynamic> data = {
             "data": message.data["data"],
             "action": message.data["action"],
@@ -132,11 +138,6 @@ class PushNotificationService {
           color: Colors.white,
           playSound: true,
           icon: '@drawable/logo',
-        ),
-        iOS: IOSNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
         ),
       ),
       payload: data,
