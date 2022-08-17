@@ -2006,6 +2006,7 @@
   "errors": {
     "incorrectPass": "Oops, there was a problem. Check the data and try again.",
     "serverTimedOut": "Server response timed out",
+    "checkInternetConnection": "Check your internet connection",
     "failedToGetBalance": "Failed to get balance",
     "swipeUpdate": "Swipe to update",
     "higherMax": "Higher max amount",
