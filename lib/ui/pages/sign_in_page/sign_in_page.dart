@@ -84,16 +84,14 @@ class _SignInPageState extends State<SignInPage> {
           });
         } else if (store.successData == SignInStoreState.signIn) {
           await AlertDialogUtils.showSuccessDialog(context);
-          Navigator.pushNamedAndRemoveUntil(
+          Navigator.pushNamed(
             context,
             MnemonicPage.routeName,
-            (_) => false,
           );
         }
       },
       onFailure: () {
-        if (store.errorMessage == "TOTP is invalid" ||
-            store.errorMessage == "User must pass 2FA") {
+        if (store.errorMessage == "TOTP is invalid" || store.errorMessage == "User must pass 2FA") {
           _showAlertTotp(context, store);
           return true;
         }
@@ -436,9 +434,8 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             value: AccountRepository().notifierNetwork.value,
             onChanged: (value) {
               setState(() {
-                final _networkName = (value as Network) == Network.mainnet
-                    ? NetworkName.workNetMainnet
-                    : NetworkName.workNetTestnet;
+                final _networkName =
+                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
                 AccountRepository().setNetwork(_networkName);
                 Storage.write(StorageKeys.networkName.name, _networkName.name);
               });

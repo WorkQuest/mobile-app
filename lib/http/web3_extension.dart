@@ -103,7 +103,8 @@ extension Web3Requests on ApiProvider {
     return TransactionsResponse.fromJsonToken(response).transactions!;
   }
 
-  Future walletLogin(String signature, String address) async {
+  /// return address wallet
+  Future<String> walletLogin(String signature, String address) async {
     final response = await httpClient.post(
       query: "/v1/auth/login/wallet",
       data: {
@@ -111,6 +112,7 @@ extension Web3Requests on ApiProvider {
         "address": address,
       },
     );
-    print("Wallet Login$response");
+
+    return response['address'];
   }
 }
