@@ -38,9 +38,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         if (isMyProfile)
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: OutlinedButton(
               onPressed: () async {
                 final result = await Navigator.pushNamed(
@@ -53,19 +51,13 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 }
               },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: Colors.blueAccent.withOpacity(0.3),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
+                side: BorderSide(color: Colors.blueAccent.withOpacity(0.3)),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "quests.addNew".tr(),
-                  ),
+                  Text("quests.addNew".tr()),
                   const SizedBox(width: 5.0),
                   const Icon(Icons.add),
                 ],
@@ -81,15 +73,9 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 18.0,
-                  ),
-                  SvgPicture.asset(
-                    "assets/empty_quest_icon.svg",
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
+                  const SizedBox(height: 18.0),
+                  SvgPicture.asset("assets/empty_quest_icon.svg"),
+                  const SizedBox(height: 10.0),
                   Text(
                     "profiler.dontHavePortfolioOtherUser".tr(),
                     style: TextStyle(
@@ -118,10 +104,13 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           );
         }),
 
-        if (portfolioStore!.portfolioList.isNotEmpty)
+        if (portfolioStore!.portfolioList.length > 3)
           Padding(
             padding: EdgeInsets.only(
-                left: 16.0, right: 16.0, bottom: MediaQuery.of(context).padding.bottom),
+              left: 16.0,
+              right: 16.0,
+              bottom: MediaQuery.of(context).padding.bottom,
+            ),
             child: ElevatedButton(
               onPressed: () async {
                 portfolioStore!.setTitleName("Portfolio");
@@ -139,9 +128,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   ),
                 );
               },
-              child: Text(
-                "meta.showAllReviews".tr(),
-              ),
+              child: Text("meta.showAllPortfolio".tr()),
             ),
           ),
       ];
@@ -168,7 +155,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : Observer(
                     builder: (_) => SkillsWidget(
-                      skills: store.parser(userStore!.userData!.userSpecializations),
+                      skills: store
+                          .parser(userStore!.userData!.userSpecializations),
                       isProfileMy: true,
                       isExpanded: store.expandedSkills ||
                           userStore!.userData!.userSpecializations.length < 5,
@@ -187,7 +175,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : Observer(
                     builder: (_) => SkillsWidget(
-                      skills: store.parser(viewOtherUser!.userData!.userSpecializations),
+                      skills: store
+                          .parser(viewOtherUser!.userData!.userSpecializations),
                       isProfileMy: false,
                       isExpanded: store.expandedSkills ||
                           userStore!.userData!.userSpecializations.length < 5,
@@ -227,9 +216,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           padding: const EdgeInsets.only(bottom: 10.0),
           child: Text(
             "settings.educations".tr(),
-            style: style.copyWith(
-              fontSize: 14,
-            ),
+            style: style.copyWith(fontSize: 14),
           ),
         ),
         isMyProfile
@@ -238,36 +225,34 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: userStore!.userData!.additionalInfo!.educations.length,
+                    itemCount:
+                        userStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education =
-                          userStore!.userData!.additionalInfo!.educations[index];
+                      final education = userStore!
+                          .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
                           to: education["to"] ?? "--");
                     })
-                : Text(
-                    "profiler.noInformation".tr(),
-                  )
+                : Text("profiler.noInformation".tr())
             : (viewOtherUser!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: viewOtherUser!.userData!.additionalInfo!.educations.length,
+                    itemCount: viewOtherUser!
+                        .userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education =
-                          viewOtherUser!.userData!.additionalInfo!.educations[index];
+                      final education = viewOtherUser!
+                          .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
                           to: education["to"] ?? "--");
                     },
                   )
-                : Text(
-                    "profiler.noInformation".tr(),
-                  ),
+                : Text("profiler.noInformation".tr()),
 
         spacer,
 
@@ -276,9 +261,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           padding: const EdgeInsets.only(bottom: 10.0),
           child: Text(
             "settings.workExp".tr(),
-            style: style.copyWith(
-              fontSize: 14,
-            ),
+            style: style.copyWith(fontSize: 14),
           ),
         ),
         isMyProfile
@@ -287,11 +270,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        userStore!.userData!.additionalInfo!.workExperiences.length,
+                    itemCount: userStore!
+                        .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          userStore!.userData!.additionalInfo!.workExperiences[index];
+                      final userExperience = userStore!
+                          .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -304,16 +287,17 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                       fontWeight: FontWeight.normal,
                     ),
                   )
-            : (viewOtherUser!.userData!.additionalInfo!.workExperiences.isNotEmpty)
+            : (viewOtherUser!
+                    .userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        viewOtherUser!.userData!.additionalInfo!.workExperiences.length,
+                    itemCount: viewOtherUser!
+                        .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          viewOtherUser!.userData!.additionalInfo!.workExperiences[index];
+                      final userExperience = viewOtherUser!
+                          .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -342,9 +326,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   );
                   viewOtherUser!.quests.clear();
                 },
-                child: Text(
-                  "quests.addToQuest".tr(),
-                ),
+                child: Text("quests.addToQuest".tr()),
               ),
             ],
           ),
@@ -354,9 +336,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               spacer,
               ElevatedButton(
                 onPressed: _onPressedRaiseView,
-                child: Text(
-                  "profiler.raiseViews".tr(),
-                ),
+                child: Text("profiler.raiseViews".tr()),
               ),
             ],
           ),
@@ -364,7 +344,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   _onPressedRaiseView() async {
     final _raiseView = userStore!.userData?.raiseView;
-    final _raiseViewActive = _raiseView?.status == RaiseViewConstants.statusActive;
+    final _raiseViewActive =
+        _raiseView?.status == RaiseViewConstants.statusActive;
     if (_raiseViewActive) {
       AlertDialogUtils.showAlertDialog(
         context,
@@ -374,10 +355,9 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-                'Until ${DateFormat('dd.MM.yyyy HH:mm').format(_raiseView!.endedAt!.toLocal())}'),
-            const SizedBox(
-              height: 5,
+              'Until ${DateFormat('dd.MM.yyyy HH:mm').format(_raiseView!.endedAt!.toLocal())}',
             ),
+            const SizedBox(height: 5),
             Text(
               RaiseViewUtils.getTypeTitle(_raiseView.type!),
               style: TextStyle(
@@ -411,7 +391,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   : userStore!.userData!.questsStatistic!.completed.toString()
               : viewOtherUser!.userData!.questsStatistic == null
                   ? '0'
-                  : viewOtherUser!.userData!.questsStatistic!.completed.toString(),
+                  : viewOtherUser!.userData!.questsStatistic!.completed
+                      .toString(),
           activeQuests: isMyProfile
               ? userStore!.userData!.questsStatistic == null
                   ? '0'
@@ -424,8 +405,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
           reviews: isMyProfile
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
-          userId: isMyProfile ? userStore!.userData!.id : viewOtherUser!.userData!.id,
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
+                  .toString(),
+          userId: isMyProfile
+              ? userStore!.userData!.id
+              : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

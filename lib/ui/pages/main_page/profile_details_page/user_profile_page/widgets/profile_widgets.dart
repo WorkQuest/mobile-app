@@ -56,7 +56,6 @@ class PortfolioWidget extends StatelessWidget {
             isProfileYour: isProfileYour,
           ),
         );
-        print('result: $result');
         if (result != null && result is PortfolioModel) {
           addPortfolio.call(result);
           (context as Element).markNeedsBuild();
@@ -86,11 +85,26 @@ class PortfolioWidget extends StatelessWidget {
               bottom: 15.0,
               left: 21.0,
               right: 55.0,
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              child: Stack(
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      foreground: Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = 1
+                        ..color = Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
             Positioned(

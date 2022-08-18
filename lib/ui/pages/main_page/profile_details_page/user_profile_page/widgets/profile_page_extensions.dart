@@ -25,7 +25,8 @@ extension CustomAppBar on UserProfileState {
       initialData: AppBarParams.initial(),
       stream: streamController.stream,
       builder: (_, snapshot) {
-        final _color = Color.lerp(AppColor.enabledButton, Colors.white, snapshot.data!.color / 255);
+        final _color = Color.lerp(
+            AppColor.enabledButton, Colors.white, snapshot.data!.color / 255);
         return SliverAppBar(
           backgroundColor: Color(0xFF0083C7),
           automaticallyImplyLeading: false,
@@ -45,7 +46,8 @@ extension CustomAppBar on UserProfileState {
                 ),
                 onPressed: () async {
                   final result =
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(
                     ChangeProfilePage.routeName,
                   );
                   if (result != null && result as bool) {
@@ -84,10 +86,7 @@ extension CustomAppBar on UserProfileState {
             background: Stack(
               fit: StackFit.expand,
               children: [
-                Positioned.fill(
-                    child: ColoredBox(
-                  color: Colors.black,
-                )),
+                Positioned.fill(child: ColoredBox(color: Colors.black)),
                 UserAvatar(
                   url: info.avatar?.url,
                   fit: BoxFit.fitHeight,
@@ -153,9 +152,7 @@ extension CustomAppBar on UserProfileState {
 
 extension ReviewsTab on UserProfileState {
   List<Widget> reviewsTab() => [
-        SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
         Observer(
           builder: (_) => portfolioStore!.reviewsList.isNotEmpty
               ? Column(
@@ -167,17 +164,22 @@ extension ReviewsTab on UserProfileState {
                                 : 3);
                         index++)
                       ReviewsWidget(
-                        avatar: portfolioStore!.reviewsList[index].fromUser.avatar?.url ??
+                        avatar: portfolioStore!
+                                .reviewsList[index].fromUser.avatar?.url ??
                             Constants.defaultImageNetwork,
-                        name: portfolioStore!.reviewsList[index].fromUser.firstName +
+                        name: portfolioStore!
+                                .reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!.reviewsList[index].fromUser.lastName,
+                            portfolioStore!
+                                .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!.reviewsList[index].fromUser.role ==
-                                UserRole.Employer
-                            ? "role.employer"
-                            : "role.worker",
-                        questTitle: portfolioStore!.reviewsList[index].quest.title,
+                        userRole:
+                            portfolioStore!.reviewsList[index].fromUser.role ==
+                                    UserRole.Employer
+                                ? "role.employer"
+                                : "role.worker",
+                        questTitle:
+                            portfolioStore!.reviewsList[index].quest.title,
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: viewOtherUser?.userData == null
@@ -185,33 +187,32 @@ extension ReviewsTab on UserProfileState {
                             : viewOtherUser!.userData!.id,
                         role: portfolioStore!.reviewsList[index].fromUser.role,
                       ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          portfolioStore!.setTitleName("Reviews");
-                          Navigator.pushNamed(
-                            context,
-                            ReviewPage.routeName,
-                            arguments: ReviewPageArguments(
-                              userId: widget.arguments?.userId == null
-                                  ? userStore!.userData!.id
-                                  : widget.arguments!.userId,
-                              role: widget.arguments?.userId == null
-                                  ? userStore!.userData!.role
-                                  : widget.arguments!.role,
-                              store: portfolioStore!,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "meta.showAllReviews".tr(),
+                    if (portfolioStore!.reviewsList.length > 3)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            portfolioStore!.setTitleName("Reviews");
+                            Navigator.pushNamed(
+                              context,
+                              ReviewPage.routeName,
+                              arguments: ReviewPageArguments(
+                                userId: widget.arguments?.userId == null
+                                    ? userStore!.userData!.id
+                                    : widget.arguments!.userId,
+                                role: widget.arguments?.userId == null
+                                    ? userStore!.userData!.role
+                                    : widget.arguments!.role,
+                                store: portfolioStore!,
+                              ),
+                            );
+                          },
+                          child: Text("meta.showAllReviews".tr()),
                         ),
                       ),
-                    ),
                   ],
                 )
               : Center(
@@ -220,12 +221,8 @@ extension ReviewsTab on UserProfileState {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
-                        "assets/empty_quest_icon.svg",
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
+                      SvgPicture.asset("assets/empty_quest_icon.svg"),
+                      const SizedBox(height: 10.0),
                       Text(
                         viewOtherUser?.userData == null
                             ? "quests.noReview".tr()

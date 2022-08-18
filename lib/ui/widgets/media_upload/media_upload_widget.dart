@@ -89,8 +89,7 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (widget.type == MediaType.images) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: Platform.isIOS ? FileType.image : FileType.custom,
-                          allowedExtensions: Platform.isIOS ? null : imagesExtensions,
+                          type: FileType.image,
                         );
                       }
                       if (widget.type == MediaType.video) {
@@ -202,8 +201,7 @@ class _GalleryView extends StatelessWidget {
         if (type == MediaType.images) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
-            type: Platform.isIOS ? FileType.image : FileType.custom,
-            allowedExtensions: Platform.isIOS ? null : imagesExtensions,
+            type: FileType.image,
           );
         }
         if (type == MediaType.video) {
@@ -340,7 +338,6 @@ class _ImageEntity extends StatelessWidget {
                 right: -15.0,
                 child: IconButton(
                   onPressed: () {
-                    print('delete image');
                     store.deleteImage(notifier);
                   },
                   icon: Icon(Icons.cancel),
