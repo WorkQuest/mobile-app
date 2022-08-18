@@ -2,6 +2,7 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
+import 'package:app/utils/info_message_util.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -28,6 +29,22 @@ class MessageCell extends StatelessWidget {
             mess.createdAt!.day == DateTime.now().day
         ? DateFormat('kk:mm').format(mess.createdAt!)
         : DateFormat('dd MMM, kk:mm').format(mess.createdAt!);
+    final itsMe = mess.sender!.userId == userId;
+    bool isNeedNameStart = false;
+    bool isNeedNameFinish = false;
+    String infoMessage = "";
+    String message = "";
+    String senderName =
+        mess.sender!.user!.firstName + " " + mess.sender!.user!.lastName;
+    if (mess.infoMessage != null) {
+      infoMessage =
+          InfoMessageUtil().getMessage(mess.infoMessage!.messageAction, itsMe);
+      isNeedNameStart = InfoMessageUtil().needNameStart(infoMessage);
+      isNeedNameFinish = InfoMessageUtil().needNameFinish(infoMessage);
+      message = "${isNeedNameStart ? senderName + " " : ""}"
+          "${infoMessage.tr()}"
+          "${isNeedNameFinish ? " " + senderName : ""}";
+    }
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -60,15 +77,13 @@ class MessageCell extends StatelessWidget {
             child: mess.infoMessage == null
                 ? Row(
                     children: [
-                      if (mess.sender!.userId == userId) Spacer(),
+                      if (itsMe) Spacer(),
                       Container(
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 8, top: 8),
                         width: MediaQuery.of(context).size.width * 0.7,
                         decoration: BoxDecoration(
-                          color: mess.sender!.userId != userId
-                              ? Color(0xFF0083C7)
-                              : Color(0xFFF7F8FA),
+                          color: !itsMe ? Color(0xFF0083C7) : Color(0xFFF7F8FA),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Column(
@@ -77,7 +92,7 @@ class MessageCell extends StatelessWidget {
                             Text(
                               mess.text ?? "",
                               style: TextStyle(
-                                color: mess.sender!.userId != userId
+                                color: !itsMe
                                     ? Color(0xFFFFFFFF)
                                     : Color(0xFF1D2127),
                               ),
@@ -87,7 +102,7 @@ class MessageCell extends StatelessWidget {
                               Center(
                                 child: ImageViewerWidget(
                                   mess.medias!,
-                                  mess.sender!.userId != userId
+                                  !itsMe
                                       ? Color(0xFFFFFFFF)
                                       : Color(0xFF1D2127),
                                   medias,
@@ -98,7 +113,7 @@ class MessageCell extends StatelessWidget {
                                 Text(
                                   date,
                                   style: TextStyle(
-                                    color: mess.sender!.userId != userId
+                                    color: !itsMe
                                         ? Color(0xFFFFFFFF).withOpacity(0.4)
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),
@@ -108,7 +123,7 @@ class MessageCell extends StatelessWidget {
                                   Icon(
                                     Icons.star,
                                     size: 16,
-                                    color: mess.sender!.userId != userId
+                                    color: !itsMe
                                         ? Color(0xFFFFFFFF).withOpacity(0.4)
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),
@@ -123,9 +138,7 @@ class MessageCell extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        "chat.infoMessage."
-                                "${mess.infoMessage!.messageAction}"
-                            .tr(),
+                        message,
                         textAlign: TextAlign.center,
                       ),
                     ),
