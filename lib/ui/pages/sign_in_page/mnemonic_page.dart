@@ -1,6 +1,5 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -18,7 +17,9 @@ import '../../../constants.dart';
 import '../../widgets/login_button.dart';
 
 class MnemonicPage extends StatefulWidget {
-  MnemonicPage();
+  MnemonicPage({
+    Key? key,
+  }) : super(key: key);
 
   static const String routeName = '/mnemonicPage';
 
@@ -51,7 +52,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
             (_) => false,
           );
         } else if (store.successData == SignInStoreState.refreshToken) {
-          store.signInWallet(isMain: true);
+          store.signInWallet();
         }
       },
       onFailure: () => false,
@@ -59,8 +60,6 @@ class _MnemonicPageState extends State<MnemonicPage> {
         onWillPop: () async {
           await store.deletePushToken();
           Storage.deleteAllFromSecureStorage();
-          Navigator.of(context, rootNavigator: true)
-              .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
           return true;
         },
         child: Form(
@@ -76,10 +75,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
                     onTap: () async {
                       await store.deletePushToken();
                       Storage.deleteAllFromSecureStorage();
-                      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-                        SignInPage.routeName,
-                        (route) => false,
-                      );
+                      Navigator.pop(context);
                     },
                     child: SvgPicture.asset("assets/arrow_back.svg"),
                   ),
@@ -101,8 +97,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
                       minSize: 22.0,
                       padding: EdgeInsets.zero,
                       onPressed: () async {
-                        ClipboardData? data =
-                            await Clipboard.getData(Clipboard.kTextPlain);
+                        ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
                         mnemonicController.text = data?.text ?? "";
                         store.setMnemonic(data?.text ?? "");
                       },
@@ -122,9 +117,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
                     builder: (context) {
                       return LoginButton(
                         enabled: store.isLoading,
-                        onTap: store.mnemonic.isNotEmpty
-                            ? _onPressedLogin
-                            : null,
+                        onTap: store.mnemonic.isNotEmpty ? _onPressedLogin : null,
                         title: "signIn.login".tr(),
                       );
                     },

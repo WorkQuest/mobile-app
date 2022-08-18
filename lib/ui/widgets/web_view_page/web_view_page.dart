@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app/constants.dart';
 import 'package:app/model/login_model.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
+import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
@@ -139,11 +140,11 @@ class _WebViewPageState extends State<WebViewPage> {
 
           Storage.writeAccessToken(responseData.access);
           Storage.writeRefreshToken(responseData.refresh);
-          if (responseData.userStatus == 2)
+          if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
             Navigator.of(context, rootNavigator: false).pushNamed(
               ChooseRolePage.routeName,
             );
-          else if (responseData.userStatus == 1) {
+          else if (responseData.userStatus == ProfileConstants.confirmedStatus) {
             Navigator.of(context, rootNavigator: false).pushNamed(
               MnemonicPage.routeName,
             );

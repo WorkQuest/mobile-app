@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/bearer_token.dart';
@@ -49,8 +48,7 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   setTotp(String value) => totp = value;
 
   @computed
-  bool get canSignIn =>
-      !isLoading && _username.isNotEmpty && _password.isNotEmpty;
+  bool get canSignIn => !isLoading && _username.isNotEmpty && _password.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -76,17 +74,27 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   }
 
   @action
-  signInWallet({bool isMain = false, String? walletAddress}) async {
+  signInWallet() async {
     try {
       onLoading();
-      await _checkWallet(isMain: isMain);
+      Wallet? wallet = await Wallet.derive(mnemonic);
+      AccountRepository().connectClient();
+      final signature = await AccountRepository().getClient().getSignature(wallet.privateKey!);
+      final userMe = await _apiProvider.getProfileMe();
+      final _address = await _apiProvider.walletLogin(signature, wallet.address!);
+      if (_address != userMe.walletAddress) {
+        throw FormatException("Incorrect mnemonic");
+      }
+      AccountRepository().setWallet(wallet);
+      await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
+      await Storage.write(StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
       onSuccess(SignInStoreState.signInWallet);
-    } on FormatException catch (e) {
+    } on FormatException catch (e, trace) {
+      print('signInWallet FormatException: $e\n$trace');
       this.onError(e.message);
-      AccountRepository().clearData();
-    } catch (e) {
+    } catch (e, trace) {
+      print('signInWallet catch: $e\n$trace');
       this.onError(e.toString());
-      AccountRepository().clearData();
     }
   }
 
@@ -100,6 +108,7 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
         platform: platform,
         totp: totp,
       );
+
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       if (bearerToken.status == ProfileConstants.unconfirmedStatus) {
@@ -127,41 +136,17 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
     } on FormatException catch (e, trace) {
       print('e: $e\ntrace: $trace');
       this.onError(e.message);
-      AccountRepository().clearData();
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
       this.onError(e.toString());
-      AccountRepository().clearData();
     }
   }
 
-  _checkWallet({bool isMain = false, String? walletAddress}) async {
-    Wallet? wallet = await Wallet.derive(mnemonic);
-    if (AccountRepository().networkName.value == null) {
-      final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
-          ? NetworkName.workNetMainnet
-          : NetworkName.workNetTestnet;
-      AccountRepository().setNetwork(_networkName);
-    }
-    AccountRepository().setWallet(wallet);
-    AccountRepository().connectClient();
-    if (isMain) {
-      final signature =
-          await AccountRepository().getClient().getSignature(wallet.privateKey!);
-      await _apiProvider.walletLogin(signature, wallet.address!);
-    } else {
-      if (wallet.address != walletAddress) {
-        throw FormatException("Incorrect mnemonic");
-      }
-    }
-    await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-    await Storage.write(
-        StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
-  }
 
   Future<void> deletePushToken() async {
     try {
       this.onLoading();
+      print('deletePushToken');
       final token = await Storage.readPushToken();
       if (token != null) await _apiProvider.deletePushToken(token: token);
       FirebaseMessaging.instance.deleteToken();
@@ -172,11 +157,4 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   }
 }
 
-enum SignInStoreState {
-  refreshToken,
-  signIn,
-  unconfirmedProfile,
-  needSetRole,
-  deletePushToken,
-  signInWallet
-}
+enum SignInStoreState { refreshToken, signIn, unconfirmedProfile, needSetRole, deletePushToken, signInWallet }

@@ -101,9 +101,9 @@ mixin _$SignInStore on _SignInStore, Store {
   final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override
-  Future signInWallet({bool isMain = false, String? walletAddress}) {
+  Future signInWallet() {
     return _$signInWalletAsyncAction.run(
-        () => super.signInWallet(isMain: isMain, walletAddress: walletAddress));
+        () => super.signInWallet());
   }
 
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
