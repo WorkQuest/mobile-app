@@ -81,6 +81,10 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -430,6 +434,36 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: MyDisputesPage(),
+            ),
+          ),
+        );
+
+      case WalletsPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: WalletsPage(),
+          ),
+        );
+
+      case ImportWalletPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateWalletStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ImportWalletPage(),
+            ),
+          ),
+        );
+
+      case CreateWalletPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateWalletStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: CreateWalletPage(),
             ),
           ),
         );

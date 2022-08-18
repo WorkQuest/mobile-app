@@ -1,16 +1,12 @@
 import 'package:app/constants.dart';
-import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -39,7 +35,6 @@ class ApproveRolePage extends StatelessWidget {
       ),
       body: Observer(
         builder: (ctx) {
-          print('store: ${this.store.userRole}');
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -58,9 +53,7 @@ class ApproveRolePage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
+                const SizedBox(height: 30),
                 getCard(
                   store.isChange
                       ? store.userRole == UserRole.Worker
@@ -112,74 +105,16 @@ class ApproveRolePage extends StatelessWidget {
                         ? () async {
                             if (!store.isChange) await store.approveRole();
                             !store.isChange
-                                ? showDialog(
-                                    context: ctx,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        scrollable: true,
-                                        title: Text("ui.wallet".tr()),
-                                        content: Text("wallet.chooseWay".tr()),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<
-                                                            CreateWalletStore>(),
-                                                    child: ImportWalletPage(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              "wallet.importWallet".tr(),
-                                              style: TextStyle(
-                                                  color:
-                                                      AppColor.enabledButton),
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.pop(context);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<
-                                                            CreateWalletStore>(),
-                                                    child: CreateWalletPage(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              "wallet.createWallet".tr(),
-                                              style: TextStyle(
-                                                  color:
-                                                      AppColor.enabledButton),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  )
+                                ? Navigator.of(ctx, rootNavigator: true)
+                                    .pushNamed(WalletsPage.routeName)
                                 : Navigator.of(ctx, rootNavigator: true)
                                     .pushNamed(EnterTotpPage.routeName);
-
-                            //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
                     title: "meta.iAgree".tr(),
                   ),
                 ),
-                SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
               ],
             ),
           );
@@ -222,9 +157,7 @@ class ApproveRolePage extends StatelessWidget {
     return Center(
       child: Stack(
         children: [
-          Image.asset(
-            "assets/${role.name.toLowerCase()}.jpg",
-          ),
+          Image.asset("assets/${role.name.toLowerCase()}.jpg"),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 20),
             width: 146,
@@ -234,15 +167,14 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: role == UserRole.Worker
-                          ? Colors.white
-                          : Color(0xFF1D2127),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
+                    color: role == UserRole.Worker
+                        ? Colors.white
+                        : Color(0xFF1D2127),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                SizedBox(
-                  height: 12,
-                ),
+                const SizedBox(height: 12),
                 Text(
                   "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(

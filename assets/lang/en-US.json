@@ -1323,6 +1323,7 @@
     "WUSD": "WUSD Wallet",
     "buyWQT": "Buy WQT",
     "buyTitleWQT": "Buy first WQT!",
+    "chooseWallet": "Create or import wallet",
     "importWallet": "Import Wallet",
     "createWallet": "Create Wallet",
     "openWallet": "Open wallet",

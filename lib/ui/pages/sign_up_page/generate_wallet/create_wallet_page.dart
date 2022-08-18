@@ -15,6 +15,8 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 class CreateWalletPage extends StatefulWidget {
   const CreateWalletPage({Key? key}) : super(key: key);
 
+  static const String routeName = '/createWalletPage';
+
   @override
   _CreateWalletPageState createState() => _CreateWalletPageState();
 }
