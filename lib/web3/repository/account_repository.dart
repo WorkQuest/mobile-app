@@ -41,6 +41,12 @@ class AccountRepository {
   }
 
   connectClient() {
+    if (AccountRepository().networkName.value == null) {
+      final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
+          ? NetworkName.workNetMainnet
+          : NetworkName.workNetTestnet;
+      AccountRepository().setNetwork(_networkName);
+    }
     final config = Configs.configsNetwork[networkName.value!];
     client = ClientService(config!);
   }
