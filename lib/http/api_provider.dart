@@ -5,6 +5,7 @@ import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/dispute_model.dart';
+import 'package:app/model/profile_response/profile_statistic.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -655,6 +656,13 @@ extension UserInfoService on ApiProvider {
       );
       return ProfileMeResponse.fromJson(responseData);
     }
+  }
+
+  Future<ProfileStatistic> getProfileStatistic() async {
+      final responseData = await httpClient.get(
+        query: '/v1/profile/statistic/me',
+      );
+      return ProfileStatistic.fromJson(responseData);
   }
 
   Future<ProfileMeResponse> changeProfileMe(ProfileMeResponse userData) async {

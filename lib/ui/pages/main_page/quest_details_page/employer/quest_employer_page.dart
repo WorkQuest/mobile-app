@@ -904,7 +904,7 @@ class _RespondedListState extends State<_RespondedList> {
                 ),
                 if (respond.worker.ratingStatistic?.status != null)
                   UserRating(
-                    respond.worker.ratingStatistic!.status,
+                    respond.worker.ratingStatistic!.status!,
                     isWorker: true,
                   ),
               ],

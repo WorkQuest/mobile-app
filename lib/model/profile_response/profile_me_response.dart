@@ -1,6 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
+import 'package:app/model/profile_response/rating_statistic.dart';
 import 'package:app/model/quests_models/location_full.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -258,64 +259,6 @@ class UserSkillFilters {
   Map<String, String> toJson() => {
         "category": category,
         "skill": skill,
-      };
-}
-
-class RatingStatistic {
-  RatingStatistic({
-    required this.id,
-    required this.userId,
-    required this.reviewCount,
-    required this.averageMark,
-    required this.status,
-    // required this.createdAt,
-    // required this.updatedAt,
-  });
-
-  String id;
-  String userId;
-  int reviewCount;
-  double averageMark;
-  int status;
-
-  // String createdAt;
-  // String updatedAt;
-
-  RatingStatistic.clone(RatingStatistic object)
-      : this(
-          id: object.id,
-          userId: object.userId,
-          reviewCount: object.reviewCount,
-          averageMark: object.averageMark,
-          status: object.status,
-          // createdAt: object.createdAt,
-          // updatedAt: object.updatedAt,
-        );
-
-  factory RatingStatistic.fromJson(Map<String, dynamic> json) {
-    int? status;
-
-    status = json["status"];
-
-    return RatingStatistic(
-      id: json["id"],
-      userId: json["userId"],
-      reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
-      status: status ?? 3,
-      // createdAt: json["createdAt"],
-      // updatedAt: json["updatedAt"],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "userId": userId,
-        "reviewCount": reviewCount,
-        "averageMark": averageMark,
-        "status": status,
-        // "createdAt": createdAt,
-        // "updatedAt": updatedAt,
       };
 }
 
