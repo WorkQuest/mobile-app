@@ -75,16 +75,9 @@ class _WalletPageState extends State<WalletPage> {
                   valueListenable: AccountRepository().networkName,
                   builder: (_, value, child) {
                     final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
-                    return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                    return SwitchNetworkWidget<SwitchNetworkNames>(
                       value: _networkName,
-                      onChanged: (value) {
-                        final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                            value as SwitchNetworkNames,
-                            AccountRepository().notifierNetwork.value);
-                        AccountRepository().changeNetwork(_newNetwork);
-
-                        return value;
-                      },
+                      onChanged: _onChangedSwitchNetwork,
                       items: SwitchNetworkNames.values,
                       colorText: Colors.black,
                       haveIcon: true,
@@ -199,6 +192,13 @@ class _WalletPageState extends State<WalletPage> {
         ),
       ],
     );
+  }
+
+  _onChangedSwitchNetwork(dynamic value) {
+    final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+        value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+    AccountRepository().changeNetwork(_newNetwork);
+    return value;
   }
 
   Widget outlinedButton({
