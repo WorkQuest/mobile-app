@@ -244,7 +244,7 @@ class _BottomTitleWidget extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            "$questName",
+            questName ?? '',
             style: TextStyle(
               fontSize: 12,
               color: AppColor.subtitleText,
