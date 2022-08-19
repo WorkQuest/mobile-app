@@ -69,25 +69,28 @@ class _WalletPageState extends State<WalletPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("wallet.wallet".tr()),
-              ValueListenableBuilder<NetworkName?>(
-                valueListenable: AccountRepository().networkName,
-                builder: (_, value, child) {
-                  final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
-                  return DropDownAdaptiveWidget<SwitchNetworkNames>(
-                    value: _networkName,
-                    onChanged: (value) {
-                      final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                          value as SwitchNetworkNames,
-                          AccountRepository().notifierNetwork.value);
-                      AccountRepository().changeNetwork(_newNetwork);
+              Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: ValueListenableBuilder<NetworkName?>(
+                  valueListenable: AccountRepository().networkName,
+                  builder: (_, value, child) {
+                    final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+                    return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                      value: _networkName,
+                      onChanged: (value) {
+                        final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+                            value as SwitchNetworkNames,
+                            AccountRepository().notifierNetwork.value);
+                        AccountRepository().changeNetwork(_newNetwork);
 
-                      return value;
-                    },
-                    items: SwitchNetworkNames.values,
-                    colorText: Colors.black,
-                    haveIcon: true,
-                  );
-                },
+                        return value;
+                      },
+                      items: SwitchNetworkNames.values,
+                      colorText: Colors.black,
+                      haveIcon: true,
+                    );
+                  },
+                ),
               )
             ],
           ),
