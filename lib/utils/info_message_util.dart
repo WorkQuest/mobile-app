@@ -14,7 +14,7 @@ class InfoMessageUtil {
   static String questChatAddDisputeAdmin = 'QuestChatAddDisputeAdmin';
   static String questChatLeaveDisputeAdmin = 'QuestChatLeaveDisputeAdmin';
 
-  bool needNameStart(String action) {
+  bool needNameStart(String action, bool itsMe) {
     if (action.contains(".employerInvitedWorkerToQuest") ||
         action.contains(".respondedToTheQuest") ||
         action.contains(".rejectedTheResponseToTheQuest") ||
@@ -24,7 +24,8 @@ class InfoMessageUtil {
         action.contains(".removedFromChat") ||
         action.contains(".addedToChat") ||
         action.contains(".leftTheChat") ||
-        action.contains(".restoredToChat")) return true;
+        action.contains(".restoredToChat") ||
+        action.contains(".userRemovedFromChat")) return true;
     return false;
   }
 

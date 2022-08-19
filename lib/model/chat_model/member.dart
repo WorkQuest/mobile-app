@@ -19,11 +19,11 @@ class Member {
   });
 
   String id;
-  String chatId;
+  String? chatId;
   String? userId;
   String? adminId;
-  String type;
-  int status;
+  String? type;
+  int? status;
   DateTime? updatedAt;
   dynamic chatMemberDeletionData;
   ProfileMeResponse? user;

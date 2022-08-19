@@ -36,14 +36,17 @@ class MessageCell extends StatelessWidget {
     String message = "";
     String senderName =
         mess.sender!.user!.firstName + " " + mess.sender!.user!.lastName;
+    String recipientName = (mess.infoMessage?.member?.user?.firstName ?? "") +
+        " " +
+        (mess.infoMessage?.member?.user?.lastName ?? "");
     if (mess.infoMessage != null) {
       infoMessage =
           InfoMessageUtil().getMessage(mess.infoMessage!.messageAction, itsMe);
-      isNeedNameStart = InfoMessageUtil().needNameStart(infoMessage);
+      isNeedNameStart = InfoMessageUtil().needNameStart(infoMessage, itsMe);
       isNeedNameFinish = InfoMessageUtil().needNameFinish(infoMessage);
       message = "${isNeedNameStart ? senderName + " " : ""}"
           "${infoMessage.tr()}"
-          "${isNeedNameFinish ? " " + senderName : ""}";
+          "${isNeedNameFinish ? " " + recipientName : ""}";
     }
     return GestureDetector(
       onTap: () {
