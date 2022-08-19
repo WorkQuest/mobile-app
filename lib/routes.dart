@@ -41,6 +41,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/ope
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/map_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -443,6 +444,14 @@ class Routes {
           builder: (context) => Directionality(
             textDirection: checkDirection(context),
             child: WalletsPage(),
+          ),
+        );
+
+      case MapPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: MapPage(settings.arguments as BaseQuestResponse),
           ),
         );
 

@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/map_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/utils/quest_util.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:provider/provider.dart";
-import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../../widgets/image_viewer_widget.dart';
 import '../../../../widgets/priority_view.dart';
@@ -61,7 +61,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        appBar: storeQuest.questInfo == null ? null : AppBar(actions: actionAppBar()),
+        appBar: storeQuest.questInfo == null
+            ? null
+            : AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
                 child: Transform.scale(
@@ -94,7 +96,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ? Text("quests.yourQuest".tr())
                         : GestureDetector(
                             onTap: () async {
-                              Navigator.of(context, rootNavigator: true).pushNamed(
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(
                                 UserProfile.routeName,
                                 arguments: ProfileArguments(
                                   role: UserRole.Employer,
@@ -118,7 +121,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
-                                    "${storeQuest.questInfo!.user!.firstName} ${storeQuest.questInfo!.user!.lastName}",
+                                    "${storeQuest.questInfo!.user!.firstName} "
+                                    "${storeQuest.questInfo!.user!.lastName}",
                                     style: TextStyle(fontSize: 16),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -129,7 +133,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     const SizedBox(height: 17),
                     Row(
                       children: [
-                        if (storeQuest.questInfo!.userId != profile!.userData!.id)
+                        if (storeQuest.questInfo!.userId !=
+                            profile!.userData!.id)
                           Icon(
                             Icons.location_on_rounded,
                             color: Color(0xFF7C838D),
@@ -138,7 +143,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         Flexible(
                           child: Text(
                             storeQuest.questInfo!.locationPlaceName,
-                            // "150 from you",
                             overflow: TextOverflow.fade,
                             style: TextStyle(
                               color: Color(0xFF7C838D),
@@ -154,8 +158,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ),
                     ),
                     if (storeQuest.questInfo!.assignedWorker != null &&
-                        (storeQuest.questInfo!.status == QuestConstants.questCreated ||
-                            storeQuest.questInfo!.status == QuestConstants.questDone))
+                        (storeQuest.questInfo!.status ==
+                                QuestConstants.questCreated ||
+                            storeQuest.questInfo!.status ==
+                                QuestConstants.questDone))
                       inProgressBy(),
                     const SizedBox(height: 15),
                     GestureDetector(
@@ -198,9 +204,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     const SizedBox(height: 10),
                     InkWell(
                       onTap: () {
-                        MapsLauncher.launchCoordinates(
-                          storeQuest.questInfo!.locationCode!.latitude,
-                          storeQuest.questInfo!.locationCode!.longitude,
+                        Navigator.of(context).pushNamed(
+                          MapPage.routeName,
+                          arguments: storeQuest.questInfo!,
                         );
                       },
                       child: Container(
@@ -223,8 +229,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   initialCameraPosition: CameraPosition(
                                     bearing: 0,
                                     target: LatLng(
-                                      storeQuest.questInfo!.locationCode!.latitude,
-                                      storeQuest.questInfo!.locationCode!.longitude,
+                                      storeQuest
+                                          .questInfo!.locationCode!.latitude,
+                                      storeQuest
+                                          .questInfo!.locationCode!.longitude,
                                     ),
                                     zoom: 15.0,
                                   ),
@@ -236,8 +244,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                               "assets/marker.svg",
                               width: 22,
                               height: 29,
-                              color: Constants
-                                  .priorityColors[storeQuest.questInfo!.priority],
+                              color: Constants.priorityColors[
+                                  storeQuest.questInfo!.priority],
                             ),
                             Container(
                               color: Colors.transparent,
@@ -266,7 +274,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         const SizedBox(width: 50),
                         Flexible(
                           child: Text(
-                            QuestUtils.getPrice(storeQuest.questInfo!.price) + "  WUSD",
+                            QuestUtils.getPrice(storeQuest.questInfo!.price) +
+                                "  WUSD",
                             textAlign: TextAlign.end,
                             style: TextStyle(
                               color: Color(0xFF00AA5B),
@@ -291,17 +300,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     );
   }
 
-  Widget inProgressBy() {
-    return const SizedBox();
-  }
+  Widget inProgressBy() => const SizedBox();
 
-  Widget questHeader() {
-    return const SizedBox();
-  }
+  Widget questHeader() => const SizedBox();
 
-  Widget review() {
-    return const SizedBox();
-  }
+  Widget review() => const SizedBox();
 
   Widget tagItem(List<String> skills) {
     return Wrap(
@@ -364,9 +367,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 }
 
 class QuestArguments {
-  QuestArguments({
-    required this.id,
-  });
+  QuestArguments({required this.id});
 
   String? id;
 }
