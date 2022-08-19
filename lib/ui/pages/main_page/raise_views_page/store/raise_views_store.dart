@@ -32,7 +32,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   int periodGroupValue = 1;
 
   @observable
-  int levelGroupValue = 1;
+  int levelGroupValue = 0;
 
   String questId = "";
 
