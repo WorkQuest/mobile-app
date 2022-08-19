@@ -42,23 +42,17 @@ class _TransferPageState extends State<TransferPage> {
   final _key = GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
 
-  late final List<CoinItem> _coins = [];
-
   late TransferStore store;
 
-  _initCoins() {
-    final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-    _coins
-      ..clear()
-      ..addAll(_dataTokens
-          .map((coin) => CoinItem(
-                coin.iconPath,
-                coin.symbolToken.name,
-                coin.symbolToken,
-                true,
-              ))
-          .toList());
-  }
+  late final List<CoinItem> _coins = tokens
+      .map((coin) =>
+      CoinItem(coin.iconPath, coin.symbolToken.name, coin.symbolToken, true))
+      .toList();
+
+  late Timer timer;
+
+  List<DataCoins> get tokens => AccountRepository().getConfigNetwork().dataCoins;
+
 
   @override
   void initState() {
@@ -69,6 +63,9 @@ class _TransferPageState extends State<TransferPage> {
     _addressController.addListener(() {
       store.setAddressTo(_addressController.text);
     });
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      store.getFee();
+    });
     super.initState();
   }
 
@@ -78,12 +75,12 @@ class _TransferPageState extends State<TransferPage> {
     store.setAddressTo('');
     store.setFee('');
     store.setCoin(null);
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _initCoins();
     return ObserverListener<TransferStore>(
       onSuccess: () async {
         if (store.successData == TransferStoreState.getMaxAmount) {
