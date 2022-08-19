@@ -89,12 +89,12 @@ class _WebViewPageState extends State<WebViewPage> {
                     print("url: $url");
                     loading = true;
                   });
-                if (!url.contains(baseUrl + widget.inputUrlRoute))
+              },
+              onPageFinished: (String url) async {
+                if (!url.contains("app.workquest.co/api/v1/auth/login/"))
                   setState(() {
                     loading = false;
                   });
-              },
-              onPageFinished: (String url) async {
                 print('Page finished loading: $url');
                 String? accessToken = await Storage.readAccessToken();
                 String? refreshToken = await Storage.readRefreshToken();
