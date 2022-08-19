@@ -299,7 +299,7 @@ class SettingsPage extends StatelessWidget {
                     enable: true,
                   ),
                   InstrumentCard(
-                    urlArgument: "crosschain",
+                    urlArgument: "bridge",
                     iconPath: "assets/work_quest_icon.svg",
                     title: "WorkQuest Bridge",
                     enable: true,
