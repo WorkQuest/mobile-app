@@ -84,6 +84,21 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
+  final _$totpAtom = Atom(name: '_ProfileMeStore.totp');
+
+  @override
+  String? get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String? value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
+    });
+  }
+
   final _$payPeriodAtom = Atom(name: '_ProfileMeStore.payPeriod');
 
   @override
@@ -121,6 +136,17 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   }
 
   @override
+  void setTotp(String value) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 questHolder: ${questHolder},
@@ -128,6 +154,7 @@ priorityValue: ${priorityValue},
 quests: ${quests},
 distantWork: ${distantWork},
 wagePerHour: ${wagePerHour},
+totp: ${totp},
 payPeriod: ${payPeriod}
     ''';
   }

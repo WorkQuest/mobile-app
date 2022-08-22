@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:app/constants.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/model/login_model.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/utils/profile_util.dart';
@@ -10,6 +12,8 @@ import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../pages/sign_up_page/choose_role_page/choose_role_page.dart';
@@ -48,7 +52,6 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("BaseUrl: ${baseUrl + widget.inputUrlRoute}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter WebView example'),
@@ -132,6 +135,7 @@ class _WebViewPageState extends State<WebViewPage> {
         String pageBody = message.message;
         final firstIndex = pageBody.indexOf("{");
         final lastIndex = pageBody.lastIndexOf("}");
+        final profileMeStore = context.read<ProfileMeStore>();
         if (firstIndex >= 0) {
           final response =
               json.decode(pageBody.substring(firstIndex, lastIndex) + "}");
@@ -140,22 +144,28 @@ class _WebViewPageState extends State<WebViewPage> {
 
           Storage.writeAccessToken(responseData.access);
           Storage.writeRefreshToken(responseData.refresh);
-          if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
-            Navigator.of(context, rootNavigator: false).pushReplacementNamed(
-              ChooseRolePage.routeName,
-            );
-          else if (responseData.userStatus ==
-                  ProfileConstants.confirmedStatus &&
-              responseData.address == null) {
-            Navigator.of(context, rootNavigator: false).pushReplacementNamed(
-              WalletsPage.routeName,
-            );
-          } else if (responseData.userStatus ==
-              ProfileConstants.confirmedStatus) {
-            Navigator.of(context, rootNavigator: false).pushReplacementNamed(
-              MnemonicPage.routeName,
-            );
-          }
+          GetIt.I.get<ApiProvider>().httpClient.accessToken =
+              responseData.access;
+          String? address;
+          profileMeStore.getProfileMe().then((value) {
+            address = profileMeStore.userData!.walletAddress;
+            if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                ChooseRolePage.routeName,
+              );
+            else if (responseData.userStatus ==
+                    ProfileConstants.confirmedStatus &&
+                address == null) {
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                WalletsPage.routeName,
+              );
+            } else if (responseData.userStatus ==
+                ProfileConstants.confirmedStatus) {
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                MnemonicPage.routeName,
+              );
+            }
+          });
         }
       },
     );

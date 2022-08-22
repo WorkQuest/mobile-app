@@ -1027,6 +1027,7 @@
     "errorWork": "Complete all fields in Work Experience",
     "errorEditQuest2FA": "You can't edit quest without connected 2FA",
     "errorDeleteQuest2FA": "You can't delete quest without connected 2FA",
+    "errorEditProfile2FA": "You can't edit profile without connected 2FA",
     "errorCreateChat": "You can't create a chat before\nworking on a quest",
     "serviceUnavailable": "Service temporarily unavailable",
     "quesDeleteNotif": "Do you really want \nto delete this notification?",

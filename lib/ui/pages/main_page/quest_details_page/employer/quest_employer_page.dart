@@ -51,7 +51,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   AnimationController? controller;
 
   bool get isMyQuest =>
-      store.quest.value != null && store.quest.value?.userId == profile?.userData?.id;
+      store.quest.value != null &&
+      store.quest.value?.userId == profile?.userData?.id;
 
   bool get canActionsQuest =>
       isMyQuest &&
@@ -60,7 +61,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   bool get canRaiseView =>
       (store.quest.value?.status == QuestConstants.questCreated ||
-          store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign) &&
+          store.quest.value?.status ==
+              QuestConstants.questWaitWorkerOnAssign) &&
       store.quest.value?.raiseView?.status != 0;
 
   bool get canEditOrDelete =>
@@ -69,13 +71,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   bool get canCreateReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-          store.quest.value?.yourReview == null &&
+      store.quest.value?.yourReview == null &&
       (store.quest.value?.userId == profile?.userData?.id ||
           store.quest.value?.assignedWorker?.id == profile?.userData?.id);
 
   bool get showReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-          store.quest.value?.yourReview != null &&
+      store.quest.value?.yourReview != null &&
       (store.quest.value?.userId == profile?.userData?.id ||
           store.quest.value?.assignedWorker?.id == profile?.userData?.id);
 
@@ -152,9 +154,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               }
             } else if (value == "registration.edit") {
               if (profile?.userData?.isTotpActive == true) {
-                _showSecurityTOTPDialog(onTabOk: () async {
-                  store.validateTotp(isEdit: true);
-                });
+                AlertDialogUtils.showSecurityTotpPDialog(
+                  context,
+                  onTapOk: () async {
+                    store.validateTotp(isEdit: true);
+                  },
+                  setTotp: store.setTotp,
+                );
               } else {
                 await AlertDialogUtils.showInfoAlertDialog(
                   context,
@@ -164,10 +170,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               }
             } else if (value == "Close quest") {
               if (profile?.userData?.isTotpActive == true) {
-                _showSecurityTOTPDialog(
-                  onTabOk: () async {
+                AlertDialogUtils.showSecurityTotpPDialog(
+                  context,
+                  onTapOk: () async {
                     store.validateTotp();
                   },
+                  setTotp: store.setTotp,
                 );
               } else {
                 await AlertDialogUtils.showInfoAlertDialog(
@@ -226,7 +234,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               CreateQuestPage.routeName,
               arguments: store.quest.value,
             );
-          } else if (store.successData == EmployerStoreState.validateTotpDelete) {
+          } else if (store.successData ==
+              EmployerStoreState.validateTotpDelete) {
             await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
                 WQContractFunctions.cancelJob.name);
             AlertDialogUtils.showAlertTxConfirm(
@@ -244,7 +253,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 );
               },
             );
-          } else if (store.successData == EmployerStoreState.acceptCompletedWork) {
+          } else if (store.successData ==
+              EmployerStoreState.acceptCompletedWork) {
             store.setQuestStatus(5);
             setState(() {});
             Navigator.pop(context);
@@ -327,7 +337,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
-                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
                   return const Color(0xFF0083C7);
                 },
               ),
@@ -485,7 +498,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   );
                                   AlertDialogUtils.showLoadingDialog(context);
                                 },
-                                functionName: WQContractFunctions.acceptJobResult.name,
+                                functionName:
+                                    WQContractFunctions.acceptJobResult.name,
                               );
                             },
                       child: Text(
@@ -496,7 +510,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -537,7 +552,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     OpenDisputePage.routeName,
                                     arguments: store.quest.value!,
                                   );
-                                  if (_result != null && _result is OpenDispute) {
+                                  if (_result != null &&
+                                      _result is OpenDispute) {
                                     Navigator.pop(context);
                                     store.quest.value!.status =
                                         QuestConstants.questDispute;
@@ -557,7 +573,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -613,56 +630,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   _checkPossibilityTx(String functionName) async {
     await store.getFee(store.selectedResponders?.workerId ?? '', functionName);
   }
-
-  _showSecurityTOTPDialog({
-    required Function()? onTabOk,
-  }) {
-    AlertDialogUtils.showAlertDialog(
-      context,
-      title: Text("securityCheck.title".tr()),
-      content: Builder(builder: (context) {
-        var width = MediaQuery.of(context).size.width;
-        return Container(
-          width: width - 20,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("securityCheck.confCode".tr()),
-              const SizedBox(
-                height: 15,
-              ),
-              Observer(
-                builder: (_) => TextFormField(
-                  onChanged: store.setTotp,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintStyle: TextStyle(
-                      color: AppColor.disabledText,
-                    ),
-                    hintText: '123456',
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                "securityCheck.enterDiginCodeGoogle".tr(),
-              ),
-            ],
-          ),
-        );
-      }),
-      needCancel: true,
-      titleCancel: "meta.cancel".tr(),
-      titleOk: "meta.send".tr(),
-      onTabCancel: null,
-      onTabOk: onTabOk,
-      colorCancel: Colors.red,
-      colorOk: AppColor.enabledButton,
-    );
-  }
 }
 
 class _RespondedList extends StatefulWidget {
@@ -692,7 +659,8 @@ class _RespondedListState extends State<_RespondedList> {
           child: CircularProgressIndicator.adaptive(),
         );
       }
-      if (widget.store.quest.value!.status == QuestConstants.questWaitEmployerConfirm) {
+      if (widget.store.quest.value!.status ==
+          QuestConstants.questWaitEmployerConfirm) {
         return TextButton(
           onPressed: widget.answerOnQuestPressed,
           child: Text(
@@ -727,14 +695,15 @@ class _RespondedListState extends State<_RespondedList> {
               ),
             ),
             if (widget.store.respondedList.isNotEmpty)
-              for (final respond in widget.store.respondedList) selectableMember(respond),
+              for (final respond in widget.store.respondedList)
+                selectableMember(respond),
             const SizedBox(height: 15),
             Observer(
               builder: (_) => TextButton(
-                onPressed:
-                    widget.store.selectedResponders == null || widget.store.isLoading
-                        ? null
-                        : widget.chooseWorkerPressed,
+                onPressed: widget.store.selectedResponders == null ||
+                        widget.store.isLoading
+                    ? null
+                    : widget.chooseWorkerPressed,
                 child: Text(
                   "quests.chooseWorker".tr(),
                   style: TextStyle(
@@ -749,7 +718,10 @@ class _RespondedListState extends State<_RespondedList> {
                       if (states.contains(MaterialState.disabled))
                         return const Color(0xFFF7F8FA);
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
