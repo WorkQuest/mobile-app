@@ -103,7 +103,7 @@ class Data {
     required this.status,
   });
 
-  String id;
+  String? id;
   String? title;
   String questId;
   String chatId;

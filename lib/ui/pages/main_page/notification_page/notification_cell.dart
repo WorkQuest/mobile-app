@@ -1,11 +1,14 @@
 import 'package:app/constants.dart';
 import 'package:app/model/notification_model.dart';
+import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +32,8 @@ class NotificationCell extends StatefulWidget {
 
 class _NotificationCellState extends State<NotificationCell> {
   String action = "";
+  String senderName = "";
+  User? user;
 
   @override
   void initState() {
@@ -37,6 +42,9 @@ class _NotificationCellState extends State<NotificationCell> {
       Future.delayed(Duration.zero, () {
         widget.store.getDispute(widget.body.notification.data.disputeId!);
       });
+    user = widget.body.notification.data.user;
+    senderName =
+        (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
     super.initState();
   }
 
@@ -120,16 +128,16 @@ class _NotificationCellState extends State<NotificationCell> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    UserProfile.routeName,
-                    arguments:
-                        widget.body.notification.data.user!.id != widget.userId
-                            ? ProfileArguments(
-                                role: widget.body.notification.data.user!.role,
-                                userId: widget.body.notification.data.user!.id,
-                              )
-                            : null,
-                  );
+                  if (user != null)
+                    await Navigator.of(context, rootNavigator: true).pushNamed(
+                      UserProfile.routeName,
+                      arguments: user!.id != widget.userId
+                          ? ProfileArguments(
+                              role: user!.role,
+                              userId: user!.id,
+                            )
+                          : null,
+                    );
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,8 +145,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Image.network(
-                        widget.body.notification.data.user!.avatar?.url ??
-                            Constants.defaultImageNetwork,
+                        user?.avatar?.url ?? Constants.defaultImageNetwork,
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,
@@ -147,9 +154,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        widget.body.notification.data.user!.firstName +
-                            " " +
-                            widget.body.notification.data.user!.lastName,
+                        senderName,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -191,30 +196,7 @@ class _NotificationCellState extends State<NotificationCell> {
             ),
             alignment: Alignment.centerLeft,
             child: GestureDetector(
-              onTap: () async {
-                if (action.contains("quest")) {
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    QuestDetails.routeName,
-                    arguments: QuestArguments(
-                      id: widget.body.notification.data.id,
-                    ),
-                  );
-                } else if (action.contains("dispute")) {
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    DisputePage.routeName,
-                    arguments: widget.body.notification.data.disputeId,
-                  );
-                } else if (action.contains("updateratingstatistic")) {
-                  final userData = context.read<ProfileMeStore>().userData;
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    UserProfile.routeName,
-                    arguments: ProfileArguments(
-                      userId: userData!.id,
-                      role: userData.role,
-                    ),
-                  );
-                }
-              },
+              onTap: () => _navigate(),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,7 +205,7 @@ class _NotificationCellState extends State<NotificationCell> {
                   Expanded(
                     child: Text(
                       widget.body.notification.data.title ??
-                          userRating(widget.body.notification.data.status),
+                          _userRating(widget.body.notification.data.status),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
@@ -243,7 +225,56 @@ class _NotificationCellState extends State<NotificationCell> {
     );
   }
 
-  String userRating(int? status) {
+  void _navigate() async {
+    if (action.contains("workquestwikipage")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        WebViewPage.routeName,
+        arguments: "https://workquest.wiki/",
+      );
+    }
+    else if (action.contains("quest")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        QuestDetails.routeName,
+        arguments: QuestArguments(
+          id: widget.body.notification.data.id,
+        ),
+      );
+    } else if (action.contains("dispute")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        DisputePage.routeName,
+        arguments: widget.body.notification.data.disputeId,
+      );
+    } else if (action.contains("updateratingstatistic")) {
+      final userData = context.read<ProfileMeStore>().userData;
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        UserProfile.routeName,
+        arguments: ProfileArguments(
+          userId: userData!.id,
+          role: userData.role,
+        ),
+      );
+    } else if (action.contains("fillprofiledataonsettings")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        ChangeProfilePage.routeName,
+      );
+    } else if (action.contains("enablesumsubkyc")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        WebViewPage.routeName,
+        arguments: "sumsub",
+      );
+    } else if (action.contains("enabledoubleauthentication")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        TwoFAPage.routeName,
+      );
+    } else if (action.contains("invitefriendsreward")) {
+      await Navigator.of(context, rootNavigator: true).pushNamed(
+        WebViewPage.routeName,
+        arguments: "referral",
+      );
+    }
+  }
+
+  String _userRating(int? status) {
     switch (status) {
       case 0:
         return "No status";

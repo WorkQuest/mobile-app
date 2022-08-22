@@ -535,16 +535,23 @@ extension Notification on ApiProvider {
                 ? 'https://testnet-notification.workquest.co/api/notifications'
                 : 'https://notifications.workquest.co/api/notifications'
             : 'https://mainnet-notification.workquest.co/api/notifications';
-    final responseData = await httpClient.get(
-      query: '$_notificationsPath?exclude=bridge&exclude=proposal&'
-          'exclude=daily_liquidity&exclude=dao&exclude=referral'
-          '&exclude=pension_fund&exclude=bridge_usdt',
-      queryParameters: {
-        "offset": offset,
-      },
-      useBaseUrl: false,
-    );
-    return Notifications.fromJson(responseData);
+
+    try {
+      final responseData = await httpClient.get(
+        query: '$_notificationsPath?exclude=bridge&exclude=proposal&'
+            'exclude=daily_liquidity&exclude=dao&exclude=referral'
+            '&exclude=pension_fund&exclude=bridge_usdt',
+        queryParameters: {
+          "offset": offset,
+        },
+        useBaseUrl: false,
+      );
+      return Notifications.fromJson(responseData);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return Notifications.fromJson({});
+    }
   }
 
   Future<bool> deleteNotification({

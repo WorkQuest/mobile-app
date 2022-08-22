@@ -351,6 +351,11 @@
     "inviteToQuest": "Hello! I invite you to the quest",
     "addToQuest": "Add to quest",
     "notification": {
+      "InviteFriendsReward": "Invite your friends and get rewarded!",
+      "WorkQuestWikiPage": "You can get acquainted with all the functionality of the platform on the WorkQuest Wiki page!",
+      "EnableDoubleAuthentication": "You can enable 2FA in settings.",
+      "EnableSumsubKYC": "You can enable KYC on Sumsub page.",
+      "FillProfileDataOnSettings": "You can fill your profile data in settings.",
       "QuestEditedOnContract": "Quest edited on contract",
       "QuestStatusUpdated": "Quest status updated",
       "QuestEndSoon": "Quest end soon",

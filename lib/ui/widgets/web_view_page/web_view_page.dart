@@ -63,7 +63,9 @@ class _WebViewPageState extends State<WebViewPage> {
         return Stack(
           children: [
             WebView(
-              initialUrl: baseUrl + widget.inputUrlRoute,
+              initialUrl: widget.inputUrlRoute != "https://workquest.wiki/"
+                  ? baseUrl + widget.inputUrlRoute
+                  : widget.inputUrlRoute,
               userAgent: "random",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) async {
