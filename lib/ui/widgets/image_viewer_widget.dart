@@ -281,7 +281,7 @@ class _ScrollingImagesState extends State<ScrollingImages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
         title: Text(
           "${index + 1} of ${widget.medias.length}",

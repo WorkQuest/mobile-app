@@ -40,10 +40,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   KnowledgeWorkSelectionController? _controllerKnowledge;
   KnowledgeWorkSelectionController? _controllerWork;
 
-  // PhoneNumber phone = PhoneNumber();
-  // PhoneNumber secondPhone = PhoneNumber();
-
-
   @override
   void initState() {
     profile = context.read<ProfileMeStore>();
@@ -51,18 +47,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     profile!.workplaceToValue();
     profile!.priorityToValue();
     profile!.payPeriodToValue();
-    print('qweasd: ${store.userData.userSpecializations}');
     if (profile!.userData!.additionalInfo?.address != null)
       store.address = profile!.userData!.additionalInfo!.address!;
-    store
-        .getInitCode(store.userData.phone ?? store.userData.tempPhone!,
-            store.userData.additionalInfo?.secondMobileNumber)
-        .then((value) {
-      // phone = store.phoneNumber ?? PhoneNumber();
-      // secondPhone = store.secondPhoneNumber ?? PhoneNumber();
-      // setState(() {});
-      print("inited");
-    });
+    store.getInitCode(store.userData.phone ?? store.userData.tempPhone!,
+        store.userData.additionalInfo?.secondMobileNumber);
     if (profile!.userData!.locationPlaceName != null)
       store.address = profile!.userData!.locationPlaceName!;
     _controller = SkillSpecializationController(
@@ -74,7 +62,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('qweasd: ${store.userData.userSpecializations}');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -242,9 +229,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   ),
                 InputWidget(
                   title: "settings.twitterUsername".tr(),
-                  initialValue: store
-                          .userData.additionalInfo!.socialNetwork?.twitter ??
-                      "",
+                  initialValue:
+                      store.userData.additionalInfo!.socialNetwork?.twitter ??
+                          "",
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.additionalInfo!.socialNetwork?.twitter = text;
@@ -255,9 +242,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 InputWidget(
                   title: "settings.facebookUsername".tr(),
-                  initialValue: store
-                          .userData.additionalInfo!.socialNetwork?.facebook ??
-                      "",
+                  initialValue:
+                      store.userData.additionalInfo!.socialNetwork?.facebook ??
+                          "",
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.additionalInfo!.socialNetwork?.facebook = text;
@@ -268,9 +255,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 InputWidget(
                   title: "settings.linkedInUsername".tr(),
-                  initialValue: store
-                          .userData.additionalInfo!.socialNetwork?.linkedin ??
-                      "",
+                  initialValue:
+                      store.userData.additionalInfo!.socialNetwork?.linkedin ??
+                          "",
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.additionalInfo!.socialNetwork?.linkedin = text;
@@ -281,9 +268,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 InputWidget(
                   title: "settings.instagramUsername".tr(),
-                  initialValue: store
-                          .userData.additionalInfo!.socialNetwork?.instagram ??
-                      "",
+                  initialValue:
+                      store.userData.additionalInfo!.socialNetwork?.instagram ??
+                          "",
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.additionalInfo!.socialNetwork?.instagram = text;
@@ -302,12 +289,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onBackPressed() {
-    Navigator.pop(context);
-    // if (profile!.isLoading) return;
-    // if (!store.areThereAnyChanges(profile!.userData))
-    //   Navigator.pop(context);
-    // else
-    //   AlertDialogUtils.showProfileDialog(context, onSave: _onSave());
+    if (profile!.isLoading) return;
+    if (!store.areThereAnyChanges(profile!.userData))
+      Navigator.pop(context);
+    else
+      AlertDialogUtils.showProfileDialog(context, onSave: _onSave);
   }
 
   _onSave() async {
@@ -323,36 +309,52 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     if (_formKey.currentState?.validate() ?? false) {
       if (!store.validationKnowledge(
           _controllerKnowledge!.getListMap(), context)) return;
-      if (!store.validationWork(_controllerWork!.getListMap(), context))
-        return;
-      if (!store.validationWork(_controllerWork!.getListMap(), context))
-        return;
-
-      if (store.userData.additionalInfo?.secondMobileNumber?.phone == "")
-        store.userData.additionalInfo?.secondMobileNumber = null;
-      store.userData.additionalInfo?.educations =
-          _controllerKnowledge!.getListMap();
-      store.userData.additionalInfo?.workExperiences =
-          _controllerWork!.getListMap();
-      if (store.address.isNotEmpty) {
-        store.userData.additionalInfo!.address = store.address;
-        store.userData.locationPlaceName = store.address;
-      }
-      store.userData.priority = profile!.valueToPriority();
-      store.userData.payPeriod = profile!.valueToPayPeriod();
-      store.userData.workplace = profile!.valueToWorkplace();
-
-      store.savePhoneNumber();
-      store.saveSecondPhoneNumber();
-
-      if (!profile!.isLoading)
-        store.userData.userSpecializations =
-            _controller!.getSkillAndSpecialization();
-            print('test: ${_controller!.getSkillAndSpecialization()}');
-      await profile!.changeProfile(
-        store.userData,
-        media: store.media,
-      );
+      if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!store.userData.neverEditedProfileFlag!) {
+        if (store.userData.isTotpActive ?? false)
+          AlertDialogUtils.showSecurityTotpPDialog(
+            context,
+            setTotp: profile!.setTotp,
+            onTapOk: _nextStep,
+          );
+        else
+          AlertDialogUtils.showInfoAlertDialog(
+            context,
+            title: "modals.warning".tr(),
+            content: "modals.errorEditProfile2FA".tr(),
+          );
+      } else
+        _nextStep();
     }
+  }
+
+  _nextStep() async {
+    store.userData.totpCode = profile!.totp;
+    if (store.userData.additionalInfo?.secondMobileNumber?.phone == "")
+      store.userData.additionalInfo?.secondMobileNumber = null;
+    store.userData.additionalInfo?.educations =
+        _controllerKnowledge!.getListMap();
+    store.userData.additionalInfo?.workExperiences =
+        _controllerWork!.getListMap();
+    if (store.address.isNotEmpty) {
+      store.userData.additionalInfo!.address = store.address;
+      store.userData.locationPlaceName = store.address;
+    }
+    store.userData.priority = profile!.valueToPriority();
+    store.userData.payPeriod = profile!.valueToPayPeriod();
+    store.userData.workplace = profile!.valueToWorkplace();
+
+    store.savePhoneNumber();
+    store.saveSecondPhoneNumber();
+
+    if (!profile!.isLoading)
+      store.userData.userSpecializations =
+          _controller!.getSkillAndSpecialization();
+    await profile!.changeProfile(
+      store.userData,
+      media: store.media,
+    );
+    store.userData.neverEditedProfileFlag = false;
   }
 }

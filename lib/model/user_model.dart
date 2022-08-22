@@ -1,5 +1,5 @@
 import 'package:app/model/profile_response/avatar.dart';
-import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/profile_response/rating_statistic.dart';
 
 class User {
   User({
@@ -19,9 +19,9 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     try {
       return User(
-        id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
+        id: json["id"] ?? "",
+        firstName: json["firstName"] ?? "",
+        lastName: json["lastName"] ?? "",
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
         ratingStatistic: json["ratingStatistic"] == null
             ? null

@@ -23,8 +23,7 @@ class OpenScreeFromPush {
           ),
         );
       }
-      if (con == null)
-        con = navigatorKey.currentState!.context;
+      if (con == null) con = navigatorKey.currentState!.context;
       if (notification.action.toLowerCase().contains("message")) {
         Navigator.pushNamed(
           con!,
@@ -35,9 +34,7 @@ class OpenScreeFromPush {
         Navigator.pushNamed(
           con!,
           QuestDetails.routeName,
-          arguments: QuestArguments(
-            id: notification.data.id,
-          ),
+          arguments: QuestArguments(id: notification.data.id),
         );
       } else if (notification.action.toLowerCase().contains("dispute")) {
         Navigator.pushNamed(

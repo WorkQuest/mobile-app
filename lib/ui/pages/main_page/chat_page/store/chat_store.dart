@@ -4,6 +4,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/profile_response/profile_statistic.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -43,11 +44,14 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   String myId = "";
 
+  ProfileStatistic? profileStatistic;
+
   ObservableMap<ChatModel, bool> selectedChats = ObservableMap.of({});
 
   void initialStore() async {
     if (streamChatNotification != null) await streamChatNotification!.close();
     streamChatNotification = StreamController<bool>.broadcast();
+    getProfileStatistic();
   }
 
   void initialSetup(String myId) async => WebSocket().connect();
@@ -289,7 +293,20 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
   }
 
-  clearData() {
-    streamChatNotification?.close();
+  clearData() => streamChatNotification?.close();
+
+  Future getProfileStatistic() async {
+    try {
+      this.onLoading();
+      Future.delayed(Duration(milliseconds: 250));
+      profileStatistic = await _apiProvider.getProfileStatistic();
+      if (profileStatistic!.chatsStatistic.unreadCountChats > 0)
+        streamChatNotification!.sink.add(true);
+      else
+        streamChatNotification!.sink.add(true);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 }

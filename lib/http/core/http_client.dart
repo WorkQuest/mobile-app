@@ -169,7 +169,6 @@ class _HttpClient implements IHttpClient {
           if (error.response?.data["code"] == 401001) {
             await refreshToken();
           }
-          print('data test: ${options.data}');
 
           SharedPreferences.getInstance().then((value) async {
             List<String> _old = value.getStringList(errorsSharedKeys) ?? [];

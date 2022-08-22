@@ -18,7 +18,7 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/deep_link_util.dart';
-import 'package:app/utils/open_screen_from_push.dart';
+import 'package:app/utils/push_notification/open_scree_from_push.dart';
 import 'package:app/utils/storage.dart';
 
 import 'package:flutter/cupertino.dart';

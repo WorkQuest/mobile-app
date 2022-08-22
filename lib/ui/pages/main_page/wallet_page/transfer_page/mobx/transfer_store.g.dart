@@ -13,7 +13,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
 
   @override
   bool get statusButtonTransfer => (_$statusButtonTransferComputed ??=
-          Computed<bool>(() => super.statusButtonTransfer, name: 'TransferStoreBase.statusButtonTransfer'))
+          Computed<bool>(() => super.statusButtonTransfer,
+              name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
   final _$maxAmountAtom = Atom(name: 'TransferStoreBase.maxAmount');
@@ -98,7 +99,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
     return _$setCoinAsyncAction.run(() => super.setCoin(value));
   }
 
-  final _$getMaxAmountAsyncAction = AsyncAction('TransferStoreBase.getMaxAmount');
+  final _$getMaxAmountAsyncAction =
+      AsyncAction('TransferStoreBase.getMaxAmount');
 
   @override
   Future getMaxAmount() {
@@ -112,18 +114,22 @@ mixin _$TransferStore on TransferStoreBase, Store {
     return _$getFeeAsyncAction.run(() => super.getFee());
   }
 
-  final _$checkBeforeSendAsyncAction = AsyncAction('TransferStoreBase.checkBeforeSend');
+  final _$checkBeforeSendAsyncAction =
+      AsyncAction('TransferStoreBase.checkBeforeSend');
 
   @override
   Future checkBeforeSend({bool isTimerUpdate = false}) {
-    return _$checkBeforeSendAsyncAction.run(() => super.checkBeforeSend(isTimerUpdate: isTimerUpdate));
+    return _$checkBeforeSendAsyncAction
+        .run(() => super.checkBeforeSend(isTimerUpdate: isTimerUpdate));
   }
 
-  final _$TransferStoreBaseActionController = ActionController(name: 'TransferStoreBase');
+  final _$TransferStoreBaseActionController =
+      ActionController(name: 'TransferStoreBase');
 
   @override
   dynamic setAddressTo(String value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(name: 'TransferStoreBase.setAddressTo');
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.setAddressTo');
     try {
       return super.setAddressTo(value);
     } finally {
@@ -133,7 +139,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
 
   @override
   dynamic setAmount(String value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(name: 'TransferStoreBase.setAmount');
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.setAmount');
     try {
       return super.setAmount(value);
     } finally {
@@ -143,7 +150,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
 
   @override
   dynamic setFee(String value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(name: 'TransferStoreBase.setFee');
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.setFee');
     try {
       return super.setFee(value);
     } finally {
@@ -153,7 +161,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
 
   @override
   dynamic clearData() {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(name: 'TransferStoreBase.clearData');
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.clearData');
     try {
       return super.clearData();
     } finally {

@@ -5,6 +5,7 @@ import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class AlertDialogUtils {
   static Future<void> showSuccessDialog(BuildContext context,
@@ -320,9 +321,10 @@ class AlertDialogUtils {
     );
   }
 
-  static void showProfileDialog(BuildContext context, {
+  static void showProfileDialog(
+    BuildContext context, {
     required Function() onSave,
-}) {
+  }) {
     showCupertinoDialog(
       context: context,
       barrierDismissible: true,
@@ -372,6 +374,50 @@ class AlertDialogUtils {
                 ],
               );
       },
+    );
+  }
+
+  static void showSecurityTotpPDialog(
+    BuildContext context, {
+    required Function(String) setTotp,
+    required Function() onTapOk,
+  }) {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text("securityCheck.title".tr()),
+      content: Builder(builder: (context) {
+        var width = MediaQuery.of(context).size.width;
+        return Container(
+          width: width - 20,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("securityCheck.confCode".tr()),
+              const SizedBox(height: 15),
+              Observer(
+                builder: (_) => TextFormField(
+                  onChanged: setTotp,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(color: AppColor.disabledText),
+                    hintText: '123456',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Text("securityCheck.enterDiginCodeGoogle".tr()),
+            ],
+          ),
+        );
+      }),
+      needCancel: true,
+      titleCancel: "meta.cancel".tr(),
+      titleOk: "meta.send".tr(),
+      onTabCancel: null,
+      onTabOk: onTapOk,
+      colorCancel: Colors.red,
+      colorOk: AppColor.enabledButton,
     );
   }
 }

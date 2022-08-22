@@ -7,7 +7,7 @@ class Commission {
 }
 class Constants {
   /// Testnet - true/ dev-net - false
-  static const isTestnet = true;
+  static const isTestnet = false;
 
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),

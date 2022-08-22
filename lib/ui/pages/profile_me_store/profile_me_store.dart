@@ -43,6 +43,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   String wagePerHour = "";
 
   @observable
+  String? totp;
+
+  @observable
   String payPeriod = "quests.payPeriod.hourly";
 
   final List<String> payPeriodLists = [
@@ -381,4 +384,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  @action
+  void setTotp(String value) => totp = value;
 }

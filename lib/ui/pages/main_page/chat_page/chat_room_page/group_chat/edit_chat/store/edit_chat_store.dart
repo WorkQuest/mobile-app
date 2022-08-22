@@ -133,7 +133,7 @@ abstract class _EditChatStore extends IStore<bool> with Store {
         messageId: "",
         userId: "",
         messageAction: "GroupChatDeleteMember",
-        user: null,
+        member: null,
       ),
     );
   }

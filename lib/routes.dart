@@ -41,6 +41,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/ope
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/map_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -81,6 +82,10 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -434,6 +439,44 @@ class Routes {
           ),
         );
 
+      case WalletsPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: WalletsPage(),
+          ),
+        );
+
+      case MapPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: MapPage(settings.arguments as BaseQuestResponse),
+          ),
+        );
+
+      case ImportWalletPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateWalletStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ImportWalletPage(),
+            ),
+          ),
+        );
+
+      case CreateWalletPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateWalletStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: CreateWalletPage(),
+            ),
+          ),
+        );
+
       case UserProfile.routeName:
         final arguments = settings.arguments as ProfileArguments?;
         final _isWorker =
@@ -653,8 +696,15 @@ class Routes {
 
       case WebViewPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SignInStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: WebViewPage(

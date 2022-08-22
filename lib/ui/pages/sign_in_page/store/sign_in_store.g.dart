@@ -102,8 +102,7 @@ mixin _$SignInStore on _SignInStore, Store {
 
   @override
   Future signInWallet() {
-    return _$signInWalletAsyncAction.run(
-        () => super.signInWallet());
+    return _$signInWalletAsyncAction.run(() => super.signInWallet());
   }
 
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');

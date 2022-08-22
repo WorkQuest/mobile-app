@@ -15,6 +15,8 @@ import '../../pin_code_page/pin_code_page.dart';
 class ImportWalletPage extends StatefulWidget {
   const ImportWalletPage({Key? key}) : super(key: key);
 
+  static const String routeName = '/importWalletPage';
+
   @override
   _ImportWalletPageState createState() => _ImportWalletPageState();
 }

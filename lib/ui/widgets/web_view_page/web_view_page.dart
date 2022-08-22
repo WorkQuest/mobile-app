@@ -2,13 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:app/constants.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/model/login_model.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../pages/sign_up_page/choose_role_page/choose_role_page.dart';
@@ -47,7 +52,6 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("BaseUrl: ${baseUrl + widget.inputUrlRoute}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter WebView example'),
@@ -88,14 +92,13 @@ class _WebViewPageState extends State<WebViewPage> {
                     print("url: $url");
                     loading = true;
                   });
-                if (!url.contains(baseUrl + widget.inputUrlRoute))
+              },
+              onPageFinished: (String url) async {
+                if (!url.contains("app.workquest.co/api/v1/auth/login/"))
                   setState(() {
                     loading = false;
                   });
-              },
-              onPageFinished: (String url) async {
                 print('Page finished loading: $url');
-                // _getTokenThroughSocialMedia(url);
                 String? accessToken = await Storage.readAccessToken();
                 String? refreshToken = await Storage.readRefreshToken();
                 _controllerCompleter.future.then((value) => value
@@ -110,15 +113,15 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               gestureNavigationEnabled: true,
             ),
-            // if (loading)
-            //   Positioned.fill(
-            //     child: Container(
-            //       color: Colors.white,
-            //       child: Center(
-            //         child: CircularProgressIndicator.adaptive(),
-            //       ),
-            //     ),
-            //   ),
+            if (loading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                ),
+              ),
           ],
         );
       }),
@@ -132,6 +135,7 @@ class _WebViewPageState extends State<WebViewPage> {
         String pageBody = message.message;
         final firstIndex = pageBody.indexOf("{");
         final lastIndex = pageBody.lastIndexOf("}");
+        final profileMeStore = context.read<ProfileMeStore>();
         if (firstIndex >= 0) {
           final response =
               json.decode(pageBody.substring(firstIndex, lastIndex) + "}");
@@ -140,131 +144,32 @@ class _WebViewPageState extends State<WebViewPage> {
 
           Storage.writeAccessToken(responseData.access);
           Storage.writeRefreshToken(responseData.refresh);
-          if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
-            Navigator.of(context, rootNavigator: false).pushNamed(
-              ChooseRolePage.routeName,
-            );
-          else if (responseData.userStatus == ProfileConstants.confirmedStatus) {
-            Navigator.of(context, rootNavigator: false).pushNamed(
-              MnemonicPage.routeName,
-            );
-          }
+          GetIt.I.get<ApiProvider>().httpClient.accessToken =
+              responseData.access;
+          String? address;
+          profileMeStore.getProfileMe().then((value) {
+            address = profileMeStore.userData!.walletAddress;
+            if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                ChooseRolePage.routeName,
+              );
+            else if (responseData.userStatus ==
+                    ProfileConstants.confirmedStatus &&
+                address == null) {
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                WalletsPage.routeName,
+              );
+            } else if (responseData.userStatus ==
+                ProfileConstants.confirmedStatus) {
+              Navigator.of(context, rootNavigator: false).pushReplacementNamed(
+                MnemonicPage.routeName,
+              );
+            }
+          });
         }
       },
     );
   }
-
-  // void _getTokenThroughSocialMedia(String url) async {
-  //   final socialMedia = widget.inputUrlRoute.split("/").last;
-  //   if (url.contains("access") && url.contains("refresh")) {
-  //     String accessToken = url
-  //         .split("/")
-  //         .where((element) => element.contains("access"))
-  //         .first
-  //         .split("&")
-  //         .first
-  //         .replaceRange(0, 8, "");
-  //     String refreshToken = url
-  //         .split("/")
-  //         .where((element) => element.contains("refresh"))
-  //         .first
-  //         .split("&")[1]
-  //         .replaceRange(0, 8, "");
-  //     String status = "";
-  //     if (socialMedia == "facebook")
-  //       status = url
-  //           .split("/")
-  //           .where((element) => element.contains("refresh"))
-  //           .first
-  //           .split("&")
-  //           .last
-  //           .split("")
-  //           .reversed
-  //           .toList()[4];
-  //     else
-  //       status = url
-  //           .split("/")
-  //           .where((element) => element.contains("refresh"))
-  //           .first
-  //           .split("&")
-  //           .last
-  //           .split("")
-  //           .last;
-  //     Storage.writeAccessToken(accessToken);
-  //     Storage.writeRefreshToken(refreshToken);
-  //     if (status == "2")
-  //       Navigator.of(context, rootNavigator: false).pushNamed(
-  //         ChooseRolePage.routeName,
-  //       );
-  //     else if (status == "1") {
-  //       Navigator.of(context, rootNavigator: false).pushNamed(
-  //         MnemonicPage.routeName,
-  //       );
-  //     }
-  //   }
-  // }
-
-  // void _onShowUserAgent(
-  //     WebViewController controller, BuildContext context) async {
-  //   // Send a message with the user agent string to the Toaster JavaScript channel we registered
-  //   // with the WebView.
-  //   await controller.evaluateJavascript(
-  //       'Toaster.postMessage("User Agent: " + navigator.userAgent);');
-  // }
-
-  // void _onListCookies(
-  //     WebViewController controller, BuildContext context) async {
-  //   final String cookies =
-  //       await controller.evaluateJavascript('document.cookie');
-  //   // ignore: deprecated_member_use
-  //   Scaffold.of(context).showSnackBar(SnackBar(
-  //     content: Column(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: <Widget>[
-  //         const Text('Cookies:'),
-  //         _getCookieList(cookies),
-  //       ],
-  //     ),
-  //   ));
-  // }
-
-  // void _onAddToCache(WebViewController controller, BuildContext context) async {
-  //   await controller.evaluateJavascript(
-  //       'caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
-  //   // ignore: deprecated_member_use
-  //   Scaffold.of(context).showSnackBar(const SnackBar(
-  //     content: Text('Added a test entry to cache.'),
-  //   ));
-  // }
-
-  // void _onListCache(WebViewController controller, BuildContext context) async {
-  //   await controller.evaluateJavascript('caches.keys()'
-  //       '.then((cacheKeys) => JSON.stringify({"cacheKeys" : cacheKeys, "localStorage" : localStorage}))'
-  //       '.then((caches) => Toaster.postMessage(caches))');
-  // }
-
-  // void _onClearCache(WebViewController controller, BuildContext context) async {
-  //   await controller.clearCache();
-  //   // ignore: deprecated_member_use
-  //   Scaffold.of(context).showSnackBar(const SnackBar(
-  //     content: Text("Cache cleared."),
-  //   ));
-  // }
-
-  // Widget _getCookieList(String cookies) {
-  //   if (cookies == null || cookies == '""') {
-  //     return Container();
-  //   }
-  //   final List<String> cookieList = cookies.split(';');
-  //   final Iterable<Text> cookieWidgets =
-  //       cookieList.map((String cookie) => Text(cookie));
-  //   return Column(
-  //     mainAxisAlignment: MainAxisAlignment.end,
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: cookieWidgets.toList(),
-  //   );
-  // }
 }
 
 class NavigationControls extends StatelessWidget {

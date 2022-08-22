@@ -175,10 +175,10 @@ class LogoutButton extends StatelessWidget {
               SignInPage.routeName,
               (route) => false,
             );
-            final cookieManager = WebviewCookieManager();
             context.read<ProfileMeStore>().deletePushToken();
             context.read<QuestsStore>().clearData();
             context.read<FilterQuestsStore>().clearFilters();
+            final cookieManager = WebviewCookieManager();
             cookieManager.clearCookies();
             AccountRepository().clearData();
             Storage.deleteAllFromSecureStorage();
