@@ -76,15 +76,18 @@ class AlertDialogUtils {
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return AlertDialog(
-            insetPadding: const EdgeInsets.symmetric(horizontal: 100),
-            clipBehavior: Clip.hardEdge,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10.0),
+          return WillPopScope(
+            onWillPop: () => Future.value(false),
+            child: AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 100),
+              clipBehavior: Clip.hardEdge,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
+                ),
               ),
+              content: content,
             ),
-            content: content,
           );
         },
       );

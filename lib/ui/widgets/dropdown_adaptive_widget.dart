@@ -5,14 +5,14 @@ import 'package:app/utils/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class DropDownAdaptiveWidget<T> extends StatefulWidget {
+class SwitchNetworkWidget<T> extends StatefulWidget {
   final T value;
   final List<T> items;
   final dynamic Function(dynamic value) onChanged;
   final Color colorText;
   final bool haveIcon;
 
-  const DropDownAdaptiveWidget({
+  const SwitchNetworkWidget({
     Key? key,
     required this.value,
     required this.onChanged,
@@ -22,67 +22,79 @@ class DropDownAdaptiveWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState<T> createState() =>
-      _DropDownAdaptiveWidgetState<T>();
+  _SwitchNetworkWidgetState<T> createState() =>
+      _SwitchNetworkWidgetState<T>();
 }
 
-class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
+class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
   @override
   Widget build(BuildContext context) {
     final _isWorkNet = _getTitleItem(widget.value.toString()) == 'WORKNET';
 
-    return InkWell(
-      onTap: _showDialog,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16.0, left: 4.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.haveIcon)
-              if (_isWorkNet)
-                GradientIcon(
-                    SvgPicture.asset(
-                      _getPathIcons(
-                        _getTitleItem(
-                          widget.value.toString(),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6.0),
+      child: ColoredBox(
+        color: const Color(0xffF7F8FA),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.0),
+            ),
+            onTap: _showDialog,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 9.5, horizontal: 10.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.haveIcon)
+                    if (_isWorkNet)
+                      GradientIcon(
+                          SvgPicture.asset(
+                            _getPathIcons(
+                              _getTitleItem(
+                                widget.value.toString(),
+                              ),
+                            ),
+                            width: 24,
+                            height: 24,
+                          ),
+                          24)
+                    else
+                      SvgPicture.asset(
+                        _getPathIcons(
+                          _getTitleItem(
+                            widget.value.toString(),
+                          ),
                         ),
+                        width: 24,
+                        height: 24,
                       ),
-                      width: 24,
-                      height: 24,
-                    ),
-                    24)
-              else
-                SvgPicture.asset(
-                  _getPathIcons(
-                    _getTitleItem(
-                      widget.value.toString(),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Text(
+                    _getTitleItem(widget.value.toString()),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: widget.colorText,
                     ),
                   ),
-                  width: 24,
-                  height: 24,
-                ),
-            const SizedBox(
-              width: 16,
-            ),
-            Text(
-              _getTitleItem(widget.value.toString()),
-              style: TextStyle(
-                fontSize: 16,
-                color: widget.colorText,
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: widget.colorText,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 16,
-                ),
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: widget.colorText,
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -428,7 +428,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: DropDownAdaptiveWidget<Network>(
+          child: SwitchNetworkWidget<Network>(
             colorText: Colors.black,
             items: Network.values,
             value: AccountRepository().notifierNetwork.value,
