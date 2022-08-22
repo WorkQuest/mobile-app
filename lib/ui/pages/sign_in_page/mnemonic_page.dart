@@ -12,6 +12,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 import '../../../constants.dart';
 import '../../widgets/login_button.dart';
@@ -58,8 +59,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
       onFailure: () => false,
       child: WillPopScope(
         onWillPop: () async {
-          await store.deletePushToken();
-          Storage.deleteAllFromSecureStorage();
+          await _onBackPressed();
           return true;
         },
         child: Form(
@@ -73,8 +73,7 @@ class _MnemonicPageState extends State<MnemonicPage> {
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: () async {
-                      await store.deletePushToken();
-                      Storage.deleteAllFromSecureStorage();
+                      await _onBackPressed();
                       Navigator.pop(context);
                     },
                     child: SvgPicture.asset("assets/arrow_back.svg"),
@@ -129,6 +128,12 @@ class _MnemonicPageState extends State<MnemonicPage> {
         ),
       ),
     );
+  }
+
+  _onBackPressed() async {
+    WebviewCookieManager().clearCookies();
+    await store.deletePushToken();
+    Storage.deleteAllFromSecureStorage();
   }
 
   _onPressedLogin() {
