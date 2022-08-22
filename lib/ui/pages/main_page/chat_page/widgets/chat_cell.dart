@@ -34,13 +34,17 @@ class ChatCell extends StatelessWidget {
 
     Member? member;
     chat.members?.forEach((element) {
-      if (element.type != "Admin" || chat.type != TypeChat.active) member = element;
+      if (element.type != "Admin" || chat.type != TypeChat.active)
+        member = element;
     });
 
-    final text = chat.chatData.lastMessage?.sender?.userId == userId
-        ? "chat.you".tr() + " ${chat.chatData.lastMessage?.text ?? infoActionMessage} "
-        : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? chat.meMember?.deletionData?.message.sender?.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
-            " ${chat.chatData.lastMessage?.text ?? infoActionMessage} ";
+    final itsMy = chat.chatData.lastMessage?.sender?.userId == userId;
+    final unread = chat.chatData.lastMessage?.senderStatus == "Unread";
+
+    final messageOwner = itsMy
+        ? "chat.you".tr()
+        : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? chat.meMember?.deletionData?.message.sender?.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:";
+    final text = " ${chat.chatData.lastMessage?.text ?? infoActionMessage} ";
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
@@ -49,9 +53,7 @@ class ChatCell extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12.5,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 12.5),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,14 +67,33 @@ class ChatCell extends StatelessWidget {
                       children: [
                         _TopTitleWidget(chat: chat, member: member),
                         const SizedBox(height: 5),
-                        Text(
-                          text,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF7C838D),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              messageOwner,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 14,
+                                color: Color(0xFF7C838D),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              text,
+                              style: TextStyle(
+                                fontWeight: unread && itsMy
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                fontSize: 14,
+                                color: unread && itsMy
+                                    ? Colors.black
+                                    : Color(0xFF7C838D),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 5),
                         _BottomTitleWidget(
@@ -85,7 +106,7 @@ class ChatCell extends StatelessWidget {
                   const SizedBox(width: 15),
                   Column(
                     children: [
-                      if (chat.chatData.lastMessage?.senderStatus == "Unread")
+                      if (unread)
                         Container(
                           width: 11,
                           height: 11,
@@ -99,7 +120,7 @@ class ChatCell extends StatelessWidget {
                         )
                       else if (chat.star != null)
                         Container(
-                          margin: chat.chatData.lastMessage?.senderStatus == "Unread"
+                          margin: unread
                               ? const EdgeInsets.only(top: 3, right: 16)
                               : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(
