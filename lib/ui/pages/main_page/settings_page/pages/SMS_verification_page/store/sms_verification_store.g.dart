@@ -83,7 +83,7 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
       ActionController(name: '_SMSVerificationStore');
 
   @override
-  dynamic setCode(String value) {
+  dynamic setCode(String? value) {
     final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
         name: '_SMSVerificationStore.setCode');
     try {

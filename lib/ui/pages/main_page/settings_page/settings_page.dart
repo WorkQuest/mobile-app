@@ -44,9 +44,9 @@ class SettingsPage extends StatelessWidget {
                 if (isHavePhone)
                   InkWell(
                     onTap: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          ProfileSettings.routeName,
-                          arguments: userStore.userData);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(ProfileSettings.routeName,
+                              arguments: userStore.userData);
                       await Future.delayed(const Duration(seconds: 1));
                       userStore.getProfileMe();
                     },
@@ -80,7 +80,8 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.changePass".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true).pushNamed(
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
                                   ChangePasswordPage.routeName,
                                 );
                               },
@@ -94,8 +95,9 @@ class SettingsPage extends StatelessWidget {
                                 onChanged: (_) {
                                   Navigator.of(context, rootNavigator: true)
                                       .pushNamed(TwoFAPage.routeName);
-                                  },
-                                value: userStore.userData?.isTotpActive ?? false,
+                                },
+                                value:
+                                    userStore.userData?.isTotpActive ?? false,
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
@@ -112,19 +114,29 @@ class SettingsPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ///SMS Verification
+                              ///
                               SettingsCard(
-                                icon: GradientIcon(
-                                  SvgPicture.asset(
-                                    "assets/settings_message_icon.svg",
+                                  icon: GradientIcon(
+                                    SvgPicture.asset(
+                                      "assets/settings_message_icon.svg",
+                                    ),
+                                    20.0,
                                   ),
-                                  20.0,
-                                ),
-                                title: "settings.smsVerification2".tr(),
-                                onTap: () =>
-                                    Navigator.of(context, rootNavigator: true).pushNamed(
-                                  SMSVerificationPage.routeName,
-                                ),
-                              ),
+                                  title: "settings.smsVerification2".tr(),
+                                  onTap: () {
+                                    if (userStore.userData!.phone == null)
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pushNamed(
+                                        SMSVerificationPage.routeName,
+                                      );
+                                    else
+                                      AlertDialogUtils.showInfoAlertDialog(
+                                        context,
+                                        title: "Warning",
+                                        content: "Your phone is "
+                                            "already verified",
+                                      );
+                                  }),
                               _spacer,
 
                               ///Change Role
@@ -177,7 +189,9 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title:
                                     "${'meta.language'.tr()} \n${Constants.languageList.keys.firstWhere(
-                                  (k) => Constants.languageList[k] == context.locale,
+                                  (k) =>
+                                      Constants.languageList[k] ==
+                                      context.locale,
                                 )}",
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(
@@ -205,7 +219,8 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "wallet.network".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true).pushNamed(
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
                                     NetworkPage.routeName,
                                   );
                                 },
@@ -219,9 +234,11 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "Journal errors",
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true).push(
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
                                     MaterialPageRoute(
-                                      builder: (BuildContext context) => JournalErrorsPage(),
+                                      builder: (BuildContext context) =>
+                                          JournalErrorsPage(),
                                     ),
                                   );
                                 },

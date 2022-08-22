@@ -8,11 +8,13 @@ import 'package:mobx/mobx.dart';
 part 'sms_verification_store.g.dart';
 
 @singleton
-class SMSVerificationStore extends _SMSVerificationStore with _$SMSVerificationStore {
+class SMSVerificationStore extends _SMSVerificationStore
+    with _$SMSVerificationStore {
   SMSVerificationStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with Store {
+abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
+    with Store {
   final ApiProvider apiProvider;
 
   _SMSVerificationStore(this.apiProvider);
@@ -27,7 +29,7 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with 
   String code = '';
 
   @action
-  setCode(String value) => code = value;
+  setCode(String? value) => code = value ?? "";
 
   @computed
   bool get canSubmitCode => !isLoading && code.length == 6;

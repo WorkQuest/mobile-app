@@ -37,8 +37,13 @@ class _MainPageState extends State<MainPage> {
   final controller = CupertinoTabController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     context.read<ChatStore>().initialStore();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         dialog(
