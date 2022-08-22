@@ -2008,7 +2008,7 @@
     "serverTimedOut": "Server response timed out",
     "checkInternetConnection": "Check your internet connection",
     "failedToGetBalance": "Failed to get balance",
-    "emptyListTrx": "We can’t show transaction list at now.",
+    "emptyListTrx": "We can't show the list of transactions now.\nYou can check all transactions list in the explorer by clicking the Go to explorer button.",
     "swipeUpdate": "Swipe to update",
     "higherMax": "Higher max amount",
     "smallLength": "Small length",
