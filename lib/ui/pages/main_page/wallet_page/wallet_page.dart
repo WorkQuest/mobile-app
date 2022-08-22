@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/widgets/button_to_explorer.dart';
 import 'package:app/ui/widgets/copy_address_wallet_widget.dart';
 import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/shimmer.dart';
@@ -165,23 +166,22 @@ class _WalletPageState extends State<WalletPage> {
             floating: true,
             pinned: true,
             snap: true,
-            expandedHeight: 50.0,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              titlePadding: const EdgeInsets.only(bottom: 12.0),
-              title: Text(
-                'wallet.table.trx'.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-              ),
-            ),
             centerTitle: false,
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             shadowColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              titlePadding: const EdgeInsets.only(bottom: 18.0),
+              title: Text(
+                'wallet.table.trx'.tr(),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+              ),
+            ),
+            actions: const [
+              ButtonToExplorer(),
+            ],
           ),
         ),
         SliverPadding(

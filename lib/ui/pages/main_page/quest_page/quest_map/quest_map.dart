@@ -166,6 +166,7 @@ class _QuestMapState extends State<QuestMap> {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
+      updatePosition();
       return false;
     }
 
