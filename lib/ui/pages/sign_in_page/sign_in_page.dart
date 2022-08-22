@@ -56,7 +56,6 @@ class _SignInPageState extends State<SignInPage> {
     store.setPlatform(Platform.isIOS ? "iOS" : "Android");
     Storage.readDeepLinkCheck().then((value) {
       if (value != "0") return;
-      print('init deep link is sign in');
       DeepLinkUtil().initDeepLink();
       Storage.writeDeepLinkCheck("1");
     });
@@ -91,7 +90,8 @@ class _SignInPageState extends State<SignInPage> {
         }
       },
       onFailure: () {
-        if (store.errorMessage == "TOTP is invalid" || store.errorMessage == "User must pass 2FA") {
+        if (store.errorMessage == "Invalid TOTP" ||
+            store.errorMessage == "User must pass 2FA") {
           _showAlertTotp(context, store);
           return true;
         }
