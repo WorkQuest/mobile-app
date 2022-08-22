@@ -427,7 +427,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8.0, right: 16.0),
           child: Align(
             alignment: Alignment.centerRight,
             child: SwitchNetworkWidget<Network>(
