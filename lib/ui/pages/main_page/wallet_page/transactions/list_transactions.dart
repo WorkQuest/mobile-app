@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
-import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/gestures.dart';
@@ -87,9 +86,21 @@ class ListTransactions extends StatelessWidget {
                 width: double.infinity,
                 height: 250,
                 child: Center(
-                  child: LoginButton(
-                    title: 'wallet.goExplorer'.tr(),
-                    onTap: _onPressedGoToExplorer,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/empty_list_icon.svg',
+                        width: 60.27,
+                        height: 55.25,
+                      ),
+                      const SizedBox(height: 25.38),
+                      Text(
+                        'wallet.emptyListTrx'.tr(),
+                        style: const TextStyle(color: AppColor.disabledText),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -110,12 +121,6 @@ class ListTransactions extends StatelessWidget {
         );
       },
     );
-  }
-
-  _onPressedGoToExplorer() {
-    final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer + AccountRepository().userAddress;
-    print('url: $_urlExplorer');
-    launchUrl(Uri.parse(_urlExplorer));
   }
 }
 

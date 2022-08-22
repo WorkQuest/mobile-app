@@ -77,6 +77,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
 
   @action
   getFee() async {
+
+    if (currentCoin == null) {
+      return;
+    }
     try {
       final _client = AccountRepository().getClient();
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
@@ -143,7 +147,13 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   }
 
   @action
-  checkBeforeSend() async {
+  checkBeforeSend({bool isTimerUpdate = false}) async {
+    if (isTimerUpdate) {
+      await getFee();
+      print('fee: $fee');
+      maxAmount = double.parse(await _getMaxAmount());
+      return;
+    }
     try {
       onLoading();
       await getFee();
