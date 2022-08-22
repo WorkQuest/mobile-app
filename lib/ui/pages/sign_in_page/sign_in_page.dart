@@ -426,21 +426,24 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             suffixIcon: null,
           ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: SwitchNetworkWidget<Network>(
-            colorText: Colors.black,
-            items: Network.values,
-            value: AccountRepository().notifierNetwork.value,
-            onChanged: (value) {
-              setState(() {
-                final _networkName =
-                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
-                AccountRepository().setNetwork(_networkName);
-                Storage.write(StorageKeys.networkName.name, _networkName.name);
-              });
-              return value;
-            },
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SwitchNetworkWidget<Network>(
+              colorText: Colors.black,
+              items: Network.values,
+              value: AccountRepository().notifierNetwork.value,
+              onChanged: (value) {
+                setState(() {
+                  final _networkName =
+                      (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                  AccountRepository().setNetwork(_networkName);
+                  Storage.write(StorageKeys.networkName.name, _networkName.name);
+                });
+                return value;
+              },
+            ),
           ),
         ),
       ],

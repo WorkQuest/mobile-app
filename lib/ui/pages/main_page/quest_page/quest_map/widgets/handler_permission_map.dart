@@ -35,29 +35,36 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
   AppLifecycleState? state;
 
   Future<CameraPosition?> getPosition() async {
-    await Future.delayed(Duration.zero);
-    if (hasPosition) {
-      setState(() {});
-      return _currentPosition;
-    }
-    LocationPermission permission = await _geoLocatorPlatform.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await _geoLocatorPlatform.requestPermission();
+    try {
+      await Future.delayed(Duration.zero);
+      if (hasPosition) {
+        setState(() {});
+        return _currentPosition;
+      }
+      LocationPermission permission = await _geoLocatorPlatform.checkPermission();
       if (permission == LocationPermission.denied) {
+        permission = await _geoLocatorPlatform.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return _defaultPosition;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        _requestPermissionDialog();
         return _defaultPosition;
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      _requestPermissionDialog();
+
+
+
+      final position = await _geoLocatorPlatform.getCurrentPosition();
+      return CameraPosition(
+        bearing: 0,
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 17.0,
+      );
+    } catch (e, trace) {
+      print('HandlerPermissionMap getPosition: $e\n$trace');
       return _defaultPosition;
     }
-
-    final position = await _geoLocatorPlatform.getCurrentPosition();
-    return CameraPosition(
-      bearing: 0,
-      target: LatLng(position.latitude, position.longitude),
-      zoom: 17.0,
-    );
   }
 
   @override
