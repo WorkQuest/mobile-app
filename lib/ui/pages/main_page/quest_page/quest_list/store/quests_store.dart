@@ -137,25 +137,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   List<String> parser(List<String> skills) {
     List<String> result = [];
-    String spec;
-    String skill;
-    int j;
-    for (int i = 0; i < skills.length; i++) {
-      j = 1;
-      spec = "";
-      skill = "";
-      while (skills[i][j] != ".") {
-        spec += skills[i][j];
-        j++;
-      }
-      j++;
-      while (j < skills[i].length - 1) {
-        skill += skills[i][j];
-        j++;
-      }
-      result.add(
-        "filters.items.$spec.sub.$skill".tr(),
-      );
+    for (String skill in skills ){
+      final _spec = skill.split(".").first;
+      final _skill = skill.split('.').last;
+      result.add("filters.items.$_spec.sub.$_skill".tr());
     }
     return result;
   }

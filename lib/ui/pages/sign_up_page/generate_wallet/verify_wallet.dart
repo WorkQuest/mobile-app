@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/modal_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,122 +22,123 @@ class VerifyWalletPage extends StatefulWidget {
 }
 
 class _VerifyWalletPageState extends State<VerifyWalletPage> {
+  late final CreateWalletStore store;
+
   @override
   void initState() {
     super.initState();
-    final store = context.read<CreateWalletStore>();
+    store = context.read<CreateWalletStore>();
     store.splitPhraseIntoWords();
   }
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<CreateWalletStore>();
-    return Observer(
-      builder: (_) => Scaffold(
-        appBar: CupertinoNavigationBar(),
-        body: Container(
-          color: Colors.white,
-          padding: _padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'signUp.chooseWords'.tr(
-                  namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+    return ObserverListener<CreateWalletStore>(
+      onFailure: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        return false;
+      },
+      onSuccess: () async {
+        Navigator.of(context, rootNavigator: true).pop();
+        await AlertDialogUtils.showSuccessDialog(context);
+        Navigator.pushNamed(
+          context,
+          PinCodePage.routeName,
+        );
+      },
+      child: Observer(
+        builder: (_) => Scaffold(
+          appBar: CupertinoNavigationBar(),
+          body: Container(
+            color: Colors.white,
+            padding: _padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 15,
                 ),
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                'signUp.thWord'.tr(
-                  namedArgs: {
-                    'index': '${store.indexFirstWord}',
-                  },
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              _WordsWidget(
-                words: store.setOfWords!.toList(),
-                onTab: _pressedOnWord,
-                isFirst: true,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                'signUp.thWord'.tr(
-                  namedArgs: {
-                    'index': '${store.indexSecondWord}',
-                  },
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              _WordsWidget(
-                words: store.setOfWords!.toList(),
-                onTab: _pressedOnWord,
-                isFirst: false,
-              ),
-              Expanded(child: Container()),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 10.0,
-                ),
-                width: double.infinity,
-                child: ObserverListener<CreateWalletStore>(
-                  onFailure: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    return false;
-                  },
-                  onSuccess: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    await AlertDialogUtils.showSuccessDialog(context);
-                    Navigator.pushNamed(
-                      context,
-                      PinCodePage.routeName,
-                    );
-                  },
-                  child: ElevatedButton(
-                    child: Text('wallet.openWallet'.tr()),
-                    onPressed: store.statusGenerateButton
-                        ? () {
-                            AlertDialogUtils.showLoadingDialog(context);
-                            store.openWallet();
-                          }
-                        : null,
+                Text(
+                  'signUp.chooseWords'.tr(
+                    namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                  ),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'signUp.thWord'.tr(
+                    namedArgs: {
+                      'index': '${store.indexFirstWord}',
+                    },
+                  ),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                _WordsWidget(
+                  words: store.setOfWords!.toList(),
+                  onTab: _pressedOnWord,
+                  isFirst: true,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'signUp.thWord'.tr(
+                    namedArgs: {
+                      'index': '${store.indexSecondWord}',
+                    },
+                  ),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                _WordsWidget(
+                  words: store.setOfWords!.toList(),
+                  onTab: _pressedOnWord,
+                  isFirst: false,
+                ),
+                Expanded(child: Container()),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom + 10.0,
+                  ),
+                  width: double.infinity,
+                  child: LoginButton(
+                    title: 'wallet.openWallet'.tr(),
+                    onTap: store.statusGenerateButton && !store.isLoading ? _onPressedOnOpenWallet : null,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  _onPressedOnOpenWallet() {
+    AlertDialogUtils.showLoadingDialog(context);
+    store.openWallet();
   }
 
   void _pressedOnWord(String word, bool isFirstWord) async {
@@ -194,8 +196,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
             height: 20,
           ),
           Padding(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: ElevatedButton(
               child: Text('Ok'),
               onPressed: () {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/constants.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
@@ -20,6 +21,8 @@ class DeepLinkUtil {
   ProfileMeStore store = GetIt.I.get<ProfileMeStore>();
 
   String get _network => AccountRepository().notifierNetwork.value.name;
+
+  bool get _clientHaveToken => GetIt.I.get<ApiProvider>().httpClient.accessToken != null;
 
   void initDeepLink() {
     initURIHandler();
@@ -80,6 +83,7 @@ class DeepLinkUtil {
 
   Future<void> _goToPage(Uri uri) async {
     final argument = uri.path.split("/").last;
+    if (!_clientHaveToken) return;
     if (uri.path.contains("quests"))
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
