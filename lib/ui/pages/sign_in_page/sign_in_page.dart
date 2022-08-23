@@ -7,6 +7,7 @@ import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
@@ -71,7 +72,7 @@ class _SignInPageState extends State<SignInPage> {
             Navigator.pushNamed(
               context,
               ConfirmEmail.routeName,
-              arguments: store.getUsername(),
+              arguments: ConfirmEmailArguments(email: store.getUsername()),
             );
           });
         } else if (store.successData == SignInStoreState.needSetRole) {
@@ -79,6 +80,13 @@ class _SignInPageState extends State<SignInPage> {
             Navigator.pushNamed(
               context,
               ChooseRolePage.routeName,
+            );
+          });
+        } else if (store.successData == SignInStoreState.createWallet) {
+          AlertDialogUtils.showSuccessDialog(context).then((value) {
+            Navigator.pushNamed(
+              context,
+              WalletsPage.routeName,
             );
           });
         } else if (store.successData == SignInStoreState.signIn) {

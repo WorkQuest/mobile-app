@@ -119,6 +119,10 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
         onSuccess(SignInStoreState.needSetRole);
         return;
       }
+      if (bearerToken.address == null) {
+        onSuccess(SignInStoreState.createWallet);
+        return;
+      }
       if (totp.isNotEmpty) {
         if (!await _apiProvider.validateTotp(totp: totp)) {
           this.onError("Invalid TOTP");
@@ -142,7 +146,6 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
     }
   }
 
-
   Future<void> deletePushToken() async {
     try {
       this.onLoading();
@@ -157,4 +160,12 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   }
 }
 
-enum SignInStoreState { refreshToken, signIn, unconfirmedProfile, needSetRole, deletePushToken, signInWallet }
+enum SignInStoreState {
+  refreshToken,
+  signIn,
+  unconfirmedProfile,
+  needSetRole,
+  deletePushToken,
+  signInWallet,
+  createWallet
+}
