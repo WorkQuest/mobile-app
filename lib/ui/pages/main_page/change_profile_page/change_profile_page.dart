@@ -87,7 +87,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         onSuccess: () async {
           if (store.phoneNumber != null &&
               store.phoneNumber!.phoneNumber!.isNotEmpty &&
-              !store.numberChanged(store.oldPhoneNumber!.phoneNumber!)) {
+              !store.numberChanged(store.oldPhoneNumber!.phoneNumber)) {
             await AlertDialogUtils.showSuccessDialog(context);
             Navigator.pop(context, true);
           } else {
@@ -340,7 +340,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     if (store.address.isNotEmpty) {
       store.userData.additionalInfo!.address = store.address;
       store.userData.locationPlaceName = store.address;
-    }
+    } else
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: "Warning",
+        content: "Address is empty",
+      );
     store.userData.priority = profile!.valueToPriority();
     store.userData.payPeriod = profile!.valueToPayPeriod();
     store.userData.workplace = profile!.valueToWorkplace();
