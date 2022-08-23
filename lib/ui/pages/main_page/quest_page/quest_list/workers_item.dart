@@ -170,14 +170,15 @@ class WorkersItem extends StatelessWidget {
 
   Widget tagSkills(List<String> skills) {
     String skillsLine = '';
-    skills.map((e) => skillsLine += e == skills.last ? e : '$e, ').toList();
+    skills.map((e) => skillsLine += e == skills.last ? e.tr() : '${e.tr()}, ').toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("workers.specializations".tr()),
         const SizedBox(height: 5),
         Text(
-          skillsLine,
+          skillsLine.tr(),
           style: const TextStyle(
             fontSize: 16.0,
             color: Color(0xFF0083C7),
