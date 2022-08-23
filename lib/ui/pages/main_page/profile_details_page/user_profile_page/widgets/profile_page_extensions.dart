@@ -8,10 +8,12 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:share/share.dart';
 
 import '../../../../report_page/report_page.dart';
 
@@ -38,6 +40,24 @@ extension CustomAppBar on UserProfileState {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            IconButton(
+              icon: Icon(
+                Icons.share_outlined,
+                color: _color,
+              ),
+              onPressed: () async {
+                late String _url;
+                if (AccountRepository().notifierNetwork.value ==
+                    Network.mainnet) {
+                  _url =
+                      "https://app.workquest.co/profile/${info.id}";
+                } else {
+                  _url =
+                      "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/profile/${info.id}";
+                }
+                Share.share(_url);
+              },
+            ),
             if (info.id == userStore!.userData!.id)
               IconButton(
                 icon: Icon(
