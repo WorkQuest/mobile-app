@@ -90,7 +90,7 @@ class Configs {
     NetworkName.workNetMainnet: ConfigNetwork(
       rpc: 'https://mainnet-gate.workquest.co/',
       wss: 'wss://mainnet-gate.workquest.co/tendermint-rpc/websocket',
-      urlExplorer: '',
+      urlExplorer: 'https://explorer.workquest.co/address/',
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.WQT,
@@ -123,7 +123,7 @@ class Configs {
       NetworkName.workNetTestnet: ConfigNetwork(
           rpc: 'https://dev-node-ams3.workquest.co/',
           wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
-          urlExplorer: '',
+          urlExplorer: 'https://dev-explorer.workquest.co/address/',
           dataCoins: const [
             DataCoins(
               symbolToken: TokenSymbols.WQT,
@@ -156,7 +156,7 @@ class Configs {
       NetworkName.workNetTestnet: ConfigNetwork(
         rpc: 'https://testnet-gate.workquest.co/',
         wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
-        urlExplorer: '',
+        urlExplorer: 'https://testnet-explorer.workquest.co/address/',
         dataCoins: const [
           DataCoins(
             symbolToken: TokenSymbols.WQT,
