@@ -2,7 +2,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/chat_extension.dart';
-import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -108,13 +107,5 @@ abstract class _GroupChatStore extends IStore<bool> with Store {
     }
   }
 
-  void getOwnerInfo(ChatModel chat) {
-    final ownerChatId = chat.groupChat!.ownerMemberId;
-    chat.members!.forEach((element) {
-      if (ownerChatId == element.id) {
-        ownerId = element.userId;
-        myRole = element.user!.role;
-      }
-    });
-  }
+
 }

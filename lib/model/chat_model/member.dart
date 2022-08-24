@@ -18,7 +18,7 @@ class Member {
     required this.deletionData,
   });
 
-  String id;
+  String? id;
   String? chatId;
   String? userId;
   String? adminId;
