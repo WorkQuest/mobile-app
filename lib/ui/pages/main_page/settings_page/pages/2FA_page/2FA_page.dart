@@ -4,6 +4,7 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
+import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -56,11 +57,8 @@ class TwoFAPage extends StatelessWidget {
           child: Observer(
             builder: (_) => Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: CupertinoNavigationBar(
-                automaticallyImplyLeading: true,
-                middle: Text(
-                  "settings.2FA".tr(),
-                ),
+              appBar: DefaultAppBar(
+                title: "settings.2FA".tr(),
               ),
               body: SafeArea(
                 child: Padding(
