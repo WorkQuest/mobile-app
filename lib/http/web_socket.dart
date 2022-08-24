@@ -168,7 +168,7 @@ class WebSocket {
   void _handleSubscription(dynamic json) async {
     try {
       if (json["path"] == "/notifications/quest")
-        questNotification(json["message"]);
+        questNotification(json);
       getMessage(json);
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
@@ -188,8 +188,8 @@ class WebSocket {
     try {
       final needUpdate = json['action'] != 'userLeftReviewAboutQuest';
       if (!needUpdate) return;
-      if (handlerQuests != null) handlerQuests!(json);
-      if (handlerQuestList != null) handlerQuestList!(json);
+      if (handlerQuests != null) handlerQuests!(json["message"]);
+      if (handlerQuestList != null) handlerQuestList!(json["message"]);
       if (handlerChats != null) handlerChats!(json);
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
@@ -262,6 +262,7 @@ class WebSocket {
       if (_recipient.toString().toLowerCase() == myAddress.toLowerCase()) {
         if (double.parse(_value) == 0.0) {
           await Future.delayed(const Duration(seconds: 9));
+          print('getCoins 1');
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions();
         } else {
@@ -282,6 +283,7 @@ class WebSocket {
             block: Block(timestamp: _block),
           );
           GetIt.I.get<TransactionsStore>().addTransaction(_tx);
+          print('getCoins 2');
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
         }
       } else {
@@ -294,6 +296,7 @@ class WebSocket {
             _txLog['topics'][2].toString().split('x').last.substring(24);
         if (_address.toLowerCase() == myAddress) {
           await Future.delayed(const Duration(seconds: 9));
+          print('getCoins 3');
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions();
         }
