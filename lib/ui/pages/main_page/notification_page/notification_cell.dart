@@ -263,7 +263,7 @@ class _NotificationCellState extends State<NotificationCell> {
         arguments: "sumsub",
       );
     } else if (action.contains("enabledoubleauthentication")) {
-      await Navigator.pushNamed(context,
+      await Navigator.of(context, rootNavigator: true).pushNamed(
         TwoFAPage.routeName,
       );
     } else if (action.contains("invitefriendsreward")) {

@@ -27,14 +27,13 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
   @override
   void initState() {
     smsStore = context.read<SMSVerificationStore>();
+    if (!(smsStore.timer?.isActive ?? false)) {
+      smsStore.submitPhoneNumber();
+      smsStore.startTimer();
+    }
     smsStore.setCode("");
     profileStore = context.read<ProfileMeStore>();
-    _listenSmsCode();
     super.initState();
-  }
-
-  _listenSmsCode() async {
-    await SmsAutoFill().listenForCode();
   }
 
   @override
@@ -84,7 +83,6 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                       radius: Radius.circular(1),
                       enabled: true,
                     ),
-
                     textInputAction: TextInputAction.go,
                     currentCode: smsStore.code,
                     onCodeChanged: smsStore.setCode,

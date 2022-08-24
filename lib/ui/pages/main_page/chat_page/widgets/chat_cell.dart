@@ -79,19 +79,21 @@ class ChatCell extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            Text(
-                              text,
-                              style: TextStyle(
-                                fontWeight: unread && itsMy
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                fontSize: 14,
-                                color: unread && itsMy
-                                    ? Colors.black
-                                    : Color(0xFF7C838D),
+                            Expanded(
+                              child: Text(
+                                text,
+                                style: TextStyle(
+                                  fontWeight: unread && itsMy
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontSize: 14,
+                                  color: unread && itsMy
+                                      ? Colors.black
+                                      : Color(0xFF7C838D),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),

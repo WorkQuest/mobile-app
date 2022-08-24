@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
@@ -87,11 +88,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         onSuccess: () async {
           if (store.phoneNumber != null &&
               store.phoneNumber!.phoneNumber!.isNotEmpty &&
-              !store.numberChanged(store.oldPhoneNumber!.phoneNumber!)) {
+              !store.numberChanged(store.oldPhoneNumber!.phoneNumber)) {
             await AlertDialogUtils.showSuccessDialog(context);
             Navigator.pop(context, true);
           } else {
-            await profile!.submitPhoneNumber();
             profile!.userData?.phone = null;
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'settings.enterSMS'.tr());
@@ -311,7 +311,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           _controllerKnowledge!.getListMap(), context)) return;
       if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
       if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
-      if (!store.userData.neverEditedProfileFlag!) {
+      if (Constants.isTestnet)
+        _nextStep();
+      else if (!store.userData.neverEditedProfileFlag!) {
         if (store.userData.isTotpActive ?? false)
           AlertDialogUtils.showSecurityTotpPDialog(
             context,
@@ -340,7 +342,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     if (store.address.isNotEmpty) {
       store.userData.additionalInfo!.address = store.address;
       store.userData.locationPlaceName = store.address;
-    }
+    } else
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: "Warning",
+        content: "Address is empty",
+      );
     store.userData.priority = profile!.valueToPriority();
     store.userData.payPeriod = profile!.valueToPayPeriod();
     store.userData.workplace = profile!.valueToWorkplace();

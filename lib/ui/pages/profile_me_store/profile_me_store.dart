@@ -363,16 +363,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future submitPhoneNumber() async {
-    try {
-      this.onLoading();
-      await _apiProvider.submitPhoneNumber();
-      // this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
-
   Future<void> deletePushToken() async {
     try {
       this.onLoading();
