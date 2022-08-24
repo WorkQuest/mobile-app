@@ -249,7 +249,8 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  const SizedBox(height: 10.0),
+                  Text('Version 1.1.6'),
                   ///Logout button
                   const SizedBox(height: 10.0),
                   LogoutButton(),
