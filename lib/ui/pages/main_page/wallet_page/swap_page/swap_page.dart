@@ -63,6 +63,12 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   @override
+  void dispose() {
+    store.clearData();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

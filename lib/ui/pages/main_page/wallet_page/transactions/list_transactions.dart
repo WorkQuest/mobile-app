@@ -97,7 +97,7 @@ class ListTransactions extends StatelessWidget {
                       ),
                       const SizedBox(height: 25.38),
                       Text(
-                        'wallet.emptyListTrx'.tr(),
+                        'errors.emptyListTrx'.tr(),
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: AppColor.disabledText),
                       )

@@ -391,6 +391,9 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
     convertWQT = null;
     isLoadingCourse = false;
     isSuccessCourse = false;
+    service?.client?.dispose();
+    service?.client = null;
+    service?.stream?.cancel();
   }
 }
 
