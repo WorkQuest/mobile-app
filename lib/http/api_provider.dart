@@ -784,7 +784,7 @@ extension UserInfoService on ApiProvider {
     };
     Map<String, dynamic> body = {};
     Constants.isTestnet
-        ? body = {profile} as Map<String, dynamic>
+        ? body = profile
         : body = {
             if (!userData.neverEditedProfileFlag!)
               "totpCode": userData.totpCode,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
@@ -91,7 +92,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             await AlertDialogUtils.showSuccessDialog(context);
             Navigator.pop(context, true);
           } else {
-            await profile!.submitPhoneNumber();
             profile!.userData?.phone = null;
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'settings.enterSMS'.tr());
@@ -311,7 +311,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           _controllerKnowledge!.getListMap(), context)) return;
       if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
       if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
-      if (!store.userData.neverEditedProfileFlag!) {
+      if (Constants.isTestnet)
+        _nextStep();
+      else if (!store.userData.neverEditedProfileFlag!) {
         if (store.userData.isTotpActive ?? false)
           AlertDialogUtils.showSecurityTotpPDialog(
             context,
