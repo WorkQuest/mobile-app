@@ -25,12 +25,11 @@ class WalletRepository {
   ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
+
   String get privateKey => userWallet!.privateKey!;
 
-
   bool get isOtherNetwork =>
-      networkName.value != NetworkName.workNetTestnet &&
-          networkName.value != NetworkName.workNetMainnet;
+      networkName.value != NetworkName.workNetTestnet && networkName.value != NetworkName.workNetMainnet;
 
   ClientService getClient() {
     return client!;
@@ -57,17 +56,17 @@ class WalletRepository {
 
   ConfigNetwork getConfigNetworkWorknet() {
     final _isTestnet = notifierNetwork.value == Network.testnet;
-    return Configs.configsNetwork[
-    _isTestnet ? NetworkName.workNetTestnet : NetworkName.workNetMainnet]!;
+    return Configs.configsNetwork[_isTestnet ? NetworkName.workNetTestnet : NetworkName.workNetMainnet]!;
   }
 
   setNetwork(NetworkName networkName) {
     this.networkName.value = networkName;
     final _network = Web3Utils.getNetwork(networkName);
     notifierNetwork.value = _network;
+    Storage.write(StorageKeys.networkName.name, networkName.name);
   }
 
-  changeNetwork(NetworkName networkName,{bool updateTrxList = false}) {
+  changeNetwork(NetworkName networkName, {bool updateTrxList = false}) {
     _saveNetwork(networkName);
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();
@@ -97,7 +96,7 @@ class WalletRepository {
     client?.stream?.cancel();
   }
 
-  ClientService getClientWorkNet(){
+  ClientService getClientWorkNet() {
     if (notifierNetwork.value == Network.mainnet) {
       return ClientService(Configs.configsNetwork[NetworkName.workNetMainnet]!);
     } else if (notifierNetwork.value == Network.testnet) {
