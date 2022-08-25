@@ -14,6 +14,19 @@ class Validators {
     return null;
   }
 
+  static String? passwordValidator(String? text) {
+    if (text == null) {
+      return null;
+    }
+    if (text.isEmpty) {
+      return "Empty field";
+    }
+    if (text.length < 8) {
+      return "Password field must be at least 8 characters";
+    }
+    return null;
+  }
+
   static String? emailValidator(String? email) {
     String p =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -34,9 +47,7 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return text!.length >= 8
-        ? null
-        : "Password must be at least 8 characters long";
+    return text!.length >= 8 ? null : "Password must be at least 8 characters long";
   }
 
   static String? firstNameValidator(String? text) {
@@ -67,26 +78,18 @@ class Validators {
   }
 
   static String? descriptionValidator(String? text) {
-    return (text?.length ?? 0) < 400
-        ? null
-        : "Too many characters ${text!.length}/400";
+    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/400";
   }
 
   static String? nicknameTwitterValidator(String? text) {
-    return (text?.length ?? 0) < 15
-        ? null
-        : "Too many characters ${text!.length}/15";
+    return (text?.length ?? 0) < 15 ? null : "Too many characters ${text!.length}/15";
   }
 
   static String? nicknameFacebookValidator(String? text) {
-    return (text?.length ?? 0) < 50
-        ? null
-        : "Too many characters ${text!.length}/50";
+    return (text?.length ?? 0) < 50 ? null : "Too many characters ${text!.length}/50";
   }
 
   static String? nicknameLinkedInValidator(String? text) {
-    return (text?.length ?? 0) < 30
-        ? null
-        : "Too many characters ${text!.length}/30";
+    return (text?.length ?? 0) < 30 ? null : "Too many characters ${text!.length}/30";
   }
 }

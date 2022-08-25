@@ -136,6 +136,7 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
           return;
         }
       }
+      totp = '';
       onSuccess(SignInStoreState.signIn);
     } on FormatException catch (e, trace) {
       print('e: $e\ntrace: $trace');
