@@ -2,14 +2,14 @@ class BearerToken {
   String access;
   String refresh;
   int status;
-  bool? totpIsActive;
+  bool totpIsActive;
   String? address;
 
   BearerToken({
     required this.access,
     required this.refresh,
     required this.status,
-    this.totpIsActive,
+    required this.totpIsActive,
     this.address,
   });
 
@@ -18,7 +18,7 @@ class BearerToken {
       status: json["userStatus"],
       access: json["access"],
       refresh: json["refresh"],
-      totpIsActive: json["totpIsActive"] == null ? null : json["totpIsActive"],
+      totpIsActive: json["totpIsActive"] ?? false,
       address: json["address"] == null ? null : json["address"],
     );
   }
