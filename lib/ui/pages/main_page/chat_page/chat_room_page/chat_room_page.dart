@@ -63,7 +63,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       chatType = _store.chatRoom?.type;
       List<Member> members = _store.chatRoom!.members!;
       members.forEach((element) {
-        if (element.userId == profile!.userData!.id) meMember = true;
+        if ((element.userId ?? element.adminId) == profile!.userData!.id)
+          meMember = true;
       });
 
       if (chatType == TypeChat.group) {
@@ -74,12 +75,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           _store.getQuest(_store.chatRoom!.questChat!.quest!.id);
           _store.getDispute(_store.chatRoom!.questChat!.quest!.openDispute!.id);
         }
-        if (members.length > 2) members.removeWhere((element) => element.type == "Admin");
-        id1 = members[0].userId;
-        firstName1 = members[0].user!.firstName;
-        lastName1 = members[0].user!.lastName;
-        url1 = members[0].user!.avatar?.url ?? Constants.defaultImageNetwork;
-        id2 = members[1].userId;
+        if (members.length > 2)
+          members.removeWhere((element) => element.type == "Admin");
+        id1 = members[0].userId ?? members[0].adminId;
+        firstName1 = members[0].user?.firstName ?? "WorkQuest";
+        lastName1 = members[0].user?.lastName ?? "Admin";
+        url1 = members[0].user?.avatar?.url ?? Constants.defaultImageNetwork;
+        id2 = members[1].userId ?? members[1].adminId;
         firstName2 = members[1].user?.firstName ?? members[1].admin!.firstName;
         lastName2 = members[1].user?.lastName ?? members[1].admin!.lastName;
         url2 = members[1].user?.avatar?.url ?? Constants.defaultImageNetwork;
@@ -133,7 +135,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                       _store.chatRoom!.questChat?.status != -1 &&
-                              (_store.chatRoom!.meMember?.status == 0 || meMember)
+                              (_store.chatRoom!.meMember?.status == 0 ||
+                                  meMember)
                           ? InputToolbar(_store)
                           : profile!.userData!.role == UserRole.Employer &&
                                   _store.chatRoom!.questChat != null &&
@@ -151,8 +154,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                         rootNavigator: true,
                                       ).pushNamed(
                                         ChooseQuestPage.routeName,
-                                        arguments:
-                                            profile!.userData!.id != id1 ? id1! : id2!,
+                                        arguments: profile!.userData!.id != id1
+                                            ? id1!
+                                            : id2!,
                                       );
                                     },
                                   ),
