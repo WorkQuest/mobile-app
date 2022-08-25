@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/map_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/utils/quest_util.dart';
+import 'package:app/utils/skill_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,8 +28,7 @@ class QuestDetails extends StatefulWidget {
   QuestDetailsState createState() => QuestDetailsState();
 }
 
-class QuestDetailsState<T extends QuestDetails> extends State<T>
-    with TickerProviderStateMixin {
+class QuestDetailsState<T extends QuestDetails> extends State<T> with TickerProviderStateMixin {
   late ProfileMeStore? profile;
   late QuestDetailsStore storeQuest;
 
@@ -61,9 +61,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        appBar: storeQuest.questInfo == null
-            ? null
-            : AppBar(actions: actionAppBar()),
+        appBar: storeQuest.questInfo == null ? null : AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
                 child: Transform.scale(
@@ -96,8 +94,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ? Text("quests.yourQuest".tr())
                         : GestureDetector(
                             onTap: () async {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(
+                              Navigator.of(context, rootNavigator: true).pushNamed(
                                 UserProfile.routeName,
                                 arguments: ProfileArguments(
                                   role: UserRole.Employer,
@@ -111,8 +108,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
                                   child: Image.network(
-                                    storeQuest.questInfo!.user!.avatar?.url ??
-                                        Constants.defaultImageNetwork,
+                                    storeQuest.questInfo!.user!.avatar?.url ?? Constants.defaultImageNetwork,
                                     width: 30,
                                     height: 30,
                                     fit: BoxFit.cover,
@@ -133,8 +129,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     const SizedBox(height: 17),
                     Row(
                       children: [
-                        if (storeQuest.questInfo!.userId !=
-                            profile!.userData!.id)
+                        if (storeQuest.questInfo!.userId != profile!.userData!.id)
                           Icon(
                             Icons.location_on_rounded,
                             color: Color(0xFF7C838D),
@@ -153,15 +148,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     ),
                     const SizedBox(height: 17),
                     tagItem(
-                      profile!.parser(
-                        storeQuest.questInfo!.questSpecializations,
-                      ),
+                      SkillUtils.parser(storeQuest.questInfo!.questSpecializations),
                     ),
                     if (storeQuest.questInfo!.assignedWorker != null &&
-                        (storeQuest.questInfo!.status ==
-                                QuestConstants.questCreated ||
-                            storeQuest.questInfo!.status ==
-                                QuestConstants.questDone))
+                        (storeQuest.questInfo!.status == QuestConstants.questCreated ||
+                            storeQuest.questInfo!.status == QuestConstants.questDone))
                       inProgressBy(),
                     const SizedBox(height: 15),
                     GestureDetector(
@@ -194,8 +185,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ),
                     ],
                     Text(
-                      DateFormat('dd MMMM yyyy, kk:mm')
-                          .format(storeQuest.questInfo!.createdAt!.toLocal()),
+                      DateFormat('dd MMMM yyyy, kk:mm').format(storeQuest.questInfo!.createdAt!.toLocal()),
                       style: TextStyle(
                         color: Color(0xFFAAB0B9),
                         fontSize: 12,
@@ -229,10 +219,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   initialCameraPosition: CameraPosition(
                                     bearing: 0,
                                     target: LatLng(
-                                      storeQuest
-                                          .questInfo!.locationCode!.latitude,
-                                      storeQuest
-                                          .questInfo!.locationCode!.longitude,
+                                      storeQuest.questInfo!.locationCode!.latitude,
+                                      storeQuest.questInfo!.locationCode!.longitude,
                                     ),
                                     zoom: 15.0,
                                   ),
@@ -244,8 +232,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                               "assets/marker.svg",
                               width: 22,
                               height: 29,
-                              color: Constants.priorityColors[
-                                  storeQuest.questInfo!.priority],
+                              color: Constants.priorityColors[storeQuest.questInfo!.priority],
                             ),
                             Container(
                               color: Colors.transparent,
@@ -263,9 +250,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         Row(
                           children: [
                             PriorityView(
-                              storeQuest.questInfo!.priority != 0
-                                  ? storeQuest.questInfo!.priority - 1
-                                  : 0,
+                              storeQuest.questInfo!.priority != 0 ? storeQuest.questInfo!.priority - 1 : 0,
                             ),
                             const SizedBox(width: 5),
                             PayPeriodView(storeQuest.questInfo!.payPeriod),
@@ -274,8 +259,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         const SizedBox(width: 50),
                         Flexible(
                           child: Text(
-                            QuestUtils.getPrice(storeQuest.questInfo!.price) +
-                                "  WUSD",
+                            QuestUtils.getPrice(storeQuest.questInfo!.price) + "  WUSD",
                             textAlign: TextAlign.end,
                             style: TextStyle(
                               color: Color(0xFF00AA5B),

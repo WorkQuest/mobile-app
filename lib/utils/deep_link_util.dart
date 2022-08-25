@@ -5,7 +5,6 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up/pages/confirm_email_page/confirm_email_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
@@ -18,7 +17,6 @@ import 'package:uni_links/uni_links.dart';
 class DeepLinkUtil {
   bool _initialURILinkHandled = false;
   StreamSubscription? _streamSubscription;
-  ProfileMeStore store = GetIt.I.get<ProfileMeStore>();
 
   String get _network => WalletRepository().notifierNetwork.value.name;
 
@@ -93,14 +91,14 @@ class DeepLinkUtil {
         ),
       );
     else if (uri.path.contains("profile")) {
-      await store.getQuestHolder(argument);
+      final questHolder = await GetIt.I.get<ApiProvider>().getProfileUser(userId: argument);
       await Navigator.of(navigatorKey.currentState!.context,
               rootNavigator: true)
           .pushNamed(
         UserProfile.routeName,
         arguments: ProfileArguments(
-          role: store.questHolder!.role,
-          userId: store.questHolder!.id,
+          role: questHolder.role,
+          userId: questHolder.id,
         ),
       );
     } else if (uri.path.contains("sign-in")) {

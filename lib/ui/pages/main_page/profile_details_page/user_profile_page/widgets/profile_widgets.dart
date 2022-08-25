@@ -155,7 +155,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.read<ProfileMeStore>();
     return Column(
       children: [
         Container(
@@ -187,7 +186,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                               userId: widget.id,
                             ),
                     );
-                    profile.assignedWorker = null;
                   },
                   child: ListTile(
                     leading: CircleAvatar(

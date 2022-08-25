@@ -809,7 +809,6 @@ class _RespondedListState extends State<_RespondedList> {
             userId: respond.workerId,
           ),
         );
-        widget.profileStore!.assignedWorker = null;
       },
       child: Row(
         children: [

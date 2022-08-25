@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/change_profile_page/widgets/input_widget.
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
+import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -38,7 +39,7 @@ class _FieldsForWorkerWidgetState extends State<FieldsForWorkerWidget> {
           builder: (_) => _dropDownMenuWidget(
             title: "settings.priority",
             value: widget.profile.priorityValue,
-            list: widget.profile.priorityList,
+            list: ProfileConstants.priorityList,
             onChanged: (priority) {
               widget.profile.setPriorityValue(priority!);
             },
@@ -56,7 +57,7 @@ class _FieldsForWorkerWidgetState extends State<FieldsForWorkerWidget> {
           builder: (_) => _dropDownMenuWidget(
             title: "settings.distantWork",
             value: widget.profile.distantWork,
-            list: widget.profile.distantWorkList,
+            list: ProfileConstants.distantWorkList,
             onChanged: (text) {
               widget.profile.setWorkplaceValue(text!);
             },
@@ -66,7 +67,7 @@ class _FieldsForWorkerWidgetState extends State<FieldsForWorkerWidget> {
           builder: (_) => _dropDownMenuWidget(
             title: "quests.payPeriod.title",
             value: widget.profile.payPeriod,
-            list: widget.profile.payPeriodLists,
+            list: ProfileConstants.payPeriodLists,
             onChanged: (text) {
               widget.profile.setPayPeriod(text!);
             },

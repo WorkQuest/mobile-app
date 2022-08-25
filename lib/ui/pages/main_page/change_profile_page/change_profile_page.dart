@@ -14,6 +14,7 @@ import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +46,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   void initState() {
     profile = context.read<ProfileMeStore>();
     store = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
-    profile!.workplaceToValue();
-    profile!.priorityToValue();
-    profile!.payPeriodToValue();
+    profile!.distantWork = ProfileUtils.workplaceToValue(profile!.userData!.workplace);
+    profile!.priorityValue = ProfileUtils.priorityToValue(profile!.userData!.priority);
+    profile!.payPeriod = ProfileUtils.payPeriodToValue(profile!.userData!.payPeriod);
     if (profile!.userData!.additionalInfo?.address != null)
       store.address = profile!.userData!.additionalInfo!.address!;
     store.getInitCode(store.userData.phone ?? store.userData.tempPhone!,
@@ -348,9 +349,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         title: "Warning",
         content: "Address is empty",
       );
-    store.userData.priority = profile!.valueToPriority();
-    store.userData.payPeriod = profile!.valueToPayPeriod();
-    store.userData.workplace = profile!.valueToWorkplace();
+    store.userData.priority = ProfileUtils.valueToPriority(profile!.priorityValue);
+    store.userData.payPeriod = ProfileUtils.valueToPayPeriod(profile!.payPeriod);
+    store.userData.workplace = ProfileUtils.valueToWorkplace(profile!.distantWork);
 
     store.savePhoneNumber();
     store.saveSecondPhoneNumber();
