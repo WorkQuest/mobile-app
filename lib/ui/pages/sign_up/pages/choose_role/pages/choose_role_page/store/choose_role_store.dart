@@ -9,7 +9,6 @@ import 'package:mobx/mobx.dart';
 
 part 'choose_role_store.g.dart';
 
-@injectable
 @singleton
 class ChooseRoleStore extends _ChooseRoleStore with _$ChooseRoleStore {
   ChooseRoleStore(ApiProvider apiProvider) : super(apiProvider);
