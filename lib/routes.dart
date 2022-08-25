@@ -78,8 +78,8 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/report_page/report_page.dart';
 import 'package:app/ui/pages/report_page/store/report_store.dart';
-import 'package:app/ui/pages/restore_password_page/send_code.dart';
-import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/ui/pages/restore_password_page/send_code_page.dart';
+import 'package:app/ui/pages/restore_password_page/store/restore_password_store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';
@@ -182,11 +182,11 @@ class Routes {
           ),
         );
 
-      case SendEmail.routeName:
+      case SendEmailPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<RestorePasswordStore>(),
-            child: SendEmail(),
+            child: SendEmailPage(),
           ),
         );
 

@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/restore_password_page/send_code.dart';
+import 'package:app/ui/pages/restore_password_page/send_code_page.dart';
 import 'package:app/ui/pages/sign_up/pages/sign_up_page/sign_up_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ class HintsAccountWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () => Navigator.pushNamed(
                   context,
-                  SendEmail.routeName,
+                  SendEmailPage.routeName,
                 ),
                 child: Text(
                   "signIn.forgotYourPass".tr(),
