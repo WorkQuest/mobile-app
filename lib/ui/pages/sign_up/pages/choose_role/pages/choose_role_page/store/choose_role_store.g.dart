@@ -9,13 +9,6 @@ part of 'choose_role_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
-  Computed<bool>? _$canSubmitCodeComputed;
-
-  @override
-  bool get canSubmitCode =>
-      (_$canSubmitCodeComputed ??= Computed<bool>(() => super.canSubmitCode,
-              name: '_ChooseRoleStore.canSubmitCode'))
-          .value;
   Computed<bool>? _$privacyPolicyComputed;
 
   @override
@@ -90,21 +83,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
-  final _$_codeFromEmailAtom = Atom(name: '_ChooseRoleStore._codeFromEmail');
-
-  @override
-  String get _codeFromEmail {
-    _$_codeFromEmailAtom.reportRead();
-    return super._codeFromEmail;
-  }
-
-  @override
-  set _codeFromEmail(String value) {
-    _$_codeFromEmailAtom.reportWrite(value, super._codeFromEmail, () {
-      super._codeFromEmail = value;
-    });
-  }
-
   final _$_termsAndConditionsAtom =
       Atom(name: '_ChooseRoleStore._termsAndConditions');
 
@@ -152,37 +130,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
-  final _$timerAtom = Atom(name: '_ChooseRoleStore.timer');
-
-  @override
-  Timer? get timer {
-    _$timerAtom.reportRead();
-    return super.timer;
-  }
-
-  @override
-  set timer(Timer? value) {
-    _$timerAtom.reportWrite(value, super.timer, () {
-      super.timer = value;
-    });
-  }
-
-  final _$secondsCodeAgainAtom =
-      Atom(name: '_ChooseRoleStore.secondsCodeAgain');
-
-  @override
-  int get secondsCodeAgain {
-    _$secondsCodeAgainAtom.reportRead();
-    return super.secondsCodeAgain;
-  }
-
-  @override
-  set secondsCodeAgain(int value) {
-    _$secondsCodeAgainAtom.reportWrite(value, super.secondsCodeAgain, () {
-      super.secondsCodeAgain = value;
-    });
-  }
-
   final _$approveRoleAsyncAction = AsyncAction('_ChooseRoleStore.approveRole');
 
   @override
@@ -197,27 +144,12 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$changeRoleAsyncAction.run(() => super.changeRole());
   }
 
-  final _$confirmEmailAsyncAction =
-      AsyncAction('_ChooseRoleStore.confirmEmail');
-
-  @override
-  Future<dynamic> confirmEmail() {
-    return _$confirmEmailAsyncAction.run(() => super.confirmEmail());
-  }
-
   final _$refreshTokenAsyncAction =
       AsyncAction('_ChooseRoleStore.refreshToken');
 
   @override
   Future<dynamic> refreshToken() {
     return _$refreshTokenAsyncAction.run(() => super.refreshToken());
-  }
-
-  final _$startTimerAsyncAction = AsyncAction('_ChooseRoleStore.startTimer');
-
-  @override
-  Future startTimer(String email) {
-    return _$startTimerAsyncAction.run(() => super.startTimer(email));
   }
 
   final _$_ChooseRoleStoreActionController =
@@ -229,17 +161,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
         name: '_ChooseRoleStore.setTotp');
     try {
       return super.setTotp(value);
-    } finally {
-      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setCode(String value) {
-    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
-        name: '_ChooseRoleStore.setCode');
-    try {
-      return super.setCode(value);
     } finally {
       _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
     }
@@ -290,11 +211,11 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   }
 
   @override
-  dynamic stopTimer() {
+  dynamic clearData() {
     final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
-        name: '_ChooseRoleStore.stopTimer');
+        name: '_ChooseRoleStore.clearData');
     try {
-      return super.stopTimer();
+      return super.clearData();
     } finally {
       _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
     }
@@ -306,9 +227,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
 platform: ${platform},
 totp: ${totp},
 userRole: ${userRole},
-timer: ${timer},
-secondsCodeAgain: ${secondsCodeAgain},
-canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},

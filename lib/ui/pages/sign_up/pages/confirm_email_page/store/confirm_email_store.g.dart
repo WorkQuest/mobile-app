@@ -78,6 +78,17 @@ mixin _$ConfirmEmailStore on _ConfirmEmailStore, Store {
   }
 
   @override
+  dynamic stopTimer() {
+    final _$actionInfo = _$_ConfirmEmailStoreActionController.startAction(
+        name: '_ConfirmEmailStore.stopTimer');
+    try {
+      return super.stopTimer();
+    } finally {
+      _$_ConfirmEmailStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 secondsCodeAgain: ${secondsCodeAgain},

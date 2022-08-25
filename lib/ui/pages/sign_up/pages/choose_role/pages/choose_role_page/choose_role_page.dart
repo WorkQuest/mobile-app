@@ -1,7 +1,6 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';
-import 'package:app/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,36 +9,44 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../approve_role_page.dart';
 
-class ChooseRolePage extends StatelessWidget {
+class ChooseRolePage extends StatefulWidget {
   const ChooseRolePage();
 
   static const String routeName = '/chooseRolePage';
 
-  Widget build(BuildContext context) {
-    final store = context.read<ChooseRoleStore>();
+  @override
+  State<ChooseRolePage> createState() => _ChooseRolePageState();
+}
 
-    return WillPopScope(
-      onWillPop: () async {
-        await store.deletePushToken();
-        Storage.deleteAllFromSecureStorage();
-        Navigator.of(context, rootNavigator: true)
-            .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
-        return true;
-      },
+class _ChooseRolePageState extends State<ChooseRolePage> {
+  late final ChooseRoleStore store;
+
+  @override
+  void initState() {
+    store = context.read<ChooseRoleStore>();
+    super.initState();
+  }
+
+  _stateListener() {
+    if (store.successData == ChooseRoleState.refreshToken) {
+      Navigator.pushNamed(
+        context,
+        ApproveRolePage.routeName,
+        arguments: store,
+      );
+    }
+  }
+
+  Widget build(BuildContext context) {
+    return ObserverListener<ChooseRoleStore>(
+      onSuccess: _stateListener,
+      onFailure: () => false,
       child: Scaffold(
         appBar: CupertinoNavigationBar(
           leading: Align(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
-              onTap: () async {
-                await store.deletePushToken();
-                Storage.deleteAllFromSecureStorage();
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamedAndRemoveUntil(
-                  SignInPage.routeName,
-                  (route) => false,
-                );
-              },
+              onTap: _onBackPressed,
               child: Row(
                 children: [
                   SvgPicture.asset("assets/arrow_back.svg"),
@@ -51,7 +58,6 @@ class ChooseRolePage extends StatelessWidget {
               ),
             ),
           ),
-          // previousPageTitle: "  " + "meta.back".tr(),
           border: Border.fromBorderSide(BorderSide.none),
         ),
         body: SafeArea(
@@ -71,12 +77,22 @@ class ChooseRolePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: getCard(
-                      context, store, UserRole.Employer, Color(0xFF1D2127)),
+                  child: _CardChooseRoleWidget(
+                    role: UserRole.Employer,
+                    store: store,
+                    color: const Color(0xFF1D2127),
+                    onTap: () => _onPressedSelectRole(UserRole.Employer),
+                  ),
+                  // child: getCard(context, store, UserRole.Employer, Color(0xFF1D2127)),
                 ),
                 const SizedBox(height: 0),
                 Expanded(
-                  child: getCard(context, store, UserRole.Worker),
+                  child: _CardChooseRoleWidget(
+                    role: UserRole.Worker,
+                    store: store,
+                    onTap: () => _onPressedSelectRole(UserRole.Worker),
+                  ),
+                  // child: getCard(context, store, UserRole.Worker),
                 ),
               ],
             ),
@@ -86,23 +102,35 @@ class ChooseRolePage extends StatelessWidget {
     );
   }
 
-  Widget getCard(BuildContext ctx, var store, UserRole role,
-      [Color color = Colors.white]) {
+  _onPressedSelectRole(UserRole role) {
+    context.read<ChooseRoleStore>().refreshToken();
+    context.read<ChooseRoleStore>().setUserRole(role);
+  }
+
+  _onBackPressed() {
+    store.deletePushToken();
+    Navigator.pop(context);
+  }
+}
+
+class _CardChooseRoleWidget extends StatelessWidget {
+  final UserRole role;
+  final ChooseRoleStore store;
+  final Function()? onTap;
+  final Color color;
+
+  const _CardChooseRoleWidget({
+    Key? key,
+    required this.role,
+    required this.store,
+    required this.onTap,
+    this.color = Colors.white,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        try {
-          await ctx.read<ChooseRoleStore>().refreshToken();
-          ctx.read<ChooseRoleStore>().setUserRole(role);
-        } catch (e, trace) {
-          e.toString();
-          trace.toString();
-        }
-        Navigator.pushNamed(
-          ctx,
-          ApproveRolePage.routeName,
-          arguments: store,
-        );
-      },
+      onTap: onTap,
       child: Center(
         child: Stack(
           children: [

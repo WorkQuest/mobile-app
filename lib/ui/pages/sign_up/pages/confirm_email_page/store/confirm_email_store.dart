@@ -33,6 +33,14 @@ abstract class _ConfirmEmailStore extends IStore<ConfirmEmailState> with Store {
   @action
   void setCode(String value) => _codeFromEmail = value;
 
+  initTime(String email) async {
+    final time = await Storage.readTimeEmailTimer();
+    if ((time ?? "0") != "0") {
+      stopTimer();
+      startTimer(email);
+    }
+  }
+
   @action
   confirmEmail() async {
     try {
@@ -66,6 +74,14 @@ abstract class _ConfirmEmailStore extends IStore<ConfirmEmailState> with Store {
     } catch (e) {
       onError(e.toString());
     }
+  }
+
+  @action
+  stopTimer() {
+    if (timer != null) {
+      timer!.cancel();
+    }
+    secondsCodeAgain = 60;
   }
 }
 

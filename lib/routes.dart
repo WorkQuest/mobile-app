@@ -383,7 +383,7 @@ class Routes {
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ApproveRolePage(settings.arguments),
+              child: ApproveRolePage(settings.arguments as ChooseRoleStore),
             ),
           ),
         );
