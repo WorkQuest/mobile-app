@@ -1,9 +1,6 @@
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/bearer_token.dart';
-import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/wallet_repository.dart';
+import 'package:app/repository/reg_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,10 +11,10 @@ class SignUpStore extends _SignUpStore with _$SignUpStore {
   SignUpStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _SignUpStore extends IStore<bool> with Store {
-  final ApiProvider _apiProvider;
+abstract class _SignUpStore extends IStore<SignUpState> with Store {
+  final IRegRepository _repository;
 
-  _SignUpStore(this._apiProvider);
+  _SignUpStore(ApiProvider apiProvider) : _repository = RegRepository(apiProvider);
 
   @observable
   String _email = '';
@@ -61,32 +58,19 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   @computed
   String get email => _email;
 
+  @computed
+  String get password => _password;
+
   @action
   Future register() async {
     try {
       this.onLoading();
-      if (WalletRepository().networkName.value == null) {
-        final _networkName = WalletRepository().notifierNetwork.value == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
-        WalletRepository().setNetwork(_networkName);
-      }
-      BearerToken bearerToken = await _apiProvider.register(
-        email: _email,
-        firstName: _firstName,
-        lastName: _lastName,
-        password: _password,
-      );
-      Storage.writeRefreshToken(bearerToken.refresh);
-      Storage.writeAccessToken(bearerToken.access);
-      this.onSuccess(true);
+      await _repository.register(email: email, firstName: _firstName, lastName: _lastName, password: _password);
+      this.onSuccess(SignUpState.register);
     } catch (e) {
       this.onError(e.toString());
     }
   }
-
-  @action
-  String? signUpConfirmPasswordValidator(String? text) {
-    return text! == _password ? null : "Does not match password";
-  }
 }
+
+enum SignUpState { register }

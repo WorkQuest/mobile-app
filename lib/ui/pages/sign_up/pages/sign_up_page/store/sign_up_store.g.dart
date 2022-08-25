@@ -21,6 +21,12 @@ mixin _$SignUpStore on _SignUpStore, Store {
   String get email => (_$emailComputed ??=
           Computed<String>(() => super.email, name: '_SignUpStore.email'))
       .value;
+  Computed<String>? _$passwordComputed;
+
+  @override
+  String get password => (_$passwordComputed ??=
+          Computed<String>(() => super.password, name: '_SignUpStore.password'))
+      .value;
 
   final _$_emailAtom = Atom(name: '_SignUpStore._email');
 
@@ -162,21 +168,11 @@ mixin _$SignUpStore on _SignUpStore, Store {
   }
 
   @override
-  String? signUpConfirmPasswordValidator(String? text) {
-    final _$actionInfo = _$_SignUpStoreActionController.startAction(
-        name: '_SignUpStore.signUpConfirmPasswordValidator');
-    try {
-      return super.signUpConfirmPasswordValidator(text);
-    } finally {
-      _$_SignUpStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 canSignUp: ${canSignUp},
-email: ${email}
+email: ${email},
+password: ${password}
     ''';
   }
 }

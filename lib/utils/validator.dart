@@ -14,6 +14,16 @@ class Validators {
     return null;
   }
 
+  static String? passwordMatchValidator(String? password, String secondPassword) {
+    if (password == null) {
+      return null;
+    }
+    if (password != secondPassword) {
+      return  "Does not match password";
+    }
+    return null;
+  }
+
   static String? passwordValidator(String? text) {
     if (text == null) {
       return null;
