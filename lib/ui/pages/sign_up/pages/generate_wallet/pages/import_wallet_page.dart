@@ -32,86 +32,87 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
     store = context.read<CreateWalletStore>();
   }
 
+  _stateListener() async {
+    if (store.successData == CreateWalletState.openWallet) {
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushReplacementNamed(
+        context,
+        PinCodePage.routeName,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "wallet.importWallet".tr(),
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          ),
-          centerTitle: true,
-          leading: CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: AppColor.enabledButton,
+    return ObserverListener<CreateWalletStore>(
+      onFailure: () => false,
+      onSuccess: _stateListener,
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "wallet.importWallet".tr(),
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            centerTitle: true,
+            leading: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Icon(
+                Icons.arrow_back_ios,
+                color: AppColor.enabledButton,
+              ),
             ),
           ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 16.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "signIn.mnemonic".tr(),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                DefaultTextField(
-                  controller: _mnemonicController,
-                  hint: "signIn.enterMnemonicPhrase".tr(),
-                  isPassword: true,
-                  onChanged: store.setMnemonic,
-                  validator: Validators.mnemonicValidator,
-                  inputFormatters: [],
-                  suffixIcon: null,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Spacer(),
-                ObserverListener<CreateWalletStore>(
-                  onFailure: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    return false;
-                  },
-                  onSuccess: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    await AlertDialogUtils.showSuccessDialog(context);
-                    Navigator.pushNamed(
-                      context,
-                      PinCodePage.routeName,
-                    );
-                  },
-                  child: LoginButton(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 16.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "signIn.mnemonic".tr(),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  DefaultTextField(
+                    controller: _mnemonicController,
+                    hint: "signIn.enterMnemonicPhrase".tr(),
+                    isPassword: true,
+                    onChanged: store.setMnemonic,
+                    validator: Validators.mnemonicValidator,
+                    inputFormatters: [],
+                    suffixIcon: null,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Spacer(),
+                  LoginButton(
                     withColumn: true,
                     enabled: store.isLoading,
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        AlertDialogUtils.showLoadingDialog(context);
-                        store.openWallet();
-                      }
-                    },
+                    onTap: _onPressedImportWallet,
                     title: "wallet.importWallet".tr(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  _onPressedImportWallet() {
+    if (_formKey.currentState!.validate()) {
+      store.openWallet();
+    }
   }
 }

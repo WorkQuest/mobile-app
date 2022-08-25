@@ -26,26 +26,27 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
 
   @override
   void initState() {
-    super.initState();
     store = context.read<CreateWalletStore>();
     store.splitPhraseIntoWords();
+    super.initState();
+  }
+
+  _stateListener() async {
+    if (store.successData == CreateWalletState.openWallet) {
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        PinCodePage.routeName,
+        (_) => false,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return ObserverListener<CreateWalletStore>(
-      onFailure: () {
-        Navigator.of(context, rootNavigator: true).pop();
-        return false;
-      },
-      onSuccess: () async {
-        Navigator.of(context, rootNavigator: true).pop();
-        await AlertDialogUtils.showSuccessDialog(context);
-        Navigator.pushNamed(
-          context,
-          PinCodePage.routeName,
-        );
-      },
+      onFailure: () => false,
+      onSuccess: _stateListener,
       child: Observer(
         builder: (_) => Scaffold(
           appBar: CupertinoNavigationBar(),
@@ -137,7 +138,6 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
   }
 
   _onPressedOnOpenWallet() {
-    AlertDialogUtils.showLoadingDialog(context);
     store.openWallet();
   }
 

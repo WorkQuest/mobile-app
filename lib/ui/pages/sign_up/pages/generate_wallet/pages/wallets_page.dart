@@ -27,22 +27,24 @@ class WalletsPage extends StatelessWidget {
           children: [
             LoginButton(
               title: "wallet.importWallet".tr(),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, ImportWalletPage.routeName);
-              },
+              onTap: () => _onPressedImportWallet(context),
             ),
             const SizedBox(height: 10),
             LoginButton(
               title: "wallet.createWallet".tr(),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, CreateWalletPage.routeName);
-              },
+              onTap: () => _onPressedCreateWallet(context),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _onPressedImportWallet(BuildContext context) {
+    Navigator.pushNamed(context, ImportWalletPage.routeName);
+  }
+
+  _onPressedCreateWallet(BuildContext context) {
+    Navigator.pushNamed(context, CreateWalletPage.routeName);
   }
 }

@@ -22,16 +22,16 @@ class CreateWalletPage extends StatefulWidget {
 }
 
 class _CreateWalletPageState extends State<CreateWalletPage> {
+  late final CreateWalletStore store;
   @override
   void initState() {
+    store = context.read<CreateWalletStore>();
+    store.generateMnemonic();
     super.initState();
-    final _store = context.read<CreateWalletStore>();
-    _store.generateMnemonic();
   }
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<CreateWalletStore>();
     return Observer(
       builder: (_) => WillPopScope(
         onWillPop: () {
@@ -173,18 +173,20 @@ class _YourPhrase extends StatelessWidget {
         SizedBox(
           width: 171,
           child: ElevatedButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: phrase));
-              SnackBarUtils.success(
-                context,
-                title: 'chat.copy'.tr(),
-                duration: const Duration(milliseconds: 250),
-              );
-            },
+            onPressed: () => _onPressedCopy(context),
             child: Text('wallet.copyPhrase'.tr()),
           ),
         ),
       ],
+    );
+  }
+
+  _onPressedCopy(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: phrase));
+    SnackBarUtils.success(
+      context,
+      title: 'chat.copy'.tr(),
+      duration: const Duration(milliseconds: 250),
     );
   }
 }

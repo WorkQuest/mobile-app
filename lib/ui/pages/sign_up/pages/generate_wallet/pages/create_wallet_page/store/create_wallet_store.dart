@@ -1,12 +1,6 @@
-import 'dart:convert';
-import 'dart:math';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/http/web3_extension.dart';
-import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/wallet_repository.dart';
-import 'package:app/web3/service/address_service.dart';
-import 'package:app/web3/wallet.dart';
+import 'package:app/repository/create_wallet_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,10 +11,10 @@ class CreateWalletStore extends _CreateWalletStore with _$CreateWalletStore {
   CreateWalletStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _CreateWalletStore extends IStore<bool> with Store {
-  final ApiProvider _apiProvider;
+abstract class _CreateWalletStore extends IStore<CreateWalletState> with Store {
+  final ICreateWalletRepository _repository;
 
-  _CreateWalletStore(this._apiProvider);
+  _CreateWalletStore(ApiProvider apiProvider) : _repository = CreateWalletRepository(apiProvider);
 
   @observable
   String? mnemonic;
@@ -50,16 +44,13 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
   ObservableList<String>? setOfWords;
 
   @action
-  setMnemonic(String value) {
-    mnemonic = value;
-  }
+  setMnemonic(String value) => mnemonic = value;
 
   @action
   setIsSaved(bool value) => isSaved = value;
 
   @computed
-  bool get statusGenerateButton =>
-      selectedFirstWord == firstWord && selectedSecondWord == secondWord;
+  bool get statusGenerateButton => selectedFirstWord == firstWord && selectedSecondWord == secondWord;
 
   @action
   selectFirstWord(String? value) => selectedFirstWord = value;
@@ -69,54 +60,40 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
 
   @action
   generateMnemonic() {
-    mnemonic = AddressService.generateMnemonic();
+    try {
+      mnemonic = _repository.generateMnemonic();
+      onSuccess(CreateWalletState.generateMnemonic);
+    } catch (e) {
+      onError(e.toString());
+    }
   }
 
   @action
   splitPhraseIntoWords() {
-    setOfWords = ObservableList.of([]);
-    final list = mnemonic!.split(' ').toList();
-    setOfWords!.addAll(_listRandom(list));
+    try {
+      setOfWords = ObservableList.of([]);
+      final list = mnemonic!.split(' ').toList();
+      final arg = _repository.randomPlaceWords(list);
 
-    setOfWords!.shuffle();
-  }
+      indexFirstWord = arg.indexFirst;
+      indexSecondWord = arg.indexSecond;
+      firstWord = arg.firstWord;
+      secondWord = arg.secondWord;
+      setOfWords!.addAll(arg.result);
+      setOfWords!.shuffle();
 
-  List<String> _listRandom(List<String> list) {
-    Random _random = Random();
-
-    indexFirstWord = _random.nextInt(5) + 1;
-    indexSecondWord = _random.nextInt(5) + 6;
-    while (indexSecondWord == indexFirstWord) {
-      indexSecondWord = _random.nextInt(11) + 1;
+      onSuccess(CreateWalletState.splitPhraseIntoWords);
+    } catch (e) {
+      onError(e.toString());
     }
-    firstWord = list[indexFirstWord! - 1];
-    secondWord = list[indexSecondWord! - 1];
-
-    list.shuffle(_random);
-    List<String> result = [];
-    int i = 0;
-    while (result.length < 5) {
-      if (list[i] != firstWord && list[i] != secondWord) {
-        result.add(list[i]);
-      }
-      i++;
-    }
-    result.add(firstWord!);
-    result.add(secondWord!);
-    result.shuffle(_random);
-    return result;
   }
 
   @action
   openWallet() async {
     onLoading();
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      Wallet wallet = await Wallet.derive(mnemonic!);
-      await _apiProvider.registerWallet(wallet.publicKey!, wallet.address!);
-      await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-      WalletRepository().setWallet(wallet);
-      onSuccess(true);
+      await _repository.openWallet(mnemonic!);
+      onSuccess(CreateWalletState.openWallet);
     } on FormatException catch (e) {
       onError(e.message);
     } catch (e) {
@@ -124,3 +101,5 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
     }
   }
 }
+
+enum CreateWalletState { generateMnemonic, splitPhraseIntoWords, openWallet }
