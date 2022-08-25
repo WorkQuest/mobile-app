@@ -1,5 +1,5 @@
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/import_wallet_page.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/create_wallet_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

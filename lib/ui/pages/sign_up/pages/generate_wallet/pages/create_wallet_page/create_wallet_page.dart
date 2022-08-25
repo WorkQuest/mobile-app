@@ -1,5 +1,6 @@
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/verify_wallet.dart';
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/store/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/verify_wallet_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import '../../../../constants.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 

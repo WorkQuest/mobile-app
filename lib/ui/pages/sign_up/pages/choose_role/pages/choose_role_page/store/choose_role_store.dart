@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/utils/storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../../../utils/storage.dart';
 
 part 'choose_role_store.g.dart';
 

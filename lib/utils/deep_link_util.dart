@@ -6,7 +6,7 @@ import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
+import 'package:app/ui/pages/sign_up/pages/confirm_email_page/confirm_email_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/wallet_repository.dart';

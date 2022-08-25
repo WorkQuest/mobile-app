@@ -6,7 +6,8 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/login_model.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
+import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/choose_role_page.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/wallets_page.dart';
 import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
@@ -16,7 +17,6 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../pages/sign_up_page/choose_role_page/choose_role_page.dart';
 
 class WebViewPage extends StatefulWidget {
   final String inputUrlRoute;

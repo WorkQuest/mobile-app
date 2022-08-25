@@ -1,7 +1,7 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
+import 'package:app/ui/pages/sign_up/pages/choose_role/pages/enter_totp_page.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/wallets_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/cupertino.dart';

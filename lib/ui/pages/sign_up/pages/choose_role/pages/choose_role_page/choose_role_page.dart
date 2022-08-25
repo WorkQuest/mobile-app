@@ -1,6 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
-import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
+import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'approve_role_page.dart';
+import '../approve_role_page.dart';
 
 class ChooseRolePage extends StatelessWidget {
   const ChooseRolePage();

@@ -75,8 +75,7 @@ mixin _$EmployerStore on _EmployerStore, Store {
 
   @override
   Future getRespondedList(String id) {
-    return _$getRespondedListAsyncAction
-        .run(() => super.getRespondedList(id));
+    return _$getRespondedListAsyncAction.run(() => super.getRespondedList(id));
   }
 
   final _$getQuestAsyncAction = AsyncAction('_EmployerStore.getQuest');

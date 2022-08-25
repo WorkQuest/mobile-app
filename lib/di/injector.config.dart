@@ -84,11 +84,12 @@ import '../ui/pages/profile_me_store/profile_me_store.dart' as _i44;
 import '../ui/pages/report_page/store/report_store.dart' as _i29;
 import '../ui/pages/restore_password_page/store.dart' as _i30;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i32;
-import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
+import '../ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart'
     as _i10;
-import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
+import '../ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/store/create_wallet_store.dart'
     as _i15;
-import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i33;
+import '../ui/pages/sign_up/pages/sign_up_page/store/sign_up_store.dart'
+    as _i33;
 
 const String _test = 'test';
 const String _dev = 'dev';

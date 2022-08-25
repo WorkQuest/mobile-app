@@ -1,5 +1,7 @@
+import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/store/create_wallet_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/modal_bottom_sheet.dart';
@@ -8,8 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
-import '../../../../constants.dart';
-import '../../../../observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 const _errorColor = Colors.red;
