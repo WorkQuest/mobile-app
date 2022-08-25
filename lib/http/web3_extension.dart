@@ -4,12 +4,12 @@ import 'package:app/constants.dart';
 import 'package:app/model/web3/course_token_response.dart';
 import 'package:app/model/web3/current_course_tokens_response.dart';
 import 'package:app/model/web3/transactions_response.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 
 import 'api_provider.dart';
 
 extension Web3Requests on ApiProvider {
-  Network get _network => AccountRepository().notifierNetwork.value;
+  Network get _network => WalletRepository().notifierNetwork.value;
 
   String _transactionsByToken({
     required String address,

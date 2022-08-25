@@ -4,7 +4,7 @@ import 'package:app/routes.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/widgets/CustomBanner.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,7 +20,7 @@ class WorkQuestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Network>(
-      valueListenable: AccountRepository().notifierNetwork,
+      valueListenable: WalletRepository().notifierNetwork,
       builder: (_, value, child) {
         final name = value.name;
         final visible = name != Network.mainnet.name;

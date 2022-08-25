@@ -10,7 +10,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/bottom_sheet.dart';
 import 'package:app/utils/utils.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class _SwapPageState extends State<SwapPage> {
         store.getCourseWQT();
       }
     });
-    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value!);
+    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(WalletRepository().networkName.value!);
     Future.delayed(const Duration(milliseconds: 350)).then(
       (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
     );
@@ -79,11 +79,11 @@ class _SwapPageState extends State<SwapPage> {
         onSuccess: () {
           if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
-            final _network = AccountRepository().notifierNetwork.value;
+            final _network = WalletRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              WalletRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              WalletRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
             AlertDialogUtils.showSuccessDialog(context).then((value) => Navigator.pop(context));
@@ -97,11 +97,11 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop('dialog');
           }
           if (store.errorMessage!.contains('Waiting time has expired')) {
-            final _network = AccountRepository().notifierNetwork.value;
+            final _network = WalletRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              WalletRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              WalletRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
           }
@@ -388,7 +388,7 @@ class _SwapPageState extends State<SwapPage> {
 
   String _getTitleCoinFee() {
     final _network =
-        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+        Web3Utils.getSwapNetworksFromNetworkName(WalletRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -445,7 +445,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+    final _isTestnet = WalletRepository().notifierNetwork.value == Network.testnet;
     if (_isTestnet) {
       return 'T${token.name}'.toUpperCase();
     }
@@ -611,7 +611,7 @@ class _ListBottomWidget extends StatelessWidget {
     print('value: $value');
     print('value: ${value.runtimeType}');
     if (value is SwapToken) {
-      final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+      final _isTestnet = WalletRepository().notifierNetwork.value == Network.testnet;
       if (_isTestnet) {
         return 'T${value.name}'.toUpperCase();
       }

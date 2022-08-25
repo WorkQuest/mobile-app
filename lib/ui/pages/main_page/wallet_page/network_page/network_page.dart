@@ -7,7 +7,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/http/web_socket.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -29,7 +29,7 @@ class _NetworkPageState extends State<NetworkPage> {
 
   @override
   void initState() {
-    network = AccountRepository().notifierNetwork.value;
+    network = WalletRepository().notifierNetwork.value;
     super.initState();
   }
 
@@ -117,10 +117,10 @@ class _NetworkPageState extends State<NetworkPage> {
   _pushToLogin(Network network) async {
     WebSocket().closeWebSocket();
     final _networkName =
-        Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
-    AccountRepository().clearData();
-    AccountRepository().notifierNetwork.value = network;
-    AccountRepository().networkName.value = _networkName;
+        Web3Utils.getNetworkNameSwap(WalletRepository().networkName.value!);
+    WalletRepository().clearData();
+    WalletRepository().notifierNetwork.value = network;
+    WalletRepository().networkName.value = _networkName;
     Storage.write(StorageKeys.networkName.name, _networkName.name);
     await Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
       SignInPage.routeName,

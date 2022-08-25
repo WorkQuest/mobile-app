@@ -5,7 +5,7 @@ import 'package:app/http/web3_extension.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
@@ -78,16 +78,16 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
     try {
       onLoading();
       Wallet? wallet = await Wallet.derive(mnemonic);
-      AccountRepository().connectClient();
-      final signature = await AccountRepository().getClient().getSignature(wallet.privateKey!);
+      WalletRepository().connectClient();
+      final signature = await WalletRepository().getClient().getSignature(wallet.privateKey!);
       final userMe = await _apiProvider.getProfileMe();
       final _address = await _apiProvider.walletLogin(signature, wallet.address!);
       if (_address != userMe.walletAddress) {
         throw FormatException("Incorrect mnemonic");
       }
-      AccountRepository().setWallet(wallet);
+      WalletRepository().setWallet(wallet);
       await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-      await Storage.write(StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
+      await Storage.write(StorageKeys.networkName.name, WalletRepository().networkName.value!.name);
       onSuccess(SignInStoreState.signInWallet);
     } on FormatException catch (e, trace) {
       print('signInWallet FormatException: $e\n$trace');

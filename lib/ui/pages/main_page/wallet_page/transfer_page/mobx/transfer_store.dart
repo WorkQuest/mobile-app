@@ -3,7 +3,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
@@ -82,14 +82,14 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       return;
     }
     try {
-      final _client = AccountRepository().getClient();
-      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+      final _client = WalletRepository().getClient();
+      final _from = EthereumAddress.fromHex(WalletRepository().userAddress);
       String _amount = amount.isEmpty ? '1.0' : amount;
       String _address = AddressService.convertToHexAddress(
-          addressTo.isEmpty ? AccountRepository().userAddress : addressTo);
+          addressTo.isEmpty ? WalletRepository().userAddress : addressTo);
       final _gas = await _client.getGas();
 
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens = WalletRepository().getConfigNetwork().dataCoins;
       final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
 
       if (_isToken) {
@@ -176,14 +176,14 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   }
 
   Future<String> _getMaxAmount() async {
-    final _client = AccountRepository().getClient();
-    final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
+    final _client = WalletRepository().getClient();
+    final _dataCoins = WalletRepository().getConfigNetwork().dataCoins;
     final _isNotToken = _dataCoins
             .firstWhere((element) => element.symbolToken == currentCoin!.typeCoin)
             .addressToken ==
         null;
     if (_isNotToken) {
-      final _balance = await _client.getBalance(AccountRepository().privateKey);
+      final _balance = await _client.getBalance(WalletRepository().privateKey);
       final _balanceInWei = _balance.getInWei;
       await getFee();
       print('type fee: ${fee.runtimeType}');
@@ -200,7 +200,7 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       }
     }
 
-    final _balance = await AccountRepository()
+    final _balance = await WalletRepository()
         .getClient()
         .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);

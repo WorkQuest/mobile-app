@@ -16,7 +16,7 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../constants.dart';
-import '../../../web3/repository/account_repository.dart';
+import '../../../web3/repository/wallet_repository.dart';
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
@@ -69,7 +69,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
               Navigator.pop(context);
             } else {
               store.checkPushToken();
-              AccountRepository().connectClient();
+              WalletRepository().connectClient();
               await AlertDialogUtils.showSuccessDialog(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
@@ -78,7 +78,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
               );
             }
           } else if (store.successData == StatePinCode.ToLogin) {
-            AccountRepository().clearData();
+            WalletRepository().clearData();
             Navigator.pushNamedAndRemoveUntil(
               context,
               SignInPage.routeName,

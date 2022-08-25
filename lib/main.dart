@@ -5,7 +5,7 @@ import 'package:app/constants.dart';
 import 'package:app/utils/push_notification/push_notification_service.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -63,21 +63,21 @@ void main() async {
   try {
     final wallet = await Storage.readWallet();
     if (wallet != null) {
-      AccountRepository().setWallet(wallet);
+      WalletRepository().setWallet(wallet);
     }
     final _networkNameStorage =
         await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
-      AccountRepository().setNetwork(NetworkName.workNetMainnet);
+      WalletRepository().setNetwork(NetworkName.workNetMainnet);
       await Storage.write(
           StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
-      AccountRepository().setNetwork(_networkName);
+      WalletRepository().setNetwork(_networkName);
       await Storage.write(StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
-    AccountRepository().clearData();
+    WalletRepository().clearData();
   }
 
   final deepLinksCheck = await Storage.readDeepLinkCheck();

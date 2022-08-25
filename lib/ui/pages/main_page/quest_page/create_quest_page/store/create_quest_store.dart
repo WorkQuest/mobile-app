@@ -8,7 +8,7 @@ import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
@@ -175,7 +175,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       onLoading();
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error checkAllowance');
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
       if (_isNeedCheckApprove) {
@@ -206,7 +206,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       final _priceForApprove =
           _price * Decimal.parse(Constants.commissionForQuest.toString());
       final _isEdit = contractAddress != null;
-      await AccountRepository().getClientWorkNet().approveCoin(
+      await WalletRepository().getClientWorkNet().approveCoin(
         price: _priceForApprove.toBigInt(),
         address: _isEdit
             ? EthereumAddress.fromHex(contractAddress!)
@@ -257,7 +257,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       );
       //priority show item
 
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
 
       if (isEdit) {
         await _client.handleEvent(
@@ -274,7 +274,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         );
       } else {
         final balanceWusd = await _client.getBalanceInUnit(
-            EtherUnit.ether, AccountRepository().privateKey);
+            EtherUnit.ether, WalletRepository().privateKey);
         final gas = await _client.getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
@@ -330,7 +330,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       this.onLoading();
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error getGasApprove');
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       final _gasForApprove = await _client.getEstimateGasForApprove(_price.toBigInt());
       await Web3Utils.checkPossibilityTx(
@@ -353,7 +353,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       onLoading();
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error getGasEditOrCreateQuest');
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       if (isEdit) {
         final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
         final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);

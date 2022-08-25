@@ -7,7 +7,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 
 import 'package:app/utils/validator.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -136,7 +136,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         SignInPage.routeName,
         (route) => false,
       );
-      AccountRepository().clearData();
+      WalletRepository().clearData();
       Storage.deleteAllFromSecureStorage();
       AlertDialogUtils.showInfoAlertDialog(
         navigatorKey.currentState!.context,

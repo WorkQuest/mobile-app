@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 
-import '../../../../../../web3/repository/account_repository.dart';
+import '../../../../../../web3/repository/wallet_repository.dart';
 
 part 'open_dispute_store.g.dart';
 
@@ -42,7 +42,7 @@ abstract class _OpenDisputeStore extends IStore<String> with Store {
 
   getFee(String contractAddress) async {
     try {
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
       final _function = _contract.function(WQContractFunctions.arbitration.name);
       final _gas = await _client.getEstimateGasCallContract(
@@ -66,7 +66,7 @@ abstract class _OpenDisputeStore extends IStore<String> with Store {
         reason: DisputeUtil.getThemeValue(theme),
         problemDescription: description,
       );
-      await AccountRepository().getClientWorkNet().handleEvent(
+      await WalletRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.arbitration,
             contractAddress: contractAddress,
             value: "1",

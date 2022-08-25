@@ -23,7 +23,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -117,7 +117,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         onPressed: () {
           late String _url;
-          if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+          if (WalletRepository().notifierNetwork.value == Network.mainnet) {
             _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
           } else {
             _url =
@@ -160,7 +160,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             late String _url;
-            if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+            if (WalletRepository().notifierNetwork.value == Network.mainnet) {
               _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
             } else {
               _url =

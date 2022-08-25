@@ -13,7 +13,7 @@ import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../../web3/contractEnums.dart';
-import '../../../../../web3/repository/account_repository.dart';
+import '../../../../../web3/repository/wallet_repository.dart';
 import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
@@ -49,7 +49,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
 
   BigInt? _priceForApprove;
 
-  String addressWUSD = AccountRepository().notifierNetwork.value == Network.mainnet
+  String addressWUSD = WalletRepository().notifierNetwork.value == Network.mainnet
       ? Constants.worknetMainnetWUSD
       : Constants.worknetTestnetWUSD;
 
@@ -93,7 +93,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   Future<void> checkAllowance() async {
     try {
       this.onLoading();
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       final _allowance = await _client.allowanceCoin(
         address: EthereumAddress.fromHex(addressWQPromotion),
       );
@@ -120,7 +120,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         amount: double.parse(amount),
       );
       print('_priceForApprove: $_priceForApprove');
-      await AccountRepository().getClientWorkNet().approveCoin(
+      await WalletRepository().getClientWorkNet().approveCoin(
             price: _priceForApprove!,
             address: EthereumAddress.fromHex(addressWQPromotion),
           );
@@ -145,7 +145,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         fee: Decimal.parse(gas),
         amount: double.parse(amount),
       );
-      await AccountRepository().getClientWorkNet().promoteUser(
+      await WalletRepository().getClientWorkNet().promoteUser(
             tariff: levelGroupValue,
             period: period,
           );
@@ -174,8 +174,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         isQuest: true,
       );
       // final _price = BigInt.from(double.parse(amount) * pow(10, 18));
-      // await AccountRepository().getClientWorkNet().approveCoin(price: _price);
-      await AccountRepository().getClientWorkNet().promoteQuest(
+      // await WalletRepository().getClientWorkNet().approveCoin(price: _price);
+      await WalletRepository().getClientWorkNet().promoteQuest(
             tariff: levelGroupValue,
             period: period,
             questAddress: _quest!.contractAddress!,
@@ -192,7 +192,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   }
 
   Future<void> getFeePromotion(bool isQuestRaise) async {
-    final _client = AccountRepository().getClientWorkNet();
+    final _client = WalletRepository().getClientWorkNet();
     final _contractPromote = await _client.getDeployedContract(
         "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
     double _gasForPromote = 0.0;
@@ -221,7 +221,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   }
 
   Future<void> getFeeApprove({bool isQuestRaise = false}) async {
-    final _client = AccountRepository().getClientWorkNet();
+    final _client = WalletRepository().getClientWorkNet();
     final _contract =
         Erc20(address: EthereumAddress.fromHex(addressWUSD), client: _client.client!);
     final _gas = await _client.getGas();
@@ -236,7 +236,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
             EthereumAddress.fromHex(addressWQPromotion),
             _price,
           ],
-          from: EthereumAddress.fromHex(AccountRepository().userAddress),
+          from: EthereumAddress.fromHex(WalletRepository().userAddress),
           value: EtherAmount.zero(),
         ),
       );
@@ -249,7 +249,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
             EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
             _price,
           ],
-          from: EthereumAddress.fromHex(AccountRepository().userAddress),
+          from: EthereumAddress.fromHex(WalletRepository().userAddress),
           value: EtherAmount.zero(),
         ),
       );

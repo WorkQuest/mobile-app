@@ -16,7 +16,7 @@ import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/deep_link_util.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:app/utils/validator.dart';
@@ -441,12 +441,12 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             child: SwitchNetworkWidget<Network>(
               colorText: Colors.black,
               items: Network.values,
-              value: AccountRepository().notifierNetwork.value,
+              value: WalletRepository().notifierNetwork.value,
               onChanged: (value) {
                 setState(() {
                   final _networkName =
                       (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
-                  AccountRepository().setNetwork(_networkName);
+                  WalletRepository().setNetwork(_networkName);
                   Storage.write(StorageKeys.networkName.name, _networkName.name);
                 });
                 return value;

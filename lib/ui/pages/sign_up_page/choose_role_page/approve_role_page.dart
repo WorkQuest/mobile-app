@@ -3,7 +3,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -18,7 +18,7 @@ class ApproveRolePage extends StatelessWidget {
   static const String routeName = '/approveRolePage';
 
   String get _baseUrl {
-    if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+    if (WalletRepository().notifierNetwork.value == Network.mainnet) {
       return "https://app.workquest.co/";
     }
     return Constants.isTestnet

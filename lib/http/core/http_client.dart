@@ -4,7 +4,7 @@ import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -33,7 +33,7 @@ class TestHttpClient extends _HttpClient {
 class _HttpClient implements IHttpClient {
   final Dio _dio;
 
-  Network get _network => AccountRepository().notifierNetwork.value;
+  Network get _network => WalletRepository().notifierNetwork.value;
 
   String get _baseUrl {
     if (_network == Network.testnet) {

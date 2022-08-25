@@ -9,7 +9,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -20,7 +20,7 @@ class DeepLinkUtil {
   StreamSubscription? _streamSubscription;
   ProfileMeStore store = GetIt.I.get<ProfileMeStore>();
 
-  String get _network => AccountRepository().notifierNetwork.value.name;
+  String get _network => WalletRepository().notifierNetwork.value.name;
 
   bool get _clientHaveToken => GetIt.I.get<ApiProvider>().httpClient.accessToken != null;
 

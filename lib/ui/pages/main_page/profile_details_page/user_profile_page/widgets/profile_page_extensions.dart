@@ -8,7 +8,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -47,7 +47,7 @@ extension CustomAppBar on UserProfileState {
               ),
               onPressed: () async {
                 late String _url;
-                if (AccountRepository().notifierNetwork.value ==
+                if (WalletRepository().notifierNetwork.value ==
                     Network.mainnet) {
                   _url =
                       "https://app.workquest.co/profile/${info.id}";

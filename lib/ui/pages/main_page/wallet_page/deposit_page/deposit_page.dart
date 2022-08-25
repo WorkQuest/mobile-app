@@ -4,7 +4,7 @@ import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/ui/widgets/switch_format_address_widget.dart';
 import 'package:app/utils/snack_bar.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +113,7 @@ class _DepositPageState extends State<DepositPage>
           children: [
             Center(
               child: QrImage(
-                data: AccountRepository().userAddress,
+                data: WalletRepository().userAddress,
                 version: QrVersions.auto,
                 size: 200.0,
               ),
@@ -145,8 +145,8 @@ class _DepositPageState extends State<DepositPage>
                 ),
               ),
               child: Text(
-                '${AccountRepository().userAddress.substring(0, 9)}...'
-                '${AccountRepository().userAddress.substring(AccountRepository().userAddress.length - 3, AccountRepository().userAddress.length)}',
+                '${WalletRepository().userAddress.substring(0, 9)}...'
+                '${WalletRepository().userAddress.substring(WalletRepository().userAddress.length - 3, WalletRepository().userAddress.length)}',
               ),
             ),
             Spacer(),
@@ -159,7 +159,7 @@ class _DepositPageState extends State<DepositPage>
                     height: 43.0,
                     child: OutlinedButton(
                       onPressed: () =>
-                          Share.share(AccountRepository().userAddress),
+                          Share.share(WalletRepository().userAddress),
                       child: Text(
                         "sharing.title".tr(),
                       ),
@@ -179,7 +179,7 @@ class _DepositPageState extends State<DepositPage>
                   child: ElevatedButton(
                     onPressed: () => Clipboard.setData(
                       new ClipboardData(
-                        text: AccountRepository().userAddress,
+                        text: WalletRepository().userAddress,
                       ),
                     ).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -218,7 +218,7 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   @override
   void initState() {
-    _format = AccountRepository().isOtherNetwork
+    _format = WalletRepository().isOtherNetwork
         ? FormatAddress.HEX
         : FormatAddress.BECH32;
     super.initState();
@@ -226,8 +226,8 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   String get address {
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
-        : AccountRepository().userWallet!.address!;
+        ? AddressService.hexToBech32(WalletRepository().userWallet!.address!)
+        : WalletRepository().userWallet!.address!;
   }
 
   @override
@@ -258,7 +258,7 @@ class _WalletAddressState extends State<_WalletAddress> {
             const SizedBox(
               height: 10,
             ),
-            if (!AccountRepository().isOtherNetwork)
+            if (!WalletRepository().isOtherNetwork)
               SwitchFormatAddressWidget(
                 format: _format,
                 onChanged: (FormatAddress value) {

@@ -8,7 +8,7 @@ import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -180,7 +180,7 @@ class LogoutButton extends StatelessWidget {
             context.read<FilterQuestsStore>().clearFilters();
             final cookieManager = WebviewCookieManager();
             cookieManager.clearCookies();
-            AccountRepository().clearData();
+            WalletRepository().clearData();
             Storage.deleteAllFromSecureStorage();
           },
         );

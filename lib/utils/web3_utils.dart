@@ -5,7 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
 
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
-import '../web3/repository/account_repository.dart';
+import '../web3/repository/wallet_repository.dart';
 
 class Web3Utils {
   static checkPossibilityTx({
@@ -15,9 +15,9 @@ class Web3Utils {
     bool isMain = false,
   }) async {
     final _client =
-        isMain ? AccountRepository().getClientWorkNet() : AccountRepository().getClient();
-    final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
-    final _isNativeToken = AccountRepository().isOtherNetwork
+        isMain ? WalletRepository().getClientWorkNet() : WalletRepository().getClient();
+    final _balanceNative = await _client.getBalance(WalletRepository().privateKey);
+    final _isNativeToken = WalletRepository().isOtherNetwork
         ? typeCoin == TokenSymbols.ETH ||
             typeCoin == TokenSymbols.BNB ||
             typeCoin == TokenSymbols.MATIC
@@ -54,7 +54,7 @@ class Web3Utils {
   static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
     try {
       if (isMain) {
-        final _network = AccountRepository().notifierNetwork.value;
+        final _network = WalletRepository().notifierNetwork.value;
         if (_network == Network.mainnet) {
           final _config = Configs.configsNetwork[NetworkName.workNetMainnet];
           return _config!.dataCoins
@@ -67,7 +67,7 @@ class Web3Utils {
               .addressToken!;
         }
       }
-      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _dataTokens = WalletRepository().getConfigNetwork().dataCoins;
       return _dataTokens
           .firstWhere((element) => element.symbolToken == typeCoin)
           .addressToken!;
@@ -204,7 +204,7 @@ class Web3Utils {
   }
 
   static NetworkName getNetworkNameFromSwapNetworks(SwapNetworks name) {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
         return _isMainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
@@ -216,7 +216,7 @@ class Web3Utils {
   }
 
   static String getLinkToExplorer(SwapNetworks name, String tx) {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
         return _isMainnet
@@ -255,7 +255,7 @@ class Web3Utils {
   }
 
   static String getAddressWUSD() {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       return Constants.worknetMainnetWUSD;
     } else {
@@ -264,12 +264,12 @@ class Web3Utils {
   }
 
   static bool isETH() {
-    return AccountRepository().networkName.value == NetworkName.ethereumMainnet ||
-        AccountRepository().networkName.value == NetworkName.ethereumTestnet;
+    return WalletRepository().networkName.value == NetworkName.ethereumMainnet ||
+        WalletRepository().networkName.value == NetworkName.ethereumTestnet;
   }
 
   static String getAddressWorknetWQFactory() {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       return Constants.worknetMainnetWQFactory;
     } else {
@@ -278,7 +278,7 @@ class Web3Utils {
   }
 
   static String getAddressWorknetWQPromotion() {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       return Constants.worknetMainnetWQPromotion;
     } else {
@@ -288,7 +288,7 @@ class Web3Utils {
 
   static String getNativeToken() {
     final _networkName =
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+        WalletRepository().networkName.value ?? NetworkName.workNetMainnet;
     switch (_networkName) {
       case NetworkName.workNetMainnet:
         return 'WQT';
@@ -310,7 +310,7 @@ class Web3Utils {
   }
 
   static String getRpcNetworkForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = WalletRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
@@ -328,7 +328,7 @@ class Web3Utils {
   }
 
   static String getTokenUSDTForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = WalletRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
@@ -356,7 +356,7 @@ class Web3Utils {
   }
 
   static String getAddressContractForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = WalletRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet

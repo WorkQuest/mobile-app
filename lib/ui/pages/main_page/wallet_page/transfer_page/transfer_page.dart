@@ -12,7 +12,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/bottom_sheet.dart';
 import 'package:app/utils/utils.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,7 +51,7 @@ class _TransferPageState extends State<TransferPage> {
 
   late Timer timer;
 
-  List<DataCoins> get tokens => AccountRepository().getConfigNetwork().dataCoins;
+  List<DataCoins> get tokens => WalletRepository().getConfigNetwork().dataCoins;
 
 
   @override
@@ -323,13 +323,13 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService.hexToBech32(AccountRepository().userWallet!.address!.toLowerCase())) {
+            AddressService.hexToBech32(WalletRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
-        if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
+        if (store.addressTo.toLowerCase() == WalletRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;

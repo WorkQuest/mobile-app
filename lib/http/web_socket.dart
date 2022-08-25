@@ -6,7 +6,7 @@ import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:web_socket_channel/io.dart';
@@ -43,10 +43,10 @@ class WebSocket {
   }
 
   void _connectWallet() {
-    currentWss = AccountRepository().getConfigNetworkWorknet().wss;
+    currentWss = WalletRepository().getConfigNetworkWorknet().wss;
     walletChannel = IOWebSocketChannel.connect(currentWss!);
     walletChannel =
-        IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
+        IOWebSocketChannel.connect(WalletRepository().getConfigNetwork().wss);
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",
@@ -88,7 +88,7 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
-    if (currentWss == AccountRepository().getConfigNetworkWorknet().wss) {
+    if (currentWss == WalletRepository().getConfigNetworkWorknet().wss) {
       return;
     }
     _closeWalletSocket();
@@ -96,7 +96,7 @@ class WebSocket {
 
   void _connectSender() {
     final _wssPath =
-        AccountRepository().notifierNetwork.value == Network.testnet
+        WalletRepository().notifierNetwork.value == Network.testnet
             ? Constants.isTestnet
                 ? "wss://testnet-app.workquest.co/api"
                 : "wss://dev-app.workquest.co/api"
@@ -119,7 +119,7 @@ class WebSocket {
   }
 
   void _connectListen() {
-    final _wsPath = AccountRepository().notifierNetwork.value == Network.testnet
+    final _wsPath = WalletRepository().notifierNetwork.value == Network.testnet
         ? Constants.isTestnet
             ? 'wss://testnet-notification.workquest.co/api/v1/notifications'
             : 'wss://notifications.workquest.co/api/v1/notifications'
@@ -238,7 +238,7 @@ class WebSocket {
       connectNotify ? _connectSender() : _connectListen();
   }
 
-  String get myAddress => AccountRepository().userAddress;
+  String get myAddress => WalletRepository().userAddress;
 
   void handleSubscription(dynamic jsonResponse) async {
     try {

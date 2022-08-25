@@ -10,7 +10,7 @@ import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/shimmer.dart';
 import 'package:app/ui/widgets/switch_format_address_widget.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -73,7 +73,7 @@ class _WalletPageState extends State<WalletPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 20.0),
                 child: ValueListenableBuilder<NetworkName?>(
-                  valueListenable: AccountRepository().networkName,
+                  valueListenable: WalletRepository().networkName,
                   builder: (_, value, child) {
                     final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
                     return SwitchNetworkWidget<SwitchNetworkNames>(
@@ -99,7 +99,7 @@ class _WalletPageState extends State<WalletPage> {
             child: Column(
               children: [
                 CopyAddressWalletWidget(
-                  format: AccountRepository().isOtherNetwork
+                  format: WalletRepository().isOtherNetwork
                       ? FormatAddress.HEX
                       : FormatAddress.BECH32,
                 ),
@@ -196,8 +196,8 @@ class _WalletPageState extends State<WalletPage> {
 
   _onChangedSwitchNetwork(dynamic value) {
     final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-        value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
-    AccountRepository().changeNetwork(_newNetwork);
+        value as SwitchNetworkNames, WalletRepository().notifierNetwork.value);
+    WalletRepository().changeNetwork(_newNetwork);
     return value;
   }
 
@@ -242,7 +242,7 @@ class _WalletPageState extends State<WalletPage> {
     if (GetIt.I.get<WalletStore>().coins.isEmpty) {
       return false;
     }
-    final _networkName = AccountRepository().networkName.value!;
+    final _networkName = WalletRepository().networkName.value!;
     if (_networkName == NetworkName.workNetTestnet ||
         _networkName == NetworkName.workNetMainnet) {
       try {

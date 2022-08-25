@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../model/web3/transactions_response.dart';
-import '../../../../../web3/repository/account_repository.dart';
+import '../../../../../web3/repository/wallet_repository.dart';
 import '../../../../widgets/shimmer.dart';
 
 class ListTransactions extends StatelessWidget {
@@ -40,7 +40,7 @@ class ListTransactions extends StatelessWidget {
           );
         }
         if (store.isSuccess) {
-          final _isOtherNetwork = AccountRepository().isOtherNetwork;
+          final _isOtherNetwork = WalletRepository().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
               if (GetIt.I.get<WalletStore>().isLoading) {
@@ -162,7 +162,7 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       _animationController.forward();
     }
     widget.transaction.show = true;
-    bool increase = widget.transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
+    bool increase = widget.transaction.fromAddressHash!.hex! != WalletRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score = _getScore(widget.transaction);
     return AnimatedBuilder(
@@ -376,7 +376,7 @@ class _ItemInfoFromTransaction extends StatelessWidget {
 
   _onTapTxHash() {
     final _isMainnet =
-        AccountRepository().notifierNetwork.value == Network.mainnet;
+        WalletRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {

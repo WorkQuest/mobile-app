@@ -4,7 +4,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:injectable/injectable.dart';
@@ -115,7 +115,7 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
       Wallet wallet = await Wallet.derive(mnemonic!);
       await _apiProvider.registerWallet(wallet.publicKey!, wallet.address!);
       await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-      AccountRepository().setWallet(wallet);
+      WalletRepository().setWallet(wallet);
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

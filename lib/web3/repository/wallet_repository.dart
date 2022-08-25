@@ -11,12 +11,12 @@ import '../../utils/storage.dart';
 import '../../http/web_socket.dart';
 import '../wallet.dart';
 
-class AccountRepository {
-  static final AccountRepository _instance = AccountRepository._internal();
+class WalletRepository {
+  static final WalletRepository _instance = WalletRepository._internal();
 
-  factory AccountRepository() => _instance;
+  factory WalletRepository() => _instance;
 
-  AccountRepository._internal();
+  WalletRepository._internal();
 
   Wallet? userWallet;
   ClientService? client;
@@ -41,11 +41,11 @@ class AccountRepository {
   }
 
   connectClient() {
-    if (AccountRepository().networkName.value == null) {
-      final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
+    if (WalletRepository().networkName.value == null) {
+      final _networkName = WalletRepository().notifierNetwork.value == Network.mainnet
           ? NetworkName.workNetMainnet
           : NetworkName.workNetTestnet;
-      AccountRepository().setNetwork(_networkName);
+      WalletRepository().setNetwork(_networkName);
     }
     final config = Configs.configsNetwork[networkName.value!];
     client = ClientService(config!);

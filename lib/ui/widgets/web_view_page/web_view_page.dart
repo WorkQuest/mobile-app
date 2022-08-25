@@ -9,7 +9,7 @@ import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
 import 'package:app/utils/profile_util.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -34,7 +34,7 @@ class _WebViewPageState extends State<WebViewPage> {
       Completer<WebViewController>();
 
   String get baseUrl {
-    if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+    if (WalletRepository().notifierNetwork.value == Network.mainnet) {
       return "https://app.workquest.co/";
     }
     return "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/";

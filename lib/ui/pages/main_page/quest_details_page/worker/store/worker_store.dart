@@ -7,7 +7,7 @@ import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/web3/contractEnums.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -48,7 +48,7 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
 
   getFee(String functionName) async {
     try {
-      final _client = AccountRepository().getClientWorkNet();
+      final _client = WalletRepository().getClientWorkNet();
       final _contract =
           await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
@@ -87,7 +87,7 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
     print('sendAcceptOnQuest');
     try {
       this.onLoading();
-      await AccountRepository().getClientWorkNet().handleEvent(
+      await WalletRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.acceptJob,
             contractAddress: quest.value!.contractAddress!,
           );
@@ -104,7 +104,7 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
   // sendRejectOnQuest() async {
   //   try {
   //     this.onLoading();
-  //     AccountRepository().getClientWorkNet().handleEvent(
+  //     WalletRepository().getClientWorkNet().handleEvent(
   //           function: WQContractFunctions.declineJob,
   //           contractAddress: quest.value!.contractAddress!,
   //           value: null,
@@ -141,7 +141,7 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
-      AccountRepository().getClient().handleEvent(
+      WalletRepository().getClient().handleEvent(
             function: WQContractFunctions.declineJob,
             contractAddress: quest.value!.contractAddress!,
             value: null,
@@ -165,7 +165,7 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
   sendCompleteWork() async {
     try {
       this.onLoading();
-      await AccountRepository().getClientWorkNet().handleEvent(
+      await WalletRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.verificationJob,
             contractAddress: quest.value!.contractAddress!,
             value: null,

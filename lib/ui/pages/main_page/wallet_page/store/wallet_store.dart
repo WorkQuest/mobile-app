@@ -2,7 +2,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/web3/current_course_tokens_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -41,7 +41,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
     try {
       final _tokens =
-          Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
+          Configs.configsNetwork[WalletRepository().networkName.value]!.dataCoins;
       await Future.delayed(const Duration(milliseconds: 250));
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
@@ -79,16 +79,16 @@ abstract class _WalletStore extends IStore<bool> with Store {
 
   Future<List<_CoinEntity>> _getCoinEntities(List<DataCoins> coins) async {
     List<_TokenCourse> _courses = List.empty();
-    if (!AccountRepository().isOtherNetwork) {
+    if (!WalletRepository().isOtherNetwork) {
       final _result = await _apiProvider.getCourseTokens();
       _courses = _getListTokenCourse(_result);
     }
 
     List<_CoinEntity> _result = [];
-    final _client = AccountRepository().getClient();
+    final _client = WalletRepository().getClient();
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _balance = await _client.getBalance(WalletRepository().privateKey);
         final _amount =
             (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18))
                 .toDouble()

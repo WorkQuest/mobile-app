@@ -6,7 +6,7 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
@@ -93,7 +93,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   getFee(String userId, String functionName) async {
     final _needParams = functionName == WQContractFunctions.assignJob.name;
     List<dynamic> _params = [];
-    final _client = AccountRepository().getClientWorkNet();
+    final _client = WalletRepository().getClientWorkNet();
     final _contract = await _client.getDeployedContract(
       "WorkQuest",
       quest.value!.contractAddress!,
@@ -126,7 +126,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
       this.onLoading();
       print('startQuest');
       final user = await _apiProvider.getProfileUser(userId: userId);
-      await AccountRepository().getClient().handleEvent(
+      await WalletRepository().getClient().handleEvent(
             function: WQContractFunctions.assignJob,
             contractAddress: quest.value!.contractAddress!,
             params: [
@@ -149,7 +149,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   }) async {
     try {
       this.onLoading();
-      await AccountRepository().getClientWorkNet().handleEvent(
+      await WalletRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.acceptJobResult,
             contractAddress: quest.value!.contractAddress!,
             value: null,
@@ -170,7 +170,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
     try {
       this.onLoading();
       await _getQuest();
-      await AccountRepository().getClientWorkNet().handleEvent(
+      await WalletRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.cancelJob,
             contractAddress: quest.value!.contractAddress!,
             value: null,

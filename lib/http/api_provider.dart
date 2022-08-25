@@ -13,7 +13,7 @@ import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/model/respond_model.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -531,7 +531,7 @@ extension Notification on ApiProvider {
     required int offset,
   }) async {
     final _notificationsPath =
-        AccountRepository().notifierNetwork.value == Network.testnet
+        WalletRepository().notifierNetwork.value == Network.testnet
             ? Constants.isTestnet
                 ? 'https://testnet-notification.workquest.co/api/notifications'
                 : 'https://notifications.workquest.co/api/notifications'
@@ -560,7 +560,7 @@ extension Notification on ApiProvider {
   }) async {
     try {
       final _notificationsPath =
-          AccountRepository().notifierNetwork.value == Network.testnet
+          WalletRepository().notifierNetwork.value == Network.testnet
               ? Constants.isTestnet
                   ? 'testnet-notification'
                   : 'notifications'
@@ -583,7 +583,7 @@ extension Notification on ApiProvider {
   }) async {
     try {
       final _notificationsPath =
-          AccountRepository().notifierNetwork.value == Network.testnet
+          WalletRepository().notifierNetwork.value == Network.testnet
               ? Constants.isTestnet
                   ? 'testnet-notification'
                   : 'notifications'
@@ -609,7 +609,7 @@ extension Push on ApiProvider {
   }) async {
     try {
       final _notificationsPath =
-          AccountRepository().notifierNetwork.value == Network.testnet
+          WalletRepository().notifierNetwork.value == Network.testnet
               ? Constants.isTestnet
                   ? 'testnet-notification'
                   : 'notifications'
@@ -631,7 +631,7 @@ extension Push on ApiProvider {
   }) async {
     try {
       final _notificationsPath =
-          AccountRepository().notifierNetwork.value == Network.testnet
+          WalletRepository().notifierNetwork.value == Network.testnet
               ? Constants.isTestnet
                   ? 'testnet-notification'
                   : 'notifications'

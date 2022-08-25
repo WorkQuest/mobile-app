@@ -3,7 +3,7 @@ import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/storage.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -65,11 +65,11 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   Future register() async {
     try {
       this.onLoading();
-      if (AccountRepository().networkName.value == null) {
-        final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
+      if (WalletRepository().networkName.value == null) {
+        final _networkName = WalletRepository().notifierNetwork.value == Network.mainnet
             ? NetworkName.workNetMainnet
             : NetworkName.workNetTestnet;
-        AccountRepository().setNetwork(_networkName);
+        WalletRepository().setNetwork(_networkName);
       }
       BearerToken bearerToken = await _apiProvider.register(
         email: _email,

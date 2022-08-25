@@ -1,5 +1,5 @@
 import 'package:app/constants.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,7 +38,7 @@ class ButtonToExplorer extends StatelessWidget {
   }
 
   _onPressedGoToExplorer() {
-    final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer + AccountRepository().userAddress;
+    final _urlExplorer = WalletRepository().getConfigNetwork().urlExplorer + WalletRepository().userAddress;
     launchUrl(Uri.parse(_urlExplorer));
   }
 }

@@ -6,7 +6,7 @@ import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
@@ -57,7 +57,7 @@ class ClientService implements ClientServiceI {
       client = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
-      if (AccountRepository().isOtherNetwork) {
+      if (WalletRepository().isOtherNetwork) {
         Future.delayed(const Duration(seconds: 2)).then((value) {
           try {
             final _stream = client!.socketConnector!.call();
@@ -105,10 +105,10 @@ class ClientService implements ClientServiceI {
   }) async {
     String? hash;
     int? degree;
-    final _privateKey = AccountRepository().privateKey;
+    final _privateKey = WalletRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
     String _addressToken = Web3Utils.getAddressToken(coin);
-    final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+    final _from = EthereumAddress.fromHex(WalletRepository().userAddress);
     final _gas = await getGas();
     final _isETH = Web3Utils.isETH();
     final _gasPrice = EtherAmount.fromUnitAndValue(
@@ -123,7 +123,7 @@ class ClientService implements ClientServiceI {
         (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
-      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+      final _from = EthereumAddress.fromHex(WalletRepository().userAddress);
       final _chainId = await client!.getChainId();
       hash = await client!.sendTransaction(
         _credentials,
@@ -168,8 +168,8 @@ class ClientService implements ClientServiceI {
     final _tx = Tx(
       hash: hash,
       fromAddressHash: AddressHash(
-        bech32: AddressService.hexToBech32(AccountRepository().userAddress),
-        hex: AccountRepository().userAddress,
+        bech32: AddressService.hexToBech32(WalletRepository().userAddress),
+        hex: WalletRepository().userAddress,
       ),
       toAddressHash: AddressHash(
         bech32: AddressService.hexToBech32(isToken ? _addressToken : addressTo),
@@ -200,7 +200,7 @@ class ClientService implements ClientServiceI {
     final contract =
         Erc20(address: EthereumAddress.fromHex(address), client: client!);
     final balance = await contract.balanceOf(
-        EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+        EthereumAddress.fromHex(WalletRepository().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
     return (Decimal.parse(balance.toString()) /
             Decimal.fromInt(10).pow(_degree))
@@ -257,7 +257,7 @@ class ClientService implements ClientServiceI {
       contract: contract,
       function: function,
       parameters: params,
-      from: EthereumAddress.fromHex(AccountRepository().userAddress),
+      from: EthereumAddress.fromHex(WalletRepository().userAddress),
       value: value != null
           ? EtherAmount.fromUnitAndValue(
               EtherUnit.wei,
@@ -302,7 +302,7 @@ extension CreateQuestContract on ClientService {
     EtherAmount? value,
   }) async {
     try {
-      final credentials = await getCredentials(AccountRepository().privateKey);
+      final credentials = await getCredentials(WalletRepository().privateKey);
       final _gasPrice = await client!.getGasPrice();
       final _chainId = await client!.getChainId();
       final transactionHash = await client!.sendTransaction(
@@ -347,7 +347,7 @@ extension CreateContract on ClientService {
     required String nonce,
   }) async {
     print('createNewContract');
-    final credentials = await getCredentials(AccountRepository().privateKey);
+    final credentials = await getCredentials(WalletRepository().privateKey);
     final contract = await getDeployedContract(
         "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
     final ethFunction =
@@ -416,7 +416,7 @@ extension ApproveCoin on ClientService {
     required BigInt price,
     EthereumAddress? address,
   }) async {
-    final credentials = await getCredentials(AccountRepository().privateKey);
+    final credentials = await getCredentials(WalletRepository().privateKey);
     final _addressWUSD = Web3Utils.getAddressWUSD();
     final contract =
         Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
@@ -446,7 +446,7 @@ extension ApproveCoin on ClientService {
     final _contract =
         Erc20(address: EthereumAddress.fromHex(_address), client: client!);
     final _result = await _contract.allowance(
-      EthereumAddress.fromHex(AccountRepository().userAddress),
+      EthereumAddress.fromHex(WalletRepository().userAddress),
       address ??
           EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
     );
@@ -503,7 +503,7 @@ extension Promote on ClientService {
     final contract = await getDeployedContract(
         "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
-    final _credentials = await getCredentials(AccountRepository().privateKey);
+    final _credentials = await getCredentials(WalletRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
     final _chainId = await client!.getChainId();
@@ -553,7 +553,7 @@ extension Promote on ClientService {
       Web3Utils.getAddressWorknetWQPromotion(),
     );
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
-    final _credentials = await getCredentials(AccountRepository().privateKey);
+    final _credentials = await getCredentials(WalletRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
     final _chainId = await client!.getChainId();
