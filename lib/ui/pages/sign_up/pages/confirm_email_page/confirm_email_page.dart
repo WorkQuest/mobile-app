@@ -1,6 +1,6 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/choose_role_page.dart';
-import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';
+import 'package:app/ui/pages/sign_up/pages/confirm_email_page/store/confirm_email_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/timer.dart';
@@ -32,11 +32,11 @@ class ConfirmEmail extends StatefulWidget {
 }
 
 class _ConfirmEmailState extends State<ConfirmEmail> {
-  late ChooseRoleStore store;
+  late final ConfirmEmailStore store;
 
   @override
   void initState() {
-    store = context.read<ChooseRoleStore>();
+    store = context.read<ConfirmEmailStore>();
     if (widget.arguments.code != null) {
       store.setCode(widget.arguments.code!);
       store.confirmEmail();
@@ -44,15 +44,19 @@ class _ConfirmEmailState extends State<ConfirmEmail> {
     super.initState();
   }
 
+  _stateListener() {
+    if (store.successData == ConfirmEmailState.confirmEmail) {
+      Navigator.pushNamed(
+        context,
+        ChooseRolePage.routeName,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ObserverListener<ChooseRoleStore>(
-      onSuccess: () {
-        Navigator.pushNamed(
-          context,
-          ChooseRolePage.routeName,
-        );
-      },
+    return ObserverListener<ConfirmEmailStore>(
+      onSuccess: _stateListener,
       onFailure: () => false,
       child: WillPopScope(
         onWillPop: () async {

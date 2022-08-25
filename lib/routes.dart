@@ -85,6 +85,7 @@ import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/ch
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/enter_totp_page.dart';
 import 'package:app/ui/pages/sign_up/pages/confirm_email_page/confirm_email_page.dart';
+import 'package:app/ui/pages/sign_up/pages/confirm_email_page/store/confirm_email_store.dart';
 import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/create_wallet_page.dart';
 import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/create_wallet_page/store/create_wallet_store.dart';
 import 'package:app/ui/pages/sign_up/pages/generate_wallet/pages/import_wallet_page.dart';
@@ -511,7 +512,7 @@ class Routes {
       case ConfirmEmail.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ChooseRoleStore>(),
+            create: (context) => getIt.get<ConfirmEmailStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: ConfirmEmail(settings.arguments as ConfirmEmailArguments),
