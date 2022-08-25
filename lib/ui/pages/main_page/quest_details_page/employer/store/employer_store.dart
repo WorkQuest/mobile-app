@@ -53,14 +53,9 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   setQuestStatus(int value) => quest.value!.status = value;
 
   @action
-  getRespondedList(String id, String idWorker) async {
+  getRespondedList(String id) async {
     respondedList = await _apiProvider.responsesQuest(id);
-    for (int index = 0; index < respondedList.length; index++)
-      if (respondedList[index].workerId == idWorker ||
-          respondedList[index].status == -1 ||
-          // respondedList[index].status == 0 ||
-          (respondedList[index].type == 1 && respondedList[index].status != 1))
-        respondedList.removeAt(index);
+    respondedList = respondedList.where((element) => (element.status == 0 && element.type == 0)).toList();
   }
 
   _getQuest() async {
@@ -86,7 +81,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       // _getQuest();
-      getRespondedList(changedQuest.id, changedQuest.assignedWorker?.id ?? "");
+      getRespondedList(changedQuest.id);
     }
   }
 
@@ -191,9 +186,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
         this.onError("modals.invalid2FA".tr());
         return;
       }
-      this.onSuccess(isEdit
-          ? EmployerStoreState.validateTotpEdit
-          : EmployerStoreState.validateTotpDelete);
+      this.onSuccess(isEdit ? EmployerStoreState.validateTotpEdit : EmployerStoreState.validateTotpDelete);
     } catch (e) {
       this.onError(e.toString());
     }
