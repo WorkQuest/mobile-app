@@ -1,5 +1,5 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/widgets/message_cell.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/my_quests_item.dart';
 import 'package:flutter/material.dart';

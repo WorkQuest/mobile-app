@@ -78,7 +78,7 @@ extension ChatsService on ApiProvider {
     }
   }
 
-  Future<List<MessageModel>> getStarredMessage({
+  Future<List<MessageModel>> getStarredMessagePage({
     required int offset,
   }) async {
     try {

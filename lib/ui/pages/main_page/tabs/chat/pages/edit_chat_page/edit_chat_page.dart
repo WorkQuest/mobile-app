@@ -1,7 +1,7 @@
 import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_members.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_user_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/widgets/add_members.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/widgets/edit_user_cell.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:provider/provider.dart';
 

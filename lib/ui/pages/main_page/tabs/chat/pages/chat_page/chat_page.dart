@@ -2,19 +2,19 @@ import 'dart:async';
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/widgets/app_bar_widget.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/widgets/list_chats_widget.dart';
-import 'package:app/ui/pages/main_page/chat_page/widgets/selected_app_bar_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/app_bar_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/create_group_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/list_chats_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/selected_app_bar_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/starred_message_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
-import '../../../widgets/default_textfield.dart';
-import 'chat_room_page/chat_room_page.dart';
+import '../../../../../../widgets/default_textfield.dart';
+import '../chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ChatPage extends StatefulWidget {
@@ -92,7 +92,7 @@ class _ChatPageState extends State<ChatPage>
                                 case "chat.starredMessage":
                                   Navigator.of(context, rootNavigator: true)
                                       .pushNamed(
-                                    StarredMessage.routeName,
+                                    StarredMessagePage.routeName,
                                     arguments: store.myId,
                                   );
                                   break;

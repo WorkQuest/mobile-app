@@ -1,6 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/store/starred_message_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';

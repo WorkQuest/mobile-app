@@ -5,7 +5,7 @@ import 'package:app/enums.dart';
 import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';

@@ -6,7 +6,7 @@ import 'package:app/enums.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/shimmer/shimmer_my_quest_item.dart';

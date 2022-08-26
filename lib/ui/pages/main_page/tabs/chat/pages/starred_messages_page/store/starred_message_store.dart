@@ -35,7 +35,7 @@ abstract class _StarredMessageStore extends IStore<StarredMessageStoreState> wit
         messages.clear();
         mediaPaths.clear();
       }
-      final response = await _apiProvider.getStarredMessage(offset: messages.length);
+      final response = await _apiProvider.getStarredMessagePage(offset: messages.length);
       messages.addAll(response);
       mediaPaths.addAll(await Thumbnail().getThumbnail(messages));
       onSuccess(StarredMessageStoreState.getMessages);

@@ -1,6 +1,6 @@
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/media_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/utils/info_message_util.dart';
 import 'package:easy_localization/easy_localization.dart';

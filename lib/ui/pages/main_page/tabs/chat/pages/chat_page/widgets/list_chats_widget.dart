@@ -1,8 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/widgets/chat_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/widgets/shimmer/shimmer_chat_item.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/chat_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/shimmer/shimmer_chat_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';

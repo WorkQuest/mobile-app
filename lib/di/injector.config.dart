@@ -11,17 +11,18 @@ import '../http/api_provider.dart' as _i8;
 import '../http/core/http_client.dart' as _i5;
 import '../http/core/i_http_client.dart' as _i4;
 import '../log_service.dart' as _i6;
-import '../ui/pages/main_page/chat_page/chat_room_page/create_private_chat/store/create_private_store.dart'
-    as _i13;
-import '../ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart'
-    as _i19;
-import '../ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart'
-    as _i21;
-import '../ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart'
-    as _i34;
-import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
+import '../ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart'
+    as _i40;
+import '../ui/pages/main_page/tabs/chat/pages/chat_room_page/store/chat_room_store.dart'
     as _i9;
-import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i40;
+import '../ui/pages/main_page/tabs/chat/pages/create_group_page/store/group_chat_store.dart'
+    as _i21;
+import '../ui/pages/main_page/tabs/chat/pages/create_private_chat/store/create_private_store.dart'
+    as _i13;
+import '../ui/pages/main_page/tabs/chat/pages/edit_chat_page/store/edit_chat_store.dart'
+    as _i19;
+import '../ui/pages/main_page/tabs/chat/pages/starred_messages_page/store/starred_message_store.dart'
+    as _i34;
 import '../ui/pages/main_page/tabs/more/pages/2FA_page/store/2FA_store.dart'
     as _i50;
 import '../ui/pages/main_page/tabs/more/pages/change_password_page/store/change_password_store.dart'
@@ -98,8 +99,8 @@ import '../ui/pages/sign_up/pages/sign_up_page/store/sign_up_store.dart'
     as _i33;
 
 const String _test = 'test';
-const String _dev = 'dev';
 const String _prod = 'prod';
+const String _dev = 'dev';
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -112,10 +113,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i3.ConfirmTransferStore>(() => _i3.ConfirmTransferStore());
     gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
         registerFor: {_test});
-    gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
-        registerFor: {_dev, _test});
     gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
         registerFor: {_prod});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
+        registerFor: {_dev, _test});
     gh.factory<_i7.ChangePasswordStore>(
         () => _i7.ChangePasswordStore(get<_i8.ApiProvider>()));
     gh.factory<_i9.ChatRoomStore>(

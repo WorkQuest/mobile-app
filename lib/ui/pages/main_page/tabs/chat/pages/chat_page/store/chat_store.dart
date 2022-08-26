@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_statistic.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/entity/chat.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';
-import '../../../../../enums.dart';
 
 part 'chat_store.g.dart';
 

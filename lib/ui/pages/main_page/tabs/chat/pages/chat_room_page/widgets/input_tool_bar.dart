@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';

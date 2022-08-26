@@ -8,7 +8,7 @@ import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';

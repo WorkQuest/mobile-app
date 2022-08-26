@@ -1,5 +1,5 @@
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_user_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/widgets/add_user_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/store/edit_chat_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:provider/provider.dart';
 

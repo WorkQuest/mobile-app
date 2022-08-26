@@ -3,20 +3,20 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/store/create_private_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_members.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_chat_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/chat_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/create_group_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_private_chat/create_private_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_private_chat/store/create_private_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/edit_chat_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/widgets/add_members.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/starred_message_page.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/store/group_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/store/starred_message_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/create_portfolio_page/store/create_portfolio_store.dart';
@@ -772,13 +772,13 @@ class Routes {
           ),
         );
 
-      case StarredMessage.routeName:
+      case StarredMessagePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<StarredMessageStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: StarredMessage(settings.arguments as String),
+              child: StarredMessagePage(settings.arguments as String),
             ),
           ),
         );

@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/chat_page/widgets/shimmer/shimmer_item.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/widgets/shimmer/shimmer_item.dart';
 import 'package:flutter/material.dart';
 
 class ShimmerChatItem extends StatelessWidget {

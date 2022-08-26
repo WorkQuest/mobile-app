@@ -1,7 +1,7 @@
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_user_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/widgets/add_user_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_group_page/store/group_chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/create_private_chat/create_private_page.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/utils/alert_dialog.dart';
 

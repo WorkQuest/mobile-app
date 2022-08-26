@@ -1,6 +1,6 @@
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/store/starred_message_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/starred_messages_page/widgets/starred_message_cell.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -9,18 +9,18 @@ import 'package:provider/provider.dart';
 
 const _physics = BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
 
-class StarredMessage extends StatefulWidget {
+class StarredMessagePage extends StatefulWidget {
   static const String routeName = "/starredMessage";
 
   final String userId;
 
-  const StarredMessage(this.userId);
+  const StarredMessagePage(this.userId);
 
   @override
-  _StarredMessageState createState() => _StarredMessageState();
+  _StarredMessagePageState createState() => _StarredMessagePageState();
 }
 
-class _StarredMessageState extends State<StarredMessage> {
+class _StarredMessagePageState extends State<StarredMessagePage> {
   late StarredMessageStore store;
 
   void initState() {

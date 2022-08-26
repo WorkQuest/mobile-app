@@ -1,11 +1,11 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/member.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_chat_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/edit_chat_page/edit_chat_page.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/widgets/input_tool_bar.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/widgets/message_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
@@ -20,8 +20,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 
-import '../../../../../utils/snack_bar.dart';
-import '../../../../widgets/media_upload/media_upload_widget.dart';
+import '../../../../../../../utils/snack_bar.dart';
+import '../../../../../../widgets/media_upload/media_upload_widget.dart';
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
