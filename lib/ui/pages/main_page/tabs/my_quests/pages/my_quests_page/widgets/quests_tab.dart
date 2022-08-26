@@ -1,7 +1,7 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_list.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

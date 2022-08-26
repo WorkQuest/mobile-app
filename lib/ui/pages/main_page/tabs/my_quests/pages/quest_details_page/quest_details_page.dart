@@ -1,10 +1,12 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/map_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/store/quest_details_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/widgets/map_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
+import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/skill_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:provider/provider.dart";
 
-import '../../../../widgets/image_viewer_widget.dart';
-import '../../../../widgets/priority_view.dart';
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";

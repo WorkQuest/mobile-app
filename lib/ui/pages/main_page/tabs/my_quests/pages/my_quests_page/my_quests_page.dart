@@ -1,11 +1,11 @@
 import 'package:app/constants.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/quests_tab.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/enums.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_tab.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
-import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsPage extends StatefulWidget {

@@ -1,8 +1,8 @@
-import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/store/profile_quests_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_list.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -43,8 +43,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
             : Center(
                 child: Text(
                   viewOtherUser?.userData == null
-                      ? "errors.emptyData.worker.myQuests.desc".tr()
-                      : "errors.emptyData.worker.myQuests.notQuest".tr(),
+                      ? "errors.emptyData.quest_worker_page.myQuests.desc".tr()
+                      : "errors.emptyData.quest_worker_page.myQuests.notQuest".tr(),
                 ),
               ),
         if ((myQuests!.quests[QuestsType.Performed]?.isNotEmpty ?? false) ||

@@ -2,6 +2,7 @@ import 'package:app/background_observer_page.dart';
 import 'package:app/enums.dart';
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/my_quests_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_page/search_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/wallet_page.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'chat_page/chat_page.dart';
-import 'my_quests_page/my_quests_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 

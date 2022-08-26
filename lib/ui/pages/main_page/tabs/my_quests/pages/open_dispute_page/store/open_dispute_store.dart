@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:app/http/api_provider.dart';
 import 'package:app/utils/dispute_util.dart';
 import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 
-import '../../../../../../web3/repository/wallet_repository.dart';
 
 part 'open_dispute_store.g.dart';
 

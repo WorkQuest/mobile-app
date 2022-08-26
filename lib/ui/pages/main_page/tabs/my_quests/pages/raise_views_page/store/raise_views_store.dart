@@ -5,6 +5,9 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/raise_view_util.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -12,9 +15,6 @@ import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
-import '../../../../../web3/contractEnums.dart';
-import '../../../../../web3/repository/wallet_repository.dart';
-import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
 

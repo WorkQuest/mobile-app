@@ -169,7 +169,7 @@ class User {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
+        role: json["role"] == "quest_employer_page" ? UserRole.Employer : UserRole.Worker,
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       );
 }

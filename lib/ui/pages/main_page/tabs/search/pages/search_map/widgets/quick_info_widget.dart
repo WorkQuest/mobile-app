@@ -1,5 +1,5 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/widgets/workers_item.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart';

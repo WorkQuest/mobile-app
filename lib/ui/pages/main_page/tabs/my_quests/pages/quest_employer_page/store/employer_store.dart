@@ -6,15 +6,15 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/credentials.dart';
 
-import '../../../../../../web3/contractEnums.dart';
-import '../../../../../../web3/service/client_service.dart';
 
 part 'employer_store.g.dart';
 

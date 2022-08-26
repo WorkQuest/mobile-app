@@ -28,11 +28,11 @@ class ChooseRoleRepository extends IChooseRoleRepository {
     try {
       final newRole = isChange
           ? role == UserRole.Worker
-              ? "employer"
-              : "worker"
+              ? "quest_employer_page"
+              : "quest_worker_page"
           : role == UserRole.Worker
-              ? "worker"
-              : "employer";
+              ? "quest_worker_page"
+              : "quest_employer_page";
       await _apiProvider.setRole(newRole);
     } catch (e) {
       print('ChooseRoleRepository approveRole | error: $e');

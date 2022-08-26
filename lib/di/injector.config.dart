@@ -22,7 +22,7 @@ import '../ui/pages/main_page/chat_page/chat_room_page/starred_message/store/sta
 import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
     as _i7;
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i40;
-import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i43;
+import '../ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart' as _i43;
 import '../ui/pages/main_page/tabs/search/pages/notification_page/store/notification_store.dart'
     as _i22;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart'
@@ -37,19 +37,19 @@ import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/profi
     as _i25;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
     as _i36;
-import '../ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/quest_details_page/store/quest_details_store.dart'
     as _i27;
-import '../ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/store/open_dispute_store.dart'
     as _i23;
-import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/quest_employer_page/store/employer_store.dart'
     as _i19;
-import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/quest_worker_page/store/worker_store.dart'
     as _i38;
-import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/create_quest_page/store/create_quest_store.dart'
     as _i13;
 import '../ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart'
     as _i42;
-import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
+import '../ui/pages/main_page/tabs/my_quests/pages/raise_views_page/store/raise_views_store.dart'
     as _i28;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
     as _i50;

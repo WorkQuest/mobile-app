@@ -1,8 +1,8 @@
 import 'package:app/main.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/notification_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/work_quest_app.dart';

@@ -9,13 +9,13 @@ import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/dispute_util.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../../utils/web3_utils.dart';
 import 'store/open_dispute_store.dart';
 
 class OpenDisputePage extends StatefulWidget {

@@ -132,7 +132,7 @@ class ProfileMeResponse with ClusterItem {
       additionalInfo: json["additionalInfo"] == null
           ? null
           : AdditionalInfo.fromJson(json["additionalInfo"]),
-      role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
+      role: json["role"] == "quest_employer_page" ? UserRole.Employer : UserRole.Worker,
       avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       userSpecializations: json["userSpecializations"] == null
           ? []
@@ -164,13 +164,13 @@ class ProfileMeResponse with ClusterItem {
       neverEditedProfileFlag: json["neverEditedProfileFlag"] ?? false,
       totpCode: json["totpCode"],
       payPeriod: json["payPeriod"],
-      workerOrEmployerProfileVisibilitySetting: json[json["role"] == "employer"
+      workerOrEmployerProfileVisibilitySetting: json[json["role"] == "quest_employer_page"
                   ? 'employerProfileVisibilitySetting'
                   : 'workerProfileVisibilitySetting'] ==
               null
           ? null
           : WorkerProfileVisibilitySettingClass.fromJson(
-              json[json["role"] == "employer"
+              json[json["role"] == "quest_employer_page"
                   ? 'employerProfileVisibilitySetting'
                   : 'workerProfileVisibilitySetting']),
       // createdAt: DateTime.parse(json["createdAt"]),

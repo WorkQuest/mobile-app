@@ -196,8 +196,8 @@ extension ReviewsTab on UserProfileState {
                         userRole:
                             portfolioStore!.reviewsList[index].fromUser.role ==
                                     UserRole.Employer
-                                ? "role.employer"
-                                : "role.worker",
+                                ? "role.quest_employer_page"
+                                : "role.quest_worker_page",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
                         message: portfolioStore!.reviewsList[index].message,
