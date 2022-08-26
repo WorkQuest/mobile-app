@@ -19,17 +19,17 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:google_maps_webservice/places.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-part 'quest_map_store.g.dart';
+part 'search_map_store.g.dart';
 
 @singleton
-class QuestMapStore extends _QuestMapStore with _$QuestMapStore {
-  QuestMapStore(ApiProvider apiProvider) : super(apiProvider);
+class SearchMapStore extends _SearchMapStore with _$SearchMapStore {
+  SearchMapStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _QuestMapStore extends IStore<bool> with Store {
+abstract class _SearchMapStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _QuestMapStore(this._apiProvider);
+  _SearchMapStore(this._apiProvider);
 
   @observable
   bool? isWorker;

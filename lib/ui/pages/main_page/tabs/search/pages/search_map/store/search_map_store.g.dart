@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'quest_map_store.dart';
+part of 'search_map_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,8 @@ part of 'quest_map_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$QuestMapStore on _QuestMapStore, Store {
-  final _$isWorkerAtom = Atom(name: '_QuestMapStore.isWorker');
+mixin _$SearchMapStore on _SearchMapStore, Store {
+  final _$isWorkerAtom = Atom(name: '_SearchMapStore.isWorker');
 
   @override
   bool? get isWorker {
@@ -24,7 +24,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$hideInfoAtom = Atom(name: '_QuestMapStore.hideInfo');
+  final _$hideInfoAtom = Atom(name: '_SearchMapStore.hideInfo');
 
   @override
   bool get hideInfo {
@@ -39,7 +39,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$addressAtom = Atom(name: '_QuestMapStore.address');
+  final _$addressAtom = Atom(name: '_SearchMapStore.address');
 
   @override
   String get address {
@@ -54,7 +54,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$debounceAtom = Atom(name: '_QuestMapStore.debounce');
+  final _$debounceAtom = Atom(name: '_SearchMapStore.debounce');
 
   @override
   Timer? get debounce {
@@ -69,7 +69,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$markerLoaderAtom = Atom(name: '_QuestMapStore.markerLoader');
+  final _$markerLoaderAtom = Atom(name: '_SearchMapStore.markerLoader');
 
   @override
   MarkerLoader? get markerLoader {
@@ -84,7 +84,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$locationPositionAtom = Atom(name: '_QuestMapStore.locationPosition');
+  final _$locationPositionAtom = Atom(name: '_SearchMapStore.locationPosition');
 
   @override
   Position? get locationPosition {
@@ -100,7 +100,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$initialCameraPositionAtom =
-      Atom(name: '_QuestMapStore.initialCameraPosition');
+      Atom(name: '_SearchMapStore.initialCameraPosition');
 
   @override
   CameraPosition? get initialCameraPosition {
@@ -116,7 +116,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
+  final _$bufferQuestsAtom = Atom(name: '_SearchMapStore.bufferQuests');
 
   @override
   Map<String, BaseQuestResponse> get bufferQuests {
@@ -131,7 +131,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
+  final _$markersAtom = Atom(name: '_SearchMapStore.markers');
 
   @override
   ObservableSet<Marker> get markers {
@@ -147,7 +147,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$getPredictionAsyncAction =
-      AsyncAction('_QuestMapStore.getPrediction');
+      AsyncAction('_SearchMapStore.getPrediction');
 
   @override
   Future<Null> getPrediction(
@@ -157,24 +157,24 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$getQuestsOnMapAsyncAction =
-      AsyncAction('_QuestMapStore.getQuestsOnMap');
+      AsyncAction('_SearchMapStore.getQuestsOnMap');
 
   @override
   Future<dynamic> getQuestsOnMap(LatLngBounds bounds) {
     return _$getQuestsOnMapAsyncAction.run(() => super.getQuestsOnMap(bounds));
   }
 
-  final _$_QuestMapStoreActionController =
-      ActionController(name: '_QuestMapStore');
+  final _$_SearchMapStoreActionController =
+      ActionController(name: '_SearchMapStore');
 
   @override
   dynamic createMarkerLoader(BuildContext context) {
-    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
-        name: '_QuestMapStore.createMarkerLoader');
+    final _$actionInfo = _$_SearchMapStoreActionController.startAction(
+        name: '_SearchMapStore.createMarkerLoader');
     try {
       return super.createMarkerLoader(context);
     } finally {
-      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+      _$_SearchMapStoreActionController.endAction(_$actionInfo);
     }
   }
 

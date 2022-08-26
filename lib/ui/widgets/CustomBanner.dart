@@ -67,7 +67,7 @@ class Banner extends StatelessWidget {
         assert(textStyle != null),
         super(key: key);
 
-  /// The widget to show behind the banner.
+  /// The widgets to show behind the banner.
   ///
   /// {@macro flutter.widgets.child}
   final Widget? child;

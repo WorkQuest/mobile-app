@@ -1,5 +1,5 @@
 import 'package:app/constants.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/quest_map.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/search_map.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
           return Center(child: CircularProgressIndicator.adaptive());
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return QuestMap(
+          return SearchMap(
             widget.changePage,
             position,
             (position) => _currentPosition = position,

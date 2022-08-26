@@ -1,6 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     with AutomaticKeepAliveClientMixin {
   FilterQuestsStore? storeFilter;
   ProfileMeStore? profile;
-  late final QuestsStore storeQuest;
+  late final SearchListStore storeQuest;
   late TextEditingController fromPriceController;
   late TextEditingController toPriceController;
 
@@ -34,7 +34,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   void initState() {
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
-    storeQuest = context.read<QuestsStore>();
+    storeQuest = context.read<SearchListStore>();
     fromPriceController = TextEditingController(text: storeQuest.fromPrice)
       ..addListener(() {
         storeFilter!.setFromPrice(fromPriceController.text);
@@ -433,7 +433,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 class ExpansionCell<T> extends StatefulWidget {
   final List<int> filter;
   final int index;
-  final QuestsStore storeQuest;
+  final SearchListStore storeQuest;
   final FilterQuestsStore storeFilter;
 
   const ExpansionCell(

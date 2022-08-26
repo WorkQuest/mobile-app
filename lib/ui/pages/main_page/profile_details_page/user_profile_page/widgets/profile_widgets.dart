@@ -1005,7 +1005,7 @@ Widget contactDetails({
   );
 }
 
-///Skills widget
+///Skills widgets
 class SkillsWidget extends StatefulWidget {
   final isExpanded;
   final isProfileMy;

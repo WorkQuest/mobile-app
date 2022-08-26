@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:app/constants.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/quick_info_widget.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/search_bar_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/widgets/quick_info_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/widgets/search_bar_widget.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -11,25 +11,25 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-class QuestMap extends StatefulWidget {
+class SearchMap extends StatefulWidget {
   final Function() changePage;
   final CameraPosition position;
   final Function(CameraPosition) callbackPosition;
 
-  QuestMap(this.changePage, this.position, this.callbackPosition);
+  SearchMap(this.changePage, this.position, this.callbackPosition);
 
   @override
-  _QuestMapState createState() => _QuestMapState();
+  _SearchMapState createState() => _SearchMapState();
 }
 
-class _QuestMapState extends State<QuestMap> {
-  late QuestMapStore mapStore;
+class _SearchMapState extends State<SearchMap> {
+  late SearchMapStore mapStore;
   late GoogleMapController _controller;
   final GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
 
   @override
   void initState() {
-    mapStore = context.read<QuestMapStore>();
+    mapStore = context.read<SearchMapStore>();
     mapStore.createMarkerLoader(context);
     mapStore.initialCameraPosition = widget.position;
     super.initState();

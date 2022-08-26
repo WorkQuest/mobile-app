@@ -10,17 +10,17 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-part 'quests_store.g.dart';
+part 'search_list_store.g.dart';
 
 @singleton
-class QuestsStore extends _QuestsStore with _$QuestsStore {
-  QuestsStore(ApiProvider apiProvider) : super(apiProvider);
+class SearchListStore extends _SearchListStore with _$SearchListStore {
+  SearchListStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _QuestsStore extends IStore<bool> with Store {
+abstract class _SearchListStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _QuestsStore(this._apiProvider);
+  _SearchListStore(this._apiProvider);
 
   UserRole role = UserRole.Worker;
 

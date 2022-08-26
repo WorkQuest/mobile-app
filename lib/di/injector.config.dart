@@ -49,10 +49,6 @@ import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_st
     as _i13;
 import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
     as _i42;
-import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
-    as _i47;
-import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
-    as _i46;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i28;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
@@ -64,8 +60,12 @@ import '../ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_
 import '../ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart'
     as _i26;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
-    as _i48;
+    as _i46;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i31;
+import '../ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart'
+    as _i47;
+import '../ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart'
+    as _i48;
 import '../ui/pages/main_page/tabs/wallet/pages/deposit_page/store/deposit_store.dart'
     as _i16;
 import '../ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart'
@@ -186,11 +186,12 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i44.PinCodeStore>(_i44.PinCodeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i45.ProfileMeStore>(
         _i45.ProfileMeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i46.QuestMapStore>(
-        _i46.QuestMapStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i47.QuestsStore>(_i47.QuestsStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i48.SMSVerificationStore>(
-        _i48.SMSVerificationStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i46.SMSVerificationStore>(
+        _i46.SMSVerificationStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i47.SearchListStore>(
+        _i47.SearchListStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i48.SearchMapStore>(
+        _i48.SearchMapStore(get<_i8.ApiProvider>()));
     gh.singleton<_i49.TransactionsStore>(
         _i49.TransactionsStore(get<_i8.ApiProvider>()));
     gh.singleton<_i50.TwoFAStore>(_i50.TwoFAStore(get<_i8.ApiProvider>()));

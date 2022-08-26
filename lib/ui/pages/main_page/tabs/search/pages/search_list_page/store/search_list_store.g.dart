@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'quests_store.dart';
+part of 'search_list_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,16 +8,16 @@ part of 'quests_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$QuestsStore on _QuestsStore, Store {
+mixin _$SearchListStore on _SearchListStore, Store {
   Computed<bool>? _$emptySearchComputed;
 
   @override
   bool get emptySearch =>
       (_$emptySearchComputed ??= Computed<bool>(() => super.emptySearch,
-              name: '_QuestsStore.emptySearch'))
+              name: '_SearchListStore.emptySearch'))
           .value;
 
-  final _$isLoadingMoreAtom = Atom(name: '_QuestsStore.isLoadingMore');
+  final _$isLoadingMoreAtom = Atom(name: '_SearchListStore.isLoadingMore');
 
   @override
   bool get isLoadingMore {
@@ -32,7 +32,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$searchWordAtom = Atom(name: '_QuestsStore.searchWord');
+  final _$searchWordAtom = Atom(name: '_SearchListStore.searchWord');
 
   @override
   String get searchWord {
@@ -47,7 +47,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$sortAtom = Atom(name: '_QuestsStore.sort');
+  final _$sortAtom = Atom(name: '_SearchListStore.sort');
 
   @override
   String get sort {
@@ -62,7 +62,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$fromPriceAtom = Atom(name: '_QuestsStore.fromPrice');
+  final _$fromPriceAtom = Atom(name: '_SearchListStore.fromPrice');
 
   @override
   String get fromPrice {
@@ -77,7 +77,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$toPriceAtom = Atom(name: '_QuestsStore.toPrice');
+  final _$toPriceAtom = Atom(name: '_SearchListStore.toPrice');
 
   @override
   String get toPrice {
@@ -92,7 +92,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$questsListAtom = Atom(name: '_QuestsStore.questsList');
+  final _$questsListAtom = Atom(name: '_SearchListStore.questsList');
 
   @override
   ObservableList<BaseQuestResponse> get questsList {
@@ -107,7 +107,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$workersListAtom = Atom(name: '_QuestsStore.workersList');
+  final _$workersListAtom = Atom(name: '_SearchListStore.workersList');
 
   @override
   ObservableList<ProfileMeResponse> get workersList {
@@ -122,7 +122,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$latitudeAtom = Atom(name: '_QuestsStore.latitude');
+  final _$latitudeAtom = Atom(name: '_SearchListStore.latitude');
 
   @override
   double? get latitude {
@@ -137,7 +137,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$longitudeAtom = Atom(name: '_QuestsStore.longitude');
+  final _$longitudeAtom = Atom(name: '_SearchListStore.longitude');
 
   @override
   double? get longitude {
@@ -152,7 +152,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$locationPlaceNameAtom = Atom(name: '_QuestsStore.locationPlaceName');
+  final _$locationPlaceNameAtom =
+      Atom(name: '_SearchListStore.locationPlaceName');
 
   @override
   String get locationPlaceName {
@@ -168,7 +169,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   final _$getSearchedQuestsAsyncAction =
-      AsyncAction('_QuestsStore.getSearchedQuests');
+      AsyncAction('_SearchListStore.getSearchedQuests');
 
   @override
   Future<dynamic> getSearchedQuests(bool newList) {
@@ -177,7 +178,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   final _$getSearchedWorkersAsyncAction =
-      AsyncAction('_QuestsStore.getSearchedWorkers');
+      AsyncAction('_SearchListStore.getSearchedWorkers');
 
   @override
   Future<dynamic> getSearchedWorkers(bool newList) {
@@ -185,74 +186,75 @@ mixin _$QuestsStore on _QuestsStore, Store {
         .run(() => super.getSearchedWorkers(newList));
   }
 
-  final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
+  final _$getQuestsAsyncAction = AsyncAction('_SearchListStore.getQuests');
 
   @override
   Future<dynamic> getQuests(bool newList) {
     return _$getQuestsAsyncAction.run(() => super.getQuests(newList));
   }
 
-  final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
+  final _$getWorkersAsyncAction = AsyncAction('_SearchListStore.getWorkers');
 
   @override
   Future<dynamic> getWorkers(bool newList) {
     return _$getWorkersAsyncAction.run(() => super.getWorkers(newList));
   }
 
-  final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
+  final _$_SearchListStoreActionController =
+      ActionController(name: '_SearchListStore');
 
   @override
   void setPrice(String from, String to) {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.setPrice');
+    final _$actionInfo = _$_SearchListStoreActionController.startAction(
+        name: '_SearchListStore.setPrice');
     try {
       return super.setPrice(from, to);
     } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
+      _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   List<String> parser(List<String> skills) {
-    final _$actionInfo =
-        _$_QuestsStoreActionController.startAction(name: '_QuestsStore.parser');
+    final _$actionInfo = _$_SearchListStoreActionController.startAction(
+        name: '_SearchListStore.parser');
     try {
       return super.parser(skills);
     } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
+      _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setSearchWord(String value) {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.setSearchWord');
+    final _$actionInfo = _$_SearchListStoreActionController.startAction(
+        name: '_SearchListStore.setSearchWord');
     try {
       return super.setSearchWord(value);
     } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
+      _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic setStar(String questId, bool star) {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.setStar');
+    final _$actionInfo = _$_SearchListStoreActionController.startAction(
+        name: '_SearchListStore.setStar');
     try {
       return super.setStar(questId, star);
     } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
+      _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic clearData() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.clearData');
+    final _$actionInfo = _$_SearchListStoreActionController.startAction(
+        name: '_SearchListStore.clearData');
     try {
       return super.clearData();
     } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
+      _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
   }
 

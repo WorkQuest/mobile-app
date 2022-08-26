@@ -50,8 +50,6 @@ import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_ques
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
@@ -66,6 +64,8 @@ import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_pa
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/network_page/network_page.dart';
@@ -225,13 +225,13 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestMapStore>(),
+                create: (context) => getIt.get<SearchMapStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<SettingsPageStore>(),
@@ -283,7 +283,7 @@ class Routes {
                     create: (context) => getIt.get<ChatStore>(),
                   ),
                   Provider(
-                    create: (context) => getIt.get<QuestsStore>(),
+                    create: (context) => getIt.get<SearchListStore>(),
                   ),
                 ],
                 child: Directionality(
@@ -304,7 +304,7 @@ class Routes {
                     create: (context) => getIt.get<MyQuestStore>(),
                   ),
                   Provider(
-                    create: (context) => getIt.get<QuestsStore>(),
+                    create: (context) => getIt.get<SearchListStore>(),
                   ),
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
@@ -330,7 +330,7 @@ class Routes {
                 create: (context) => getIt.get<FilterQuestsStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
@@ -365,7 +365,7 @@ class Routes {
                 create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
             ],
             child: Directionality(
@@ -496,7 +496,7 @@ class Routes {
                 create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<PortfolioStore>(),
@@ -578,7 +578,7 @@ class Routes {
                 create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
@@ -873,7 +873,7 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<QuestsStore>(),
+                create: (context) => getIt.get<SearchListStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ChatRoomStore>(),
@@ -983,14 +983,14 @@ class Routes {
     }
   }
 
-  // static push(BuildContext ct, dynamic store, Widget widget) {
+  // static push(BuildContext ct, dynamic store, Widget widgets) {
   //   Navigator.of(ct).push(
   //     MaterialPageRoute(
   //       builder: (ct) => Directionality(
   //         textDirection: checkDirection(ct),
   //         child: Provider(
   //           create: (_) => store,
-  //           child: widget,
+  //           child: widgets,
   //         ),
   //       ),
   //     ),

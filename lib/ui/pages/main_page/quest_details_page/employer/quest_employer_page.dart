@@ -15,8 +15,8 @@ import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_disp
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -47,7 +47,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
   late MyQuestStore myQuestStore;
   late ChatStore chatStore;
-  late QuestsStore questStore;
+  late SearchListStore questStore;
   AnimationController? controller;
 
   bool get isMyQuest => store.quest.value != null && store.quest.value?.userId == profile?.userData?.id;
@@ -93,7 +93,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   void initState() {
     store = context.read<EmployerStore>();
     myQuestStore = context.read<MyQuestStore>();
-    questStore = context.read<QuestsStore>();
+    questStore = context.read<SearchListStore>();
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 

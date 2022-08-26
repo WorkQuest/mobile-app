@@ -1,20 +1,20 @@
 import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
+import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../widgets/user_avatar.dart';
-import '../../../../widgets/user_rating.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore, {this.showRating = false});
+  const WorkersItem(this.workersInfo, this.searchStore, {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
-  final QuestsStore questsStore;
+  final SearchListStore searchStore;
   final bool showRating;
 
   @override
@@ -126,7 +126,7 @@ class WorkersItem extends StatelessWidget {
             const SizedBox(height: 10),
             if (workersInfo.userSpecializations.isNotEmpty)
               tagSkills(
-                questsStore.parser(workersInfo.userSpecializations),
+                searchStore.parser(workersInfo.userSpecializations),
               ),
             const SizedBox(height: 10),
             Text("workers.aboutMe".tr()),

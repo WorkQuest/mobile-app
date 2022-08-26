@@ -2,7 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
@@ -33,13 +33,13 @@ class MyQuestsItem extends StatefulWidget {
 
 class _MyQuestsItemState extends State<MyQuestsItem> {
   late final MyQuestStore store;
-  late final QuestsStore searchStore;
+  late final SearchListStore searchStore;
 
   @override
   void initState() {
     super.initState();
     store = context.read<MyQuestStore>();
-    searchStore = context.read<QuestsStore>();
+    searchStore = context.read<SearchListStore>();
   }
 
   @override

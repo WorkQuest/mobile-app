@@ -98,8 +98,8 @@
 //               children: [
 //                 ///Wallet Transfer
 //                 WalletViewTab(
-//                   store: widget.store,
-//                   questId: widget.store.questId,
+//                   store: widgets.store,
+//                   questId: widgets.store.questId,
 //                 ),
 //
 //                 ///Card Transfer

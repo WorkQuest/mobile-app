@@ -13,9 +13,9 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/shimmer/shimmer_workers_item.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/widgets/shimmer/shimmer_workers_item.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/widgets/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/deep_link_util.dart';
 import 'package:app/utils/push_notification/open_scree_from_push.dart';
@@ -33,21 +33,21 @@ const _divider = const SizedBox(
   child: ColoredBox(color: AppColor.disabledButton),
 );
 
-class QuestList extends StatefulWidget {
+class SearchListPage extends StatefulWidget {
   final Function() changePage;
 
-  QuestList(this.changePage);
+  SearchListPage(this.changePage);
 
   @override
-  _QuestListState createState() => _QuestListState();
+  _SearchListPageState createState() => _SearchListPageState();
 }
 
-class _QuestListState extends State<QuestList> {
-  QuestsStore? questsStore;
+class _SearchListPageState extends State<SearchListPage> {
+  late SearchListStore questsStore;
 
-  ProfileMeStore? profileMeStore;
+  late ProfileMeStore profileMeStore;
 
-  FilterQuestsStore? filterQuestsStore;
+  late FilterQuestsStore filterQuestsStore;
 
   final QuestsType questItemPriorityType = QuestsType.Favorites;
   final scrollKey = new GlobalKey();
@@ -57,18 +57,16 @@ class _QuestListState extends State<QuestList> {
   @override
   void initState() {
     super.initState();
-    questsStore = context.read<QuestsStore>();
+    questsStore = context.read<SearchListStore>();
     filterQuestsStore = context.read<FilterQuestsStore>();
-    filterQuestsStore!.getFilters([], {});
+    filterQuestsStore.getFilters([], {});
     profileMeStore = context.read<ProfileMeStore>();
-    profileMeStore!.getProfileMe().then((value) {
-      context.read<ChatStore>().initialSetup(profileMeStore!.userData!.id);
-      context.read<MyQuestStore>().setRole(profileMeStore!.userData!.role);
-      profileMeStore!.userData!.role == UserRole.Worker
-          ? questsStore!.getQuests(true)
-          : questsStore!.getWorkers(true);
-      questsStore!.role = profileMeStore!.userData!.role;
-      role = profileMeStore!.userData!.role;
+    profileMeStore.getProfileMe().then((value) {
+      context.read<ChatStore>().initialSetup(profileMeStore.userData!.id);
+      context.read<MyQuestStore>().setRole(profileMeStore.userData!.role);
+      profileMeStore.userData!.role == UserRole.Worker ? questsStore.getQuests(true) : questsStore.getWorkers(true);
+      questsStore.role = profileMeStore.userData!.role;
+      role = profileMeStore.userData!.role;
     });
 
     Storage.readDeepLinkCheck().then((value) {
@@ -87,17 +85,17 @@ class _QuestListState extends State<QuestList> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: questsStore!.searchWord.isNotEmpty
+        body: questsStore.searchWord.isNotEmpty
             ? getBody()
             : RefreshIndicator(
                 triggerMode: RefreshIndicatorTriggerMode.anywhere,
                 onRefresh: () async {
-                  if (questsStore!.searchWord.isNotEmpty)
+                  if (questsStore.searchWord.isNotEmpty)
                     return;
-                  else if (role == UserRole.Worker && !questsStore!.isLoading)
-                    return questsStore!.getQuests(true);
+                  else if (role == UserRole.Worker && !questsStore.isLoading)
+                    return questsStore.getQuests(true);
                   else
-                    return questsStore!.getWorkers(true);
+                    return questsStore.getWorkers(true);
                 },
                 displacement: 50,
                 edgeOffset: 250,
@@ -132,15 +130,11 @@ class _QuestListState extends State<QuestList> {
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
         if (metrics.maxScrollExtent <= metrics.pixels) {
-          if (questsStore!.isLoading) return true;
-          if (profileMeStore!.userData!.role == UserRole.Worker) {
-            questsStore!.searchWord.length > 0
-                ? questsStore!.getSearchedQuests(false)
-                : questsStore!.getQuests(false);
+          if (questsStore.isLoading) return true;
+          if (profileMeStore.userData!.role == UserRole.Worker) {
+            questsStore.searchWord.length > 0 ? questsStore.getSearchedQuests(false) : questsStore.getQuests(false);
           } else {
-            questsStore!.searchWord.length > 0
-                ? questsStore!.getSearchedWorkers(false)
-                : questsStore!.getWorkers(false);
+            questsStore.searchWord.length > 0 ? questsStore.getSearchedWorkers(false) : questsStore.getWorkers(false);
           }
         }
         return true;
@@ -155,9 +149,7 @@ class _QuestListState extends State<QuestList> {
               children: [
                 Expanded(
                   child: Text(
-                    role == UserRole.Worker
-                        ? "quests.quests".tr()
-                        : "workers.workers".tr(),
+                    role == UserRole.Worker ? "quests.quests".tr() : "workers.workers".tr(),
                   ),
                 ),
                 CupertinoButton(
@@ -167,7 +159,7 @@ class _QuestListState extends State<QuestList> {
                     rootNavigator: true,
                   ).pushNamed(
                     NotificationPage.routeName,
-                    arguments: profileMeStore!.userData!.id,
+                    arguments: profileMeStore.userData!.id,
                   ),
                   child: const Icon(Icons.notifications_none_outlined),
                 ),
@@ -178,11 +170,11 @@ class _QuestListState extends State<QuestList> {
           SliverAppBar(
             pinned: true,
             title: TextFormField(
-              initialValue: questsStore!.searchWord,
-              onChanged: (value) => questsStore!.setSearchWord(value),
+              initialValue: questsStore.searchWord,
+              onChanged: (value) => questsStore.setSearchWord(value),
               decoration: InputDecoration(
                 fillColor: Color(0xFFF7F8FA),
-                hintText: profileMeStore!.userData!.role == UserRole.Worker
+                hintText: profileMeStore.userData!.role == UserRole.Worker
                     ? "quests.hintWorker".tr()
                     : "quests.hintEmployer".tr(),
                 prefixIcon: Icon(
@@ -202,8 +194,7 @@ class _QuestListState extends State<QuestList> {
                   child: OutlinedButton(
                     onPressed: () async {
                       await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName,
-                              arguments: filterQuestsStore!.skillFilters);
+                          .pushNamed(FilterQuestsPage.routeName, arguments: filterQuestsStore.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -224,7 +215,7 @@ class _QuestListState extends State<QuestList> {
                 ),
                 _divider,
                 Observer(builder: (_) {
-                  if (questsStore!.isLoading) {
+                  if (questsStore.isLoading) {
                     return ListView.separated(
                       key: scrollKey,
                       shrinkWrap: true,
@@ -242,7 +233,7 @@ class _QuestListState extends State<QuestList> {
                       },
                     );
                   }
-                  if (questsStore!.emptySearch)
+                  if (questsStore.emptySearch)
                     return Container(
                       height: MediaQuery.of(context).size.height / 4,
                       alignment: Alignment.center,
@@ -253,7 +244,7 @@ class _QuestListState extends State<QuestList> {
                           SvgPicture.asset("assets/empty_quest_icon.svg"),
                           const SizedBox(height: 10),
                           Text(
-                            profileMeStore!.userData!.role == UserRole.Worker
+                            profileMeStore.userData!.role == UserRole.Worker
                                 ? "quests.noQuest".tr()
                                 : "Worker not found",
                             style: TextStyle(
@@ -273,27 +264,25 @@ class _QuestListState extends State<QuestList> {
                       },
                       padding: EdgeInsets.zero,
                       itemCount: () {
-                        if (role == UserRole.Worker)
-                          return questsStore!.questsList.length;
-                        return questsStore!.workersList.length;
+                        if (role == UserRole.Worker) return questsStore.questsList.length;
+                        return questsStore.workersList.length;
                       }(),
                       itemBuilder: (_, index) {
-                        return Observer(builder: (_) {
-                          if (role == UserRole.Worker) {
-                            final item = questsStore!.questsList[index];
+                        return Observer(
+                          builder: (_) {
+                            if (role == UserRole.Worker) {
+                              final item = questsStore.questsList[index];
+                              _markItem(item);
+                              return MyQuestsItem(
+                                questInfo: item,
+                                itemType: this.questItemPriorityType,
+                              );
+                            }
+                            final item = questsStore.workersList[index];
                             _markItem(item);
-                            return MyQuestsItem(
-                              questInfo: item,
-                              itemType: this.questItemPriorityType,
-                            );
-                          }
-                          final item = questsStore!.workersList[index];
-                          _markItem(item);
-                          return WorkersItem(
-                            item,
-                            questsStore!,
-                          );
-                        });
+                            return WorkersItem(item, questsStore);
+                          },
+                        );
                       },
                     );
                 }),
@@ -302,7 +291,7 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(builder: (_) {
-              return (questsStore!.isLoading || questsStore!.isLoadingMore)
+              return (questsStore.isLoading || questsStore.isLoadingMore)
                   ? Center(
                       child: CircularProgressIndicator.adaptive(),
                     )

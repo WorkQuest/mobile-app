@@ -1,20 +1,20 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/quest_list.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/handler_permission_map.dart';
-import 'package:app/ui/pages/main_page/quest_page/store/quest_page_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/search_list_page.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/widgets/handler_permission_map.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_page/store/search_page_store.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 
-class QuestPage extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   @override
-  _QuestPageState createState() => _QuestPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _QuestPageState extends State<QuestPage> {
-  final QuestPageStore questPage = QuestPageStore();
+class _SearchPageState extends State<SearchPage> {
+  late final SearchPageStore store = SearchPageStore();
   UserRole? role;
 
   @override
@@ -32,10 +32,10 @@ class _QuestPageState extends State<QuestPage> {
       builder: (_) => role == null
           ? CircularProgressIndicator.adaptive()
           : IndexedStack(
-              index: questPage.pageIndex,
+              index: store.pageIndex,
               children: [
-                HandlerPermissionMapWidget(changePage: questPage.setQuestListPage,),
-                QuestList(questPage.setMapPage),
+                HandlerPermissionMapWidget(changePage: store.setQuestListPage,),
+                SearchListPage(store.setMapPage),
               ],
             ),
     );

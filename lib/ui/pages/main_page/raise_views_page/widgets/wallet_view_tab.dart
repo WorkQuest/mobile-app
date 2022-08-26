@@ -29,9 +29,9 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     widget.store.initValue();
-//     widget.store.setTitleSelectedCoin(TokenSymbols.WUSD);
-//     widget.store.setTitleSelectedWallet(TYPE_WALLET.Coinpaymebts);
+//     widgets.store.initValue();
+//     widgets.store.setTitleSelectedCoin(TokenSymbols.WUSD);
+//     widgets.store.setTitleSelectedWallet(TYPE_WALLET.Coinpaymebts);
 //   }
 //
 //   @override
@@ -55,7 +55,7 @@
 //                   vertical: 12.5,
 //                 ),
 //                 decoration: BoxDecoration(
-//                   color: widget.store.selectedCoin
+//                   color: widgets.store.selectedCoin
 //                       ? Colors.white
 //                       : AppColor.disabledButton,
 //                   borderRadius: BorderRadius.circular(6.0),
@@ -65,7 +65,7 @@
 //                 ),
 //                 child: Row(
 //                   children: [
-//                     if (widget.store.selectedCoin)
+//                     if (widgets.store.selectedCoin)
 //                       Container(
 //                         decoration: const BoxDecoration(
 //                           shape: BoxShape.circle,
@@ -82,17 +82,17 @@
 //                           width: 32,
 //                           height: 32,
 //                           child: SvgPicture.asset(
-//                             widget.store.currentCoin!.iconPath,
+//                             widgets.store.currentCoin!.iconPath,
 //                           ),
 //                         ),
 //                       ),
 //                     Text(
-//                       widget.store.selectedCoin
-//                           ? widget.store.currentCoin!.title!
+//                       widgets.store.selectedCoin
+//                           ? widgets.store.currentCoin!.title!
 //                           : 'wallet.enterCoin'.tr(),
 //                       style: TextStyle(
 //                         fontSize: 16,
-//                         color: widget.store.selectedCoin
+//                         color: widgets.store.selectedCoin
 //                             ? Colors.black
 //                             : AppColor.disabledText,
 //                       ),
@@ -119,7 +119,7 @@
 //                   vertical: 12.5,
 //                 ),
 //                 decoration: BoxDecoration(
-//                   color: widget.store.selectedWallet
+//                   color: widgets.store.selectedWallet
 //                       ? Colors.white
 //                       : AppColor.disabledButton,
 //                   borderRadius: BorderRadius.circular(6.0),
@@ -129,7 +129,7 @@
 //                 ),
 //                 child: Row(
 //                   children: [
-//                     if (widget.store.selectedWallet)
+//                     if (widgets.store.selectedWallet)
 //                       Container(
 //                         decoration: const BoxDecoration(
 //                           shape: BoxShape.circle,
@@ -146,17 +146,17 @@
 //                           width: 32,
 //                           height: 32,
 //                           child: SvgPicture.asset(
-//                             widget.store.currentWallet!.iconPath,
+//                             widgets.store.currentWallet!.iconPath,
 //                           ),
 //                         ),
 //                       ),
 //                     Text(
-//                       widget.store.selectedWallet
-//                           ? widget.store.currentWallet!.title
+//                       widgets.store.selectedWallet
+//                           ? widgets.store.currentWallet!.title
 //                           : 'wallet.enterCoin'.tr(),
 //                       style: TextStyle(
 //                         fontSize: 16,
-//                         color: widget.store.selectedWallet
+//                         color: widgets.store.selectedWallet
 //                             ? Colors.black
 //                             : AppColor.disabledText,
 //                       ),
@@ -172,16 +172,16 @@
 //             ),
 //             Spacer(),
 //             ElevatedButton(
-//               onPressed: widget.store.canSubmit
+//               onPressed: widgets.store.canSubmit
 //                   ? () async {
 //                       AlertDialogUtils.showLoadingDialog(context);
-//                       if (widget.questId == null || widget.questId!.isEmpty) {
-//                         await widget.store.raiseProfile();
+//                       if (widgets.questId == null || widgets.questId!.isEmpty) {
+//                         await widgets.store.raiseProfile();
 //                       } else {
-//                         await widget.store.raiseQuest(widget.questId!);
+//                         await widgets.store.raiseQuest(widgets.questId!);
 //                       }
 //
-//                       if (widget.store.isSuccess) {
+//                       if (widgets.store.isSuccess) {
 //                         print('ObserverListener onSuccess');
 //                         Navigator.of(context, rootNavigator: true).pop();
 //                         await AlertDialogUtils.showSuccessDialog(context);
@@ -192,7 +192,7 @@
 //                         Navigator.of(context, rootNavigator: true).pop();
 //                         await AlertDialogUtils.showInfoAlertDialog(context,
 //                             title: 'Error',
-//                             content: widget.store.errorMessage!);
+//                             content: widgets.store.errorMessage!);
 //                       }
 //                     }
 //                   : null,
@@ -213,7 +213,7 @@
 //       isScrollControlled: true,
 //       builder: (BuildContext context) {
 //         return BottomSheetWidget(
-//           children: widget.store.coins
+//           children: widgets.store.coins
 //               .map(
 //                 (coin) => ItemListBottomSheet(
 //                   title: coin.title!,
@@ -240,7 +240,7 @@
 //       isScrollControlled: true,
 //       builder: (BuildContext context) {
 //         return BottomSheetWidget(
-//           children: widget.store.wallets
+//           children: widgets.store.wallets
 //               .map(
 //                 (wallet) => ItemListBottomSheet(
 //                   title: wallet.title,
@@ -258,12 +258,12 @@
 //   }
 //
 //   void _selectCoin(DataCoins coin) {
-//     widget.store.setCurrentCoin(coin);
-//     widget.store.setTitleSelectedCoin(coin.symbolToken);
+//     widgets.store.setCurrentCoin(coin);
+//     widgets.store.setTitleSelectedCoin(coin.symbolToken);
 //   }
 //
 //   void _selectWallet(WalletItem wallet) {
-//     widget.store.setCurrentWallet(wallet);
-//     widget.store.setTitleSelectedWallet(wallet.typeWallet);
+//     widgets.store.setCurrentWallet(wallet);
+//     widgets.store.setTitleSelectedWallet(wallet.typeWallet);
 //   }
 // }

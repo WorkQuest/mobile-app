@@ -1,10 +1,10 @@
 import 'package:mobx/mobx.dart';
 
-part 'quest_page_store.g.dart';
+part 'search_page_store.g.dart';
 
-class QuestPageStore = QuestPageStoreBase with _$QuestPageStore;
+class SearchPageStore = SearchPageStoreBase with _$SearchPageStore;
 
-abstract class QuestPageStoreBase with Store {
+abstract class SearchPageStoreBase with Store {
   @observable
   int pageIndex = 0;
 

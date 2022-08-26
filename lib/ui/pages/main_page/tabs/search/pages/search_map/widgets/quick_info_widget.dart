@@ -1,8 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/widgets/workers_item.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 
@@ -16,7 +16,7 @@ class QuestQuickInfo extends StatefulWidget {
 class _QuestQuickInfoState extends State<QuestQuickInfo> {
   @override
   Widget build(BuildContext context) {
-    final QuestMapStore mapStore = context.read<QuestMapStore>();
+    final SearchMapStore mapStore = context.read<SearchMapStore>();
 
     bool showInfo = !mapStore.hideInfo &&
         (mapStore.currentQuestCluster.isNotEmpty ||
@@ -43,7 +43,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                 );
               return WorkersItem(
                 mapStore.currentWorkerCluster[index],
-                context.read<QuestsStore>(),
+                context.read<SearchListStore>(),
                 showRating: true,
               );
             }),
