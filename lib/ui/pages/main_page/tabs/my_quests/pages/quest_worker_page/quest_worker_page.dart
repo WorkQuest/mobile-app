@@ -251,7 +251,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         }
         if (store.successData == WorkerStoreState.sendAcceptOnQuest) {
           Navigator.pop(context);
-          await questStore.getQuests(true);
+          questStore.search(role: UserRole.Worker, searchLine: questStore.searchWord);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
           Navigator.pop(context);
@@ -268,9 +268,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           Navigator.pop(context);
           await AlertDialogUtils.showSuccessDialog(context);
         } else if (store.successData == WorkerStoreState.sendRespondOnQuest) {
-          questStore.searchWord.isEmpty
-              ? questStore.getQuests(true)
-              : questStore.setSearchWord(questStore.searchWord);
+          questStore.search(role: UserRole.Worker, searchLine: questStore.searchWord);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
           chatStore!.loadChats(starred: false);

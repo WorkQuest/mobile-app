@@ -1,6 +1,7 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/entity/filter_arguments.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
@@ -11,21 +12,18 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 
-
 class FilterQuestsPage extends StatefulWidget {
-  const FilterQuestsPage(this.filters);
+  const FilterQuestsPage();
 
-  final Map<int, List<int>> filters;
   static const String routeName = '/filterQuestPage';
 
   @override
   State<FilterQuestsPage> createState() => _FilterQuestsPageState();
 }
 
-class _FilterQuestsPageState extends State<FilterQuestsPage>
-    with AutomaticKeepAliveClientMixin {
-  FilterQuestsStore? storeFilter;
-  ProfileMeStore? profile;
+class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepAliveClientMixin {
+  late FilterQuestsStore storeFilter;
+  late ProfileMeStore profile;
   late final SearchListStore storeQuest;
   late TextEditingController fromPriceController;
   late TextEditingController toPriceController;
@@ -35,24 +33,16 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<SearchListStore>();
-    fromPriceController = TextEditingController(text: storeQuest.fromPrice)
+    fromPriceController = TextEditingController(text: storeFilter.fromPrice)
       ..addListener(() {
-        storeFilter!.setFromPrice(fromPriceController.text);
+        storeFilter.setFromPrice(fromPriceController.text);
       });
-    toPriceController = TextEditingController(text: storeQuest.toPrice)
+    toPriceController = TextEditingController(text: storeFilter.fromPrice)
       ..addListener(() {
-        storeFilter!.setToPrice(toPriceController.text);
+        storeFilter.setToPrice(toPriceController.text);
       });
-    storeFilter!.getFilters(storeQuest.selectedSkill, widget.filters);
-    // storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
-    storeFilter!.initEmployments(storeQuest.employments);
-    storeFilter!.initRating(storeQuest.employeeRatings);
-    storeFilter!.initWorkplace(storeQuest.workplaces);
-    storeFilter!.initPriority(storeQuest.priorities);
-    storeFilter!.initSort(storeQuest.sort);
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -96,7 +86,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   Widget getBody() {
     return Observer(
       builder: (_) {
-        return storeFilter!.isLoading
+        return storeFilter.isLoading
             ? Center(
                 heightFactor: double.maxFinite,
                 child: SizedBox(
@@ -107,7 +97,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
               )
             : ListView.builder(
                 cacheExtent: 2500,
-                itemCount: storeFilter!.skillFilters.length + 5,
+                itemCount: storeFilter.skillFilters.length + 5,
                 addAutomaticKeepAlives: true,
                 itemBuilder: (context, index) {
                   return Column(
@@ -117,8 +107,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                       if (index == 1)
                         ExpansionTile(
                           collapsedBackgroundColor:
-                              fromPriceController.text.isNotEmpty ||
-                                      toPriceController.text.isNotEmpty
+                              fromPriceController.text.isNotEmpty || toPriceController.text.isNotEmpty
                                   ? Color(0xFF0083C7).withOpacity(0.1)
                                   : Colors.white,
                           expandedAlignment: Alignment.topLeft,
@@ -146,8 +135,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.3,
+                                      width: MediaQuery.of(context).size.width / 2.3,
                                       child: TextField(
                                         controller: fromPriceController,
                                         keyboardType: TextInputType.number,
@@ -155,8 +143,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                           hintText: '0 WUSD',
                                           suffixIcon: IconButton(
                                             splashRadius: 0.1,
-                                            onPressed:
-                                                fromPriceController.clear,
+                                            onPressed: fromPriceController.clear,
                                             icon: Icon(
                                               Icons.close,
                                               color: AppColor.enabledButton,
@@ -187,8 +174,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.3,
+                                      width: MediaQuery.of(context).size.width / 2.3,
                                       child: TextFormField(
                                         controller: toPriceController,
                                         keyboardType: TextInputType.number,
@@ -217,21 +203,21 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                           ],
                         ),
                       if (index == 2)
-                        profile!.userData!.role == UserRole.Worker
+                        profile.userData!.role == UserRole.Worker
                             ? Column(
                                 children: [
                                   _checkButton(
                                     title: "quests.filter.deliveryTime".tr(),
-                                    list: storeFilter!.sortByPriority,
-                                    selected: storeFilter!.priority,
-                                    onChange: storeFilter!.setSelectedPriority,
+                                    list: storeFilter.sortByPriority,
+                                    selected: storeFilter.priority,
+                                    onChange: storeFilter.setSelectedPriority,
                                   ),
                                   _checkButton(
                                     title: "quests.type".tr(),
-                                    list: storeFilter!.sortByEmployment,
-                                    selected: storeFilter!.selectEmployment,
+                                    list: storeFilter.sortByEmployment,
+                                    selected: storeFilter.selectEmployment,
                                     onChange: (bool? value, int index) {
-                                      storeFilter!.setSelectedEmployment(
+                                      storeFilter.setSelectedEmployment(
                                         value,
                                         index,
                                       );
@@ -239,22 +225,21 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   ),
                                   _checkButton(
                                     title: "quests.workplace".tr(),
-                                    list: storeFilter!.sortByWorkplace,
-                                    selected: storeFilter!.selectWorkplace,
+                                    list: storeFilter.sortByWorkplace,
+                                    selected: storeFilter.selectWorkplace,
                                     onChange: (bool? value, int index) {
-                                      storeFilter!.setSelectedWorkplace(
+                                      storeFilter.setSelectedWorkplace(
                                         value,
                                         index,
                                       );
-                                      storeFilter!.selectWorkplace[index] =
-                                          value ?? false;
+                                      storeFilter.selectWorkplace[index] = value ?? false;
                                     },
                                   ),
                                   _checkButton(
                                     title: "quests.payPeriod.title".tr(),
-                                    list: storeFilter!.sortByPayPeriod,
-                                    selected: storeFilter!.selectPayPeriod,
-                                    onChange: storeFilter!.setSelectedPayPeriod,
+                                    list: storeFilter.sortByPayPeriod,
+                                    selected: storeFilter.selectPayPeriod,
+                                    onChange: storeFilter.setSelectedPayPeriod,
                                   ),
                                 ],
                               )
@@ -263,28 +248,27 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                 children: [
                                   _checkButton(
                                     title: "quests.rating".tr(),
-                                    list: storeFilter!.sortByEmployeeRating,
-                                    selected: storeFilter!.selectEmployeeRating,
-                                    onChange:
-                                        storeFilter!.setSelectedEmployeeRating,
+                                    list: storeFilter.sortByEmployeeRating,
+                                    selected: storeFilter.selectEmployeeRating,
+                                    onChange: storeFilter.setSelectedEmployeeRating,
                                   ),
                                   _checkButton(
                                     title: "settings.priority".tr(),
-                                    list: storeFilter!.sortByPriority,
-                                    selected: storeFilter!.priority,
-                                    onChange: storeFilter!.setSelectedPriority,
+                                    list: storeFilter.sortByPriority,
+                                    selected: storeFilter.priority,
+                                    onChange: storeFilter.setSelectedPriority,
                                   ),
                                   _checkButton(
                                     title: "quests.workplace".tr(),
-                                    list: storeFilter!.sortByWorkplace,
-                                    selected: storeFilter!.selectWorkplace,
-                                    onChange: storeFilter!.setSelectedWorkplace,
+                                    list: storeFilter.sortByWorkplace,
+                                    selected: storeFilter.selectWorkplace,
+                                    onChange: storeFilter.setSelectedWorkplace,
                                   ),
                                   _checkButton(
                                     title: "quests.payPeriod.title".tr(),
-                                    list: storeFilter!.sortByPayPeriod,
-                                    selected: storeFilter!.selectPayPeriod,
-                                    onChange: storeFilter!.setSelectedPayPeriod,
+                                    list: storeFilter.sortByPayPeriod,
+                                    selected: storeFilter.selectPayPeriod,
+                                    onChange: storeFilter.setSelectedPayPeriod,
                                   ),
                                 ],
                               ),
@@ -300,10 +284,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                         ),
                       if (index > 3 && index != 31)
                         ExpansionCell(
-                          storeFilter!.skillFilters[index - 3]!,
+                          storeFilter.skillFilters[index - 3]!,
                           index - 3,
                           storeQuest,
-                          storeFilter!,
+                          storeFilter,
                         ),
                     ],
                   );
@@ -322,21 +306,19 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
           children: [
             ElevatedButton(
               onPressed: () {
-                storeQuest.setEmployment(storeFilter!.getEmploymentValue());
-                storeQuest.setWorkplace(storeFilter!.getWorkplaceValue());
-                storeQuest.setPriority(storeFilter!.getPriorityValue());
-                storeQuest.setSortBy(storeFilter!.getSortByValue());
-                storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
-                storeQuest.setPayPeriod(storeFilter!.getPayPeriodValue());
-                storeQuest.setPrice(
-                    fromPriceController.text, toPriceController.text);
-                storeQuest.setSkillFilters(storeFilter!.selectedSkill);
-                storeQuest
-                    .setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
-                profile!.userData!.role == UserRole.Employer
-                    ? storeQuest.getWorkers(true)
-                    : storeQuest.getQuests(true);
-                Navigator.pop(context);
+                final filterArguments = FilterArguments(
+                  sort: storeFilter.getSortByValue(),
+                  fromPrice: fromPriceController.text,
+                  toPrice: toPriceController.text,
+                  employments: storeFilter.getEmploymentValue(),
+                  workplaces: storeFilter.getWorkplaceValue(),
+                  payPeriod: storeFilter.getPayPeriodValue(),
+                  employeeRatings: storeFilter.getEmployeeRating(),
+                  priorities: storeFilter.getPriorityValue(),
+                  selectedSkill: storeFilter.selectedSkill,
+                );
+                print('sort: ${filterArguments.sort}');
+                Navigator.pop(context, filterArguments);
               },
               child: Text(
                 "meta.accept".tr(),
@@ -348,12 +330,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ),
             OutlinedButton(
               onPressed: () {
-                storeQuest.clearFilters();
-                storeFilter!.clearFilters();
-                profile!.userData!.role == UserRole.Employer
-                    ? storeQuest.getWorkers(true)
-                    : storeQuest.getQuests(true);
-                Navigator.pop(context);
+                final filterArguments = FilterArguments.empty();
+                storeFilter.clearFilters();
+                Navigator.pop(context, filterArguments);
               },
               child: Text(
                 "meta.reset".tr(),
@@ -374,22 +353,21 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
         title: Text(
           "quests.filter.sortBy.title".tr(),
         ),
-        collapsedBackgroundColor: storeFilter!.selectSortBy.isNotEmpty
-            ? Color(0xFF0083C7).withOpacity(0.1)
-            : Colors.white,
+        collapsedBackgroundColor:
+            storeFilter.selectSortBy.isNotEmpty ? Color(0xFF0083C7).withOpacity(0.1) : Colors.white,
         children: [
-          for (int i = 0; i < storeFilter!.sortBy.length; i++)
+          for (int i = 0; i < storeFilter.sortBy.length; i++)
             Observer(
               builder: (_) => RadioListTile<String>(
                 title: Text(
-                  storeFilter!.sortBy[i].tr(),
+                  storeFilter.sortBy[i].tr(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   softWrap: false,
                 ),
-                value: storeFilter!.sortBy[i],
-                groupValue: storeFilter!.selectSortBy,
-                onChanged: storeFilter!.setSortBy,
+                value: storeFilter.sortBy[i],
+                groupValue: storeFilter.selectSortBy,
+                onChanged: storeFilter.setSortBy,
               ),
             )
         ],
@@ -403,8 +381,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   }) =>
       Observer(
         builder: (_) => ExpansionTile(
-          collapsedBackgroundColor: selected
-                  .firstWhere((element) => element == true, orElse: () => false)
+          collapsedBackgroundColor: selected.firstWhere((element) => element == true, orElse: () => false)
               ? Color(0xFF0083C7).withOpacity(0.1)
               : Colors.white,
           maintainState: true,
@@ -456,15 +433,12 @@ class _ExpansionCellState extends State<ExpansionCell> {
       children: <Widget>[
         Observer(
           builder: (_) => ExpansionTile(
-            collapsedBackgroundColor:
-                widget.storeFilter.selectedSkillFilters[widget.index - 1] !=
-                        null
-                    ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
-                            .firstWhere((element) => element == true,
-                                orElse: () => false)
-                        ? Color(0xFF0083C7).withOpacity(0.1)
-                        : Colors.white
-                    : Colors.white,
+            collapsedBackgroundColor: widget.storeFilter.selectedSkillFilters[widget.index - 1] != null
+                ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
+                        .firstWhere((element) => element == true, orElse: () => false)
+                    ? Color(0xFF0083C7).withOpacity(0.1)
+                    : Colors.white
+                : Colors.white,
             maintainState: true,
             title: Text(
               "filters.items.${widget.index}.title".tr(),
@@ -494,8 +468,7 @@ class _ExpansionCellState extends State<ExpansionCell> {
       ),
       value: widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
       onChanged: (bool? value) {
-        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
-            value!;
+        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] = value!;
         if (value == true)
           widget.storeFilter.addSkill("$spec.$skill");
         else

@@ -338,7 +338,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(),
             ),
           ),
         );

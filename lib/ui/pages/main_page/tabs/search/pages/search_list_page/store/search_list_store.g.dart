@@ -47,51 +47,6 @@ mixin _$SearchListStore on _SearchListStore, Store {
     });
   }
 
-  final _$sortAtom = Atom(name: '_SearchListStore.sort');
-
-  @override
-  String get sort {
-    _$sortAtom.reportRead();
-    return super.sort;
-  }
-
-  @override
-  set sort(String value) {
-    _$sortAtom.reportWrite(value, super.sort, () {
-      super.sort = value;
-    });
-  }
-
-  final _$fromPriceAtom = Atom(name: '_SearchListStore.fromPrice');
-
-  @override
-  String get fromPrice {
-    _$fromPriceAtom.reportRead();
-    return super.fromPrice;
-  }
-
-  @override
-  set fromPrice(String value) {
-    _$fromPriceAtom.reportWrite(value, super.fromPrice, () {
-      super.fromPrice = value;
-    });
-  }
-
-  final _$toPriceAtom = Atom(name: '_SearchListStore.toPrice');
-
-  @override
-  String get toPrice {
-    _$toPriceAtom.reportRead();
-    return super.toPrice;
-  }
-
-  @override
-  set toPrice(String value) {
-    _$toPriceAtom.reportWrite(value, super.toPrice, () {
-      super.toPrice = value;
-    });
-  }
-
   final _$questsListAtom = Atom(name: '_SearchListStore.questsList');
 
   @override
@@ -122,115 +77,16 @@ mixin _$SearchListStore on _SearchListStore, Store {
     });
   }
 
-  final _$latitudeAtom = Atom(name: '_SearchListStore.latitude');
-
-  @override
-  double? get latitude {
-    _$latitudeAtom.reportRead();
-    return super.latitude;
-  }
-
-  @override
-  set latitude(double? value) {
-    _$latitudeAtom.reportWrite(value, super.latitude, () {
-      super.latitude = value;
-    });
-  }
-
-  final _$longitudeAtom = Atom(name: '_SearchListStore.longitude');
-
-  @override
-  double? get longitude {
-    _$longitudeAtom.reportRead();
-    return super.longitude;
-  }
-
-  @override
-  set longitude(double? value) {
-    _$longitudeAtom.reportWrite(value, super.longitude, () {
-      super.longitude = value;
-    });
-  }
-
-  final _$locationPlaceNameAtom =
-      Atom(name: '_SearchListStore.locationPlaceName');
-
-  @override
-  String get locationPlaceName {
-    _$locationPlaceNameAtom.reportRead();
-    return super.locationPlaceName;
-  }
-
-  @override
-  set locationPlaceName(String value) {
-    _$locationPlaceNameAtom.reportWrite(value, super.locationPlaceName, () {
-      super.locationPlaceName = value;
-    });
-  }
-
-  final _$getSearchedQuestsAsyncAction =
-      AsyncAction('_SearchListStore.getSearchedQuests');
-
-  @override
-  Future<dynamic> getSearchedQuests(bool newList) {
-    return _$getSearchedQuestsAsyncAction
-        .run(() => super.getSearchedQuests(newList));
-  }
-
-  final _$getSearchedWorkersAsyncAction =
-      AsyncAction('_SearchListStore.getSearchedWorkers');
-
-  @override
-  Future<dynamic> getSearchedWorkers(bool newList) {
-    return _$getSearchedWorkersAsyncAction
-        .run(() => super.getSearchedWorkers(newList));
-  }
-
-  final _$getQuestsAsyncAction = AsyncAction('_SearchListStore.getQuests');
-
-  @override
-  Future<dynamic> getQuests(bool newList) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(newList));
-  }
-
-  final _$getWorkersAsyncAction = AsyncAction('_SearchListStore.getWorkers');
-
-  @override
-  Future<dynamic> getWorkers(bool newList) {
-    return _$getWorkersAsyncAction.run(() => super.getWorkers(newList));
-  }
-
   final _$_SearchListStoreActionController =
       ActionController(name: '_SearchListStore');
 
   @override
-  void setPrice(String from, String to) {
+  dynamic search(
+      {required UserRole role, String searchLine = '', bool isForce = true}) {
     final _$actionInfo = _$_SearchListStoreActionController.startAction(
-        name: '_SearchListStore.setPrice');
+        name: '_SearchListStore.search');
     try {
-      return super.setPrice(from, to);
-    } finally {
-      _$_SearchListStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  List<String> parser(List<String> skills) {
-    final _$actionInfo = _$_SearchListStoreActionController.startAction(
-        name: '_SearchListStore.parser');
-    try {
-      return super.parser(skills);
-    } finally {
-      _$_SearchListStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setSearchWord(String value) {
-    final _$actionInfo = _$_SearchListStoreActionController.startAction(
-        name: '_SearchListStore.setSearchWord');
-    try {
-      return super.setSearchWord(value);
+      return super.search(role: role, searchLine: searchLine, isForce: isForce);
     } finally {
       _$_SearchListStoreActionController.endAction(_$actionInfo);
     }
@@ -263,14 +119,8 @@ mixin _$SearchListStore on _SearchListStore, Store {
     return '''
 isLoadingMore: ${isLoadingMore},
 searchWord: ${searchWord},
-sort: ${sort},
-fromPrice: ${fromPrice},
-toPrice: ${toPrice},
 questsList: ${questsList},
 workersList: ${workersList},
-latitude: ${latitude},
-longitude: ${longitude},
-locationPlaceName: ${locationPlaceName},
 emptySearch: ${emptySearch}
     ''';
   }

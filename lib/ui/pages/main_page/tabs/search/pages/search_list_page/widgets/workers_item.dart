@@ -5,10 +5,10 @@ import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/quest_util.dart';
+import 'package:app/utils/skill_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 
 class WorkersItem extends StatelessWidget {
   const WorkersItem(this.workersInfo, this.searchStore, {this.showRating = false});
@@ -88,9 +88,7 @@ class WorkersItem extends StatelessWidget {
                               ],
                             ),
                           UserRating(
-                            workersInfo.ratingStatistic != null
-                                ? workersInfo.ratingStatistic!.status!
-                                : 3,
+                            workersInfo.ratingStatistic != null ? workersInfo.ratingStatistic!.status! : 3,
                             isWorker: true,
                           ),
                         ],
@@ -125,9 +123,7 @@ class WorkersItem extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             if (workersInfo.userSpecializations.isNotEmpty)
-              tagSkills(
-                searchStore.parser(workersInfo.userSpecializations),
-              ),
+              tagSkills(SkillUtils.parser(workersInfo.userSpecializations)),
             const SizedBox(height: 10),
             Text("workers.aboutMe".tr()),
             const SizedBox(height: 5),

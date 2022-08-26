@@ -2,9 +2,12 @@ import 'package:app/background_observer_page.dart';
 import 'package:app/enums.dart';
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/my_quests_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_page/search_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/wallet_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +43,11 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     context.read<ChatStore>().initialStore();
+    context.read<FilterQuestsStore>()..getFilters([], {});
+    context.read<ProfileMeStore>().getProfileMe().then((value) {
+      context.read<ChatStore>().initialSetup(context.read<ProfileMeStore>().userData!.id);
+      context.read<MyQuestStore>().setRole(context.read<ProfileMeStore>().userData!.role);
+    });
     super.initState();
   }
 
@@ -51,8 +59,7 @@ class _MainPageState extends State<MainPage> {
           context,
           title: "modals.exit".tr(),
           message: "modals.areYouSure".tr(),
-          confirmAction: () =>
-              SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+          confirmAction: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
         );
         return true;
       },

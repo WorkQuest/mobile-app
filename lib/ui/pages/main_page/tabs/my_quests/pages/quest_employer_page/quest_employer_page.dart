@@ -209,7 +209,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               id: store.selectedResponders!.id,
             );
             store.setQuestStatus(QuestConstants.questWaitWorkerOnAssign);
-            await questStore.getQuests(true);
+            await questStore.search(role: UserRole.Employer, searchLine: questStore.searchWord);
             await myQuestStore.updateListQuest();
             myQuestStore.sortQuests();
             await AlertDialogUtils.showSuccessDialog(
