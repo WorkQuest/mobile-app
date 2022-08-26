@@ -2,7 +2,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/quest_list.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/handler_permission_map.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quest_page_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

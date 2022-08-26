@@ -1,4 +1,6 @@
-import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
@@ -7,8 +9,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../../../constants.dart';
-import '../../../../../../observer_consumer.dart';
 import 'mobx/confirm_transfer_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);

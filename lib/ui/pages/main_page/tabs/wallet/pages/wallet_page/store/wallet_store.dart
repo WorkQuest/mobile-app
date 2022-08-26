@@ -1,6 +1,7 @@
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/web3/current_course_tokens_response.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:decimal/decimal.dart';
@@ -9,8 +10,6 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/web3_extension.dart';
-
-import '../../../../../constants.dart';
 
 part 'wallet_store.g.dart';
 

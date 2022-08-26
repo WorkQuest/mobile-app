@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/observer_consumer.dart';
+import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
@@ -15,7 +16,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../utils/web3_utils.dart';
-import '../../wallet_page/confirm_transaction_dialog.dart';
 import 'store/open_dispute_store.dart';
 
 class OpenDisputePage extends StatefulWidget {

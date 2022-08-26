@@ -1,10 +1,10 @@
 import 'package:app/constants.dart';
 import 'package:app/keys.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
 
-import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import '../web3/repository/wallet_repository.dart';
 
 class Web3Utils {

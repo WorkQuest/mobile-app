@@ -1,9 +1,11 @@
 import 'dart:io';
-import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/deposit_page.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/swap_page.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/list_transactions.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/store/transactions_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/widgets/button_to_explorer.dart';
 import 'package:app/ui/widgets/copy_address_wallet_widget.dart';
 import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
@@ -18,8 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import '../../../../constants.dart';
-import 'transactions/list_transactions.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 

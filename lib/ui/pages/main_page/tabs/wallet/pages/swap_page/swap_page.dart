@@ -1,6 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/default_textfield.dart';

@@ -6,8 +6,8 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/widgets/level_card.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/widgets/period_card.dart';
-import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/raise_view_util.dart';

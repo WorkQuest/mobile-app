@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/constants.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:app/web3/service/address_service.dart';

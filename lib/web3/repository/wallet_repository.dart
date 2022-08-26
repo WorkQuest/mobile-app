@@ -1,15 +1,14 @@
-import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
+import 'package:app/constants.dart';
+import 'package:app/http/web_socket.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/transfer_page/mobx/transfer_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/store/transactions_store.dart';
+import 'package:app/utils/storage.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/service/client_service.dart';
+import 'package:app/web3/wallet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-
-import '../../constants.dart';
-import '../../ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import '../../utils/storage.dart';
-import '../../http/web_socket.dart';
-import '../wallet.dart';
 
 class WalletRepository {
   static final WalletRepository _instance = WalletRepository._internal();

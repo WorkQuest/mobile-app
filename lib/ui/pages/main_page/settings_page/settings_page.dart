@@ -7,7 +7,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/jurnal_errors/journal
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
-import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/network_page/network_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up/pages/choose_role/pages/choose_role_page/store/choose_role_store.dart';

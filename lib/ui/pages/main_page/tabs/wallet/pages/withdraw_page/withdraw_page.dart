@@ -1,5 +1,5 @@
-import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_bank_card.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/widgets/deposit_bank_card.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/transfer_page/transfer_page.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

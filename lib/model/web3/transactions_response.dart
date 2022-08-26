@@ -12,9 +12,9 @@ class TransactionsResponse {
   factory TransactionsResponse.fromJson(Map<String, dynamic> json) =>
       TransactionsResponse(
         count: json["count"],
-        transactions: json["transactions"] == null
+        transactions: json["list_transactions"] == null
             ? null
-            : List<Tx>.from(json["transactions"].map((x) => Tx.fromJson(x))),
+            : List<Tx>.from(json["list_transactions"].map((x) => Tx.fromJson(x))),
       );
 
   factory TransactionsResponse.fromJsonToken(Map<String, dynamic> json) =>
@@ -27,7 +27,7 @@ class TransactionsResponse {
 
   Map<String, dynamic> toJson() => {
         "count": count,
-        "transactions": transactions == null
+        "list_transactions": transactions == null
             ? null
             : List<dynamic>.from(transactions!.map((x) => x.toJson())),
       };

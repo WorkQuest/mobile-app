@@ -24,9 +24,9 @@ extension Web3Requests on ApiProvider {
 
   String _transactions(String address) {
     if (_network == Network.testnet) {
-      return "https://${Constants.isTestnet ? 'testnet' : 'dev'}-explorer-api.workquest.co/api/v1/account/$address/transactions";
+      return "https://${Constants.isTestnet ? 'testnet' : 'dev'}-explorer-api.workquest.co/api/v1/account/$address/list_transactions";
     } else {
-      return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+      return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/list_transactions";
     }
   }
 

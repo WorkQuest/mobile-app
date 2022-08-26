@@ -13,8 +13,8 @@ import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_disp
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';

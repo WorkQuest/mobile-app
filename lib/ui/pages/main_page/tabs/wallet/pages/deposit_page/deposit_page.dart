@@ -1,5 +1,5 @@
 import 'package:app/constants.dart';
-import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_bank_card.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/widgets/deposit_bank_card.dart';
 import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/ui/widgets/switch_format_address_widget.dart';

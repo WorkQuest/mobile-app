@@ -66,18 +66,19 @@ import '../ui/pages/main_page/settings_page/pages/profile_visibility_page/store/
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i48;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i31;
-import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
+import '../ui/pages/main_page/tabs/wallet/pages/deposit_page/store/deposit_store.dart'
     as _i16;
-import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i51;
-import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart'
+import '../ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart'
     as _i35;
-import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart'
-    as _i49;
-import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
+import '../ui/pages/main_page/tabs/wallet/pages/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
-import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
+import '../ui/pages/main_page/tabs/wallet/pages/transfer_page/mobx/transfer_store.dart'
     as _i39;
-import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
+import '../ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart'
+    as _i51;
+import '../ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/store/transactions_store.dart'
+    as _i49;
+import '../ui/pages/main_page/tabs/wallet/pages/withdraw_page/store/withdraw_page_store.dart'
     as _i37;
 import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i44;
 import '../ui/pages/profile_me_store/profile_me_store.dart' as _i45;
@@ -95,8 +96,8 @@ import '../ui/pages/sign_up/pages/sign_up_page/store/sign_up_store.dart'
     as _i33;
 
 const String _test = 'test';
-const String _prod = 'prod';
 const String _dev = 'dev';
+const String _prod = 'prod';
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -109,10 +110,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i3.ConfirmTransferStore>(() => _i3.ConfirmTransferStore());
     gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
         registerFor: {_test});
-    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
-        registerFor: {_prod});
     gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
         registerFor: {_dev, _test});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
+        registerFor: {_prod});
     gh.factory<_i7.ChatRoomStore>(
         () => _i7.ChatRoomStore(get<_i8.ApiProvider>()));
     gh.factory<_i9.ChooseQuestStore>(

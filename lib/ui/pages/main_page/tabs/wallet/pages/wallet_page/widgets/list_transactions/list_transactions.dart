@@ -1,7 +1,11 @@
 import 'dart:math';
 
-import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
+import 'package:app/constants.dart';
+import 'package:app/model/web3/transactions_response.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/widgets/list_transactions/store/transactions_store.dart';
+import 'package:app/ui/widgets/shimmer.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/gestures.dart';
@@ -10,11 +14,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../../constants.dart';
-import '../../../../../model/web3/transactions_response.dart';
-import '../../../../../web3/repository/wallet_repository.dart';
-import '../../../../widgets/shimmer.dart';
 
 class ListTransactions extends StatelessWidget {
   final ScrollController scrollController;

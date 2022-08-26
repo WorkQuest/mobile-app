@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+import 'package:app/ui/pages/main_page/tabs/wallet/pages/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
