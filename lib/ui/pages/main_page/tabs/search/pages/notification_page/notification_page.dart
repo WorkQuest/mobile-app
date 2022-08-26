@@ -1,7 +1,7 @@
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/notification_page/notification_cell.dart';
-import 'package:app/ui/pages/main_page/notification_page/shimmer/shimmer_notification_view.dart';
-import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/store/notification_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/widgets/notification_cell.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/widgets/shimmer/shimmer_notification_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';

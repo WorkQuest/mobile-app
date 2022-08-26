@@ -1,5 +1,6 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
@@ -10,7 +11,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 
-import '../../../../../constants.dart';
 
 class FilterQuestsPage extends StatefulWidget {
   const FilterQuestsPage(this.filters);

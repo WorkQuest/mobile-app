@@ -19,8 +19,6 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
-import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
@@ -46,8 +44,6 @@ import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_pa
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
@@ -64,6 +60,10 @@ import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_pa
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/filter_quests_page.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/store/search_map_store.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/deposit_page/deposit_page.dart';

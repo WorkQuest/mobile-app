@@ -23,7 +23,7 @@ import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dar
     as _i7;
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i40;
 import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i43;
-import '../ui/pages/main_page/notification_page/store/notification_store.dart'
+import '../ui/pages/main_page/tabs/search/pages/notification_page/store/notification_store.dart'
     as _i22;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart'
     as _i11;
@@ -47,7 +47,7 @@ import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
     as _i38;
 import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
     as _i13;
-import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
+import '../ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart'
     as _i42;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i28;

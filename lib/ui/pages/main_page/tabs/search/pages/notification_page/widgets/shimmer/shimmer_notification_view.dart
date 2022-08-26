@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/notification_page/shimmer/shimmer_item.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/widgets/shimmer/shimmer_item.dart';
 import 'package:flutter/material.dart';
 
 class ShimmerNotificationView extends StatelessWidget {
