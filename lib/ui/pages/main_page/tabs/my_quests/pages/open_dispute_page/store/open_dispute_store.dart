@@ -23,7 +23,7 @@ abstract class _OpenDisputeStore extends IStore<String> with Store {
   final ApiProvider _apiProvider;
 
   @observable
-  String theme = "dispute.theme";
+  String theme = "dispute_page.theme";
 
   @observable
   String description = '';
@@ -32,7 +32,7 @@ abstract class _OpenDisputeStore extends IStore<String> with Store {
 
   @computed
   bool get isButtonEnable =>
-      theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
+      theme != "dispute_page.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
   setDescription(String value) => description = value;

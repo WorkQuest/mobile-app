@@ -9,10 +9,10 @@ import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
@@ -521,7 +521,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                 content: Text(
                                   "You need to pay\n"
                                   "${double.parse(store.fee) + 1.0} WUSD\n"
-                                  "to open a dispute",
+                                  "to open a dispute_page",
                                 ),
                                 needCancel: true,
                                 titleCancel: "Cancel",
@@ -545,7 +545,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               );
                             },
                       child: Text(
-                        "btn.dispute".tr(),
+                        "btn.dispute_page".tr(),
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(

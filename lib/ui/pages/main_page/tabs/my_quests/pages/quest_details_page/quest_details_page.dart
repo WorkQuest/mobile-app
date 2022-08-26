@@ -1,6 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/store/quest_details_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/widgets/map_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';

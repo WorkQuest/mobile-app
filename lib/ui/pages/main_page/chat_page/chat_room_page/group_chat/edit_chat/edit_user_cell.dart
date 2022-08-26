@@ -5,7 +5,7 @@ import 'package:app/model/chat_model/member.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/choose_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';

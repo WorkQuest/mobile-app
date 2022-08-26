@@ -3,7 +3,6 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
@@ -18,35 +17,34 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/create_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/choose_quest_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/store/choose_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/create_portfolio_page/store/create_portfolio_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/portfolio_details_page/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/portfolio_details_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/profile_quests_page/store/profile_quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/review_page/review_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/store/user_profile_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/widgets/user_profile_employer.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_worker_page/user_profile_worker.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/change_language_page/change_language_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/SMS_verification_page/sms_verification_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/SMS_verification_page/store/sms_verification_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/change_password_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/2FA_page/2FA_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/2FA_page/store/2FA_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/store/change_password_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/store/dispute_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/my_list_disputes_page/my_disputes_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/my_list_disputes_page/store/my_disputes_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_visibility_page/profile_visibility_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_visibility_page/store/profile_visibility_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/store/open_dispute_store.dart';
@@ -100,7 +98,9 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
-import 'ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/store/profile_quests_store.dart';
+import 'ui/pages/main_page/tabs/more/pages/change_profile_page/change_profile_page.dart';
+import 'ui/pages/main_page/tabs/more/pages/profile_details/pages/create_portfolio_page/create_portfolio_page.dart';
+import 'ui/pages/main_page/tabs/more/pages/profile_details/pages/profile_quests_page/profile_quests_page.dart';
 import 'ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';
 import 'ui/pages/main_page/tabs/my_quests/pages/quest_employer_page/quest_employer_page.dart';
 import 'ui/pages/main_page/tabs/wallet/pages/swap_page/swap_page.dart';
@@ -195,7 +195,7 @@ class Routes {
           builder: (context) => Directionality(
             textDirection: checkDirection(context),
             child: Provider(
-              create: (context) => getIt.get<SettingsPageStore>(),
+              create: (context) => getIt.get<ChangePasswordStore>(),
               child: ChangePasswordPage(),
             ),
           ),
@@ -234,7 +234,7 @@ class Routes {
                 create: (context) => getIt.get<SearchMapStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<SettingsPageStore>(),
+                create: (context) => getIt.get<ChangePasswordStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<FilterQuestsStore>(),
@@ -525,7 +525,7 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
-                create: (context) => getIt.get<SettingsPageStore>(),
+                create: (context) => getIt.get<ChangePasswordStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
@@ -962,13 +962,13 @@ class Routes {
           ),
         );
 
-      case ProfileSettings.routeName:
+      case ProfileVisibilityPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<ProfileVisibilityStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileSettings(settings.arguments as ProfileMeResponse),
+              child: ProfileVisibilityPage(settings.arguments as ProfileMeResponse),
             ),
           ),
         );

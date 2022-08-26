@@ -1,0 +1,96 @@
+import 'package:app/enums.dart';
+import 'package:app/http/api_provider.dart';
+import 'package:app/utils/storage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:injectable/injectable.dart';
+import 'package:app/base_store/i_store.dart';
+import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+part 'change_password_store.g.dart';
+
+@injectable
+class ChangePasswordStore extends _ChangePasswordStore with _$ChangePasswordStore {
+  ChangePasswordStore(ApiProvider apiProvider) : super(apiProvider);
+}
+
+abstract class _ChangePasswordStore extends IStore<bool> with Store {
+  final ApiProvider apiProvider;
+
+  _ChangePasswordStore(this.apiProvider);
+
+  @observable
+  int privacy = 1;
+  @observable
+  int filter = 2;
+  @observable
+  String password = '';
+  @observable
+  String newPassword = '';
+  @observable
+  String confirmNewPassword = '';
+
+  UserRole userRole = UserRole.Worker;
+
+  @action
+  void setPassword(String value) {
+    password = value;
+  }
+
+  @action
+  void setNewPassword(String value) {
+    newPassword = value;
+  }
+
+  @action
+  void setConfirmNewPassword(String value) {
+    confirmNewPassword = value;
+  }
+
+  @computed
+  bool get canSubmit =>
+      !isLoading &&
+      password.isNotEmpty &&
+      newPassword.isNotEmpty &&
+      confirmNewPassword.isNotEmpty;
+
+  Future changePassword() async {
+    if (newPassword == confirmNewPassword) {
+      if (newPassword.length >= 8) {
+        try {
+          this.onLoading();
+          await apiProvider.changePassword(
+            oldPassword: password,
+            newPassword: newPassword,
+          );
+          this.onSuccess(true);
+        } catch (e) {
+          if (e.toString() == "User not found or password does not match") {
+            this.onError("modals.wrongPassword".tr());
+            return;
+          }
+          this.onError(e.toString());
+        }
+      } else {
+        this.onError("modals.lengthPassword".tr());
+        return;
+      }
+    } else {
+      this.onLoading();
+      this.onError("modals.mismatchPassword".tr());
+      return;
+    }
+  }
+
+  Future<void> deleteToken() async {
+    try {
+      this.onLoading();
+      final token = await Storage.readPushToken();
+      if (token != null) apiProvider.deletePushToken(token: token);
+      FirebaseMessaging.instance.deleteToken();
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+}

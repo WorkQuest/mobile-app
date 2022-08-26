@@ -6,8 +6,8 @@ import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
@@ -396,7 +396,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                     AlertDialogUtils.showInfoAlertDialog(
                                       context,
                                       title: "Error",
-                                      content: "You cannot create a dispute until 24"
+                                      content: "You cannot create a dispute_page until 24"
                                           " hours have passed from the start of "
                                           "this quest",
                                     );
@@ -406,7 +406,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                       context,
                                       title: Text("Dispute payment"),
                                       content: Text(
-                                        "You need to pay to open a dispute",
+                                        "You need to pay to open a dispute_page",
                                       ),
                                       needCancel: true,
                                       titleCancel: "Cancel",
@@ -431,7 +431,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                     );
                                   },
                         child: Text(
-                          "btn.dispute".tr(),
+                          "btn.dispute_page".tr(),
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ButtonStyle(

@@ -4,7 +4,7 @@ import 'package:app/routes.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/my_quests_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_page/search_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/wallet_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';

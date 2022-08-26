@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/main.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/sign_up/pages/confirm_email_page/confirm_email_page.dart';
 import 'package:app/utils/alert_dialog.dart';

@@ -1,10 +1,10 @@
 import 'package:app/constants.dart';
 import 'package:app/model/notification_model.dart';
-import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/2FA_page/2FA_page.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -239,7 +239,7 @@ class _NotificationCellState extends State<NotificationCell> {
           id: widget.body.notification.data.id,
         ),
       );
-    } else if (action.contains("dispute")) {
+    } else if (action.contains("dispute_page")) {
       await Navigator.of(context, rootNavigator: true).pushNamed(
         DisputePage.routeName,
         arguments: widget.body.notification.data.disputeId,

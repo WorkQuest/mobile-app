@@ -1103,7 +1103,7 @@ extension Disputes on ApiProvider {
   }) async {
     try {
       await httpClient.post(
-        query: '/v1/quest/dispute/$disputeId/review/send',
+        query: '/v1/quest/dispute_page/$disputeId/review/send',
         data: {
           "mark": mark,
           "message": message,
@@ -1120,14 +1120,14 @@ extension Disputes on ApiProvider {
   }) async {
     try {
       final responseData = await httpClient.get(
-        query: '/v1/quest/dispute/$disputeId',
+        query: '/v1/quest/dispute_page/$disputeId',
       );
       return DisputeModel.fromJson(responseData);
     } on Exception catch (e, trace) {
       print("ERROR: $e");
       print("ERROR: $trace");
       final responseData = await httpClient.get(
-        query: '/v1/quest/dispute/$disputeId',
+        query: '/v1/quest/dispute_page/$disputeId',
       );
       return DisputeModel.fromJson(responseData);
     }
@@ -1139,7 +1139,7 @@ extension Disputes on ApiProvider {
     String problemDescription = "",
   }) async {
     final _result = await httpClient.post(
-      query: '/v1/quest/$questId/dispute',
+      query: '/v1/quest/$questId/dispute_page',
       data: {
         "reason": reason,
         "problemDescription": problemDescription,
