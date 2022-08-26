@@ -89,7 +89,8 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (widget.type == MediaType.images) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: FileType.image,
+                          type: Platform.isIOS ? FileType.image : FileType.custom,
+                          allowedExtensions: Platform.isIOS ? null : imagesExtensions,
                         );
                       }
                       if (widget.type == MediaType.video) {
@@ -201,7 +202,8 @@ class _GalleryView extends StatelessWidget {
         if (type == MediaType.images) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
-            type: FileType.image,
+            type: Platform.isIOS ? FileType.image : FileType.custom,
+            allowedExtensions: Platform.isIOS ? null : imagesExtensions,
           );
         }
         if (type == MediaType.video) {
