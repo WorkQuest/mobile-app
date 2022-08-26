@@ -238,6 +238,9 @@ class _ChatPageState extends State<ChatPage>
         if (store.selectedChats.values.toList()[i] == true) return;
       store.setChatSelected(false);
     } else {
+      print('1: ${chat.chatData.lastMessage?.sender?.userId}');
+      print('2: ${store.myId}');
+      print('3: ${chat.chatData.lastMessage?.senderStatus}');
       if (chat.chatData.lastMessage?.sender?.userId != store.myId &&
           chat.chatData.lastMessage?.senderStatus == "Unread")
         store.setMessageRead(

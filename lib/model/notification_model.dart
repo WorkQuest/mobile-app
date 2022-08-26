@@ -136,7 +136,7 @@ class Data {
                   ? json["quest"] == null
                       ? null
                       : User.fromJson(json["quest"]["user"])
-                  : User.fromJson(json["sender"]["user"])
+                  : User.fromJson(json["sender"]["user"] ?? json["sender"])
               : User.fromJson(json["user"])
           : User.fromJson(json["fromUser"]),
       status: json["user"] != null ? json["user"]["status"] : null,
@@ -167,8 +167,8 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
+        firstName: json["firstName"] ?? 'WorkQuest',
+        lastName: json["lastName"] ?? 'Admin',
         role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       );

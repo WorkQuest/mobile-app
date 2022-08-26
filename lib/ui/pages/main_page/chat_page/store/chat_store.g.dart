@@ -76,7 +76,7 @@ mixin _$ChatStore on _ChatStore, Store {
       {bool loadMore = false,
       bool? starred,
       String query = '',
-      TypeChat type = TypeChat.active,
+      TypeChat type = TypeChat.all,
       int? questChatStatus}) {
     return _$loadChatsAsyncAction.run(() => super.loadChats(
         loadMore: loadMore,
