@@ -9,6 +9,7 @@ import 'package:app/ui/widgets/animation_compression.dart';
 import 'package:app/ui/widgets/animation_switch.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
+import 'package:app/utils/storage.dart';
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,14 +49,17 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
     super.initState();
   }
 
+  Future<bool> _onBackPressed() async {
+    if (widget.isRecheck) return false;
+    await store.deletePushToken();
+    await Storage.deleteAllFromSecureStorage();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (widget.isRecheck) return false;
-        store.onWillPop();
-        return true;
-      },
+      onWillPop: _onBackPressed,
       child: ObserverListener<PinCodeStore>(
         onFailure: () {
           controller!.forward(from: 0.0);
