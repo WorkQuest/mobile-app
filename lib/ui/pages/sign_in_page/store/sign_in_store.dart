@@ -1,4 +1,5 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/repository/auth_repository.dart';
 import 'package:app/utils/profile_util.dart';
@@ -13,7 +14,6 @@ class SignInStore extends _SignInStore with _$SignInStore {
 }
 
 abstract class _SignInStore extends IStore<SignInStoreState> with Store {
-
   final IAuthRepository _repository;
 
   _SignInStore(ApiProvider apiProvider) : _repository = AuthRepository(apiProvider);
@@ -84,11 +84,11 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
       this.onLoading();
       final bearerToken = await _repository.signInEmailPassword(username: _username.trim(), password: _password);
 
-      if (bearerToken.status == ProfileConstants.unconfirmedStatus) {
+      if (bearerToken.status == ProfileConstants.userStatuses[UserStatuses.Unconfirmed]) {
         onSuccess(SignInStoreState.unconfirmedProfile);
         return;
       }
-      if (bearerToken.status == ProfileConstants.needSetRoleStatus) {
+      if (bearerToken.status == ProfileConstants.userStatuses[UserStatuses.NeedSetRole]) {
         onSuccess(SignInStoreState.needSetRole);
         return;
       }

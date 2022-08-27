@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/login_model.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -17,7 +18,6 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-
 class WebViewPage extends StatefulWidget {
   final String inputUrlRoute;
 
@@ -30,8 +30,7 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  final Completer<WebViewController> _controllerCompleter =
-      Completer<WebViewController>();
+  final Completer<WebViewController> _controllerCompleter = Completer<WebViewController>();
 
   String get baseUrl {
     if (WalletRepository().notifierNetwork.value == Network.mainnet) {
@@ -103,14 +102,11 @@ class _WebViewPageState extends State<WebViewPage> {
                 print('Page finished loading: $url');
                 String? accessToken = await Storage.readAccessToken();
                 String? refreshToken = await Storage.readRefreshToken();
-                _controllerCompleter.future.then((value) => value
-                    .runJavascriptReturningResult(
-                        """localStorage.setItem("accessToken","${accessToken ?? ''}");
+                _controllerCompleter.future.then((value) =>
+                    value.runJavascriptReturningResult("""localStorage.setItem("accessToken","${accessToken ?? ''}");
                     localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-                if (url.contains('token?code=') ||
-                    url.contains('token?state=')) {
-                  _controller!.runJavascript(
-                      "(function(){Flutter.postMessage(window.document.body.outerHTML)})();");
+                if (url.contains('token?code=') || url.contains('token?state=')) {
+                  _controller!.runJavascript("(function(){Flutter.postMessage(window.document.body.outerHTML)})();");
                 }
               },
               gestureNavigationEnabled: true,
@@ -139,30 +135,25 @@ class _WebViewPageState extends State<WebViewPage> {
         final lastIndex = pageBody.lastIndexOf("}");
         final profileMeStore = context.read<ProfileMeStore>();
         if (firstIndex >= 0) {
-          final response =
-              json.decode(pageBody.substring(firstIndex, lastIndex) + "}");
-          final LoginModel responseData =
-              LoginModel.fromJson(response["result"]);
+          final response = json.decode(pageBody.substring(firstIndex, lastIndex) + "}");
+          final LoginModel responseData = LoginModel.fromJson(response["result"]);
 
           Storage.writeAccessToken(responseData.access);
           Storage.writeRefreshToken(responseData.refresh);
-          GetIt.I.get<ApiProvider>().httpClient.accessToken =
-              responseData.access;
+          GetIt.I.get<ApiProvider>().httpClient.accessToken = responseData.access;
           String? address;
           profileMeStore.getProfileMe().then((value) {
             address = profileMeStore.userData!.walletAddress;
-            if (responseData.userStatus == ProfileConstants.needSetRoleStatus)
+            if (responseData.userStatus == ProfileConstants.userStatuses[UserStatuses.NeedSetRole])
               Navigator.of(context, rootNavigator: false).pushReplacementNamed(
                 ChooseRolePage.routeName,
               );
-            else if (responseData.userStatus ==
-                    ProfileConstants.confirmedStatus &&
+            else if (responseData.userStatus == ProfileConstants.userStatuses[UserStatuses.Confirmed] &&
                 address == null) {
               Navigator.of(context, rootNavigator: false).pushReplacementNamed(
                 WalletsPage.routeName,
               );
-            } else if (responseData.userStatus ==
-                ProfileConstants.confirmedStatus) {
+            } else if (responseData.userStatus == ProfileConstants.userStatuses[UserStatuses.Confirmed]) {
               Navigator.of(context, rootNavigator: false).pushReplacementNamed(
                 MnemonicPage.routeName,
               );
@@ -183,10 +174,8 @@ class NavigationControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<WebViewController>(
       future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        final bool webViewReady =
-            snapshot.connectionState == ConnectionState.done;
+      builder: (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
+        final bool webViewReady = snapshot.connectionState == ConnectionState.done;
         final WebViewController controller = snapshot.data!;
         return Row(
           children: <Widget>[

@@ -27,6 +27,8 @@ enum AdType {
   Paid,
 }
 
+enum UserStatuses { Unconfirmed, Confirmed, NeedSetRole }
+
 enum ErrorCodes {
   /// Invalid payload errors (400)
   InvalidPayload,

@@ -1,7 +1,14 @@
+
+
+import 'package:app/enums.dart';
+
 class ProfileConstants {
-  static const unconfirmedStatus = 0;
-  static const confirmedStatus = 1;
-  static const needSetRoleStatus = 2;
+
+  static const Map<UserStatuses, int> userStatuses = {
+    UserStatuses.Unconfirmed: 0,
+    UserStatuses.Confirmed: 1,
+    UserStatuses.NeedSetRole: 2,
+  };
 
   static const List<String> payPeriodLists = [
     "quests.payPeriod.hourly",
