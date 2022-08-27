@@ -43,10 +43,7 @@ class OpenScreeFromPush {
           arguments: notification.data.questId,
         );
       } else {
-        Navigator.of(con!).pushNamed(
-          NotificationPage.routeName,
-          // arguments: notification.recipients?.first,
-        );
+        Navigator.of(con!).pushNamed(NotificationPage.routeName);
       }
     } catch (e, trace) {
       print("ERROR: $e");

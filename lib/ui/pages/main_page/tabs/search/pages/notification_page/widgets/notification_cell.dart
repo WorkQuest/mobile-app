@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
@@ -18,12 +19,10 @@ import 'package:provider/provider.dart';
 class NotificationCell extends StatefulWidget {
   final NotificationStore store;
   final NotificationElement body;
-  final String userId;
 
   const NotificationCell({
     required this.store,
     required this.body,
-    required this.userId,
   });
 
   @override
@@ -31,20 +30,19 @@ class NotificationCell extends StatefulWidget {
 }
 
 class _NotificationCellState extends State<NotificationCell> {
-  String action = "";
-  String senderName = "";
-  User? user;
+  User? get user => widget.body.notification.data.user;
+
+  String get action => widget.body.notification.action.toLowerCase();
+
+  String get senderName => (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
 
   @override
   void initState() {
-    action = widget.body.notification.action.toLowerCase();
+    // TODO need refactor get info dispute
     if (widget.body.notification.data.disputeId != null)
       Future.delayed(Duration.zero, () {
         widget.store.getDispute(widget.body.notification.data.disputeId!);
       });
-    user = widget.body.notification.data.user;
-    senderName =
-        (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
     super.initState();
   }
 
@@ -64,11 +62,7 @@ class _NotificationCellState extends State<NotificationCell> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Observer(
-                    builder: (_) => widget
-                                .store
-                                .disputes[
-                                    widget.body.notification.data.disputeId ??
-                                        ""]
+                    builder: (_) => widget.store.disputes[widget.body.notification.data.disputeId ?? ""]
                                 ?.currentUserDisputeReview !=
                             null
                         ? OutlinedButton(
@@ -93,32 +87,7 @@ class _NotificationCellState extends State<NotificationCell> {
                         : const SizedBox(),
                   ),
                   IconButton(
-                    onPressed: () {
-                      AlertDialogUtils.showAlertDialog(
-                        context,
-                        title: Text("Are you sure?"),
-                        content: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 25.0,
-                            top: 16,
-                          ),
-                          child: Text(
-                            "Do you really want \nto delete this notification?",
-                          ),
-                        ),
-                        needCancel: true,
-                        titleCancel: "Cancel",
-                        titleOk: "Ok",
-                        onTabCancel: null,
-                        onTabOk: () {
-                          widget.store.deleteNotification(
-                            widget.body.id,
-                          );
-                        },
-                        colorCancel: AppColor.enabledButton,
-                        colorOk: Colors.red,
-                      );
-                    },
+                    onPressed: _onPressedDeleteNotification,
                     icon: Icon(
                       Icons.close,
                       color: Colors.black,
@@ -127,18 +96,7 @@ class _NotificationCellState extends State<NotificationCell> {
                 ],
               ),
               GestureDetector(
-                onTap: () async {
-                  if (user != null)
-                    await Navigator.of(context, rootNavigator: true).pushNamed(
-                      UserProfile.routeName,
-                      arguments: user!.id != widget.userId
-                          ? ProfileArguments(
-                              role: user!.role,
-                              userId: user!.id,
-                            )
-                          : null,
-                    );
-                },
+                onTap: _onPressedToPushProfile,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -162,8 +120,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        DateFormat('dd MMM yyyy, kk:mm')
-                            .format(widget.body.createdAt),
+                        DateFormat('dd MMM yyyy, kk:mm').format(widget.body.createdAt),
                         style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFFAAB0B9),
@@ -204,8 +161,7 @@ class _NotificationCellState extends State<NotificationCell> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.body.notification.data.title ??
-                          _userRating(widget.body.notification.data.status),
+                      widget.body.notification.data.title ?? _userRating(widget.body.notification.data.status),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
@@ -225,14 +181,48 @@ class _NotificationCellState extends State<NotificationCell> {
     );
   }
 
+  _onPressedToPushProfile() {
+    if (user != null) {
+      final isMy = user!.id == getIt.get<ProfileMeStore>().userData!.id;
+      Navigator.of(context, rootNavigator: true).pushNamed(
+        UserProfile.routeName,
+        arguments: isMy ? null : ProfileArguments(role: user!.role, userId: user!.id),
+      );
+    }
+  }
+
+  _onPressedDeleteNotification() {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text("Are you sure?"),
+      content: Padding(
+        padding: const EdgeInsets.only(
+          left: 25.0,
+          top: 16,
+        ),
+        child: Text(
+          "Do you really want \nto delete this notification?",
+        ),
+      ),
+      needCancel: true,
+      titleCancel: "Cancel",
+      titleOk: "Ok",
+      onTabCancel: null,
+      onTabOk: () {
+        widget.store.deleteNotification(widget.body.id);
+      },
+      colorCancel: AppColor.enabledButton,
+      colorOk: Colors.red,
+    );
+  }
+
   void _navigate() async {
     if (action.contains("workquestwikipage")) {
       await Navigator.of(context, rootNavigator: true).pushNamed(
         WebViewPage.routeName,
         arguments: "https://workquest.wiki/",
       );
-    }
-    else if (action.contains("quest")) {
+    } else if (action.contains("quest")) {
       await Navigator.of(context, rootNavigator: true).pushNamed(
         QuestDetails.routeName,
         arguments: QuestArguments(

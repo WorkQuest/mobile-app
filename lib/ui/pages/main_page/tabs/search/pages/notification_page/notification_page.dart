@@ -12,9 +12,8 @@ import 'package:provider/provider.dart';
 class NotificationPage extends StatefulWidget {
   static const String routeName = "/notificationsPage";
 
-  NotificationPage(this.userId);
+  const NotificationPage();
 
-  final String userId;
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
@@ -26,7 +25,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     store = context.read<NotificationStore>();
-    store.getNotification(isForce: true);
+    store.getNotification();
     super.initState();
   }
 
@@ -39,23 +38,9 @@ class _NotificationPageState extends State<NotificationPage> {
           child: RefreshIndicator(
             displacement: 50,
             edgeOffset: 100,
-            onRefresh: () {
-              if (store.isLoading) {
-                return Future.value(false);
-              }
-              return store.getNotification(isForce: true);
-            },
+            onRefresh: _onRefresh,
             child: NotificationListener<ScrollEndNotification>(
-              onNotification: (scrollEnd) {
-                final metrics = scrollEnd.metrics;
-                if (metrics.maxScrollExtent < metrics.pixels) {
-                  if (store.isLoading) {
-                    return false;
-                  }
-                  store.getNotification(isForce: false);
-                }
-                return true;
-              },
+              onNotification: _scrollListener,
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -125,7 +110,6 @@ class _NotificationPageState extends State<NotificationPage> {
                                       NotificationCell(
                                         store: store,
                                         body: store.listOfNotifications[index],
-                                        userId: widget.userId,
                                       ),
                                       if (index ==
                                           store.listOfNotifications.length - 1)
@@ -146,5 +130,24 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _onRefresh() {
+    if (store.isLoading) {
+      return Future.value(false);
+    }
+    return store.getNotification();
+  }
+
+  bool _scrollListener(ScrollEndNotification scrollEnd) {
+    final before = scrollEnd.metrics.extentBefore;
+    final max = scrollEnd.metrics.maxScrollExtent;
+
+    if (before == max) {
+      if (store.isLoading) return true;
+      store.getNotification(isForce: false);
+    }
+
+    return true;
   }
 }

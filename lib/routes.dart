@@ -404,7 +404,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: NotificationPage(settings.arguments as String),
+              child: NotificationPage(),
             ),
           ),
         );

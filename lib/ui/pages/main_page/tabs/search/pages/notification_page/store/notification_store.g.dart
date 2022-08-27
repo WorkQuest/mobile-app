@@ -44,7 +44,7 @@ mixin _$NotificationStore on _NotificationStore, Store {
       AsyncAction('_NotificationStore.getNotification');
 
   @override
-  Future<void> getNotification({bool isForce = false}) {
+  Future<void> getNotification({bool isForce = true}) {
     return _$getNotificationAsyncAction
         .run(() => super.getNotification(isForce: isForce));
   }

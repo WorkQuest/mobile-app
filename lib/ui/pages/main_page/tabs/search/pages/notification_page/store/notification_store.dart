@@ -1,6 +1,5 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/dispute_model.dart';
-import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -18,34 +17,20 @@ abstract class _NotificationStore extends IStore<bool> with Store {
 
   _NotificationStore(this._apiProvider);
 
-  BaseQuestResponse? quest;
-
   @observable
   ObservableList<NotificationElement> listOfNotifications = ObservableList.of([]);
 
   @observable
   ObservableMap<String, DisputeModel> disputes = ObservableMap.of({});
 
-  Future<void> getQuest(String questId) async {
-    try {
-      this.onLoading();
-      quest = await _apiProvider.getQuest(id: questId);
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
-
   @action
-  Future<void> getNotification({bool isForce = false}) async {
+  Future<void> getNotification({bool isForce = true}) async {
     onLoading();
     if (isForce) {
       listOfNotifications.clear();
     }
     try {
-      final _result = await _apiProvider.getNotifications(
-        offset: listOfNotifications.length,
-      );
+      final _result = await _apiProvider.getNotifications(offset: listOfNotifications.length);
       listOfNotifications.addAll(_result.notifications);
       this.onSuccess(true);
     } catch (e) {

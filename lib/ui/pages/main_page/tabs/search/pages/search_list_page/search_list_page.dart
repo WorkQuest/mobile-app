@@ -275,10 +275,7 @@ class _SearchListPageState extends State<SearchListPage> {
   }
 
   _onPressedOnNotifications() {
-    Navigator.of(context, rootNavigator: true).pushNamed(
-      NotificationPage.routeName,
-      arguments: profileMeStore.userData!.id,
-    );
+    Navigator.of(context, rootNavigator: true).pushNamed(NotificationPage.routeName);
   }
 
   _onPressedChangePage() {
