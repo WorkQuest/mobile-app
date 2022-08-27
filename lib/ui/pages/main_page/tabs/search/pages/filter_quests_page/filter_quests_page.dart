@@ -2,7 +2,6 @@ import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/entity/filter_arguments.dart';
-import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,6 @@ class FilterQuestsPage extends StatefulWidget {
 class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepAliveClientMixin {
   late FilterQuestsStore storeFilter;
   late ProfileMeStore profile;
-  late final SearchListStore storeQuest;
   late TextEditingController fromPriceController;
   late TextEditingController toPriceController;
 
@@ -32,7 +30,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
   void initState() {
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
-    storeQuest = context.read<SearchListStore>();
     fromPriceController = TextEditingController(text: storeFilter.fromPrice)
       ..addListener(() {
         storeFilter.setFromPrice(fromPriceController.text);
@@ -286,7 +283,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                         ExpansionCell(
                           storeFilter.skillFilters[index - 3]!,
                           index - 3,
-                          storeQuest,
                           storeFilter,
                         ),
                     ],
@@ -410,13 +406,11 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
 class ExpansionCell<T> extends StatefulWidget {
   final List<int> filter;
   final int index;
-  final SearchListStore storeQuest;
   final FilterQuestsStore storeFilter;
 
   const ExpansionCell(
     this.filter,
     this.index,
-    this.storeQuest,
     this.storeFilter,
   );
 
