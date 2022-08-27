@@ -2,7 +2,6 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/search_list_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_map/widgets/handler_permission_map.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_page/store/search_page_store.dart';
-import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -15,16 +14,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late final SearchPageStore store = SearchPageStore();
-  UserRole? role;
 
-  @override
-  void initState() {
-    //Send All required requests
-    final wallet = context.read<WalletStore>();
-    wallet.getCoins();
-    role = context.read<ProfileMeStore>().userData?.role;
-    super.initState();
-  }
+  UserRole? get role => context.read<ProfileMeStore>().userData?.role;
 
   @override
   Widget build(BuildContext context) {
