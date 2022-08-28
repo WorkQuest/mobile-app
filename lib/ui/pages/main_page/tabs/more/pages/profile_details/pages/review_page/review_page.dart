@@ -157,8 +157,8 @@ class _ReviewPageState extends State<ReviewPage> {
                       name: review.fromUser.firstName + " " + review.fromUser.lastName,
                       mark: review.mark,
                       userRole: review.fromUser.role == UserRole.Employer
-                          ? "role.quest_employer_page"
-                          : "role.quest_worker_page",
+                          ? "role.employer"
+                          : "role.worker",
                       questTitle: review.quest.title,
                       message: review.message,
                       id: review.fromUserId,

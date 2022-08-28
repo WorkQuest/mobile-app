@@ -21,7 +21,7 @@ class FromUser {
         firstName: json["firstName"],
         lastName: json["lastName"],
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
-        role: json["role"] == "quest_worker_page" ? UserRole.Worker : UserRole.Employer,
+        role: json["role"] == "worker" ? UserRole.Worker : UserRole.Employer,
       );
 
   Map<String, dynamic> toJson() => {

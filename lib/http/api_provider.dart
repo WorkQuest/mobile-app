@@ -201,7 +201,7 @@ extension QuestService on ApiProvider {
       var responseData;
       if (me)
         responseData = await httpClient.post(
-          query: "/v1/me/quest_employer_page/get-quests?offset=$offset&limit=$limit"
+          query: "/v1/me/employer/get-quests?offset=$offset&limit=$limit"
               "&$star$status$sort",
           data: {
             "specializations": [],
@@ -209,7 +209,7 @@ extension QuestService on ApiProvider {
         );
       else
         responseData = await httpClient.post(
-          query: "/v1/quest_employer_page/$userId/get-quests?offset=$offset&limit=$limit"
+          query: "/v1/employer/$userId/get-quests?offset=$offset&limit=$limit"
               "&$star$status$sort",
           data: {
             "specializations": [],
@@ -230,7 +230,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData = await httpClient.get(
-        query: "/v1/quest_worker_page/$userId/available-quests",
+        query: "/v1/worker/$userId/available-quests",
         queryParameters: {
           "offset": offset,
         },
@@ -266,7 +266,7 @@ extension QuestService on ApiProvider {
     var responseData;
     if (me)
       responseData = await httpClient.post(
-        query: '/v1/me/quest_worker_page/get-quests?limit=$limit&offset=$offset&$status'
+        query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
             '$invite$response$star$sort',
         data: {
           "specializations": [],
@@ -275,7 +275,7 @@ extension QuestService on ApiProvider {
     else
       responseData = await httpClient.post(
         query:
-            '/v1/quest_worker_page/$userId/get-quests?limit=$limit&offset=$offset&$status'
+            '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
             '$invite$response$star$sort',
         data: {
           "specializations": [],
@@ -495,7 +495,7 @@ extension QuestService on ApiProvider {
   Future<void> rejectCompletedWork({
     required String questId,
   }) async {
-    await httpClient.post(query: '/v1/quest/quest_employer_page/$questId/reject');
+    await httpClient.post(query: '/v1/quest/employer/$questId/reject');
   }
 
   Future<void> acceptInvite({
@@ -795,11 +795,11 @@ extension UserInfoService on ApiProvider {
 
     if (userData.role == UserRole.Worker) {
       final responseData =
-          await httpClient.put(query: '/v1/quest_worker_page/profile/edit', data: body);
+          await httpClient.put(query: '/v1/worker/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } else {
       final responseData =
-          await httpClient.put(query: '/v1/quest_employer_page/profile/edit', data: body);
+          await httpClient.put(query: '/v1/employer/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     }
   }
@@ -1340,7 +1340,7 @@ extension RasieView on ApiProvider {
     required int type,
   }) async {
     await httpClient.post(
-      query: '/v1/profile/quest_worker_page/me/raise-view/pay',
+      query: '/v1/profile/worker/me/raise-view/pay',
       data: {
         "duration": duration,
         "type": type,

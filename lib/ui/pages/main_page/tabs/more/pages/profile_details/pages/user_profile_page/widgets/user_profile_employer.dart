@@ -43,8 +43,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
             : Center(
                 child: Text(
                   viewOtherUser?.userData == null
-                      ? "errors.emptyData.quest_worker_page.myQuests.desc".tr()
-                      : "errors.emptyData.quest_worker_page.myQuests.notQuest".tr(),
+                      ? "errors.emptyData.worker.myQuests.desc".tr()
+                      : "errors.emptyData.worker.myQuests.notQuest".tr(),
                 ),
               ),
         if ((myQuests!.quests[QuestsType.Performed]?.isNotEmpty ?? false) ||

@@ -28,7 +28,7 @@ class RespondModel {
       questId: json["questId"],
       status: json["status"],
       type: json["type"],
-      worker: User.fromJson(json["quest_worker_page"]),
+      worker: User.fromJson(json["worker"]),
       workerId: json["workerId"],
     );
   }

@@ -50,7 +50,7 @@ class _MyDisputesItemState extends State<MyDisputesItem> {
               ),
               space(),
               row(
-                title: "dispute_page.quest_employer_page",
+                title: "dispute_page.employer",
                 disputeInfo: widget
                         .store.disputes[widget.index].quest.user!.firstName +
                     " " +
