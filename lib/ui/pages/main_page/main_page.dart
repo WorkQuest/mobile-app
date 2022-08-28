@@ -41,6 +41,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final controller = CupertinoTabController();
 
+  UserRole get role => context.read<ProfileMeStore>().userData?.role ?? UserRole.Worker;
+
   @override
   void initState() {
     context.read<ChatStore>().initialStore();
@@ -55,6 +57,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('role: ${context.read<ProfileMeStore>().userData?.role}');
     return WillPopScope(
       onWillPop: () async {
         dialog(
@@ -73,7 +76,7 @@ class _MainPageState extends State<MainPage> {
             items: [
               NavBarItem(
                 svgPath: 'assets/list_alt.svg',
-                title: widget.role == UserRole.Worker ? 'quests.quests' : "ui.workers",
+                title: role == UserRole.Worker ? 'quests.quests' : "ui.workers",
                 context: context,
               ),
               NavBarItem(

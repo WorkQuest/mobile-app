@@ -1,11 +1,19 @@
 import 'package:app/constants.dart';
 import 'package:app/keys.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart';
+import 'package:app/web3/repository/wallet_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
 
-import '../web3/repository/wallet_repository.dart';
+class Web3Exception implements Exception {
+  final String message;
+
+  Web3Exception([this.message = 'Unknown Web3 error']);
+
+  @override
+  String toString() => message;
+}
 
 class Web3Utils {
   static checkPossibilityTx({
@@ -14,34 +22,31 @@ class Web3Utils {
     required Decimal fee,
     bool isMain = false,
   }) async {
-    final _client =
-        isMain ? WalletRepository().getClientWorkNet() : WalletRepository().getClient();
+    final _client = isMain ? WalletRepository().getClientWorkNet() : WalletRepository().getClient();
     final _balanceNative = await _client.getBalance(WalletRepository().privateKey);
     final _isNativeToken = WalletRepository().isOtherNetwork
-        ? typeCoin == TokenSymbols.ETH ||
-            typeCoin == TokenSymbols.BNB ||
-            typeCoin == TokenSymbols.MATIC
+        ? typeCoin == TokenSymbols.ETH || typeCoin == TokenSymbols.BNB || typeCoin == TokenSymbols.MATIC
         : typeCoin == TokenSymbols.WQT;
 
     if (_isNativeToken) {
-      final _balanceWQTInWei =
-          (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18))
-              .toDouble();
+      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
       print('fee: $fee');
       print('_balanceWQTInWei: $_balanceWQTInWei');
       print('amount: $amount');
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
-        throw FormatException('errors.notHaveEnoughTx'.tr());
+        throw Web3Exception('errors.notHaveEnoughTx'.tr());
       }
     } else {
-      final _balanceToken =
-          await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      print('_balanceToken: $_balanceToken');
+      print('amount: $amount');
+
       if (amount > _balanceToken.toDouble()) {
-        throw FormatException('errors.notHaveEnoughTxToken'.tr());
+        throw Web3Exception('errors.notHaveEnoughTxToken'.tr());
       }
       fee = fee * Decimal.fromInt(10).pow(18);
       if (_balanceNative.getInWei < fee.toBigInt()) {
-        throw FormatException('errors.notHaveEnoughTx'.tr());
+        throw Web3Exception('errors.notHaveEnoughTx'.tr());
       }
     }
   }
@@ -57,20 +62,14 @@ class Web3Utils {
         final _network = WalletRepository().notifierNetwork.value;
         if (_network == Network.mainnet) {
           final _config = Configs.configsNetwork[NetworkName.workNetMainnet];
-          return _config!.dataCoins
-              .firstWhere((element) => element.symbolToken == typeCoin)
-              .addressToken!;
+          return _config!.dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
         } else {
           final _config = Configs.configsNetwork[NetworkName.workNetTestnet];
-          return _config!.dataCoins
-              .firstWhere((element) => element.symbolToken == typeCoin)
-              .addressToken!;
+          return _config!.dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
         }
       }
       final _dataTokens = WalletRepository().getConfigNetwork().dataCoins;
-      return _dataTokens
-          .firstWhere((element) => element.symbolToken == typeCoin)
-          .addressToken!;
+      return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
     } catch (e) {
       return '';
     }
@@ -94,8 +93,7 @@ class Web3Utils {
     required String amount,
     required int degree,
   }) {
-    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree))
-        .toBigInt();
+    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree)).toBigInt();
   }
 
   static Network getNetwork(NetworkName networkName) {
@@ -181,25 +179,16 @@ class Web3Utils {
     }
   }
 
-  static NetworkName getNetworkNameFromSwitchNetworkName(
-      SwitchNetworkNames name, Network network) {
+  static NetworkName getNetworkNameFromSwitchNetworkName(SwitchNetworkNames name, Network network) {
     switch (name) {
       case SwitchNetworkNames.WORKNET:
-        return network == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
+        return network == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
       case SwitchNetworkNames.ETH:
-        return network == Network.mainnet
-            ? NetworkName.ethereumMainnet
-            : NetworkName.ethereumTestnet;
+        return network == Network.mainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
       case SwitchNetworkNames.BSC:
-        return network == Network.mainnet
-            ? NetworkName.bscMainnet
-            : NetworkName.bscTestnet;
+        return network == Network.mainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
       case SwitchNetworkNames.POLYGON:
-        return network == Network.mainnet
-            ? NetworkName.polygonMainnet
-            : NetworkName.polygonTestnet;
+        return network == Network.mainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
     }
   }
 
@@ -219,17 +208,11 @@ class Web3Utils {
     final _isMainnet = WalletRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
-        return _isMainnet
-            ? 'https://etherscan.io/tx/$tx'
-            : 'https://rinkeby.etherscan.io/tx/$tx';
+        return _isMainnet ? 'https://etherscan.io/tx/$tx' : 'https://rinkeby.etherscan.io/tx/$tx';
       case SwapNetworks.BSC:
-        return _isMainnet
-            ? 'https://bscscan.com/tx/$tx'
-            : 'https://testnet.bscscan.com/tx/$tx';
+        return _isMainnet ? 'https://bscscan.com/tx/$tx' : 'https://testnet.bscscan.com/tx/$tx';
       case SwapNetworks.POLYGON:
-        return _isMainnet
-            ? 'https://polygonscan.com/tx/$tx'
-            : 'https://mumbai.polygonscan.com/tx/$tx';
+        return _isMainnet ? 'https://polygonscan.com/tx/$tx' : 'https://mumbai.polygonscan.com/tx/$tx';
     }
   }
 
@@ -287,8 +270,7 @@ class Web3Utils {
   }
 
   static String getNativeToken() {
-    final _networkName =
-        WalletRepository().networkName.value ?? NetworkName.workNetMainnet;
+    final _networkName = WalletRepository().networkName.value ?? NetworkName.workNetMainnet;
     switch (_networkName) {
       case NetworkName.workNetMainnet:
         return 'WQT';

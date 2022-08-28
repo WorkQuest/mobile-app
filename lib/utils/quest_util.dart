@@ -68,9 +68,9 @@ class QuestUtils {
       case "FixedTerm":
         return "Fixed term";
       case "RemoteWork":
-        return "Remote Work";
+        return "Remote work";
       case "EmploymentContract":
-        return "Employment Contract";
+        return "Employment contract";
       default:
         throw FormatException('Unknown Employment');
     }
@@ -85,6 +85,35 @@ class QuestUtils {
       return "Urgent 24-72h";
     } else {
       throw FormatException('Unknown Priority');
+    }
+  }
+
+  static String getPayPeriod(String payPeriod) {
+    switch (payPeriod) {
+      case "Hourly":
+        return "Hourly";
+      case "Daily":
+        return "Daily";
+      case "Weekly":
+        return "Weekly";
+      case "BiWeekly":
+        return "BiWeekly";
+      case "SemiMonthly":
+        return "Semi monthly";
+      case "Monthly":
+        return "Monthly";
+      case "Quarterly":
+        return "Quarterly";
+      case "SemiAnnually":
+        return "Semi annually";
+      case "Annually":
+        return "Annually";
+      case "FixedPeriod":
+        return "Fixed period";
+      case "ByAgreement":
+        return "By agreement";
+      default:
+        throw FormatException('Unknown Pay Period');
     }
   }
 
@@ -113,7 +142,7 @@ class QuestUtils {
       case "By agreement":
         return "ByAgreement";
       default:
-        throw FormatException('Unknown Pay Period');
+        throw FormatException('Unknown Pay Period Value');
     }
   }
 

@@ -6,7 +6,7 @@ import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/dispute_model.dart';
 import 'package:app/model/profile_response/profile_statistic.dart';
-import 'package:app/model/quests_models/create_quest_request_model.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/entity/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
