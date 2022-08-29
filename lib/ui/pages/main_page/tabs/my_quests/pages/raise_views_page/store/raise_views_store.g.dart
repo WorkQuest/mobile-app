@@ -54,11 +54,18 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     });
   }
 
+  final _$getQuestAsyncAction = AsyncAction('_RaiseViewStore.getQuest');
+
+  @override
+  Future getQuest() {
+    return _$getQuestAsyncAction.run(() => super.getQuest());
+  }
+
   final _$checkAllowanceAsyncAction =
       AsyncAction('_RaiseViewStore.checkAllowance');
 
   @override
-  Future<void> checkAllowance() {
+  Future checkAllowance() {
     return _$checkAllowanceAsyncAction.run(() => super.checkAllowance());
   }
 
@@ -72,15 +79,41 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   final _$raiseProfileAsyncAction = AsyncAction('_RaiseViewStore.raiseProfile');
 
   @override
-  Future<void> raiseProfile() {
+  Future raiseProfile() {
     return _$raiseProfileAsyncAction.run(() => super.raiseProfile());
   }
 
   final _$raiseQuestAsyncAction = AsyncAction('_RaiseViewStore.raiseQuest');
 
   @override
-  Future<void> raiseQuest(String questId) {
+  Future raiseQuest(String questId) {
     return _$raiseQuestAsyncAction.run(() => super.raiseQuest(questId));
+  }
+
+  final _$getGasApproveAsyncAction =
+      AsyncAction('_RaiseViewStore.getGasApprove');
+
+  @override
+  Future getGasApprove() {
+    return _$getGasApproveAsyncAction.run(() => super.getGasApprove());
+  }
+
+  final _$getGasRaiseViewProfileAsyncAction =
+      AsyncAction('_RaiseViewStore.getGasRaiseViewProfile');
+
+  @override
+  Future getGasRaiseViewProfile() {
+    return _$getGasRaiseViewProfileAsyncAction
+        .run(() => super.getGasRaiseViewProfile());
+  }
+
+  final _$getGasRaiseViewQuestAsyncAction =
+      AsyncAction('_RaiseViewStore.getGasRaiseViewQuest');
+
+  @override
+  Future getGasRaiseViewQuest() {
+    return _$getGasRaiseViewQuestAsyncAction
+        .run(() => super.getGasRaiseViewQuest());
   }
 
   final _$_RaiseViewStoreActionController =

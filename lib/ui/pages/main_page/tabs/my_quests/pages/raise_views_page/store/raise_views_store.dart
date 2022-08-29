@@ -1,20 +1,14 @@
-import 'dart:math';
-
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/repository/raise_views_repository.dart';
 import 'package:app/utils/raise_view_util.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/wallet_repository.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:web3dart/contracts/erc20.dart';
-import 'package:web3dart/web3dart.dart';
-
 
 part 'raise_views_store.g.dart';
 
@@ -24,9 +18,9 @@ class RaiseViewStore extends _RaiseViewStore with _$RaiseViewStore {
 }
 
 abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
-  final ApiProvider apiProvider;
+  final IRaiseViewsRepository _repository;
 
-  _RaiseViewStore(this.apiProvider);
+  _RaiseViewStore(ApiProvider apiProvider) : _repository = RaiseViewsRepository(apiProvider);
 
   @observable
   int periodGroupValue = 1;
@@ -79,10 +73,11 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   @action
   changeLevel(int? value) => levelGroupValue = value!;
 
-  Future<void> getQuest() async {
+  @action
+  getQuest() async {
     try {
       this.onLoading();
-      _quest = await apiProvider.getQuest(id: questId);
+      _quest = await _repository.getQuest(questId);
       this.onSuccess(RaiseViewStoreState.getQuest);
     } catch (e) {
       this.onError(e.toString());
@@ -90,21 +85,13 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   }
 
   @action
-  Future<void> checkAllowance() async {
+  checkAllowance() async {
     try {
       this.onLoading();
-      final _client = WalletRepository().getClientWorkNet();
-      final _allowance = await _client.allowanceCoin(
-        address: EthereumAddress.fromHex(addressWQPromotion),
-      );
-      print('_allowance: $_allowance');
-
       _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
-      print('_priceForApprove: $_priceForApprove');
-      needApprove = _allowance < _priceForApprove!;
+      needApprove = await _repository.needApprove(_priceForApprove!);
       this.onSuccess(RaiseViewStoreState.checkAllowance);
-    } catch (e, trace) {
-      print('checkAllowance | $e\n$trace');
+    } catch (e) {
       this.onError(e.toString());
     }
   }
@@ -112,154 +99,95 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   @action
   approve() async {
     try {
-      print('approve');
       this.onLoading();
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
-        fee: Decimal.parse(gas),
-        amount: double.parse(amount),
-      );
-      print('_priceForApprove: $_priceForApprove');
-      await WalletRepository().getClientWorkNet().approveCoin(
-            price: _priceForApprove!,
-            address: EthereumAddress.fromHex(addressWQPromotion),
-          );
+      await _repository.approve(_priceForApprove!);
       onSuccess(RaiseViewStoreState.approve);
-    } on FormatException catch (e, trace) {
-      print('raiseProfile FormatException | $e\n$trace');
-      this.onError(e.message);
-    } catch (e, trace) {
-      print('raiseProfile | $e\n$trace');
+    } catch (e) {
       this.onError(e.toString());
     }
   }
 
   @action
-  Future<void> raiseProfile() async {
+  raiseProfile() async {
     try {
-      print('raiseProfile');
       this.onLoading();
       period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue);
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
-        fee: Decimal.parse(gas),
-        amount: double.parse(amount),
-      );
-      await WalletRepository().getClientWorkNet().promoteUser(
-            tariff: levelGroupValue,
-            period: period,
-          );
+      await _repository.raiseViewProfile(levelGroup: levelGroupValue, period: period, amount: amount);
       this.onSuccess(RaiseViewStoreState.raiseProfile);
-    } on FormatException catch (e, trace) {
-      print('raiseProfile FormatException | $e\n$trace');
-      this.onError(e.message);
-    } catch (e, trace) {
-      print('raiseProfile | $e\n$trace');
+    } catch (e) {
       this.onError(e.toString());
     }
   }
 
   @action
-  Future<void> raiseQuest(String questId) async {
+  raiseQuest(String questId) async {
     try {
-      print('raiseQuest');
       this.onLoading();
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
-        fee: Decimal.parse(gas),
-        amount: double.parse(amount),
-      );
       period = RaiseViewUtils.getPeriod(
         periodGroupValue: periodGroupValue,
         isQuest: true,
       );
-      // final _price = BigInt.from(double.parse(amount) * pow(10, 18));
-      // await WalletRepository().getClientWorkNet().approveCoin(price: _price);
-      await WalletRepository().getClientWorkNet().promoteQuest(
-            tariff: levelGroupValue,
-            period: period,
-            questAddress: _quest!.contractAddress!,
-          );
-
+      await _repository.raiseViewQuest(
+        levelGroup: levelGroupValue,
+        period: period,
+        amount: amount,
+        contractAddress: _quest!.contractAddress!,
+      );
       this.onSuccess(RaiseViewStoreState.raiseQuest);
-    } on FormatException catch (e, trace) {
-      print('raiseQuest FormatException | $e\n$trace');
-      this.onError(e.message);
-    } catch (e, trace) {
-      print('raiseQuest | $e\n$trace');
+    } catch (e) {
       this.onError(e.toString());
     }
   }
 
-  Future<void> getFeePromotion(bool isQuestRaise) async {
-    final _client = WalletRepository().getClientWorkNet();
-    final _contractPromote = await _client.getDeployedContract(
-        "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
-    double _gasForPromote = 0.0;
-    if (isQuestRaise)
-      _gasForPromote = await _client.getEstimateGasCallContract(
-        contract: _contractPromote,
-        function: _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
-        params: [
-          EthereumAddress.fromHex(_quest!.contractAddress!),
-          BigInt.from(levelGroupValue),
-          BigInt.from(RaiseViewUtils.getPeriod(
-              periodGroupValue: periodGroupValue, isQuest: true)),
-        ],
-      );
-    else
-      _gasForPromote = await _client.getEstimateGasCallContract(
-        contract: _contractPromote,
-        function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),
-        params: [
-          BigInt.from(levelGroupValue),
-          BigInt.from(RaiseViewUtils.getPeriod(
-              periodGroupValue: periodGroupValue, isQuest: false)),
-        ],
-      );
-    gas = _gasForPromote.toStringAsFixed(17);
+  @action
+  getGasApprove() async {
+    try {
+      onLoading();
+      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
+      gas = await _repository.getGasApprove(_priceForApprove!);
+      onSuccess(RaiseViewStoreState.getGasApprove);
+    } catch (e) {
+      onError(e.toString());
+    }
   }
 
-  Future<void> getFeeApprove({bool isQuestRaise = false}) async {
-    final _client = WalletRepository().getClientWorkNet();
-    final _contract =
-        Erc20(address: EthereumAddress.fromHex(addressWUSD), client: _client.client!);
-    final _gas = await _client.getGas();
-    final _price = BigInt.from(double.parse(amount) * pow(10, 18));
-    BigInt? _gasForApprove;
-    if (isQuestRaise)
-      _gasForApprove = await _client.getEstimateGas(
-        Transaction.callContract(
-          contract: _contract.self,
-          function: _contract.self.abi.functions[1],
-          parameters: [
-            EthereumAddress.fromHex(addressWQPromotion),
-            _price,
-          ],
-          from: EthereumAddress.fromHex(WalletRepository().userAddress),
-          value: EtherAmount.zero(),
-        ),
-      );
-    else
-      _gasForApprove = await _client.getEstimateGas(
-        Transaction.callContract(
-          contract: _contract.self,
-          function: _contract.self.abi.functions[1],
-          parameters: [
-            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
-            _price,
-          ],
-          from: EthereumAddress.fromHex(WalletRepository().userAddress),
-          value: EtherAmount.zero(),
-        ),
-      );
+  @action
+  getGasRaiseViewProfile() async {
+    try {
+      onLoading();
+      period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue, isQuest: false);
+      gas = await _repository.getGasRaiseViewProfile(levelGroup: levelGroupValue, period: period);
+      onSuccess(RaiseViewStoreState.getGasRaiseViewProfile);
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
 
-    gas = (Decimal.fromBigInt(_gasForApprove) *
-            Decimal.fromBigInt(_gas.getInWei) /
-            Decimal.fromInt(10).pow(18))
-        .toDouble()
-        .toStringAsFixed(17);
+  @action
+  getGasRaiseViewQuest() async {
+    try {
+      onLoading();
+      period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue, isQuest: true);
+      gas = await _repository.getGasRaiseViewQuest(
+        levelGroup: levelGroupValue,
+        period: period,
+        amount: amount,
+        contractAddress: _quest!.contractAddress!,
+      );
+      onSuccess(RaiseViewStoreState.getGasRaiseViewQuest);
+    } catch (e) {
+      onError(e.toString());
+    }
   }
 }
 
-enum RaiseViewStoreState { approve, raiseProfile, raiseQuest, checkAllowance, getQuest }
+enum RaiseViewStoreState {
+  approve,
+  raiseProfile,
+  raiseQuest,
+  checkAllowance,
+  getQuest,
+  getGasApprove,
+  getGasRaiseViewProfile,
+  getGasRaiseViewQuest
+}
