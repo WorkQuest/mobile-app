@@ -49,7 +49,8 @@ class QuestWorkerPage extends StatefulWidget {
   _QuestWorkerPageState createState() => _QuestWorkerPageState();
 }
 
-class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProviderStateMixin {
+class _QuestWorkerPageState extends State<QuestWorkerPage>
+    with SingleTickerProviderStateMixin {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late SearchListStore questStore;
@@ -74,7 +75,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
           store.quest.value?.yourReview != null);
 
   bool get canSendRequest =>
-      store.quest.value?.status == QuestConstants.questCreated && store.quest.value!.responded == null;
+      store.quest.value?.status == QuestConstants.questCreated &&
+      store.quest.value!.responded == null;
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
@@ -82,7 +84,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
       (store.quest.value?.responded != null &&
           store.quest.value?.status == QuestConstants.questCreated &&
           store.quest.value?.responded?.status == 0 &&
-          store.quest.value!.responded?.type != QuestConstants.questResponseTypeResponded);
+          store.quest.value!.responded?.type !=
+              QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
@@ -127,8 +130,10 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                     ),
                     onPressed: () {
                       late String _url;
-                      if (WalletRepository().notifierNetwork.value == Network.mainnet) {
-                        _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+                      if (WalletRepository().notifierNetwork.value ==
+                          Network.mainnet) {
+                        _url =
+                            "https://app.workquest.co/quests/${store.quest.value!.id}";
                       } else {
                         _url =
                             "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
@@ -139,13 +144,19 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                   Observer(
                     builder: (_) => IconButton(
                       icon: Icon(
-                        store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
-                        color: store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+                        store.quest.value?.star ?? false
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: store.quest.value?.star ?? false
+                            ? Color(0xFFE8D20D)
+                            : Color(0xFFD8DFE3),
                       ),
                       onPressed: () async {
-                        await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
+                        await myQuestStore.setStar(
+                            store.quest.value!, !store.quest.value!.star);
                         store.onStar();
-                        questStore.setStar(store.quest.value!.id, store.quest.value!.star);
+                        questStore.setStar(
+                            store.quest.value!.id, store.quest.value!.star);
                       },
                     ),
                   ),
@@ -169,8 +180,10 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                       icon: Icon(Icons.share_outlined),
                       onPressed: () {
                         late String _url;
-                        if (WalletRepository().notifierNetwork.value == Network.mainnet) {
-                          _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+                        if (WalletRepository().notifierNetwork.value ==
+                            Network.mainnet) {
+                          _url =
+                              "https://app.workquest.co/quests/${store.quest.value!.id}";
                         } else {
                           _url =
                               "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
@@ -181,7 +194,7 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                 ],
               ),
         body: QuestDetailsBodyWidget(
-            onRefresh: () async  {
+            onRefresh: () async {
               store.getQuest(store.quest.value!.id);
             },
             quest: store.quest.value,
@@ -191,7 +204,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                 questStatus: store.quest.value?.status ?? 0,
                 rounded: false,
                 role: UserRole.Worker,
-                responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
+                responded: store.quest.value?.responded ??
+                    store.quest.value?.questChat?.response,
               ),
             ),
             inProgressBy: SizedBox(),
@@ -229,7 +243,10 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
-                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
                   return const Color(0xFF0083C7);
                 },
               ),
@@ -249,7 +266,10 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
 
   Widget getBodyBottom() {
     if (isMyQuest) return const SizedBox();
-    final _dif = DateTime.now().toUtc().difference(store.quest.value?.startedAt ?? DateTime.now().toUtc()).inHours;
+    final _dif = DateTime.now()
+        .toUtc()
+        .difference(store.quest.value?.startedAt ?? DateTime.now().toUtc())
+        .inHours;
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -261,7 +281,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
         }
         if (store.successData == WorkerStoreState.sendAcceptOnQuest) {
           Navigator.pop(context);
-          questStore.search(role: UserRole.Worker, searchLine: questStore.searchWord);
+          questStore.search(
+              role: UserRole.Worker, searchLine: questStore.searchWord);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
           Navigator.pop(context);
@@ -278,7 +299,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
           Navigator.pop(context);
           await AlertDialogUtils.showSuccessDialog(context);
         } else if (store.successData == WorkerStoreState.sendRespondOnQuest) {
-          questStore.search(role: UserRole.Worker, searchLine: questStore.searchWord);
+          questStore.search(
+              role: UserRole.Worker, searchLine: questStore.searchWord);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
           chatStore!.loadChats(starred: false);
@@ -329,7 +351,10 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
@@ -353,10 +378,14 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
                             return const Color(0xFF0083C7);
                           },
                         ),
@@ -377,10 +406,14 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
                             return const Color(0xFF0083C7);
                           },
                         ),
@@ -398,7 +431,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                                     AlertDialogUtils.showInfoAlertDialog(
                                       context,
                                       title: "Error",
-                                      content: "You cannot create a dispute_page until 24"
+                                      content:
+                                          "You cannot create a dispute_page until 24"
                                           " hours have passed from the start of "
                                           "this quest",
                                     );
@@ -415,15 +449,19 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                                       titleOk: "Ok",
                                       onTabCancel: null,
                                       onTabOk: () async {
-                                        final result = await Navigator.pushNamed(
+                                        final result =
+                                            await Navigator.pushNamed(
                                           context,
                                           OpenDisputePage.routeName,
                                           arguments: store.quest.value!,
                                         );
-                                        if (result != null && result is OpenDispute) {
+                                        if (result != null &&
+                                            result is OpenDispute) {
                                           print('result: ${result.toJson()}');
-                                          store.quest.value!.status = QuestConstants.questDispute;
-                                          store.quest.value!.openDispute = result;
+                                          store.quest.value!.status =
+                                              QuestConstants.questDispute;
+                                          store.quest.value!.openDispute =
+                                              result;
                                           store.quest.reportChanged();
                                         }
                                       },
@@ -439,10 +477,14 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
                           fixedSize: MaterialStateProperty.all(
                             Size(double.maxFinite, 43),
                           ),
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
-                                return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
                               return const Color(0xFF0083C7);
                             },
                           ),
@@ -553,7 +595,9 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
           builder: (_) => LoginButton(
             withColumn: true,
             enabled: store.isLoading,
-            onTap: store.opinion.isNotEmpty || store.mediaFile.isNotEmpty || store.mediaIds.isNotEmpty
+            onTap: store.opinion.isNotEmpty ||
+                    store.mediaFile.isNotEmpty ||
+                    store.mediaIds.isNotEmpty
                 ? () async {
                     store.sendRespondOnQuest(store.opinion);
                   }
@@ -585,7 +629,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
             onTap: store.isLoading
                 ? null
                 : () async {
-                    print('assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
+                    print(
+                        'assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
                     print('id: ${myId}');
                     if (store.quest.value!.assignedWorkerId == myId) {
                       await sendTransaction(
@@ -605,7 +650,8 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
         ),
         const SizedBox(height: 15),
         if (store.quest.value!.responded != null &&
-            store.quest.value!.responded?.status == QuestConstants.questResponseOpen &&
+            store.quest.value!.responded?.status ==
+                QuestConstants.questResponseOpen &&
             store.quest.value!.assignedWorkerId != myId)
           Column(
             children: [
@@ -634,11 +680,13 @@ class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProv
     try {
       await _checkPossibilityTx(functionName);
     } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.message);
       return;
     } catch (e, trace) {
       print('_checkPossibilityTx | $e\n$trace');
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.toString());
       return;
     }
     await confirmTransaction(

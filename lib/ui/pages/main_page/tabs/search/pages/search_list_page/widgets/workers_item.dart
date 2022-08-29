@@ -11,7 +11,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.searchStore, {this.showRating = false});
+  const WorkersItem(this.workersInfo, this.searchStore,
+      {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
   final SearchListStore searchStore;
@@ -88,7 +89,9 @@ class WorkersItem extends StatelessWidget {
                               ],
                             ),
                           UserRating(
-                            workersInfo.ratingStatistic != null ? workersInfo.ratingStatistic!.status! : 3,
+                            workersInfo.ratingStatistic != null
+                                ? workersInfo.ratingStatistic!.status!
+                                : 3,
                             isWorker: true,
                           ),
                         ],
@@ -128,7 +131,8 @@ class WorkersItem extends StatelessWidget {
             Text("workers.aboutMe".tr()),
             const SizedBox(height: 5),
             Text(
-              workersInfo.additionalInfo?.description ?? "modals.noDescription".tr(),
+              workersInfo.additionalInfo?.description ??
+                  "modals.noDescription".tr(),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
               ),
@@ -166,7 +170,9 @@ class WorkersItem extends StatelessWidget {
 
   Widget tagSkills(List<String> skills) {
     String skillsLine = '';
-    skills.map((e) => skillsLine += e == skills.last ? e.tr() : '${e.tr()}, ').toList();
+    skills
+        .map((e) => skillsLine += e == skills.last ? e.tr() : '${e.tr()}, ')
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -14,7 +14,8 @@ class TransactionsResponse {
         count: json["count"],
         transactions: json["list_transactions"] == null
             ? null
-            : List<Tx>.from(json["list_transactions"].map((x) => Tx.fromJson(x))),
+            : List<Tx>.from(
+                json["list_transactions"].map((x) => Tx.fromJson(x))),
       );
 
   factory TransactionsResponse.fromJsonToken(Map<String, dynamic> json) =>

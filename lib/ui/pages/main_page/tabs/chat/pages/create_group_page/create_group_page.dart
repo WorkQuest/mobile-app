@@ -290,10 +290,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                 Navigator.of(context, rootNavigator: true)
                                     .pushReplacementNamed(
                                   ChatRoomPage.routeName,
-                                  arguments: ChatRoomArguments(
-                                    store.idGroupChat,
-                                    true,
-                                  ),
+                                  arguments:
+                                      ChatRoomArguments(store.idGroupChat),
                                 );
                               }
                             } else {

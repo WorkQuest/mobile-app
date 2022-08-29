@@ -83,7 +83,7 @@ class CreateQuestRequestModel {
         workplace: this.workplace,
         media: this.media,
         specializationKeys: this.specializationKeys,
-        employment:  this.employment,
+        employment: this.employment,
         payPeriod: this.payPeriod,
         title: null,
         description: null,

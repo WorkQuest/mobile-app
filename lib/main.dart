@@ -34,7 +34,8 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -62,7 +63,8 @@ void main() async {
     if (wallet != null) {
       WalletRepository().setWallet(wallet);
     }
-    final _networkNameStorage = await Storage.read(StorageKeys.networkName.name);
+    final _networkNameStorage =
+        await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
       WalletRepository().setNetwork(NetworkName.workNetMainnet);
     } else {

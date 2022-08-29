@@ -118,7 +118,8 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
                   if (metrics.atEdge ||
-                      metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
+                      metrics.maxScrollExtent < metrics.pixels &&
+                          !store.isLoading) {
                     store.getQuests(
                       userRole: profile.role,
                       userId: profile.id,
@@ -158,7 +159,6 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   String _getEmptyText() {
     if (isMyProfile) {
       switch (widget.arguments.type) {
-
         case ProfileQuestsType.active:
           return 'profiler.dontHaveActiveQuest'.tr();
         case ProfileQuestsType.completed:

@@ -42,12 +42,15 @@ class _ApproveRolePageState extends State<ApproveRolePage> {
     if (WalletRepository().notifierNetwork.value == Network.mainnet) {
       return "https://app.workquest.co/";
     }
-    return Constants.isTestnet ? "https://testnet-app.workquest.co/" : "https://dev-app.workquest.co/";
+    return Constants.isTestnet
+        ? "https://testnet-app.workquest.co/"
+        : "https://dev-app.workquest.co/";
   }
 
   _stateListener() {
     if (store.successData == ChooseRoleState.approveRole) {
-      Navigator.of(context, rootNavigator: true).pushNamed(WalletsPage.routeName);
+      Navigator.of(context, rootNavigator: true)
+          .pushNamed(WalletsPage.routeName);
     }
   }
 
@@ -70,8 +73,12 @@ class _ApproveRolePageState extends State<ApproveRolePage> {
                 children: [
                   Text(
                     !store.isChange
-                        ? "role.yourRole".tr() + " ${store.userRole.toString().split(".").last} " + "role.right".tr()
-                        : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
+                        ? "role.yourRole".tr() +
+                            " ${store.userRole.toString().split(".").last} " +
+                            "role.right".tr()
+                        : "role.change".tr() +
+                            " ${store.getRole()} " +
+                            "role.right".tr(),
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -144,7 +151,8 @@ class _ApproveRolePageState extends State<ApproveRolePage> {
       store.approveRole();
       return;
     }
-    Navigator.of(context, rootNavigator: true).pushNamed(EnterTotpPage.routeName);
+    Navigator.of(context, rootNavigator: true)
+        .pushNamed(EnterTotpPage.routeName);
   }
 
   Widget checkBoxText(
@@ -191,7 +199,9 @@ class _ApproveRolePageState extends State<ApproveRolePage> {
                 Text(
                   "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
+                    color: role == UserRole.Worker
+                        ? Colors.white
+                        : Color(0xFF1D2127),
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -200,7 +210,9 @@ class _ApproveRolePageState extends State<ApproveRolePage> {
                 Text(
                   "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
+                    color: role == UserRole.Worker
+                        ? Colors.white
+                        : Color(0xFF1D2127),
                   ),
                 ),
               ],

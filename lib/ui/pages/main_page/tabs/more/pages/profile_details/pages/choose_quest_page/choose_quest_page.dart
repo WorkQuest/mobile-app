@@ -34,7 +34,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
       context.read<ChatStore>().refreshChats();
       Navigator.of(context, rootNavigator: true).pushReplacementNamed(
         ChatRoomPage.routeName,
-        arguments: ChatRoomArguments(store.chatId, true),
+        arguments: ChatRoomArguments(store.chatId),
       );
       AlertDialogUtils.showSuccessDialog(context);
     }
@@ -70,7 +70,9 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                 Expanded(
                   child: Observer(
                     builder: (_) => ElevatedButton(
-                      onPressed: store.questId.isNotEmpty && !store.isLoading ? _onPressedAddToQuest : null,
+                      onPressed: store.questId.isNotEmpty && !store.isLoading
+                          ? _onPressedAddToQuest
+                          : null,
                       child: Text("quests.addToQuest".tr()),
                     ),
                   ),
@@ -123,11 +125,14 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                       ),
                       value: store.quests[index].id,
                       groupValue: store.questId,
-                      onChanged: (_) => _onPressedSetQuest(store.quests[index].id),
+                      onChanged: (_) =>
+                          _onPressedSetQuest(store.quests[index].id),
                     );
                   },
                 ),
-                itemCount: store.showMore ? store.quests.length + 1 : store.quests.length,
+                itemCount: store.showMore
+                    ? store.quests.length + 1
+                    : store.quests.length,
               ),
             );
           },
@@ -146,7 +151,8 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
 
   bool _onScrollListener(ScrollEndNotification scrollEnd) {
     final metrics = scrollEnd.metrics;
-    if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) && !store.isLoading) {
+    if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) &&
+        !store.isLoading) {
       store.getQuests(userId: widget.workerId, isForce: false);
     }
     return true;

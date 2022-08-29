@@ -22,8 +22,7 @@ class SwitchNetworkWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SwitchNetworkWidgetState<T> createState() =>
-      _SwitchNetworkWidgetState<T>();
+  _SwitchNetworkWidgetState<T> createState() => _SwitchNetworkWidgetState<T>();
 }
 
 class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
@@ -43,7 +42,8 @@ class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
             ),
             onTap: _showDialog,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 9.5, horizontal: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 9.5, horizontal: 10.0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

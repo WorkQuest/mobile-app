@@ -25,7 +25,9 @@ class _SearchPageState extends State<SearchPage> {
           : IndexedStack(
               index: store.pageIndex,
               children: [
-                HandlerPermissionMapWidget(changePage: store.setQuestListPage,),
+                HandlerPermissionMapWidget(
+                  changePage: store.setQuestListPage,
+                ),
                 SearchListPage(store.setMapPage),
               ],
             ),

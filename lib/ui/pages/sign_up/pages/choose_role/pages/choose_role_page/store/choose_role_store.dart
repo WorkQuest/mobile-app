@@ -17,7 +17,8 @@ class ChooseRoleStore extends _ChooseRoleStore with _$ChooseRoleStore {
 abstract class _ChooseRoleStore extends IStore<ChooseRoleState> with Store {
   final IChooseRoleRepository _repository;
 
-  _ChooseRoleStore(ApiProvider apiProvider) : _repository = ChooseRoleRepository(apiProvider);
+  _ChooseRoleStore(ApiProvider apiProvider)
+      : _repository = ChooseRoleRepository(apiProvider);
 
   @observable
   bool _privacyPolicy = false;
@@ -120,7 +121,8 @@ abstract class _ChooseRoleStore extends IStore<ChooseRoleState> with Store {
   bool get amlAndCtfPolicy => _amlAndCtfPolicy;
 
   @computed
-  bool get canApprove => _privacyPolicy && _amlAndCtfPolicy && _termsAndConditions;
+  bool get canApprove =>
+      _privacyPolicy && _amlAndCtfPolicy && _termsAndConditions;
 
   @action
   clearData() {

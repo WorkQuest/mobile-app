@@ -22,7 +22,8 @@ class _MyQuestsPageState extends State<MyQuestsPage>
   late MyQuestStore myQuests;
   late TabController _tabController;
 
-  UserRole get role => context.read<ProfileMeStore>().userData?.role ?? UserRole.Worker;
+  UserRole get role =>
+      context.read<ProfileMeStore>().userData?.role ?? UserRole.Worker;
 
   @override
   void initState() {

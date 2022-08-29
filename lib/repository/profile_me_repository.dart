@@ -47,7 +47,8 @@ class ProfileMeRepository extends IProfileMeRepository {
   }) async {
     try {
       if (media != null) {
-        newUserData.avatarId = (await _apiProvider.uploadMedia(medias: [media]))[0];
+        newUserData.avatarId =
+            (await _apiProvider.uploadMedia(medias: [media]))[0];
       }
       final isTotpActive = userData.isTotpActive;
       final tempPhone = userData.tempPhone;

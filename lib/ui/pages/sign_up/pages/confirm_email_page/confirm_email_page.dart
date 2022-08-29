@@ -12,7 +12,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 const TextStyle _style = TextStyle(
   color: Color(0xFF1D2127),
   fontSize: 16.0,
@@ -104,9 +103,11 @@ class _ConfirmEmailState extends State<ConfirmEmail> {
                       ),
                       const SizedBox(height: 5),
                       TimerWidget(
-                        startTimer: () => store.startTimer(widget.arguments.email!),
+                        startTimer: () =>
+                            store.startTimer(widget.arguments.email!),
                         seconds: store.secondsCodeAgain,
-                        isActiveTimer: store.timer != null && store.timer!.isActive,
+                        isActiveTimer:
+                            store.timer != null && store.timer!.isActive,
                       ),
                       const SizedBox(height: 40.0),
                       TextFormField(
@@ -119,7 +120,9 @@ class _ConfirmEmailState extends State<ConfirmEmail> {
                       Observer(
                         builder: (context) {
                           return LoginButton(
-                            onTap: store.canSubmitCode && !store.isLoading ? _onPressedSubmit : null,
+                            onTap: store.canSubmitCode && !store.isLoading
+                                ? _onPressedSubmit
+                                : null,
                             title: "meta.submit".tr(),
                           );
                         },

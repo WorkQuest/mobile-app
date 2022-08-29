@@ -20,7 +20,8 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final IProfileMeRepository _repository;
 
-  _ProfileMeStore(ApiProvider apiProvider) : _repository = ProfileMeRepository(apiProvider);
+  _ProfileMeStore(ApiProvider apiProvider)
+      : _repository = ProfileMeRepository(apiProvider);
 
   ProfileMeResponse? userData;
 

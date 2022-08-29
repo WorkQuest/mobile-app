@@ -16,7 +16,8 @@ class SwitchFormatAddressWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SwitchFormatAddressWidget> createState() => _SwitchFormatAddressWidgetState();
+  State<SwitchFormatAddressWidget> createState() =>
+      _SwitchFormatAddressWidgetState();
 }
 
 class _SwitchFormatAddressWidgetState extends State<SwitchFormatAddressWidget> {
@@ -92,12 +93,14 @@ class _SwitchFormatAddressWidgetState extends State<SwitchFormatAddressWidget> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 6.0),
                       child: Row(
                         children: [
                           Text(
                             format.name,
-                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black),
                           ),
                           const Spacer(),
                           if (_format == format)

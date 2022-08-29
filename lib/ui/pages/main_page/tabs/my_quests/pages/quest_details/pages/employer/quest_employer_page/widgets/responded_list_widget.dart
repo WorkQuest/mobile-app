@@ -37,7 +37,8 @@ class _RespondedListState extends State<RespondedList> {
           child: CircularProgressIndicator.adaptive(),
         );
       }
-      if (widget.store.quest.value!.status == QuestConstants.questWaitEmployerConfirm) {
+      if (widget.store.quest.value!.status ==
+          QuestConstants.questWaitEmployerConfirm) {
         return TextButton(
           onPressed: widget.answerOnQuestPressed,
           child: Text(
@@ -72,25 +73,33 @@ class _RespondedListState extends State<RespondedList> {
               ),
             ),
             if (widget.store.respondedList.isNotEmpty)
-              for (final respond in widget.store.respondedList) selectableMember(respond),
+              for (final respond in widget.store.respondedList)
+                selectableMember(respond),
             const SizedBox(height: 15),
             Observer(
               builder: (_) => TextButton(
-                onPressed: widget.store.selectedResponders == null || widget.store.isLoading
+                onPressed: widget.store.selectedResponders == null ||
+                        widget.store.isLoading
                     ? null
                     : widget.chooseWorkerPressed,
                 child: Text(
                   "quests.chooseWorker".tr(),
                   style: TextStyle(
-                    color: widget.store.selectedResponders == null ? Colors.grey : Colors.white,
+                    color: widget.store.selectedResponders == null
+                        ? Colors.grey
+                        : Colors.white,
                   ),
                 ),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) return const Color(0xFFF7F8FA);
+                      if (states.contains(MaterialState.disabled))
+                        return const Color(0xFFF7F8FA);
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
@@ -133,7 +142,8 @@ class _RespondedListState extends State<RespondedList> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: respond,
                   groupValue: widget.store.selectedResponders,
-                  onChanged: (RespondModel? user) => widget.store.selectedResponders = user,
+                  onChanged: (RespondModel? user) =>
+                      widget.store.selectedResponders = user,
                 ),
               ),
             ],
@@ -234,7 +244,8 @@ class _RespondedListState extends State<RespondedList> {
                   ),
                 ),
                 if (respond.worker.ratingStatistic?.status != null)
-                  UserRating(respond.worker.ratingStatistic!.status!, isWorker: true),
+                  UserRating(respond.worker.ratingStatistic!.status!,
+                      isWorker: true),
               ],
             ),
           ),

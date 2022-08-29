@@ -85,7 +85,8 @@ abstract class _SearchMapStore extends IStore<bool> with Store {
     );
     if (p != null) {
       address = p.description!;
-      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId!);
       controller.moveCamera(
         CameraUpdate.newLatLng(
           LatLng(
@@ -136,11 +137,13 @@ abstract class _SearchMapStore extends IStore<bool> with Store {
         onTapMarker: isWorker!
             ? (cluster) {
                 hideInfo = false;
-                currentQuestCluster = ObservableList.of((cluster as Cluster<BaseQuestResponse>).items.toList());
+                currentQuestCluster = ObservableList.of(
+                    (cluster as Cluster<BaseQuestResponse>).items.toList());
               }
             : (cluster) {
                 hideInfo = false;
-                currentWorkerCluster = ObservableList.of((cluster as Cluster<ProfileMeResponse>).items.toList());
+                currentWorkerCluster = ObservableList.of(
+                    (cluster as Cluster<ProfileMeResponse>).items.toList());
               },
         markerLoader: markerLoader,
         isWorker: isWorker);

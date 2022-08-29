@@ -4,7 +4,6 @@ import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
 
-
 part 'profile_visibility_store.g.dart';
 
 @injectable

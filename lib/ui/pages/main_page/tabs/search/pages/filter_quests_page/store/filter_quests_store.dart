@@ -425,7 +425,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       case 3:
         selectEmployeeRating[3] = value ?? false;
         break;
-        case 4:
+      case 4:
         selectEmployeeRating[4] = value ?? false;
         break;
     }

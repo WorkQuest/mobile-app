@@ -49,8 +49,11 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final result = await Navigator.of(context, rootNavigator: true).pushNamed(
-          getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker ? QuestWorkerPage.routeName : QuestEmployerPage.routeName,
+        final result =
+            await Navigator.of(context, rootNavigator: true).pushNamed(
+          getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker
+              ? QuestWorkerPage.routeName
+              : QuestEmployerPage.routeName,
           arguments: QuestArguments(id: widget.questInfo.id),
         );
         if (result != null && result as bool) {
@@ -78,8 +81,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded:
-                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
+                responded: widget.questInfo.responded ??
+                    widget.questInfo.questChat?.response,
                 role: store.role,
               ),
             Row(
@@ -122,7 +125,9 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   IconButton(
                     icon: Icon(
                       Icons.star,
-                      color: widget.questInfo.star ? AppColor.gold : Color(0xFFE9EDF2),
+                      color: widget.questInfo.star
+                          ? AppColor.gold
+                          : Color(0xFFE9EDF2),
                     ),
                     onPressed: () async {
                       await store.setStar(
@@ -130,7 +135,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                         !widget.questInfo.star,
                       );
                       if (store.errorMessage == null) {
-                        searchStore.setStar(widget.questInfo.id, widget.questInfo.star);
+                        searchStore.setStar(
+                            widget.questInfo.id, widget.questInfo.star);
                       }
                     },
                   ),

@@ -49,8 +49,8 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
   getFee(String functionName) async {
     try {
       final _client = WalletRepository().getClientWorkNet();
-      final _contract =
-          await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      final _contract = await _client.getDeployedContract(
+          "WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract, function: _function, params: []);
@@ -68,7 +68,8 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
 
   @action
   changeQuest(dynamic json) {
-    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest =
+        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       getQuest(quest.value!.id);
     }
@@ -185,9 +186,9 @@ abstract class _WorkerStore extends IMediaStore<WorkerStoreState> with Store {
       this.onLoading();
       await sendImages(_apiProvider);
       final _id = await _apiProvider.respondOnQuest(
-        id: quest.value!.id,
-        message: message,
-        media: medias.map((media) => media.id).toList());
+          id: quest.value!.id,
+          message: message,
+          media: medias.map((media) => media.id).toList());
       quest.value!.status = QuestConstants.questCreated;
       quest.value!.responded = Responded(
         id: _id,

@@ -45,8 +45,8 @@ class _CreatePortfolioPageState extends State<CreatePortfolioPage> {
     store = context.read<CreatePortfolioStore>();
     _titleController =
         TextEditingController(text: isEdit ? widget.portfolio!.title : null);
-    _descriptionController =
-        TextEditingController(text: isEdit ? widget.portfolio!.description : null);
+    _descriptionController = TextEditingController(
+        text: isEdit ? widget.portfolio!.description : null);
     if (isEdit) {
       store.setImages(widget.portfolio!.medias);
       store.setDescription(widget.portfolio!.description);
@@ -72,7 +72,9 @@ class _CreatePortfolioPageState extends State<CreatePortfolioPage> {
       onFailure: () => false,
       child: Scaffold(
         appBar: DefaultAppBar(
-          title: isEdit ? "profiler.editPortfolio".tr() : "profiler.addPortfolio".tr(),
+          title: isEdit
+              ? "profiler.editPortfolio".tr()
+              : "profiler.addPortfolio".tr(),
         ),
         body: SafeArea(
           child: SingleChildScrollView(

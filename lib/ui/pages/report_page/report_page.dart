@@ -62,7 +62,8 @@ class _ReportPageState extends State<ReportPage> {
     return ObserverListener<ReportStore>(
       onSuccess: () async {
         Navigator.pop(context);
-        await AlertDialogUtils.showSuccessDialog(context, text: 'settings.success'.tr());
+        await AlertDialogUtils.showSuccessDialog(context,
+            text: 'settings.success'.tr());
         Navigator.pop(context);
       },
       onFailure: () {

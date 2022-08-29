@@ -1,4 +1,3 @@
-
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/entity/create_quest_request_model.dart';
@@ -21,12 +20,14 @@ class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
   CreateQuestStore(ApiProvider questApiProvider) : super(questApiProvider);
 }
 
-abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with Store {
+abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState>
+    with Store {
   final ICreateQuestRepository _repository;
 
   final ApiProvider _apiProvider;
 
-  _CreateQuestStore(this._apiProvider) : _repository = CreateQuestRepository(_apiProvider);
+  _CreateQuestStore(this._apiProvider)
+      : _repository = CreateQuestRepository(_apiProvider);
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
@@ -78,13 +79,15 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   bool needApprove = false;
 
   @action
-  setConfirmUnderstandAboutEdit(bool value) => confirmUnderstandAboutEdit = value;
+  setConfirmUnderstandAboutEdit(bool value) =>
+      confirmUnderstandAboutEdit = value;
 
   @action
   void setQuestTitle(String value) => quest = quest.copyWith(title: value);
 
   @action
-  void setAboutQuest(String value) => quest = quest.copyWith(description: value);
+  void setAboutQuest(String value) =>
+      quest = quest.copyWith(description: value);
 
   @action
   void setPrice(String value) {
@@ -93,19 +96,20 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   }
 
   @action
-  void changedPriority(String selectedPriority) =>
-      quest = quest.copyWith(priority: QuestUtils.getPriorityToValue(selectedPriority));
+  void changedPriority(String selectedPriority) => quest =
+      quest.copyWith(priority: QuestUtils.getPriorityToValue(selectedPriority));
 
   @action
-  void changedEmployment(String selectedEmployment) =>
-      quest = quest.copyWith(employment: QuestUtils.getEmploymentValue(selectedEmployment));
+  void changedEmployment(String selectedEmployment) => quest = quest.copyWith(
+      employment: QuestUtils.getEmploymentValue(selectedEmployment));
 
   @action
-  void changedPayPeriod(String value) => quest = quest.copyWith(payPeriod: QuestUtils.getPayPeriodValue(value));
+  void changedPayPeriod(String value) =>
+      quest = quest.copyWith(payPeriod: QuestUtils.getPayPeriodValue(value));
 
   @action
-  void changedDistantWork(String distantWork) =>
-      quest = quest.copyWith(workplace: QuestUtils.getWorkplaceValue(distantWork));
+  void changedDistantWork(String distantWork) => quest =
+      quest.copyWith(workplace: QuestUtils.getWorkplaceValue(distantWork));
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -117,7 +121,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // Mode.fullscreen
     );
     if (p != null) {
-      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId!);
       quest = quest.copyWith(
         location: LocationFull(
           locationPlaceName: p.description!,
@@ -154,7 +159,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
     print('approve');
     try {
       onLoading();
-      await _repository.approve(contractAddress: contractAddress, price: quest.price!);
+      await _repository.approve(
+          contractAddress: contractAddress, price: quest.price!);
       onSuccess(CreateQuestStoreState.approve);
     } catch (e) {
       onError(e.toString());
@@ -218,7 +224,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   getGasEditQuest() async {
     try {
       onLoading();
-      gas = await _repository.getGasEditQuest(price: quest.price!, contractAddress: contractAddress!);
+      gas = await _repository.getGasEditQuest(
+          price: quest.price!, contractAddress: contractAddress!);
       onSuccess(CreateQuestStoreState.getGasEditQuest);
     } catch (e) {
       onError(e.toString());
@@ -228,7 +235,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   getGasCreateQuest() async {
     try {
       onLoading();
-      gas = await _repository.getGasCreateQuest(price: quest.price!, description: quest.description!);
+      gas = await _repository.getGasCreateQuest(
+          price: quest.price!, description: quest.description!);
       onSuccess(CreateQuestStoreState.getGasCreateQuest);
     } catch (e) {
       onError(e.toString());

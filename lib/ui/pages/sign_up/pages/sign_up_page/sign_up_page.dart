@@ -70,7 +70,10 @@ class _SignUpPageState extends State<SignUpPage> {
         body: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
           child: SizedBox(
-            height: mq.size.height - kToolbarHeight - mq.padding.top - mq.padding.bottom,
+            height: mq.size.height -
+                kToolbarHeight -
+                mq.padding.top -
+                mq.padding.bottom,
             child: AutofillGroup(
               child: Form(
                 key: _signUpPageFormKey,
@@ -165,7 +168,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: DefaultTextField(
                         controller: _passwordRepeatController,
                         isPassword: true,
-                        validator: (value) => Validators.passwordMatchValidator(value, store.password),
+                        validator: (value) => Validators.passwordMatchValidator(
+                            value, store.password),
                         onChanged: store.setConfirmPassword,
                         prefixIcon: SvgPicture.asset(
                           "assets/lock.svg",

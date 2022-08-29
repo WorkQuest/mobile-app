@@ -53,8 +53,8 @@ class _JournalErrorsPageState extends State<JournalErrorsPage> {
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<ErrorRequestModel>>(
           future: _future,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<ErrorRequestModel>> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<List<ErrorRequestModel>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator.adaptive(),

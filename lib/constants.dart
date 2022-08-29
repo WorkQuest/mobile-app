@@ -1,10 +1,12 @@
 import 'package:app/keys.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/material.dart';
+
 class Commission {
   static const commissionBuy = 0.98;
   static const percentTransfer = 1.01;
 }
+
 class Constants {
   /// Testnet - true/ dev-net - false
   static const isTestnet = true;
@@ -44,16 +46,30 @@ class Constants {
   static const String defaultImageNetwork =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
-  static const String worknetMainnetWQFactory = '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
-  static const String worknetTestnetWQFactory = isTestnet ? '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4' : '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///testnet
+  static const String worknetMainnetWQFactory =
+      '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
+  static const String worknetTestnetWQFactory = isTestnet
+      ? '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'
+      : '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
+
+  ///testnet
   // static const String worknetTestnetWQFactory = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///dev-net
 
   static const String worknetMainnetWQPromotion = '';
-  static const String worknetTestnetWQPromotion = isTestnet ? '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0' : '0xB778e471833102dBe266DE2747D72b91489568c2'; ///testnet
+  static const String worknetTestnetWQPromotion = isTestnet
+      ? '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0'
+      : '0xB778e471833102dBe266DE2747D72b91489568c2';
+
+  ///testnet
   // static const String worknetTestnetWQPromotion = '0xB778e471833102dBe266DE2747D72b91489568c2'; ///dev-net
 
-  static const String worknetMainnetWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
-  static const String worknetTestnetWUSD = isTestnet ? '0xf95ef11d0af1f40995218bb2b67ef909bcf30078' : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///testnet
+  static const String worknetMainnetWUSD =
+      '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
+  static const String worknetTestnetWUSD = isTestnet
+      ? '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'
+      : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa';
+
+  ///testnet
   // static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
 
   static final double commissionForQuest = 1.025;
@@ -119,39 +135,41 @@ class Configs {
       ],
     ),
     if (!Constants.isTestnet)
+
       /// Dev-net
       NetworkName.workNetTestnet: ConfigNetwork(
-          rpc: 'https://dev-node-ams3.workquest.co/',
-          wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
-          urlExplorer: 'https://dev-explorer.workquest.co/address/',
-          dataCoins: const [
-            DataCoins(
-              symbolToken: TokenSymbols.WQT,
-              iconPath: 'assets/wqt_coin_icon.svg',
-            ),
-            DataCoins(
-              symbolToken: TokenSymbols.WUSD,
-              addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-              iconPath: 'assets/wusd_coin_icon.svg',
-            ),
-            DataCoins(
-              symbolToken: TokenSymbols.wETH,
-              addressToken: '0xD9679C4Bc6E1546cfCb9c70AC81A4CBf400E7D24',
-              iconPath: 'assets/eth_coin_icon.svg',
-            ),
-            DataCoins(
-              symbolToken: TokenSymbols.wBNB,
-              addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
-              iconPath: 'assets/bsc_logo.svg',
-            ),
-            DataCoins(
-              symbolToken: TokenSymbols.USDT,
-              addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-              iconPath: 'assets/tusdt_coin_icon.svg',
-            ),
-          ],
-        ),
+        rpc: 'https://dev-node-ams3.workquest.co/',
+        wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
+        urlExplorer: 'https://dev-explorer.workquest.co/address/',
+        dataCoins: const [
+          DataCoins(
+            symbolToken: TokenSymbols.WQT,
+            iconPath: 'assets/wqt_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.WUSD,
+            addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+            iconPath: 'assets/wusd_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.wETH,
+            addressToken: '0xD9679C4Bc6E1546cfCb9c70AC81A4CBf400E7D24',
+            iconPath: 'assets/eth_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.wBNB,
+            addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
+            iconPath: 'assets/bsc_logo.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.USDT,
+            addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
+            iconPath: 'assets/tusdt_coin_icon.svg',
+          ),
+        ],
+      ),
     if (Constants.isTestnet)
+
       /// Testnet
       NetworkName.workNetTestnet: ConfigNetwork(
         rpc: 'https://testnet-gate.workquest.co/',
@@ -186,7 +204,8 @@ class Configs {
       ),
     NetworkName.ethereumMainnet: ConfigNetwork(
       rpc: 'https://eth-mainnet.public.blastapi.io/',
-      wss: 'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/mainnet/ws',
+      wss:
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/mainnet/ws',
       urlExplorer: 'https://etherscan.io/address/',
       dataCoins: const [
         DataCoins(
@@ -201,16 +220,15 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
+              '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
     NetworkName.ethereumTestnet: ConfigNetwork(
-      rpc:
-      'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby',
+      rpc: 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby',
       wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby/ws',
       urlExplorer: 'https://rinkeby.etherscan.io/address/',
       dataCoins: const [
         DataCoins(
@@ -225,7 +243,7 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0xD92E713d051C37EbB2561803a3b5FBAbc4962431', // decimals 6
+              '0xD92E713d051C37EbB2561803a3b5FBAbc4962431', // decimals 6
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
@@ -233,7 +251,7 @@ class Configs {
     NetworkName.bscMainnet: ConfigNetwork(
       rpc: 'https://bscrpc.com/',
       wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/mainnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/mainnet/ws',
       urlExplorer: 'https://bscscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -248,16 +266,15 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0x55d398326f99059ff775485246999027b3197955', // decimals 18
+              '0x55d398326f99059ff775485246999027b3197955', // decimals 18
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
     NetworkName.bscTestnet: ConfigNetwork(
-      rpc:
-      'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet',
+      rpc: 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet',
       wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet/ws',
       urlExplorer: 'https://testnet.bscscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -272,7 +289,7 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A', // decimals 18
+              '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A', // decimals 18
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
@@ -280,7 +297,7 @@ class Configs {
     NetworkName.polygonMainnet: ConfigNetwork(
       rpc: 'https://polygon-mainnet.public.blastapi.io/',
       wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mainnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mainnet/ws',
       urlExplorer: 'https://polygonscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -290,16 +307,16 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // decimals 6
+              '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // decimals 6
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
     NetworkName.polygonTestnet: ConfigNetwork(
       rpc:
-      'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai',
+          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai',
       wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai/ws',
       urlExplorer: 'https://mumbai.polygonscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -309,7 +326,7 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
-          '0x631E327EA88C37D4238B5c559A715332266e7Ec1', // decimals 6
+              '0x631E327EA88C37D4238B5c559A715332266e7Ec1', // decimals 6
           iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
@@ -373,7 +390,10 @@ enum NetworkName {
   polygonTestnet
 }
 
-enum Network { testnet, mainnet, }
+enum Network {
+  testnet,
+  mainnet,
+}
 
 enum SwitchNetworkNames { WORKNET, ETH, BSC, POLYGON }
 

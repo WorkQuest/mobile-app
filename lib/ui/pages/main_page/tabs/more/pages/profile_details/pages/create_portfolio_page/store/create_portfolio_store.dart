@@ -7,11 +7,13 @@ import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 part 'create_portfolio_store.g.dart';
 
 @injectable
-class CreatePortfolioStore extends _CreatePortfolioStore with _$CreatePortfolioStore {
+class CreatePortfolioStore extends _CreatePortfolioStore
+    with _$CreatePortfolioStore {
   CreatePortfolioStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _CreatePortfolioStore extends IMediaStore<PortfolioModel> with Store {
+abstract class _CreatePortfolioStore extends IMediaStore<PortfolioModel>
+    with Store {
   final ApiProvider _apiProvider;
 
   _CreatePortfolioStore(this._apiProvider);

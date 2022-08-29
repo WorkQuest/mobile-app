@@ -24,7 +24,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
-
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
   final Function(PortfolioModel value) addPortfolio;
@@ -179,7 +178,8 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                   onTap: () async {
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
-                      arguments: widget.id == GetIt.I.get<ProfileMeStore>().userData?.id
+                      arguments: widget.id ==
+                              GetIt.I.get<ProfileMeStore>().userData?.id
                           ? null
                           : ProfileArguments(
                               role: widget.role,
@@ -411,8 +411,9 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color:
-                          completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
+                      color: completedQuests != "0"
+                          ? Color(0xFF00AA5B)
+                          : Color(0xFFF7F8FA),
                       fontSize: 12.0,
                     ),
                   ),
@@ -524,7 +525,9 @@ Widget workerQuestStats({
                     profile: viewOtherUser.userData == null
                         ? profile.userData!
                         : viewOtherUser.userData!,
-                    type: active ? ProfileQuestsType.active : ProfileQuestsType.completed,
+                    type: active
+                        ? ProfileQuestsType.active
+                        : ProfileQuestsType.completed,
                   ),
                 );
               }
@@ -1036,7 +1039,9 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded
+                ? widget.skills
+                : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),

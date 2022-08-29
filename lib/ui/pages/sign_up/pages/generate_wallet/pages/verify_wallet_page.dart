@@ -61,7 +61,10 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 ),
                 Text(
                   'signUp.chooseWords'.tr(
-                    namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                    namedArgs: {
+                      'firstIndex': '${store.indexFirstWord}',
+                      'secondIndex': '${store.indexSecondWord}'
+                    },
                   ),
                   style: const TextStyle(
                     fontSize: 24,
@@ -126,7 +129,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                   width: double.infinity,
                   child: LoginButton(
                     title: 'wallet.openWallet'.tr(),
-                    onTap: store.statusGenerateButton && !store.isLoading ? _onPressedOnOpenWallet : null,
+                    onTap: store.statusGenerateButton && !store.isLoading
+                        ? _onPressedOnOpenWallet
+                        : null,
                   ),
                 )
               ],
@@ -196,7 +201,8 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
             height: 20,
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            padding:
+                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: ElevatedButton(
               child: Text('Ok'),
               onPressed: () {

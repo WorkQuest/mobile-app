@@ -37,7 +37,9 @@ class _HttpClient implements IHttpClient {
 
   String get _baseUrl {
     if (_network == Network.testnet) {
-      return Constants.isTestnet ? 'https://testnet-app.workquest.co/api' : 'https://dev-app.workquest.co/api';
+      return Constants.isTestnet
+          ? 'https://testnet-app.workquest.co/api'
+          : 'https://dev-app.workquest.co/api';
     } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api';
     }
@@ -61,7 +63,8 @@ class _HttpClient implements IHttpClient {
     bool useBaseUrl = true,
   }) async {
     return await _sendRequest(
-      _dio.get(useBaseUrl ? _baseUrl + query : query, queryParameters: queryParameters),
+      _dio.get(useBaseUrl ? _baseUrl + query : query,
+          queryParameters: queryParameters),
     );
   }
 
@@ -129,13 +132,15 @@ class _HttpClient implements IHttpClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           if (accessToken != null) {
-            options.headers["Authorization"] = "Bearer " + accessToken.toString();
+            options.headers["Authorization"] =
+                "Bearer " + accessToken.toString();
           }
           if (tokenExpired == true) {
             String? token = await Storage.readRefreshToken();
             options.headers["Authorization"] = "Bearer " + token.toString();
           }
-          if (options.uri.path.contains("auth/login") || options.uri.path.contains("refresh-tokens"))
+          if (options.uri.path.contains("auth/login") ||
+              options.uri.path.contains("refresh-tokens"))
             options.headers["user-agent"] = platform;
 
           println("\n---------- DioRequest ----------"
@@ -208,8 +213,10 @@ class _HttpClient implements IHttpClient {
         },
       ),
     );
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-      client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
       return client;
     };
   }

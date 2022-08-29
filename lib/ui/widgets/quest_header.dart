@@ -77,10 +77,12 @@ class QuestHeader extends StatelessWidget {
                   responded?.status == QuestConstants.questResponseAccepted) &&
               role == UserRole.Worker)
             return headerQuestPending;
-          else if ((responded?.status == QuestConstants.questResponseRejected) &&
+          else if ((responded?.status ==
+                  QuestConstants.questResponseRejected) &&
               role == UserRole.Worker)
             return headerQuestResponseRejected;
-          else if (responded?.status == QuestConstants.questResponseTypeResponded &&
+          else if (responded?.status ==
+                  QuestConstants.questResponseTypeResponded &&
               role == UserRole.Worker)
             return headerQuestResponded;
           else

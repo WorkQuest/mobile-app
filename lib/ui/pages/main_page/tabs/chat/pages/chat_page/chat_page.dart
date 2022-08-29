@@ -246,7 +246,7 @@ class _ChatPageState extends State<ChatPage>
         );
       Navigator.of(context, rootNavigator: true).pushNamed(
         ChatRoomPage.routeName,
-        arguments: ChatRoomArguments(chat.id, false),
+        arguments: ChatRoomArguments(chat.id),
       );
     }
   }

@@ -40,7 +40,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final controller = CupertinoTabController();
 
-  UserRole get role => context.read<ProfileMeStore>().userData?.role ?? UserRole.Worker;
+  UserRole get role =>
+      context.read<ProfileMeStore>().userData?.role ?? UserRole.Worker;
 
   @override
   void initState() {
@@ -48,7 +49,9 @@ class _MainPageState extends State<MainPage> {
     context.read<FilterQuestsStore>()..getFilters([], {});
     context.read<WalletStore>().getCoins();
     context.read<ProfileMeStore>().getProfileMe().then((value) {
-      context.read<ChatStore>().initialSetup(context.read<ProfileMeStore>().userData!.id);
+      context
+          .read<ChatStore>()
+          .initialSetup(context.read<ProfileMeStore>().userData!.id);
     });
     super.initState();
   }
@@ -62,7 +65,8 @@ class _MainPageState extends State<MainPage> {
           context,
           title: "modals.exit".tr(),
           message: "modals.areYouSure".tr(),
-          confirmAction: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+          confirmAction: () =>
+              SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
         );
         return true;
       },
@@ -86,7 +90,8 @@ class _MainPageState extends State<MainPage> {
                 icon: StreamBuilder<bool>(
                   key: key,
                   initialData: false,
-                  stream: context.read<ChatStore>().streamChatNotification!.stream,
+                  stream:
+                      context.read<ChatStore>().streamChatNotification!.stream,
                   builder: (context, snapshot) {
                     if (controller.index == 2 && snapshot.data!) {
                       return SvgPicture.asset(

@@ -32,8 +32,8 @@ class _UserAvatarState extends State<UserAvatar> {
       fit: widget.fit,
       width: widget.width,
       height: widget.height,
-      frameBuilder:
-          (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+      frameBuilder: (BuildContext context, Widget child, int? frame,
+          bool wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded) {
           return child;
         }

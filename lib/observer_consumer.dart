@@ -61,31 +61,32 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text('Error'),
-                      content: Builder(
-                        builder: (context) {
-                          return RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                                text: '',
-                                children: _words.map((word) {
-                                  return TextSpan(
-                                      text: '$word ',
-                                      style: TextStyle(
-                                        color: isLink(word) ? AppColor.enabledButton : Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = isLink(word)
-                                            ? () async {
-                                                if (await canLaunchUrl(Uri.parse(word))) {
-                                                  launchUrl(Uri.parse(word));
-                                                }
+                      content: Builder(builder: (context) {
+                        return RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                              text: '',
+                              children: _words.map((word) {
+                                return TextSpan(
+                                    text: '$word ',
+                                    style: TextStyle(
+                                      color: isLink(word)
+                                          ? AppColor.enabledButton
+                                          : Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = isLink(word)
+                                          ? () async {
+                                              if (await canLaunchUrl(
+                                                  Uri.parse(word))) {
+                                                launchUrl(Uri.parse(word));
                                               }
-                                            : null);
-                                }).toList()),
-                          );
-                        }
-                      ),
+                                            }
+                                          : null);
+                              }).toList()),
+                        );
+                      }),
                       actions: [
                         CupertinoDialogAction(
                           child: Text("OK"),
@@ -104,13 +105,16 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                                 return TextSpan(
                                     text: '$word ',
                                     style: TextStyle(
-                                      color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                      color: isLink(word)
+                                          ? AppColor.enabledButton
+                                          : Colors.black,
                                       fontSize: 14,
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = isLink(word)
                                           ? () async {
-                                              if (await canLaunchUrl(Uri.parse(word))) {
+                                              if (await canLaunchUrl(
+                                                  Uri.parse(word))) {
                                                 launchUrl(Uri.parse(word));
                                               }
                                             }

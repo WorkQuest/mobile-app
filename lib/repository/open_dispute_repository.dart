@@ -27,8 +27,10 @@ class OpenDisputeRepository extends IOpenDisputeRepository {
   Future<String> getGasOpenDispute(String contractAddress) async {
     try {
       final _client = WalletRepository().getClientWorkNet();
-      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
-      final _function = _contract.function(WQContractFunctions.arbitration.name);
+      final _contract =
+          await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _function =
+          _contract.function(WQContractFunctions.arbitration.name);
       final _gas = await _client.getEstimateGasCallContract(
         contract: _contract,
         function: _function,

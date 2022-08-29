@@ -57,11 +57,13 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
         fee: Decimal.parse(_fee),
-        amount: (Decimal.fromBigInt(price) / Decimal.fromInt(10).pow(18)).toDouble(),
+        amount: (Decimal.fromBigInt(price) / Decimal.fromInt(10).pow(18))
+            .toDouble(),
       );
       await _client.approveCoin(
         price: price,
-        address: EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
+        address:
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
       );
     } catch (e) {
       print('RaiseViewsRepository approve | error: $e');
@@ -72,13 +74,13 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
     }
   }
 
-
-
   @override
   Future<String> getGasApprove(BigInt price) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _contract = Erc20(address: EthereumAddress.fromHex(Web3Utils.getAddressWUSD()), client: _client.client!);
+      final _contract = Erc20(
+          address: EthereumAddress.fromHex(Web3Utils.getAddressWUSD()),
+          client: _client.client!);
       final result = await _client.getEstimateGasCallContract(
         contract: _contract.self,
         function: _contract.self.abi.functions[1],
@@ -98,14 +100,16 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
   }
 
   @override
-  Future<String> getGasRaiseViewProfile({required int levelGroup, required int period}) async {
+  Future<String> getGasRaiseViewProfile(
+      {required int levelGroup, required int period}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _contractPromote =
-          await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
+      final _contractPromote = await _client.getDeployedContract(
+          "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
       final result = await _client.getEstimateGasCallContract(
         contract: _contractPromote,
-        function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),
+        function:
+            _contractPromote.function(WQPromotionFunctions.promoteUser.name),
         params: [
           BigInt.from(levelGroup),
           BigInt.from(period),
@@ -130,11 +134,12 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
   }) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _contractPromote =
-          await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
+      final _contractPromote = await _client.getDeployedContract(
+          "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
       final result = await _client.getEstimateGasCallContract(
         contract: _contractPromote,
-        function: _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
+        function:
+            _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
         params: [
           EthereumAddress.fromHex(contractAddress),
           BigInt.from(levelGroup),
@@ -166,7 +171,8 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
     final _client = WalletRepository().getClientWorkNet();
     try {
       final _allowance = await _client.allowanceCoin(
-        address: EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
+        address:
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion()),
       );
       print('_allowance: $_allowance');
       return _allowance < price;
@@ -180,10 +186,14 @@ class RaiseViewsRepository implements IRaiseViewsRepository {
   }
 
   @override
-  Future raiseViewProfile({required int levelGroup, required int period, required String amount}) async {
+  Future raiseViewProfile(
+      {required int levelGroup,
+      required int period,
+      required String amount}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _fee = await getGasRaiseViewProfile(levelGroup: levelGroup, period: period);
+      final _fee =
+          await getGasRaiseViewProfile(levelGroup: levelGroup, period: period);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
         fee: Decimal.parse(_fee),

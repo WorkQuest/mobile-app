@@ -61,7 +61,8 @@ class _StarredMessagePageState extends State<StarredMessagePage> {
           child: NotificationListener<ScrollStartNotification>(
             onNotification: (scrollStart) {
               final metrics = scrollStart.metrics;
-              if (metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
+              if (metrics.maxScrollExtent < metrics.pixels &&
+                  !store.isLoading) {
                 store.getMessages();
               }
               return true;

@@ -106,6 +106,4 @@ abstract class _GroupChatStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-
-
 }

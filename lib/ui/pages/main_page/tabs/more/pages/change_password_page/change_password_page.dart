@@ -21,7 +21,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
-
 final spacer = const SizedBox(
   height: 20.0,
 );
@@ -118,7 +117,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         hint: "modals.confirmNewPassword".tr(),
                         onChanged: store.setConfirmNewPassword,
                         validator: (value) {
-                          if (value == null || value.isEmpty || value.length < 8) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length < 8) {
                             return "modals.lengthPassword".tr();
                           }
                           if (value != _newPasswordController.text) {
@@ -131,7 +132,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       Observer(
                         builder: (_) => LoginButton(
                           enabled: store.isLoading,
-                          onTap: store.canSubmit ? _changePasswordOnPressed : null,
+                          onTap:
+                              store.canSubmit ? _changePasswordOnPressed : null,
                           title: "meta.submit".tr(),
                         ),
                       ),

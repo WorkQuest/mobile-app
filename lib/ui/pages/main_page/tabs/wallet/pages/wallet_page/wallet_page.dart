@@ -75,7 +75,8 @@ class _WalletPageState extends State<WalletPage> {
                 child: ValueListenableBuilder<NetworkName?>(
                   valueListenable: WalletRepository().networkName,
                   builder: (_, value, child) {
-                    final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+                    final _networkName =
+                        Web3Utils.getNetworkNameForSwitch(value!);
                     return SwitchNetworkWidget<SwitchNetworkNames>(
                       value: _networkName,
                       onChanged: _onChangedSwitchNetwork,
@@ -131,7 +132,8 @@ class _WalletPageState extends State<WalletPage> {
                     Expanded(
                       flex: 1,
                       child: outlinedButton(
-                          route: WithdrawPage.routeName, title: "wallet.withdraw".tr()),
+                          route: WithdrawPage.routeName,
+                          title: "wallet.withdraw".tr()),
                     ),
                     const SizedBox(
                       width: 10,
@@ -139,7 +141,8 @@ class _WalletPageState extends State<WalletPage> {
                     Expanded(
                       flex: 1,
                       child: outlinedButton(
-                          route: DepositPage.routeName, title: "wallet.deposit".tr()),
+                          route: DepositPage.routeName,
+                          title: "wallet.deposit".tr()),
                     ),
                     const SizedBox(
                       width: 10,
@@ -176,7 +179,9 @@ class _WalletPageState extends State<WalletPage> {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             actions: const [
@@ -331,7 +336,6 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
   final CarouselController _controller = CarouselController();
   late final WalletStore store;
 
-
   @override
   void initState() {
     store = GetIt.I.get<WalletStore>();
@@ -465,8 +469,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                                  color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );

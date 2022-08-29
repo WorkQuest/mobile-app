@@ -24,7 +24,8 @@ class DeepLinkUtil {
 
   String get _network => WalletRepository().notifierNetwork.value.name;
 
-  bool get _clientHaveToken => GetIt.I.get<ApiProvider>().httpClient.accessToken != null;
+  bool get _clientHaveToken =>
+      GetIt.I.get<ApiProvider>().httpClient.accessToken != null;
 
   void initDeepLink() {
     initURIHandler();
@@ -89,13 +90,16 @@ class DeepLinkUtil {
     if (uri.path.contains("quests")) {
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
-        getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker ? QuestWorkerPage.routeName : QuestEmployerPage.routeName,
+        getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker
+            ? QuestWorkerPage.routeName
+            : QuestEmployerPage.routeName,
         arguments: QuestArguments(
           id: argument,
         ),
       );
     } else if (uri.path.contains("profile")) {
-      final questHolder = await GetIt.I.get<ApiProvider>().getProfileUser(userId: argument);
+      final questHolder =
+          await GetIt.I.get<ApiProvider>().getProfileUser(userId: argument);
       await Navigator.of(navigatorKey.currentState!.context,
               rootNavigator: true)
           .pushNamed(

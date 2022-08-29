@@ -13,7 +13,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
-
 const _padding = EdgeInsets.all(16.0);
 
 class ProfileVisibilityPage extends StatefulWidget {

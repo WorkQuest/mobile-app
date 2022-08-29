@@ -7,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-
 class DisputePage extends StatefulWidget {
   static const String routeName = "/disputesPage";
 

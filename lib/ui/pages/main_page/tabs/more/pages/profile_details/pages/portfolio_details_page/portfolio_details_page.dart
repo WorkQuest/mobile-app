@@ -68,11 +68,12 @@ class _PortfolioDetailsState extends State<PortfolioDetails> {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              final result =
-                                  await Navigator.of(context, rootNavigator: false)
-                                      .pushNamed(
+                              final result = await Navigator.of(context,
+                                      rootNavigator: false)
+                                  .pushNamed(
                                 CreatePortfolioPage.routeName,
-                                arguments: store.portfolioList[widget.arguments.index],
+                                arguments:
+                                    store.portfolioList[widget.arguments.index],
                               );
                               Navigator.pop(context, result);
                             },
@@ -95,15 +96,17 @@ class _PortfolioDetailsState extends State<PortfolioDetails> {
                             onPressed: () async {
                               AlertDialogUtils.showAlertDialog(context,
                                   title: Text('meta.areYouSure'.tr()),
-                                  content: Text('profiler.areYouSurePortfolio'.tr()),
+                                  content:
+                                      Text('profiler.areYouSurePortfolio'.tr()),
                                   needCancel: true,
                                   colorCancel: AppColor.enabledButton,
                                   colorOk: Colors.red, onTabOk: () {
                                 store.deletePortfolio(
-                                  portfolioId:
-                                      store.portfolioList[widget.arguments.index].id,
-                                  userId:
-                                      store.portfolioList[widget.arguments.index].userId,
+                                  portfolioId: store
+                                      .portfolioList[widget.arguments.index].id,
+                                  userId: store
+                                      .portfolioList[widget.arguments.index]
+                                      .userId,
                                 );
                                 Navigator.pop(context);
                               });
@@ -158,8 +161,8 @@ class _PortfolioDetailsState extends State<PortfolioDetails> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount:
-                              store.portfolioList[widget.arguments.index].medias.length,
+                          itemCount: store.portfolioList[widget.arguments.index]
+                              .medias.length,
                           itemBuilder: (_, index) => Observer(
                             builder: (_) => index == store.pageNumber
                                 ? _indicator(true, context)

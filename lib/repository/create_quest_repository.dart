@@ -19,13 +19,16 @@ abstract class ICreateQuestRepository {
 
   Future approve({required String? contractAddress, required String price});
 
-  Future<bool> needApprove({required String price, required String? contractAddress});
+  Future<bool> needApprove(
+      {required String price, required String? contractAddress});
 
   Future<String> getGasApprove({required String price});
 
-  Future<String> getGasEditQuest({required String price, required String contractAddress});
+  Future<String> getGasEditQuest(
+      {required String price, required String contractAddress});
 
-  Future<String> getGasCreateQuest({required String price, required String description});
+  Future<String> getGasCreateQuest(
+      {required String price, required String description});
 }
 
 class CreateQuestRepository extends ICreateQuestRepository {
@@ -37,11 +40,13 @@ class CreateQuestRepository extends ICreateQuestRepository {
   Future createQuest({required CreateQuestRequestModel quest}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final gas = await getGasCreateQuest(price: quest.price!, description: quest.description!);
+      final gas = await getGasCreateQuest(
+          price: quest.price!, description: quest.description!);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
         fee: Decimal.parse(gas.toString()),
-        amount: (Decimal.parse(quest.price!) / Decimal.fromInt(10).pow(18)).toDouble(),
+        amount: (Decimal.parse(quest.price!) / Decimal.fromInt(10).pow(18))
+            .toDouble(),
         isMain: true,
       );
       final nonce = await _apiProvider.createQuest(
@@ -70,11 +75,13 @@ class CreateQuestRepository extends ICreateQuestRepository {
   }) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final gas = await getGasEditQuest(price: quest.price!, contractAddress: contractAddress);
+      final gas = await getGasEditQuest(
+          price: quest.price!, contractAddress: contractAddress);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
         fee: Decimal.parse(gas.toString()),
-        amount: (Decimal.parse(quest.price!) / Decimal.fromInt(10).pow(18)).toDouble(),
+        amount: (Decimal.parse(quest.price!) / Decimal.fromInt(10).pow(18))
+            .toDouble(),
         isMain: true,
       );
       await _client.handleEvent(
@@ -99,12 +106,16 @@ class CreateQuestRepository extends ICreateQuestRepository {
   }
 
   @override
-  Future<bool> needApprove({required String price, required String? contractAddress}) async {
+  Future<bool> needApprove(
+      {required String price, required String? contractAddress}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _priceForApprove = Decimal.parse(price) * Decimal.parse(Constants.commissionForQuest.toString());
+      final _priceForApprove = Decimal.parse(price) *
+          Decimal.parse(Constants.commissionForQuest.toString());
       final _allowance = await _client.allowanceCoin(
-          address: contractAddress == null ? null : EthereumAddress.fromHex(contractAddress));
+          address: contractAddress == null
+              ? null
+              : EthereumAddress.fromHex(contractAddress));
       _client.stream?.cancel();
       _client.client?.dispose();
       return _allowance < _priceForApprove.toBigInt();
@@ -117,11 +128,13 @@ class CreateQuestRepository extends ICreateQuestRepository {
   }
 
   @override
-  Future approve({required String? contractAddress, required String price}) async {
+  Future approve(
+      {required String? contractAddress, required String price}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
       final _price = Decimal.parse(price);
-      final _priceForApprove = _price * Decimal.parse(Constants.commissionForQuest.toString());
+      final _priceForApprove =
+          _price * Decimal.parse(Constants.commissionForQuest.toString());
       final _isEdit = contractAddress != null;
       final gas = await getGasApprove(price: price);
       await Web3Utils.checkPossibilityTx(
@@ -131,9 +144,9 @@ class CreateQuestRepository extends ICreateQuestRepository {
         isMain: true,
       );
       await WalletRepository().getClientWorkNet().approveCoin(
-        price: _priceForApprove.toBigInt(),
-        address: _isEdit ? EthereumAddress.fromHex(contractAddress!) : null,
-      );
+            price: _priceForApprove.toBigInt(),
+            address: _isEdit ? EthereumAddress.fromHex(contractAddress!) : null,
+          );
     } catch (e) {
       _client.stream?.cancel();
       _client.client?.dispose();
@@ -147,7 +160,8 @@ class CreateQuestRepository extends ICreateQuestRepository {
     final _client = WalletRepository().getClientWorkNet();
     try {
       final _price = Decimal.parse(price);
-      final _gasForApprove = await _client.getEstimateGasForApprove(_price.toBigInt());
+      final _gasForApprove =
+          await _client.getEstimateGasForApprove(_price.toBigInt());
       _client.stream?.cancel();
       _client.client?.dispose();
       return _gasForApprove.toStringAsFixed(17);
@@ -160,16 +174,19 @@ class CreateQuestRepository extends ICreateQuestRepository {
   }
 
   @override
-  Future<String> getGasEditQuest({required String price, required String contractAddress}) async {
+  Future<String> getGasEditQuest(
+      {required String price, required String contractAddress}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
       final _price = Decimal.parse(price);
-      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _contract =
+          await _client.getDeployedContract("WorkQuest", contractAddress);
       final _function = _contract.function(WQContractFunctions.editJob.name);
       final _params = [
         _price.toBigInt(),
       ];
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: _params);
       _client.stream?.cancel();
       _client.client?.dispose();
       return _gas.toStringAsFixed(17);
@@ -182,18 +199,22 @@ class CreateQuestRepository extends ICreateQuestRepository {
   }
 
   @override
-  Future<String> getGasCreateQuest({required String price, required String description}) async {
+  Future<String> getGasCreateQuest(
+      {required String price, required String description}) async {
     final _client = WalletRepository().getClientWorkNet();
     try {
-      final _contract = await _client.getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-      final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
+      final _contract = await _client.getDeployedContract(
+          "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+      final _function =
+          _contract.function(WQFContractFunctions.newWorkQuest.name);
       final _params = [
         _client.stringToBytes32(description),
         BigInt.zero,
         BigInt.from(0.0),
         BigInt.from(0.0),
       ];
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: _params);
       _client.stream?.cancel();
       _client.client?.dispose();
       return _gas.toStringAsFixed(17);

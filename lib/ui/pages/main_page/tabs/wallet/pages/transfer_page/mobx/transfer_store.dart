@@ -77,7 +77,6 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
 
   @action
   getFee() async {
-
     if (currentCoin == null) {
       return;
     }
@@ -89,8 +88,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
           addressTo.isEmpty ? WalletRepository().userAddress : addressTo);
       final _gas = await _client.getGas();
 
-      final _currentListTokens = WalletRepository().getConfigNetwork().dataCoins;
-      final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
+      final _currentListTokens =
+          WalletRepository().getConfigNetwork().dataCoins;
+      final _isToken =
+          currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
 
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(currentCoin!.typeCoin);
@@ -179,7 +180,8 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
     final _client = WalletRepository().getClient();
     final _dataCoins = WalletRepository().getConfigNetwork().dataCoins;
     final _isNotToken = _dataCoins
-            .firstWhere((element) => element.symbolToken == currentCoin!.typeCoin)
+            .firstWhere(
+                (element) => element.symbolToken == currentCoin!.typeCoin)
             .addressToken ==
         null;
     if (_isNotToken) {
@@ -190,8 +192,9 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       print('fee: $fee');
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
       final _amount = ((Decimal.parse(_balanceInWei.toString()) -
-          (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
-          Decimal.fromInt(10).pow(18))
+                  (_gas *
+                      Decimal.parse(Commission.percentTransfer.toString()))) /
+              Decimal.fromInt(10).pow(18))
           .toDecimal();
       if (_amount < Decimal.zero) {
         return 0.0.toString();
@@ -202,11 +205,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
 
     final _balance = await WalletRepository()
         .getClient()
-        .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
+        .getBalanceFromContract(
+            Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);
   }
 }
 
-enum TransferStoreState {
-  checkBeforeSend, getMaxAmount
-}
+enum TransferStoreState { checkBeforeSend, getMaxAmount }

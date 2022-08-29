@@ -17,7 +17,8 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
   StateLoading state = StateLoading.nothing;
 
   @observable
-  ObservableList<ValueNotifier<LoadImageState>> progressImages = ObservableList.of([]);
+  ObservableList<ValueNotifier<LoadImageState>> progressImages =
+      ObservableList.of([]);
 
   @observable
   ObservableList<Media> medias = ObservableList.of([]);

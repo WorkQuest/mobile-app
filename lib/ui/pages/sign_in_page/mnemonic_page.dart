@@ -96,7 +96,8 @@ class _MnemonicPageState extends State<MnemonicPage> {
                       minSize: 22.0,
                       padding: EdgeInsets.zero,
                       onPressed: () async {
-                        ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                        ClipboardData? data =
+                            await Clipboard.getData(Clipboard.kTextPlain);
                         mnemonicController.text = data?.text ?? "";
                         store.setMnemonic(data?.text ?? "");
                       },
@@ -116,7 +117,8 @@ class _MnemonicPageState extends State<MnemonicPage> {
                     builder: (context) {
                       return LoginButton(
                         enabled: store.isLoading,
-                        onTap: store.mnemonic.isNotEmpty ? _onPressedLogin : null,
+                        onTap:
+                            store.mnemonic.isNotEmpty ? _onPressedLogin : null,
                         title: "signIn.login".tr(),
                       );
                     },

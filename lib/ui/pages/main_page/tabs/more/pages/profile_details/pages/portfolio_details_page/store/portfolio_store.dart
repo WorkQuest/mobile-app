@@ -51,7 +51,8 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @action
   addPortfolio(PortfolioModel portfolio) {
-    final _index = portfolioList.indexWhere((element) => element.id == portfolio.id);
+    final _index =
+        portfolioList.indexWhere((element) => element.id == portfolio.id);
     print('index: $_index');
     if (_index == -1) {
       portfolioList.insert(0, portfolio);

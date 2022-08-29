@@ -14,7 +14,8 @@ class CreateWalletStore extends _CreateWalletStore with _$CreateWalletStore {
 abstract class _CreateWalletStore extends IStore<CreateWalletState> with Store {
   final ICreateWalletRepository _repository;
 
-  _CreateWalletStore(ApiProvider apiProvider) : _repository = CreateWalletRepository(apiProvider);
+  _CreateWalletStore(ApiProvider apiProvider)
+      : _repository = CreateWalletRepository(apiProvider);
 
   @observable
   String? mnemonic;
@@ -50,7 +51,8 @@ abstract class _CreateWalletStore extends IStore<CreateWalletState> with Store {
   setIsSaved(bool value) => isSaved = value;
 
   @computed
-  bool get statusGenerateButton => selectedFirstWord == firstWord && selectedSecondWord == secondWord;
+  bool get statusGenerateButton =>
+      selectedFirstWord == firstWord && selectedSecondWord == secondWord;
 
   @action
   selectFirstWord(String? value) => selectedFirstWord = value;

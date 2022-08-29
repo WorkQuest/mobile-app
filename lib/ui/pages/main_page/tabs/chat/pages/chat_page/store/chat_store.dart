@@ -128,7 +128,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       });
 
   @action
-  void setChatHighlighted(ChatModel chat) => selectedChats[chat] = !selectedChats[chat]!;
+  void setChatHighlighted(ChatModel chat) =>
+      selectedChats[chat] = !selectedChats[chat]!;
 
   String getCountStarredChats() {
     int count = 0;
@@ -162,9 +163,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats = ObservableMap.of(chats.map((key, value) {
       value.chat.map((element) {
         if (element.id == chat.id) {
-          final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+          final _old =
+              chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
           _old.star = chat.star;
-          final index = chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
+          final index =
+              chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
           chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
           chats[key]!.chat.insert(index, _old);
         }
@@ -183,17 +186,16 @@ abstract class _ChatStore extends IStore<bool> with Store {
       } else if (json["message"]["action"] == "QuestStatusUpdated") {
         refreshChats();
         return;
-      }
-      else if (json["message"]["action"] == "employerInvitedWorkerToQuest") {
+      } else if (json["message"]["action"] == "employerInvitedWorkerToQuest") {
         refreshChats();
         return;
-      }
-      else if (json["message"]["action"] == "workerRespondedToQuest") {
+      } else if (json["message"]["action"] == "workerRespondedToQuest") {
         refreshChats();
         return;
       } else if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]);
-      } else if (json["type"] == "pub" || json["message"]["action"] == "messageReadByRecipient") {
+      } else if (json["type"] == "pub" ||
+          json["message"]["action"] == "messageReadByRecipient") {
         message = MessageModel.fromJson(json["message"]["data"]);
       }
 
@@ -202,7 +204,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       chats = ObservableMap.of(chats.map((key, value) {
         value.chat.forEach((element) {
           if (element.id == message!.chatId) {
-            final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+            final _old =
+                chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
             _old.chatData.lastMessage = message;
             chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
             chats[key]!.chat.insert(0, _old);
@@ -240,7 +243,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats.forEach((key, value) {
       value.chat.forEach((element) {
         if (element.chatData.lastMessage!.senderStatus == "Unread" &&
-            element.chatData.lastMessage!.sender?.userId != GetIt.I.get<ProfileMeStore>().userData!.id) {
+            element.chatData.lastMessage!.sender?.userId !=
+                GetIt.I.get<ProfileMeStore>().userData!.id) {
           check = true;
           return;
         }
@@ -258,9 +262,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
       chats = ObservableMap.of(chats.map((key, value) {
         value.chat.map((element) {
           if (element.id == chatId) {
-            final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+            final _old =
+                chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
             _old.chatData.lastMessage!.senderStatus = "Read";
-            final index = chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
+            final index =
+                chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
             chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
             chats[key]!.chat.insert(index, _old);
           }

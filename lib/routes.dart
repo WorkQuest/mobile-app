@@ -107,7 +107,9 @@ import 'ui/pages/sign_up/pages/sign_up_page/sign_up_page.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA"
+        ? TextDirection.rtl
+        : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -475,7 +477,9 @@ class Routes {
 
       case UserProfile.routeName:
         final arguments = settings.arguments as ProfileArguments?;
-        final _isWorker = (arguments?.role ?? GetIt.I.get<ProfileMeStore>().userData!.role) == UserRole.Worker;
+        final _isWorker =
+            (arguments?.role ?? GetIt.I.get<ProfileMeStore>().userData!.role) ==
+                UserRole.Worker;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -497,7 +501,9 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: _isWorker ? WorkerProfile(arguments) : EmployerProfile(arguments),
+              child: _isWorker
+                  ? WorkerProfile(arguments)
+                  : EmployerProfile(arguments),
             ),
           ),
         );
@@ -964,7 +970,8 @@ class Routes {
             create: (context) => getIt.get<ProfileVisibilityStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileVisibilityPage(settings.arguments as ProfileMeResponse),
+              child: ProfileVisibilityPage(
+                  settings.arguments as ProfileMeResponse),
             ),
           ),
         );

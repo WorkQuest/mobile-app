@@ -1,9 +1,6 @@
-
-
 import 'package:app/enums.dart';
 
 class ProfileConstants {
-
   static const Map<UserStatuses, int> userStatuses = {
     UserStatuses.Unconfirmed: 0,
     UserStatuses.Confirmed: 1,
@@ -123,13 +120,13 @@ class ProfileUtils {
   static int valueToPriority(String priorityValue) {
     switch (priorityValue) {
       case "quests.priority.all":
-        return  0;
+        return 0;
       case "quests.priority.urgent":
-        return  1;
+        return 1;
       case "quests.priority.normal":
-        return  2;
+        return 2;
       case "quests.priority.low":
-        return  3;
+        return 3;
     }
     return 0;
   }
@@ -149,11 +146,11 @@ class ProfileUtils {
   static String valueToWorkplace(String? distantWork) {
     switch (distantWork) {
       case "Remote work":
-        return  "Remote";
+        return "Remote";
       case "In-office":
-        return  "InOffice";
+        return "InOffice";
       case "Hybrid workplace":
-        return  "Hybrid";
+        return "Hybrid";
       default:
         return distantWork ?? "Hybrid";
     }

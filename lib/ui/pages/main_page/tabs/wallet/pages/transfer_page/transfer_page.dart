@@ -45,14 +45,13 @@ class _TransferPageState extends State<TransferPage> {
   late TransferStore store;
 
   late final List<CoinItem> _coins = tokens
-      .map((coin) =>
-      CoinItem(coin.iconPath, coin.symbolToken.name, coin.symbolToken, true))
+      .map((coin) => CoinItem(
+          coin.iconPath, coin.symbolToken.name, coin.symbolToken, true))
       .toList();
 
   late Timer timer;
 
   List<DataCoins> get tokens => WalletRepository().getConfigNetwork().dataCoins;
-
 
   @override
   void initState() {
@@ -86,8 +85,10 @@ class _TransferPageState extends State<TransferPage> {
         if (store.successData == TransferStoreState.getMaxAmount) {
           _amountController.text = (store.maxAmount ?? 0.0).toString();
         } else if (store.successData == TransferStoreState.checkBeforeSend) {
-          if (_key.currentState!.validate() && _formKey.currentState!.validate()) {
-            final result = await Navigator.of(context, rootNavigator: true).push(
+          if (_key.currentState!.validate() &&
+              _formKey.currentState!.validate()) {
+            final result =
+                await Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (_) => Provider(
                   create: (_) => getIt.get<ConfirmTransferStore>(),
@@ -183,12 +184,14 @@ class _TransferPageState extends State<TransferPage> {
                             return 'errors.fieldEmpty'.tr();
                           }
                           try {
-                            final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                            final _isBech =
+                                value.substring(0, 2).toLowerCase() == 'wq';
                             if (_isBech) {
                               if (value.length != 41) {
                                 return "errors.incorrectFormat".tr();
                               }
-                              if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+                              if (!RegExpFields.addressBech32RegExp
+                                  .hasMatch(value)) {
                                 return "errors.incorrectFormat".tr();
                               }
                             } else {
@@ -260,16 +263,19 @@ class _TransferPageState extends State<TransferPage> {
                             } else {
                               final title = 'meta.error'.tr();
                               final content = 'crediting.chooseCoin'.tr();
-                              AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                              AlertDialogUtils.showInfoAlertDialog(context,
+                                  title: title, content: content);
                             }
                           }
                         },
                       ),
                       inputFormatters: [
                         DecimalFormatter(),
-                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,18}')),
                       ],
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                     ),
                   ),
                   const SizedBox(
@@ -295,13 +301,18 @@ class _TransferPageState extends State<TransferPage> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
+          padding: EdgeInsets.only(
+              bottom: 10 + MediaQuery.of(context).padding.bottom,
+              left: 16.0,
+              right: 16.0),
           child: SizedBox(
             width: double.infinity,
             child: Observer(
               builder: (_) => DefaultButton(
                 title: 'wallet.withdraw'.tr(),
-                onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+                onPressed: store.statusButtonTransfer
+                    ? _pushConfirmTransferPage
+                    : null,
               ),
             ),
           ),
@@ -323,20 +334,25 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService.hexToBech32(WalletRepository().userWallet!.address!.toLowerCase())) {
+            AddressService.hexToBech32(
+                WalletRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
-        if (store.addressTo.toLowerCase() == WalletRepository().userWallet!.address!.toLowerCase()) {
+        if (store.addressTo.toLowerCase() ==
+            WalletRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       store.checkBeforeSend();
@@ -353,7 +369,8 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   _getTitleTrxFee() {
-    final _value = store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
+    final _value =
+        store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
     return '${'wallet.table.trxFee'.tr()}: ${_value.toStringAsFixed(7)} '
         '${Web3Utils.getNativeToken()}';
   }
@@ -424,11 +441,14 @@ class _TransferPageState extends State<TransferPage> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Container(
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
                                                       colors: [
                                                         AppColor.enabledButton,
                                                         AppColor.blue,
@@ -450,7 +470,9 @@ class _TransferPageState extends State<TransferPage> {
                                                   coin.title,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                                                    color: coin.isEnable
+                                                        ? Colors.black
+                                                        : AppColor.disabledText,
                                                   ),
                                                 ),
                                               ],

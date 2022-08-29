@@ -82,8 +82,11 @@ class _EnterTotpPageState extends State<EnterTotpPage> {
                   Spacer(),
                   SafeArea(
                     child: ElevatedButton(
-                      onPressed: store.totp.isNotEmpty ? _onPressedAccept : null,
-                      child: store.isLoading ? CircularProgressIndicator() : Text("meta.accept".tr()),
+                      onPressed:
+                          store.totp.isNotEmpty ? _onPressedAccept : null,
+                      child: store.isLoading
+                          ? CircularProgressIndicator()
+                          : Text("meta.accept".tr()),
                     ),
                   ),
                   SizedBox(

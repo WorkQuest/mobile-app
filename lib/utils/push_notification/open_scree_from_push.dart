@@ -32,12 +32,13 @@ class OpenScreeFromPush {
         Navigator.pushNamed(
           con!,
           ChatRoomPage.routeName,
-          arguments: ChatRoomArguments(notification.data.chatId, true),
+          arguments: ChatRoomArguments(notification.data.chatId),
         );
       } else if (notification.action.toLowerCase().contains("quest")) {
         Navigator.pushNamed(
           con!,
-          (getIt.get<ProfileMeStore>().userData?.role ?? UserRole.Worker) == UserRole.Worker
+          (getIt.get<ProfileMeStore>().userData?.role ?? UserRole.Worker) ==
+                  UserRole.Worker
               ? QuestWorkerPage.routeName
               : QuestEmployerPage.routeName,
           arguments: QuestArguments(id: notification.data.id),

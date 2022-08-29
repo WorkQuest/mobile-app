@@ -14,12 +14,13 @@ class Validators {
     return null;
   }
 
-  static String? passwordMatchValidator(String? password, String secondPassword) {
+  static String? passwordMatchValidator(
+      String? password, String secondPassword) {
     if (password == null) {
       return null;
     }
     if (password != secondPassword) {
-      return  "Does not match password";
+      return "Does not match password";
     }
     return null;
   }
@@ -57,7 +58,9 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return text!.length >= 8 ? null : "Password must be at least 8 characters long";
+    return text!.length >= 8
+        ? null
+        : "Password must be at least 8 characters long";
   }
 
   static String? firstNameValidator(String? text) {
@@ -88,18 +91,26 @@ class Validators {
   }
 
   static String? descriptionValidator(String? text) {
-    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/400";
+    return (text?.length ?? 0) < 400
+        ? null
+        : "Too many characters ${text!.length}/400";
   }
 
   static String? nicknameTwitterValidator(String? text) {
-    return (text?.length ?? 0) < 15 ? null : "Too many characters ${text!.length}/15";
+    return (text?.length ?? 0) < 15
+        ? null
+        : "Too many characters ${text!.length}/15";
   }
 
   static String? nicknameFacebookValidator(String? text) {
-    return (text?.length ?? 0) < 50 ? null : "Too many characters ${text!.length}/50";
+    return (text?.length ?? 0) < 50
+        ? null
+        : "Too many characters ${text!.length}/50";
   }
 
   static String? nicknameLinkedInValidator(String? text) {
-    return (text?.length ?? 0) < 30 ? null : "Too many characters ${text!.length}/30";
+    return (text?.length ?? 0) < 30
+        ? null
+        : "Too many characters ${text!.length}/30";
   }
 }

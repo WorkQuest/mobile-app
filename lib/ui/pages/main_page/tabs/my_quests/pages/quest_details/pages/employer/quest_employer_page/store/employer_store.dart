@@ -15,7 +15,6 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/credentials.dart';
 
-
 part 'employer_store.g.dart';
 
 @injectable
@@ -55,7 +54,9 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   @action
   getRespondedList(String id) async {
     respondedList = await _apiProvider.responsesQuest(id);
-    respondedList = respondedList.where((element) => (element.status == 0 && element.type == 0)).toList();
+    respondedList = respondedList
+        .where((element) => (element.status == 0 && element.type == 0))
+        .toList();
   }
 
   _getQuest() async {
@@ -77,7 +78,8 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
 
   @action
   void changeQuest(dynamic json) {
-    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest =
+        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       // _getQuest();
@@ -102,7 +104,8 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
         contract: _contract,
         function: _function,
         params: _params,
-        value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
+        value:
+            functionName == WQContractFunctions.arbitration.name ? "1" : null);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
       fee: Decimal.parse(_gas.toString()),
@@ -186,7 +189,9 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
         this.onError("modals.invalid2FA".tr());
         return;
       }
-      this.onSuccess(isEdit ? EmployerStoreState.validateTotpEdit : EmployerStoreState.validateTotpDelete);
+      this.onSuccess(isEdit
+          ? EmployerStoreState.validateTotpEdit
+          : EmployerStoreState.validateTotpDelete);
     } catch (e) {
       this.onError(e.toString());
     }

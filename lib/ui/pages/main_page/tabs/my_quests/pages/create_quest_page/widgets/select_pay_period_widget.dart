@@ -44,8 +44,9 @@ class SelectPayPeriodWidget extends StatelessWidget {
                   child: DropdownButton(
                     isExpanded: true,
                     value: QuestUtils.getPayPeriod(payPeriod),
-                    onChanged: onSelect ,
-                    items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
+                    onChanged: onSelect,
+                    items: QuestConstants.payPeriodList
+                        .map<DropdownMenuItem<String>>(
                       (String value) {
                         return DropdownMenuItem<String>(
                           value: value.tr(),

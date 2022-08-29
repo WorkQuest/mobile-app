@@ -86,8 +86,9 @@ class BaseQuestResponse with ClusterItem {
       user: json["user"] == null ? null : User.fromJson(json["user"]),
       status: json["status"] ?? 0,
       priority: json["priority"] ?? 0,
-      locationCode:
-          json["location"] == null ? null : LocationCode.fromJson(json["location"]),
+      locationCode: json["location"] == null
+          ? null
+          : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       title: json["title"] ?? "",
       assignedWorkerId: json["assignedWorkerId"] ?? "",
@@ -95,8 +96,10 @@ class BaseQuestResponse with ClusterItem {
       nonce: json["nonce"] ?? "",
       description: json["description"] ?? "",
       price: json["price"] ?? "",
-      createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-      startedAt: json["startedAt"] == null ? null : DateTime.parse(json["startedAt"]),
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      startedAt:
+          json["startedAt"] == null ? null : DateTime.parse(json["startedAt"]),
       star: json["star"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
           ? null
@@ -111,13 +114,21 @@ class BaseQuestResponse with ClusterItem {
         return skillsString;
       }([...json["questSpecializations"] ?? []]),
       workplace: json["workplace"] ?? "",
-      responded: json["response"] == null ? null : Responded.fromJson(json["response"]),
-      yourReview:
-          json["yourReview"] == null ? null : YourReview.fromJson(json["yourReview"]),
-      questChat: json["questChat"] == null ? null : QuestChat.fromJson(json["questChat"]),
-      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
-      openDispute:
-          json["openDispute"] == null ? null : OpenDispute.fromJson(json["openDispute"]),
+      responded: json["response"] == null
+          ? null
+          : Responded.fromJson(json["response"]),
+      yourReview: json["yourReview"] == null
+          ? null
+          : YourReview.fromJson(json["yourReview"]),
+      questChat: json["questChat"] == null
+          ? null
+          : QuestChat.fromJson(json["questChat"]),
+      raiseView: json["raiseView"] == null
+          ? null
+          : RaiseView.fromJson(json["raiseView"]),
+      openDispute: json["openDispute"] == null
+          ? null
+          : OpenDispute.fromJson(json["openDispute"]),
     );
   }
 
@@ -150,29 +161,29 @@ class BaseQuestResponse with ClusterItem {
   }
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "userId": userId,
-    "assignedWorkerId": assignedWorkerId,
-    "contractAddress": contractAddress,
-    "nonce": nonce,
-    "status": status,
-    "title": title,
-    "description": description,
-    "price": price,
-    "payPeriod": payPeriod,
-    "workplace": workplace,
-    "priority": priority,
-    "location": location.toJson(),
-    "locationPlaceName": locationPlaceName,
-    "startedAt": startedAt,
-    "createdAt": createdAt?.toIso8601String(),
-    "assignedWorker": assignedWorker,
-    "raiseView": raiseView?.toJson(),
-    "star": star,
-    "response": responded?.toJson(),
-    "openDispute": openDispute,
-    "yourReview": yourReview,
-  };
+        "id": id,
+        "userId": userId,
+        "assignedWorkerId": assignedWorkerId,
+        "contractAddress": contractAddress,
+        "nonce": nonce,
+        "status": status,
+        "title": title,
+        "description": description,
+        "price": price,
+        "payPeriod": payPeriod,
+        "workplace": workplace,
+        "priority": priority,
+        "location": location.toJson(),
+        "locationPlaceName": locationPlaceName,
+        "startedAt": startedAt,
+        "createdAt": createdAt?.toIso8601String(),
+        "assignedWorker": assignedWorker,
+        "raiseView": raiseView?.toJson(),
+        "star": star,
+        "response": responded?.toJson(),
+        "openDispute": openDispute,
+        "yourReview": yourReview,
+      };
 
   factory BaseQuestResponse.empty() {
     return BaseQuestResponse(
@@ -208,5 +219,6 @@ class BaseQuestResponse with ClusterItem {
   }
 
   @override
-  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 }

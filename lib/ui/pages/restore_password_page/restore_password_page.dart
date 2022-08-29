@@ -90,8 +90,11 @@ class _RestorePasswordPageState extends State<RestorePasswordPage> {
                       child: Observer(
                         builder: (context) {
                           return ElevatedButton(
-                            onPressed: _store.canSubmit ? _onPressedSubmit : null,
-                            child: _store.isLoading ? CircularProgressIndicator.adaptive() : Text("meta.submit".tr()),
+                            onPressed:
+                                _store.canSubmit ? _onPressedSubmit : null,
+                            child: _store.isLoading
+                                ? CircularProgressIndicator.adaptive()
+                                : Text("meta.submit".tr()),
                           );
                         },
                       ),

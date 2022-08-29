@@ -169,8 +169,8 @@ class ProfileMeResponse with ClusterItem {
                   : 'workerProfileVisibilitySetting'] ==
               null
           ? null
-          : WorkerProfileVisibilitySettingClass.fromJson(
-              json[json["role"] == "employer"
+          : WorkerProfileVisibilitySettingClass.fromJson(json[
+              json["role"] == "employer"
                   ? 'employerProfileVisibilitySetting'
                   : 'workerProfileVisibilitySetting']),
       // createdAt: DateTime.parse(json["createdAt"]),

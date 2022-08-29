@@ -43,10 +43,14 @@ abstract class _ChooseQuestStore extends IStore<ChooseQuestState> with Store {
       } else {
         showMore = true;
       }
-      final result = await _apiProvider.getAvailableQuests(userId: userId, offset: quests.length);
+      final result = await _apiProvider.getAvailableQuests(
+          userId: userId, offset: quests.length);
       quests.addAll(result);
-      quests.toList().sort(
-          (key1, key2) => key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch ? 1 : 0);
+      quests.toList().sort((key1, key2) =>
+          key1.createdAt!.millisecondsSinceEpoch <
+                  key2.createdAt!.millisecondsSinceEpoch
+              ? 1
+              : 0);
       this.onSuccess(ChooseQuestState.getQuests);
     } catch (e) {
       this.onError(e.toString());

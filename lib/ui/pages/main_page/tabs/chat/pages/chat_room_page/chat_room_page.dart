@@ -71,10 +71,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         chatName = _store.chatRoom!.groupChat?.name ?? "--";
       } else {
         if (_store.chatRoom?.questChat?.quest?.openDispute != null) {
-          _store.getQuest(_store.chatRoom!.questChat!.quest!.id);
           _store.getDispute(_store.chatRoom!.questChat!.quest!.openDispute!.id);
         }
-        if (members.length > 2) members.removeWhere((element) => element.type == "Admin");
+        if (members.length > 2)
+          members.removeWhere((element) => element.type == "Admin");
         id1 = members[0].userId;
         firstName1 = members[0].user!.firstName;
         lastName1 = members[0].user!.lastName;
@@ -133,7 +133,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                       _store.chatRoom!.questChat?.status != -1 &&
-                              (_store.chatRoom!.meMember?.status == 0 || meMember)
+                              (_store.chatRoom!.meMember?.status == 0 ||
+                                  meMember)
                           ? InputToolbar(_store)
                           : profile!.userData!.role == UserRole.Employer &&
                                   _store.chatRoom!.questChat != null &&
@@ -151,8 +152,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                         rootNavigator: true,
                                       ).pushNamed(
                                         ChooseQuestPage.routeName,
-                                        arguments:
-                                            profile!.userData!.id != id1 ? id1! : id2!,
+                                        arguments: profile!.userData!.id != id1
+                                            ? id1!
+                                            : id2!,
                                       );
                                     },
                                   ),
@@ -392,8 +394,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 }
 
 class ChatRoomArguments {
-  ChatRoomArguments(this.chatId, this.refreshChat);
+  ChatRoomArguments(this.chatId);
 
   final String chatId;
-  final bool refreshChat;
 }

@@ -14,7 +14,6 @@ class NotificationPage extends StatefulWidget {
 
   const NotificationPage();
 
-
   @override
   _NotificationPageState createState() => _NotificationPageState();
 }

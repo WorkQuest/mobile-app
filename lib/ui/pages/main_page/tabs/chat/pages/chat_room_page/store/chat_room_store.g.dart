@@ -9,21 +9,6 @@ part of 'chat_room_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatRoomStore on _ChatRoomStore, Store {
-  final _$questAtom = Atom(name: '_ChatRoomStore.quest');
-
-  @override
-  BaseQuestResponse? get quest {
-    _$questAtom.reportRead();
-    return super.quest;
-  }
-
-  @override
-  set quest(BaseQuestResponse? value) {
-    _$questAtom.reportWrite(value, super.quest, () {
-      super.quest = value;
-    });
-  }
-
   final _$disputeAtom = Atom(name: '_ChatRoomStore.dispute');
 
   @override
@@ -111,21 +96,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set selectedMessages(ObservableMap<MessageModel, bool> value) {
     _$selectedMessagesAtom.reportWrite(value, super.selectedMessages, () {
       super.selectedMessages = value;
-    });
-  }
-
-  final _$firstLoadAtom = Atom(name: '_ChatRoomStore.firstLoad');
-
-  @override
-  bool get firstLoad {
-    _$firstLoadAtom.reportRead();
-    return super.firstLoad;
-  }
-
-  @override
-  set firstLoad(bool value) {
-    _$firstLoadAtom.reportWrite(value, super.firstLoad, () {
-      super.firstLoad = value;
     });
   }
 
@@ -227,13 +197,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     return _$setStarAsyncAction.run(() => super.setStar());
   }
 
-  final _$getQuestAsyncAction = AsyncAction('_ChatRoomStore.getQuest');
-
-  @override
-  Future<void> getQuest(String id) {
-    return _$getQuestAsyncAction.run(() => super.getQuest(id));
-  }
-
   final _$getDisputeAsyncAction = AsyncAction('_ChatRoomStore.getDispute');
 
   @override
@@ -302,14 +265,12 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   String toString() {
     return '''
-quest: ${quest},
 dispute: ${dispute},
 initPage: ${initPage},
 loadMessage: ${loadMessage},
 chatRoom: ${chatRoom},
 messages: ${messages},
 selectedMessages: ${selectedMessages},
-firstLoad: ${firstLoad},
 sendingMessage: ${sendingMessage},
 messageSelected: ${messageSelected},
 starredMessage: ${starredMessage},

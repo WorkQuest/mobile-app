@@ -5,11 +5,9 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:hex/hex.dart';
 import 'package:web3dart/credentials.dart';
 
-
 const _baseDerivationPath = "m/44'/60'/0'/0/0";
 
 class AddressService {
-
   static String generateMnemonic() {
     try {
       return bip39.generateMnemonic(strength: 128);
@@ -109,11 +107,11 @@ class Bech32Encoder {
 
   /// for bech32 coding
   static Uint8List _convertBits(
-      List<int> data,
-      int from,
-      int to, {
-        bool pad = true,
-      }) {
+    List<int> data,
+    int from,
+    int to, {
+    bool pad = true,
+  }) {
     var acc = 0;
     var bits = 0;
     final result = <int>[];

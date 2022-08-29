@@ -86,7 +86,8 @@ class _SignInPageState extends State<SignInPage> {
     return ObserverListener<SignInStore>(
       onSuccess: _stateListener,
       onFailure: () {
-        if (store.errorMessage == "Invalid TOTP" || store.errorMessage == "User must pass 2FA") {
+        if (store.errorMessage == "Invalid TOTP" ||
+            store.errorMessage == "User must pass 2FA") {
           _showAlertTotp();
           return true;
         }

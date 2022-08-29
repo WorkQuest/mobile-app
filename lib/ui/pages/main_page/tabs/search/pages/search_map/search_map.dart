@@ -64,7 +64,9 @@ class _SearchMapState extends State<SearchMap> {
                 Observer(
                   builder: (_) => SearchBarMapWidget(
                     onTap: _onPressedOnSearchMap,
-                    hintText: mapStore.address.isNotEmpty ? mapStore.address : "quests.ui.search".tr(),
+                    hintText: mapStore.address.isNotEmpty
+                        ? mapStore.address
+                        : "quests.ui.search".tr(),
                   ),
                 ),
               ],
@@ -73,7 +75,8 @@ class _SearchMapState extends State<SearchMap> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedPadding(
-          padding: EdgeInsets.only(left: 25, bottom: mapStore.hideInfo ? 0.0 : 324.0),
+          padding: EdgeInsets.only(
+              left: 25, bottom: mapStore.hideInfo ? 0.0 : 324.0),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
           child: Row(
@@ -86,8 +89,11 @@ class _SearchMapState extends State<SearchMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore.hideInfo ? _onMyLocationPressed : mapStore.closeInfo,
-                child: Icon(mapStore.hideInfo ? Icons.location_on : Icons.close),
+                onPressed: mapStore.hideInfo
+                    ? _onMyLocationPressed
+                    : mapStore.closeInfo,
+                child:
+                    Icon(mapStore.hideInfo ? Icons.location_on : Icons.close),
               ),
             ],
           ),

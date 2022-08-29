@@ -36,7 +36,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
       onSuccess: () {
         Navigator.of(context, rootNavigator: true).pushReplacementNamed(
           ChatRoomPage.routeName,
-          arguments: ChatRoomArguments(store.chatId, true),
+          arguments: ChatRoomArguments(store.chatId),
         );
       },
       onFailure: () => false,
@@ -73,7 +73,8 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
                       onChanged: store.setMessage,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
-                      decoration: InputDecoration(hintText: "chat.typeMessage".tr()),
+                      decoration:
+                          InputDecoration(hintText: "chat.typeMessage".tr()),
                     ),
                   ),
                 ),

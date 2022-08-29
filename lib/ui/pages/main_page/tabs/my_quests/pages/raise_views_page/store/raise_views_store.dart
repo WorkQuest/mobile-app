@@ -20,7 +20,8 @@ class RaiseViewStore extends _RaiseViewStore with _$RaiseViewStore {
 abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   final IRaiseViewsRepository _repository;
 
-  _RaiseViewStore(ApiProvider apiProvider) : _repository = RaiseViewsRepository(apiProvider);
+  _RaiseViewStore(ApiProvider apiProvider)
+      : _repository = RaiseViewsRepository(apiProvider);
 
   @observable
   int periodGroupValue = 1;
@@ -43,9 +44,10 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
 
   BigInt? _priceForApprove;
 
-  String addressWUSD = WalletRepository().notifierNetwork.value == Network.mainnet
-      ? Constants.worknetMainnetWUSD
-      : Constants.worknetTestnetWUSD;
+  String addressWUSD =
+      WalletRepository().notifierNetwork.value == Network.mainnet
+          ? Constants.worknetMainnetWUSD
+          : Constants.worknetTestnetWUSD;
 
   String get addressWQPromotion => Web3Utils.getAddressWorknetWQPromotion();
 
@@ -58,7 +60,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
     required int tariff,
     required int period,
   }) =>
-      amount = RaiseViewUtils.getAmount(isQuest: isQuest, tariff: tariff, period: period);
+      amount = RaiseViewUtils.getAmount(
+          isQuest: isQuest, tariff: tariff, period: period);
 
   @action
   void initPrice() {
@@ -88,7 +91,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   checkAllowance() async {
     try {
       this.onLoading();
-      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
+      _priceForApprove =
+          (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
       needApprove = await _repository.needApprove(_priceForApprove!);
       this.onSuccess(RaiseViewStoreState.checkAllowance);
     } catch (e) {
@@ -112,7 +116,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
     try {
       this.onLoading();
       period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue);
-      await _repository.raiseViewProfile(levelGroup: levelGroupValue, period: period, amount: amount);
+      await _repository.raiseViewProfile(
+          levelGroup: levelGroupValue, period: period, amount: amount);
       this.onSuccess(RaiseViewStoreState.raiseProfile);
     } catch (e) {
       this.onError(e.toString());
@@ -143,7 +148,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   getGasApprove() async {
     try {
       onLoading();
-      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
+      _priceForApprove =
+          (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
       gas = await _repository.getGasApprove(_priceForApprove!);
       onSuccess(RaiseViewStoreState.getGasApprove);
     } catch (e) {
@@ -155,8 +161,10 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   getGasRaiseViewProfile() async {
     try {
       onLoading();
-      period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue, isQuest: false);
-      gas = await _repository.getGasRaiseViewProfile(levelGroup: levelGroupValue, period: period);
+      period = RaiseViewUtils.getPeriod(
+          periodGroupValue: periodGroupValue, isQuest: false);
+      gas = await _repository.getGasRaiseViewProfile(
+          levelGroup: levelGroupValue, period: period);
       onSuccess(RaiseViewStoreState.getGasRaiseViewProfile);
     } catch (e) {
       onError(e.toString());
@@ -167,7 +175,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   getGasRaiseViewQuest() async {
     try {
       onLoading();
-      period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue, isQuest: true);
+      period = RaiseViewUtils.getPeriod(
+          periodGroupValue: periodGroupValue, isQuest: true);
       gas = await _repository.getGasRaiseViewQuest(
         levelGroup: levelGroupValue,
         period: period,

@@ -99,12 +99,14 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       child: Text('startPage.next'.tr()),
-                      onPressed: store.isSaved ? () => _pushVerifyWallet(store) : null,
+                      onPressed:
+                          store.isSaved ? () => _pushVerifyWallet(store) : null,
                     ),
                   ),
                 ),

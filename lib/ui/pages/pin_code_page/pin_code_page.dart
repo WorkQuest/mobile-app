@@ -29,7 +29,8 @@ class PinCodePage extends StatefulWidget {
   State<StatefulWidget> createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage>
+    with SingleTickerProviderStateMixin {
   AnimationController? controller;
   late PinCodeStore store;
 
@@ -145,10 +146,10 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                   PinCodeKeyboard(
                     store.inputPin,
                     onTabRemove: store.popPin,
-                    onTabSensor:
-                        (store.statePin == StatePinCode.Check && store.canCheckBiometrics)
-                            ? store.biometricScan
-                            : null,
+                    onTabSensor: (store.statePin == StatePinCode.Check &&
+                            store.canCheckBiometrics)
+                        ? store.biometricScan
+                        : null,
                     canBiometric: store.canCheckBiometrics,
                     showButtonBiometric: store.statePin == StatePinCode.Check,
                     isFaceId: store.isFaceId,

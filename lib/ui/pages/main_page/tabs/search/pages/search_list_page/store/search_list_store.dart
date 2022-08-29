@@ -24,7 +24,8 @@ class SearchListStore extends _SearchListStore with _$SearchListStore {
 abstract class _SearchListStore extends IStore<bool> with Store {
   final ISearchRepository _repository;
 
-  _SearchListStore(ApiProvider apiProvider) : _repository = SearchRepository(apiProvider);
+  _SearchListStore(ApiProvider apiProvider)
+      : _repository = SearchRepository(apiProvider);
 
   FilterArguments filters = FilterArguments.empty();
 
@@ -43,7 +44,8 @@ abstract class _SearchListStore extends IStore<bool> with Store {
   Timer? debounce;
 
   @computed
-  bool get emptySearch => workersList.isEmpty && questsList.isEmpty && !this.isLoading;
+  bool get emptySearch =>
+      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   search({
@@ -87,7 +89,6 @@ abstract class _SearchListStore extends IStore<bool> with Store {
       onError(e.toString());
       isLoadingMore = false;
     }
-
   }
 
   @action

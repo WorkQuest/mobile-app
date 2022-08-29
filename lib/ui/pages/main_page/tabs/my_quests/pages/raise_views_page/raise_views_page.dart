@@ -133,16 +133,18 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                       _divider,
                       PeriodCard(
-                        period:
-                            widget.questId.isEmpty ? "raising-views.forOneWeek".tr() : "raising-views.forFiveDay".tr(),
+                        period: widget.questId.isEmpty
+                            ? "raising-views.forOneWeek".tr()
+                            : "raising-views.forFiveDay".tr(),
                         groupValue: store.periodGroupValue,
                         value: 2,
                         onChanged: store.changePeriod,
                       ),
                       _divider,
                       PeriodCard(
-                        period:
-                            widget.questId.isEmpty ? "raising-views.forOneMonth".tr() : "raising-views.forOneWeek".tr(),
+                        period: widget.questId.isEmpty
+                            ? "raising-views.forOneMonth".tr()
+                            : "raising-views.forOneWeek".tr(),
                         groupValue: store.periodGroupValue,
                         value: 3,
                         onChanged: store.changePeriod,
@@ -163,7 +165,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFF6CF00),
                         level: "raising-views.levels.goldPlus.title".tr(),
                         price: store.price[store.periodGroupValue]![0],
-                        description: "raising-views.levels.goldPlus.description".tr(),
+                        description:
+                            "raising-views.levels.goldPlus.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -173,7 +176,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFF6CF00),
                         level: "raising-views.levels.gold.title".tr(),
                         price: store.price[store.periodGroupValue]![1],
-                        description: "raising-views.levels.gold.description".tr(),
+                        description:
+                            "raising-views.levels.gold.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -183,7 +187,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFBBC0C7),
                         level: "raising-views.levels.silver.title".tr(),
                         price: store.price[store.periodGroupValue]![2],
-                        description: "raising-views.levels.silver.description".tr(),
+                        description:
+                            "raising-views.levels.silver.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -193,7 +198,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFB79768),
                         level: "raising-views.levels.bronze.title".tr(),
                         price: store.price[store.periodGroupValue]![3],
-                        description: "raising-views.levels.bronze.description".tr(),
+                        description:
+                            "raising-views.levels.bronze.description".tr(),
                       ),
                     ],
                   ),

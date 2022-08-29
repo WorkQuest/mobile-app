@@ -5,7 +5,6 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/dispute_model.dart';
 import 'package:app/model/media_model.dart';
-import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/thumbnails.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:injectable/injectable.dart';
@@ -26,9 +25,6 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   }
 
   final ApiProvider _apiProvider;
-
-  @observable
-  BaseQuestResponse? quest;
 
   @observable
   DisputeModel? dispute;
@@ -53,9 +49,6 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
 
   @observable
   ObservableMap<MessageModel, bool> selectedMessages = ObservableMap.of({});
-
-  @observable
-  bool firstLoad = true;
 
   @observable
   bool sendingMessage = false;
@@ -222,17 +215,6 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     );
     progressImages.clear();
     setSendingMessage(false);
-  }
-
-  @action
-  Future<void> getQuest(String id) async {
-    try {
-      this.onLoading();
-      quest = await _apiProvider.getQuest(id: id);
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
-    }
   }
 
   @action

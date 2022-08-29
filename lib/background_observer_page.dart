@@ -68,7 +68,7 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     //     AppLifecycleState.values[prevState] != AppLifecycleState.paused;
 
     // if (prevStateIsNotPaused) {
-      sp.setInt(backgroundedTimeKey, DateTime.now().millisecondsSinceEpoch);
+    sp.setInt(backgroundedTimeKey, DateTime.now().millisecondsSinceEpoch);
     // }
 
     sp.setInt(lastKnownStateKey, AppLifecycleState.inactive.index);

@@ -50,7 +50,7 @@ abstract class _UserProfileWorkerStore extends IStore<bool> with Store {
   @action
   List<String> parser(List<String> skills) {
     List<String> result = [];
-    for (String skill in skills ){
+    for (String skill in skills) {
       final _spec = skill.split(".").first;
       final _skill = skill.split('.').last;
       result.add("filters.items.$_spec.sub.$_skill".tr());

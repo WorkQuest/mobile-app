@@ -74,7 +74,8 @@ class _StartPageState extends State<StartPage> {
                                 firstHead: "startPage.pages.first.head".tr(),
                                 firstTitle: "startPage.pages.first.title".tr(),
                                 secondHead: "startPage.pages.second.head".tr(),
-                                secondTitle: "startPage.pages.second.title".tr(),
+                                secondTitle:
+                                    "startPage.pages.second.title".tr(),
                               )
                             else
                               page(

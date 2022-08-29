@@ -27,50 +27,50 @@ class SelectAddressWidget extends StatelessWidget {
       child: TitleWithField(
         "quests.address".tr(),
         GestureDetector(
-            onTap: onPressed,
-            child: Container(
-              key: keyField,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(0xFFF7F8FA),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
+          onTap: onPressed,
+          child: Container(
+            key: keyField,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 17,
                 ),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 17,
-                  ),
-                  Icon(
-                    Icons.map_outlined,
-                    color: Colors.blueAccent,
-                    size: 26.0,
-                  ),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Flexible(
-                    child: defaultValue
-                        ? Text(
-                            "Moscow, Lenina street, 3",
-                            style: TextStyle(
-                              color: Color(
-                                0xFFD8DFE3,
-                              ),
+                Icon(
+                  Icons.map_outlined,
+                  color: Colors.blueAccent,
+                  size: 26.0,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Flexible(
+                  child: defaultValue
+                      ? Text(
+                          "Moscow, Lenina street, 3",
+                          style: TextStyle(
+                            color: Color(
+                              0xFFD8DFE3,
                             ),
-                            overflow: TextOverflow.fade,
-                          )
-                        : Text(
-                            locationName,
-                            overflow: TextOverflow.fade,
                           ),
-                  ),
-                ],
-              ),
+                          overflow: TextOverflow.fade,
+                        )
+                      : Text(
+                          locationName,
+                          overflow: TextOverflow.fade,
+                        ),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

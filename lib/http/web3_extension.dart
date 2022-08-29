@@ -73,7 +73,7 @@ extension Web3Requests on ApiProvider {
     );
     return List<CurrentCourseTokensResponse>.from(
       response.map(
-            (x) => CurrentCourseTokensResponse.fromJson(x),
+        (x) => CurrentCourseTokensResponse.fromJson(x),
       ),
     );
   }

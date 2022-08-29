@@ -38,7 +38,8 @@ class QuestDetailsBodyWidget extends StatelessWidget {
 
   bool get showProgressBy =>
       quest!.assignedWorker != null &&
-      (quest!.status == QuestConstants.questCreated || quest!.status == QuestConstants.questDone);
+      (quest!.status == QuestConstants.questCreated ||
+          quest!.status == QuestConstants.questDone);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,8 @@ class QuestDetailsBodyWidget extends StatelessWidget {
         : RefreshIndicator(
             onRefresh: onRefresh,
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
               child: Column(
                 children: [
                   questHeader,
@@ -66,14 +68,16 @@ class QuestDetailsBodyWidget extends StatelessWidget {
                         quest!.userId == myId
                             ? Text("quests.yourQuest".tr())
                             : GestureDetector(
-                                onTap: () => _onPressedPushProfileEmployer(context),
+                                onTap: () =>
+                                    _onPressedPushProfileEmployer(context),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: Image.network(
-                                        quest!.user!.avatar?.url ?? Constants.defaultImageNetwork,
+                                        quest!.user!.avatar?.url ??
+                                            Constants.defaultImageNetwork,
                                         width: 30,
                                         height: 30,
                                         fit: BoxFit.cover,
@@ -113,7 +117,8 @@ class QuestDetailsBodyWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 17),
                         TagItemWidget(
-                          skills: SkillUtils.parser(quest!.questSpecializations),
+                          skills:
+                              SkillUtils.parser(quest!.questSpecializations),
                         ),
                         if (showProgressBy) inProgressBy,
                         const SizedBox(height: 15),
@@ -147,7 +152,8 @@ class QuestDetailsBodyWidget extends StatelessWidget {
                           ),
                         ],
                         Text(
-                          DateFormat('dd MMMM yyyy, kk:mm').format(quest!.createdAt!.toLocal()),
+                          DateFormat('dd MMMM yyyy, kk:mm')
+                              .format(quest!.createdAt!.toLocal()),
                           style: TextStyle(
                             color: Color(0xFFAAB0B9),
                             fontSize: 12,
@@ -189,7 +195,8 @@ class QuestDetailsBodyWidget extends StatelessWidget {
                                   "assets/marker.svg",
                                   width: 22,
                                   height: 29,
-                                  color: Constants.priorityColors[quest!.priority],
+                                  color:
+                                      Constants.priorityColors[quest!.priority],
                                 ),
                                 Container(
                                   color: Colors.transparent,
@@ -207,7 +214,9 @@ class QuestDetailsBodyWidget extends StatelessWidget {
                             Row(
                               children: [
                                 PriorityView(
-                                  quest!.priority != 0 ? quest!.priority - 1 : 0,
+                                  quest!.priority != 0
+                                      ? quest!.priority - 1
+                                      : 0,
                                 ),
                                 const SizedBox(width: 5),
                                 PayPeriodView(quest!.payPeriod),

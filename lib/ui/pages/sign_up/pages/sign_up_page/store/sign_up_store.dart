@@ -14,7 +14,8 @@ class SignUpStore extends _SignUpStore with _$SignUpStore {
 abstract class _SignUpStore extends IStore<SignUpState> with Store {
   final IRegRepository _repository;
 
-  _SignUpStore(ApiProvider apiProvider) : _repository = RegRepository(apiProvider);
+  _SignUpStore(ApiProvider apiProvider)
+      : _repository = RegRepository(apiProvider);
 
   @observable
   String _email = '';
@@ -65,7 +66,11 @@ abstract class _SignUpStore extends IStore<SignUpState> with Store {
   Future register() async {
     try {
       this.onLoading();
-      await _repository.register(email: email, firstName: _firstName, lastName: _lastName, password: _password);
+      await _repository.register(
+          email: email,
+          firstName: _firstName,
+          lastName: _lastName,
+          password: _password);
       this.onSuccess(SignUpState.register);
     } catch (e) {
       this.onError(e.toString());

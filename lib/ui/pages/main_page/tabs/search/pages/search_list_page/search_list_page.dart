@@ -21,7 +21,8 @@ import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-const _divider = const SizedBox(height: 6, child: ColoredBox(color: AppColor.disabledButton));
+const _divider = const SizedBox(
+    height: 6, child: ColoredBox(color: AppColor.disabledButton));
 
 class SearchListPage extends StatefulWidget {
   SearchListPage(this.changePage);
@@ -107,7 +108,9 @@ class _SearchListPageState extends State<SearchListPage> {
               children: [
                 Expanded(
                   child: Text(
-                    role == UserRole.Worker ? "quests.quests".tr() : "workers.workers".tr(),
+                    role == UserRole.Worker
+                        ? "quests.quests".tr()
+                        : "workers.workers".tr(),
                   ),
                 ),
                 CupertinoButton(
@@ -212,7 +215,9 @@ class _SearchListPageState extends State<SearchListPage> {
                         return _divider;
                       },
                       padding: EdgeInsets.zero,
-                      itemCount: role == UserRole.Worker ? store.questsList.length : store.workersList.length,
+                      itemCount: role == UserRole.Worker
+                          ? store.questsList.length
+                          : store.workersList.length,
                       itemBuilder: (_, index) {
                         return Observer(
                           builder: (_) {
@@ -275,7 +280,8 @@ class _SearchListPageState extends State<SearchListPage> {
   }
 
   _onPressedOnNotifications() {
-    Navigator.of(context, rootNavigator: true).pushNamed(NotificationPage.routeName);
+    Navigator.of(context, rootNavigator: true)
+        .pushNamed(NotificationPage.routeName);
   }
 
   _onPressedChangePage() {

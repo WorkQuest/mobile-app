@@ -47,7 +47,8 @@ class QuestEmployerPage extends StatefulWidget {
   _QuestEmployerPageState createState() => _QuestEmployerPageState();
 }
 
-class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTickerProviderStateMixin {
+class _QuestEmployerPageState extends State<QuestEmployerPage>
+    with SingleTickerProviderStateMixin {
   late EmployerStore store;
   late MyQuestStore myQuestStore;
   late ChatStore chatStore;
@@ -56,9 +57,11 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
 
   String get myId => context.read<ProfileMeStore>().userData!.id;
 
-  bool get isTotpActive => context.read<ProfileMeStore>().userData?.isTotpActive == true;
+  bool get isTotpActive =>
+      context.read<ProfileMeStore>().userData?.isTotpActive == true;
 
-  bool get isMyQuest => store.quest.value != null && store.quest.value?.userId == myId;
+  bool get isMyQuest =>
+      store.quest.value != null && store.quest.value?.userId == myId;
 
   bool get canActionsQuest =>
       isMyQuest &&
@@ -67,7 +70,8 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
 
   bool get canRaiseView =>
       (store.quest.value?.status == QuestConstants.questCreated ||
-          store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign) &&
+          store.quest.value?.status ==
+              QuestConstants.questWaitWorkerOnAssign) &&
       store.quest.value?.raiseView?.status != 0;
 
   bool get canEditOrDelete =>
@@ -77,12 +81,14 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
   bool get canCreateReview =>
       store.quest.value?.status == QuestConstants.questDone &&
       store.quest.value?.yourReview == null &&
-      (store.quest.value?.userId == myId || store.quest.value?.assignedWorker?.id == myId);
+      (store.quest.value?.userId == myId ||
+          store.quest.value?.assignedWorker?.id == myId);
 
   bool get showReview =>
       store.quest.value?.status == QuestConstants.questDone &&
       store.quest.value?.yourReview != null &&
-      (store.quest.value?.userId == myId || store.quest.value?.assignedWorker?.id == myId);
+      (store.quest.value?.userId == myId ||
+          store.quest.value?.assignedWorker?.id == myId);
 
   bool get canPushToDispute =>
       store.quest.value?.userId == myId &&
@@ -123,7 +129,8 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
         id: store.selectedResponders!.id,
       );
       store.setQuestStatus(QuestConstants.questWaitWorkerOnAssign);
-      await questStore.search(role: UserRole.Employer, searchLine: questStore.searchWord);
+      await questStore.search(
+          role: UserRole.Employer, searchLine: questStore.searchWord);
       await myQuestStore.updateListQuest();
       myQuestStore.sortQuests();
       await AlertDialogUtils.showSuccessDialog(
@@ -142,7 +149,8 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
         arguments: store.quest.value,
       );
     } else if (store.successData == EmployerStoreState.validateTotpDelete) {
-      await store.getFee(store.quest.value?.assignedWorkerId ?? '1', WQContractFunctions.cancelJob.name);
+      await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
+          WQContractFunctions.cancelJob.name);
       AlertDialogUtils.showAlertTxConfirm(
         context,
         typeTx: "quests.deleteQuest".tr(),
@@ -181,8 +189,10 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                     icon: Icon(Icons.share_outlined),
                     onPressed: () {
                       late String _url;
-                      if (WalletRepository().notifierNetwork.value == Network.mainnet) {
-                        _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+                      if (WalletRepository().notifierNetwork.value ==
+                          Network.mainnet) {
+                        _url =
+                            "https://app.workquest.co/quests/${store.quest.value!.id}";
                       } else {
                         _url =
                             "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
@@ -343,7 +353,10 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
-                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
                   return const Color(0xFF0083C7);
                 },
               ),
@@ -413,7 +426,8 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                   child: UserAvatar(
                     width: 30,
                     height: 30,
-                    url: store.quest.value?.assignedWorker?.avatar?.url ?? Constants.defaultImageNetwork,
+                    url: store.quest.value?.assignedWorker?.avatar?.url ??
+                        Constants.defaultImageNetwork,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -499,7 +513,8 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                                   );
                                   AlertDialogUtils.showLoadingDialog(context);
                                 },
-                                functionName: WQContractFunctions.acceptJobResult.name,
+                                functionName:
+                                    WQContractFunctions.acceptJobResult.name,
                               );
                             },
                       child: Text(
@@ -510,10 +525,14 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
                             return Colors.green;
                           },
                         ),
@@ -548,9 +567,11 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                                     OpenDisputePage.routeName,
                                     arguments: store.quest.value!,
                                   );
-                                  if (_result != null && _result is OpenDispute) {
+                                  if (_result != null &&
+                                      _result is OpenDispute) {
                                     Navigator.pop(context);
-                                    store.quest.value!.status = QuestConstants.questDispute;
+                                    store.quest.value!.status =
+                                        QuestConstants.questDispute;
                                     store.quest.value!.openDispute = _result;
                                     store.quest.reportChanged();
                                   }
@@ -567,10 +588,14 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
                             return const Color(0xFF0083C7);
                           },
                         ),
@@ -594,11 +619,13 @@ class _QuestEmployerPageState extends State<QuestEmployerPage> with SingleTicker
     try {
       await _checkPossibilityTx(functionName);
     } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.message);
       return;
     } catch (e, trace) {
       print('$e\n$trace');
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.toString());
       return;
     }
     await confirmTransaction(

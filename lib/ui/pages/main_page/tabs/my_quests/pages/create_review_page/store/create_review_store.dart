@@ -10,7 +10,8 @@ class CreateReviewStore extends _CreateReviewStore with _$CreateReviewStore {
   CreateReviewStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _CreateReviewStore extends IStore<CreateReviewStoreState> with Store {
+abstract class _CreateReviewStore extends IStore<CreateReviewStoreState>
+    with Store {
   final ApiProvider _apiProvider;
 
   _CreateReviewStore(this._apiProvider);

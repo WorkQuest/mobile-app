@@ -95,12 +95,11 @@ class WebSocket {
   }
 
   void _connectSender() {
-    final _wssPath =
-        WalletRepository().notifierNetwork.value == Network.testnet
-            ? Constants.isTestnet
-                ? "wss://testnet-app.workquest.co/api"
-                : "wss://dev-app.workquest.co/api"
-            : "wss://app.workquest.co/api";
+    final _wssPath = WalletRepository().notifierNetwork.value == Network.testnet
+        ? Constants.isTestnet
+            ? "wss://testnet-app.workquest.co/api"
+            : "wss://dev-app.workquest.co/api"
+        : "wss://app.workquest.co/api";
     _senderChannel = IOWebSocketChannel.connect(_wssPath);
     _senderChannel?.sink.add("""{
           "type": "hello",
@@ -167,8 +166,7 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      if (json["path"] == "/notifications/quest")
-        questNotification(json);
+      if (json["path"] == "/notifications/quest") questNotification(json);
       getMessage(json);
     } catch (e, trace) {
       print("ERROR: $e \n $trace");

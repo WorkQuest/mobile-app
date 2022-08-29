@@ -21,14 +21,16 @@ class WalletRepository {
   ClientService? client;
 
   ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
-  ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
+  ValueNotifier<Network> notifierNetwork =
+      ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
   String get privateKey => userWallet!.privateKey!;
 
   bool get isOtherNetwork =>
-      networkName.value != NetworkName.workNetTestnet && networkName.value != NetworkName.workNetMainnet;
+      networkName.value != NetworkName.workNetTestnet &&
+      networkName.value != NetworkName.workNetMainnet;
 
   ClientService getClient() {
     return client!;
@@ -40,9 +42,10 @@ class WalletRepository {
 
   connectClient() {
     if (WalletRepository().networkName.value == null) {
-      final _networkName = WalletRepository().notifierNetwork.value == Network.mainnet
-          ? NetworkName.workNetMainnet
-          : NetworkName.workNetTestnet;
+      final _networkName =
+          WalletRepository().notifierNetwork.value == Network.mainnet
+              ? NetworkName.workNetMainnet
+              : NetworkName.workNetTestnet;
       WalletRepository().setNetwork(_networkName);
     }
     final config = Configs.configsNetwork[networkName.value!];
@@ -55,7 +58,8 @@ class WalletRepository {
 
   ConfigNetwork getConfigNetworkWorknet() {
     final _isTestnet = notifierNetwork.value == Network.testnet;
-    return Configs.configsNetwork[_isTestnet ? NetworkName.workNetTestnet : NetworkName.workNetMainnet]!;
+    return Configs.configsNetwork[
+        _isTestnet ? NetworkName.workNetTestnet : NetworkName.workNetMainnet]!;
   }
 
   setNetwork(NetworkName networkName) {

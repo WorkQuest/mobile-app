@@ -83,7 +83,8 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (Platform.isIOS) {
                         await PermissionUtil.requestForIos(Permission.photos);
                       } else if (Platform.isAndroid) {
-                        await PermissionUtil.requestForAndroid(Permission.storage);
+                        await PermissionUtil.requestForAndroid(
+                            Permission.storage);
                       }
                       FilePickerResult? result;
                       if (widget.type == MediaType.images) {
@@ -95,15 +96,19 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (widget.type == MediaType.video) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: Platform.isIOS ? FileType.video : FileType.custom,
-                          allowedExtensions: Platform.isIOS ? null : videosExtensions,
+                          type:
+                              Platform.isIOS ? FileType.video : FileType.custom,
+                          allowedExtensions:
+                              Platform.isIOS ? null : videosExtensions,
                         );
                       }
                       if (widget.type == MediaType.any) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
                           type: Platform.isIOS ? FileType.any : FileType.custom,
-                          allowedExtensions: Platform.isIOS ? null : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png'],
+                          allowedExtensions: Platform.isIOS
+                              ? null
+                              : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png'],
                         );
                       }
                       if (result != null) {
@@ -153,7 +158,8 @@ class ListMediaView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           ...store.progressImages
-              .where((element) => element.value.url != null && element.value.url!.isNotEmpty)
+              .where((element) =>
+                  element.value.url != null && element.value.url!.isNotEmpty)
               .toList()
               .map(
                 (notifier) => _ImageNetworkEntity(
@@ -215,7 +221,9 @@ class _GalleryView extends StatelessWidget {
           result = await FilePicker.platform.pickFiles(
               allowMultiple: true,
               type: Platform.isIOS ? FileType.any : FileType.custom,
-              allowedExtensions: Platform.isIOS ? null : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']);
+              allowedExtensions: Platform.isIOS
+                  ? null
+                  : ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']);
         }
         if (result != null) {
           result.files.map((file) {
@@ -277,7 +285,8 @@ class _ImageNetworkEntity extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   height: 300,
                   placeholder: MemoryImage(
-                    Uint8List.fromList(base64Decode(Constants.base64WhiteHolder)),
+                    Uint8List.fromList(
+                        base64Decode(Constants.base64WhiteHolder)),
                   ),
                   image: NetworkImage(
                     notifier.value.url!,
@@ -400,7 +409,8 @@ class _ImageWidgetState extends State<_ImageWidget> {
                       GetVideoThumbnail(
                         file: file!,
                       )
-                    else if (widget.notifier.value.typeFile == TypeFile.documents)
+                    else if (widget.notifier.value.typeFile ==
+                        TypeFile.documents)
                       SvgPicture.asset(
                         'assets/document.svg',
                         color: Color(0xFFAAB0B9),
@@ -459,7 +469,8 @@ class _ImageWidgetState extends State<_ImageWidget> {
   }
 
   String _textState(LoadImageState value) {
-    if (widget.stateLoading != null && widget.stateLoading != StateLoading.nothing) {
+    if (widget.stateLoading != null &&
+        widget.stateLoading != StateLoading.nothing) {
       switch (value.state) {
         case StateImage.compression:
           return 'uploader.states.compression'.tr();
@@ -528,7 +539,8 @@ class _GetVideoThumbnailState extends State<GetVideoThumbnail> {
                     width: MediaQuery.of(context).size.width,
                     height: 300,
                     placeholder: MemoryImage(
-                      Uint8List.fromList(base64Decode(Constants.base64WhiteHolder)),
+                      Uint8List.fromList(
+                          base64Decode(Constants.base64WhiteHolder)),
                     ),
                     image: FileImage(File(snapshot.data!)),
                     fit: BoxFit.cover,
@@ -590,7 +602,8 @@ class _SuccessWidget extends StatefulWidget {
   _SuccessWidgetState createState() => _SuccessWidgetState();
 }
 
-class _SuccessWidgetState extends State<_SuccessWidget> with TickerProviderStateMixin {
+class _SuccessWidgetState extends State<_SuccessWidget>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override

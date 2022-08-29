@@ -19,16 +19,19 @@ class MyQuestStore extends _MyQuestStore with _$MyQuestStore {
 abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
   final IMyQuestRepository _repository;
 
-  _MyQuestStore(ApiProvider apiProvider) : _repository = MyQuestRepository(apiProvider) {
+  _MyQuestStore(ApiProvider apiProvider)
+      : _repository = MyQuestRepository(apiProvider) {
     WebSocket().handlerQuestList = this.changeLists;
   }
 
   @observable
-  ObservableMap<QuestsType, ObservableList<BaseQuestResponse>> quests = ObservableMap.of({});
+  ObservableMap<QuestsType, ObservableList<BaseQuestResponse>> quests =
+      ObservableMap.of({});
 
   String get myId => getIt.get<ProfileMeStore>().userData?.id ?? '';
 
-  UserRole get role => getIt.get<ProfileMeStore>().userData?.role ?? UserRole.Worker;
+  UserRole get role =>
+      getIt.get<ProfileMeStore>().userData?.role ?? UserRole.Worker;
 
   @action
   dynamic changeLists(dynamic json) async {
@@ -55,7 +58,8 @@ abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
       if (set) {
         quests[QuestsType.Favorites]?.add(quest);
       } else {
-        quests[QuestsType.Favorites]?.removeWhere((element) => element.id == quest.id);
+        quests[QuestsType.Favorites]
+            ?.removeWhere((element) => element.id == quest.id);
       }
       sortQuests();
       this.onSuccess(MyQuestStoreState.setStar);
@@ -80,7 +84,8 @@ abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
   void sortQuests() {
     quests.forEach((key, value) {
       quests[key]!.sort((key2, key1) {
-        return key1.createdAt!.millisecondsSinceEpoch.compareTo(key2.createdAt!.millisecondsSinceEpoch);
+        return key1.createdAt!.millisecondsSinceEpoch
+            .compareTo(key2.createdAt!.millisecondsSinceEpoch);
       });
     });
   }
@@ -99,7 +104,8 @@ abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
       this.onLoading();
 
       if (questType == QuestsType.Favorites) {
-        final result = await _repository.getFavoritesQuests(offset: quests[questType]!.length);
+        final result = await _repository.getFavoritesQuests(
+            offset: quests[questType]!.length);
         quests[questType]!.addAll(result);
       } else if (role == UserRole.Employer) {
         final result = await _repository.getEmployerQuests(

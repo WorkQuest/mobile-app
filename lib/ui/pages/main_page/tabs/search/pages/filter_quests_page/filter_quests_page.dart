@@ -20,7 +20,8 @@ class FilterQuestsPage extends StatefulWidget {
   State<FilterQuestsPage> createState() => _FilterQuestsPageState();
 }
 
-class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepAliveClientMixin {
+class _FilterQuestsPageState extends State<FilterQuestsPage>
+    with AutomaticKeepAliveClientMixin {
   late FilterQuestsStore storeFilter;
   late ProfileMeStore profile;
   late TextEditingController fromPriceController;
@@ -104,7 +105,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                       if (index == 1)
                         ExpansionTile(
                           collapsedBackgroundColor:
-                              fromPriceController.text.isNotEmpty || toPriceController.text.isNotEmpty
+                              fromPriceController.text.isNotEmpty ||
+                                      toPriceController.text.isNotEmpty
                                   ? Color(0xFF0083C7).withOpacity(0.1)
                                   : Colors.white,
                           expandedAlignment: Alignment.topLeft,
@@ -132,7 +134,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.3,
                                       child: TextField(
                                         controller: fromPriceController,
                                         keyboardType: TextInputType.number,
@@ -140,7 +143,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                                           hintText: '0 WUSD',
                                           suffixIcon: IconButton(
                                             splashRadius: 0.1,
-                                            onPressed: fromPriceController.clear,
+                                            onPressed:
+                                                fromPriceController.clear,
                                             icon: Icon(
                                               Icons.close,
                                               color: AppColor.enabledButton,
@@ -171,7 +175,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.3,
                                       child: TextFormField(
                                         controller: toPriceController,
                                         keyboardType: TextInputType.number,
@@ -229,7 +234,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                                         value,
                                         index,
                                       );
-                                      storeFilter.selectWorkplace[index] = value ?? false;
+                                      storeFilter.selectWorkplace[index] =
+                                          value ?? false;
                                     },
                                   ),
                                   _checkButton(
@@ -247,7 +253,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
                                     title: "quests.rating".tr(),
                                     list: storeFilter.sortByEmployeeRating,
                                     selected: storeFilter.selectEmployeeRating,
-                                    onChange: storeFilter.setSelectedEmployeeRating,
+                                    onChange:
+                                        storeFilter.setSelectedEmployeeRating,
                                   ),
                                   _checkButton(
                                     title: "settings.priority".tr(),
@@ -349,8 +356,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
         title: Text(
           "quests.filter.sortBy.title".tr(),
         ),
-        collapsedBackgroundColor:
-            storeFilter.selectSortBy.isNotEmpty ? Color(0xFF0083C7).withOpacity(0.1) : Colors.white,
+        collapsedBackgroundColor: storeFilter.selectSortBy.isNotEmpty
+            ? Color(0xFF0083C7).withOpacity(0.1)
+            : Colors.white,
         children: [
           for (int i = 0; i < storeFilter.sortBy.length; i++)
             Observer(
@@ -377,7 +385,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> with AutomaticKeepA
   }) =>
       Observer(
         builder: (_) => ExpansionTile(
-          collapsedBackgroundColor: selected.firstWhere((element) => element == true, orElse: () => false)
+          collapsedBackgroundColor: selected
+                  .firstWhere((element) => element == true, orElse: () => false)
               ? Color(0xFF0083C7).withOpacity(0.1)
               : Colors.white,
           maintainState: true,
@@ -427,12 +436,15 @@ class _ExpansionCellState extends State<ExpansionCell> {
       children: <Widget>[
         Observer(
           builder: (_) => ExpansionTile(
-            collapsedBackgroundColor: widget.storeFilter.selectedSkillFilters[widget.index - 1] != null
-                ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
-                        .firstWhere((element) => element == true, orElse: () => false)
-                    ? Color(0xFF0083C7).withOpacity(0.1)
-                    : Colors.white
-                : Colors.white,
+            collapsedBackgroundColor:
+                widget.storeFilter.selectedSkillFilters[widget.index - 1] !=
+                        null
+                    ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
+                            .firstWhere((element) => element == true,
+                                orElse: () => false)
+                        ? Color(0xFF0083C7).withOpacity(0.1)
+                        : Colors.white
+                    : Colors.white,
             maintainState: true,
             title: Text(
               "filters.items.${widget.index}.title".tr(),
@@ -462,7 +474,8 @@ class _ExpansionCellState extends State<ExpansionCell> {
       ),
       value: widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
       onChanged: (bool? value) {
-        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] = value!;
+        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
+            value!;
         if (value == true)
           widget.storeFilter.addSkill("$spec.$skill");
         else

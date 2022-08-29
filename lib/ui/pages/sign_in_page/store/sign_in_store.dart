@@ -16,7 +16,8 @@ class SignInStore extends _SignInStore with _$SignInStore {
 abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   final IAuthRepository _repository;
 
-  _SignInStore(ApiProvider apiProvider) : _repository = AuthRepository(apiProvider);
+  _SignInStore(ApiProvider apiProvider)
+      : _repository = AuthRepository(apiProvider);
 
   @observable
   String platform = '';
@@ -43,7 +44,8 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   setTotp(String value) => totp = value;
 
   @computed
-  bool get canSignIn => !isLoading && _username.isNotEmpty && _password.isNotEmpty;
+  bool get canSignIn =>
+      !isLoading && _username.isNotEmpty && _password.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -82,13 +84,16 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
   signIn(String platform) async {
     try {
       this.onLoading();
-      final bearerToken = await _repository.signInEmailPassword(username: _username.trim(), password: _password);
+      final bearerToken = await _repository.signInEmailPassword(
+          username: _username.trim(), password: _password);
 
-      if (bearerToken.status == ProfileConstants.userStatuses[UserStatuses.Unconfirmed]) {
+      if (bearerToken.status ==
+          ProfileConstants.userStatuses[UserStatuses.Unconfirmed]) {
         onSuccess(SignInStoreState.unconfirmedProfile);
         return;
       }
-      if (bearerToken.status == ProfileConstants.userStatuses[UserStatuses.NeedSetRole]) {
+      if (bearerToken.status ==
+          ProfileConstants.userStatuses[UserStatuses.NeedSetRole]) {
         onSuccess(SignInStoreState.needSetRole);
         return;
       }

@@ -34,7 +34,6 @@ class ConfirmTransferPage extends StatefulWidget {
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
   late final ConfirmTransferStore store;
 
-
   @override
   void initState() {
     store = context.read<ConfirmTransferStore>();
@@ -144,7 +143,9 @@ class _InformationWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -211,8 +212,8 @@ class _InformationWidget extends StatelessWidget {
   }
 
   String _getTitleCoinFee() {
-    final _network =
-        Web3Utils.getSwapNetworksFromNetworkName(WalletRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network = Web3Utils.getSwapNetworksFromNetworkName(
+        WalletRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -224,5 +225,4 @@ class _InformationWidget extends StatelessWidget {
         return 'WQT';
     }
   }
-
 }

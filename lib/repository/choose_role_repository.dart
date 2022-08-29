@@ -54,7 +54,8 @@ class ChooseRoleRepository extends IChooseRoleRepository {
   Future refreshToken() async {
     try {
       String? token = await Storage.readRefreshToken();
-      final bearerToken = await _apiProvider.refreshToken(token!, Platform.isIOS ? "iOS" : "Android");
+      final bearerToken = await _apiProvider.refreshToken(
+          token!, Platform.isIOS ? "iOS" : "Android");
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
     } catch (e) {

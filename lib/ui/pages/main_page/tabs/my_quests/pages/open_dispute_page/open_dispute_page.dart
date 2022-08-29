@@ -165,7 +165,9 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           child: Observer(
             builder: (_) => LoginButton(
               title: "modals.openADispute".tr(),
-              onTap: store.isButtonEnable && !store.isLoading ? _onPressedOpenDispute : null,
+              onTap: store.isButtonEnable && !store.isLoading
+                  ? _onPressedOpenDispute
+                  : null,
             ),
           ),
         ),
@@ -228,7 +230,8 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                 width: double.infinity,
                 child: InkWell(
                   onTap: () {
-                    final _theme = DisputeUtil.changeTheme(DisputeConstants.disputeCategoriesList[index]);
+                    final _theme = DisputeUtil.changeTheme(
+                        DisputeConstants.disputeCategoriesList[index]);
                     store.setTheme(_theme);
                     Navigator.pop(context);
                   },
@@ -245,4 +248,3 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
         },
       );
 }
-

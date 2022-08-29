@@ -26,9 +26,10 @@ class RegRepository extends IRegRepository {
   }) async {
     try {
       if (WalletRepository().networkName.value == null) {
-        final _networkName = WalletRepository().notifierNetwork.value == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
+        final _networkName =
+            WalletRepository().notifierNetwork.value == Network.mainnet
+                ? NetworkName.workNetMainnet
+                : NetworkName.workNetTestnet;
         WalletRepository().setNetwork(_networkName);
       }
       final bearerToken = await _apiProvider.register(
@@ -46,7 +47,7 @@ class RegRepository extends IRegRepository {
   }
 }
 
-class RegException implements Exception{
+class RegException implements Exception {
   final String message;
 
   const RegException([this.message = 'Unknown registration error']);

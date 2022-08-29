@@ -13,7 +13,6 @@ class RaiseViewConstants {
 }
 
 class RaiseViewUtils {
-
   static String getTypeTitle(int value) {
     if (value == RaiseViewConstants.tariffGoldPlus) {
       return 'Gold plus package';

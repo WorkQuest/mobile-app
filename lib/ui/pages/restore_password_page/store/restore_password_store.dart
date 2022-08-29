@@ -6,11 +6,13 @@ import 'package:mobx/mobx.dart';
 part 'restore_password_store.g.dart';
 
 @injectable
-class RestorePasswordStore extends _RestorePasswordStore with _$RestorePasswordStore {
+class RestorePasswordStore extends _RestorePasswordStore
+    with _$RestorePasswordStore {
   RestorePasswordStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _RestorePasswordStore extends IStore<RestorePasswordState> with Store {
+abstract class _RestorePasswordStore extends IStore<RestorePasswordState>
+    with Store {
   final ApiProvider _apiProvider;
 
   _RestorePasswordStore(this._apiProvider);

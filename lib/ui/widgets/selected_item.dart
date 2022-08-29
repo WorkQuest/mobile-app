@@ -61,7 +61,9 @@ class SelectedItem extends StatelessWidget {
             Text(
               isSelected
                   ? title!
-                  : (isCoin ? 'wallet.enterCoin'.tr() : 'swap.choose'.tr(namedArgs: {'object': 'network'})),
+                  : (isCoin
+                      ? 'wallet.enterCoin'.tr()
+                      : 'swap.choose'.tr(namedArgs: {'object': 'network'})),
               style: TextStyle(
                 fontSize: 16,
                 color: isSelected ? Colors.black : AppColor.disabledText,

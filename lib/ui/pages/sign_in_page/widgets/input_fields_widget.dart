@@ -85,10 +85,12 @@ class _InputFieldsWidgetState extends State<InputFieldsWidget> {
               value: WalletRepository().notifierNetwork.value,
               onChanged: (value) {
                 setState(() {
-                  final _networkName =
-                  (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                  final _networkName = (value as Network) == Network.mainnet
+                      ? NetworkName.workNetMainnet
+                      : NetworkName.workNetTestnet;
                   WalletRepository().setNetwork(_networkName);
-                  Storage.write(StorageKeys.networkName.name, _networkName.name);
+                  Storage.write(
+                      StorageKeys.networkName.name, _networkName.name);
                 });
                 return value;
               },

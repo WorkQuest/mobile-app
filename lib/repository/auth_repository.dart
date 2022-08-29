@@ -14,7 +14,8 @@ abstract class IAuthRepository {
 
   Future signInWallet(String mnemonic);
 
-  Future<BearerToken> signInEmailPassword({required String username, required String password, String totp = ''});
+  Future<BearerToken> signInEmailPassword(
+      {required String username, required String password, String totp = ''});
 
   Future<bool> validateTotp(String totp);
 
@@ -30,7 +31,8 @@ class AuthRepository extends IAuthRepository {
   Future refreshToken() async {
     try {
       String? token = await Storage.readRefreshToken();
-      final bearerToken = await _apiProvider.refreshToken(token!, Platform.isIOS ? "iOS" : "Android");
+      final bearerToken = await _apiProvider.refreshToken(
+          token!, Platform.isIOS ? "iOS" : "Android");
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
     } catch (e) {
@@ -44,15 +46,18 @@ class AuthRepository extends IAuthRepository {
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
       WalletRepository().connectClient();
-      final signature = await WalletRepository().getClient().getSignature(wallet.privateKey!);
+      final signature =
+          await WalletRepository().getClient().getSignature(wallet.privateKey!);
       final userMe = await _apiProvider.getProfileMe();
-      final _address = await _apiProvider.walletLogin(signature, wallet.address!);
+      final _address =
+          await _apiProvider.walletLogin(signature, wallet.address!);
       if (_address != userMe.walletAddress) {
         throw FormatException("Incorrect mnemonic");
       }
       WalletRepository().setWallet(wallet);
       await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
-      await Storage.write(StorageKeys.networkName.name, WalletRepository().networkName.value!.name);
+      await Storage.write(StorageKeys.networkName.name,
+          WalletRepository().networkName.value!.name);
     } catch (e) {
       print('AuthRepository signInWallet | error: $e');
       throw AuthException(e.toString());

@@ -67,7 +67,9 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
             IconButton(
               icon: Icon(Icons.star),
               iconSize: 22,
-              color: widget.message.star != null ? Color(0xFFE8D20D) : Color(0xFFE9EDF2),
+              color: widget.message.star != null
+                  ? Color(0xFFE8D20D)
+                  : Color(0xFFE9EDF2),
               onPressed: widget.setStar,
             ),
           ],

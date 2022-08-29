@@ -84,8 +84,12 @@ class _SendEmailPageState extends State<SendEmailPage> {
                       child: Observer(
                         builder: (context) {
                           return ElevatedButton(
-                            onPressed: _store.email.isNotEmpty ? _store.requestCode : null,
-                            child: _store.isLoading ? CircularProgressIndicator.adaptive() : Text("meta.submit".tr()),
+                            onPressed: _store.email.isNotEmpty
+                                ? _store.requestCode
+                                : null,
+                            child: _store.isLoading
+                                ? CircularProgressIndicator.adaptive()
+                                : Text("meta.submit".tr()),
                           );
                         },
                       ),

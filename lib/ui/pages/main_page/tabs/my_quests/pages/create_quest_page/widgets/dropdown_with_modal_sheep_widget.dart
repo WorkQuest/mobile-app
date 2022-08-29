@@ -60,7 +60,9 @@ class DropDownWithModalSheepWidget extends StatelessWidget {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e.tr()))).toList(),
+                      children: children
+                          .map((e) => Center(child: Text(e.tr())))
+                          .toList(),
                     ),
                   ),
                   CupertinoButton(

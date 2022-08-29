@@ -208,8 +208,10 @@ class QuestUtils {
 
   static String getPrice(String price) {
     try {
-      final _price = (Decimal.parse(price) / Decimal.fromInt(10).pow(18)).toDouble();
-      return _price.toStringAsFixed(_price.truncateToDouble() == _price ? 0 : 4);
+      final _price =
+          (Decimal.parse(price) / Decimal.fromInt(10).pow(18)).toDouble();
+      return _price
+          .toStringAsFixed(_price.truncateToDouble() == _price ? 0 : 4);
     } catch (e) {
       return '0.00';
     }
@@ -235,20 +237,26 @@ class QuestUtils {
   }
 
   static bool isResponded(BaseQuestResponse questItem) =>
-      (questItem.responded!.workerId == GetIt.I.get<ProfileMeStore>().userData?.id &&
+      (questItem.responded!.workerId ==
+                  GetIt.I.get<ProfileMeStore>().userData?.id &&
               (questItem.status == QuestConstants.questCreated ||
                   questItem.status == QuestConstants.questWaitWorkerOnAssign) ||
-          questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeResponded) &&
+          questItem.responded != null &&
+              questItem.responded?.type ==
+                  QuestConstants.questResponseTypeResponded) &&
       GetIt.I.get<ProfileMeStore>().userData?.role == UserRole.Worker;
 
   static bool isLocation(BaseQuestResponse questItem) =>
       questItem.userId != GetIt.I.get<ProfileMeStore>().userData?.id &&
-          questItem.status != QuestConstants.questWaitEmployerConfirm &&
-          questItem.status != QuestConstants.questDone;
+      questItem.status != QuestConstants.questWaitEmployerConfirm &&
+      questItem.status != QuestConstants.questDone;
 
   static bool isInvited(BaseQuestResponse questItem) =>
-      questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeInvited;
+      questItem.responded != null &&
+      questItem.responded?.type == QuestConstants.questResponseTypeInvited;
 
   static bool isRaised(BaseQuestResponse questItem) =>
-      questItem.raiseView != null && questItem.raiseView!.status != null && questItem.raiseView!.status == 0;
+      questItem.raiseView != null &&
+      questItem.raiseView!.status != null &&
+      questItem.raiseView!.status == 0;
 }

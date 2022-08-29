@@ -8,11 +8,13 @@ import 'package:mobx/mobx.dart';
 part 'change_password_store.g.dart';
 
 @injectable
-class ChangePasswordStore extends _ChangePasswordStore with _$ChangePasswordStore {
+class ChangePasswordStore extends _ChangePasswordStore
+    with _$ChangePasswordStore {
   ChangePasswordStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _ChangePasswordStore extends IStore<ChangePasswordState> with Store {
+abstract class _ChangePasswordStore extends IStore<ChangePasswordState>
+    with Store {
   final ApiProvider apiProvider;
 
   _ChangePasswordStore(this.apiProvider);
@@ -36,7 +38,11 @@ abstract class _ChangePasswordStore extends IStore<ChangePasswordState> with Sto
   void setConfirmNewPassword(String value) => confirmNewPassword = value;
 
   @computed
-  bool get canSubmit => !isLoading && password.isNotEmpty && newPassword.isNotEmpty && confirmNewPassword.isNotEmpty;
+  bool get canSubmit =>
+      !isLoading &&
+      password.isNotEmpty &&
+      newPassword.isNotEmpty &&
+      confirmNewPassword.isNotEmpty;
 
   @action
   changePassword() async {

@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-CurrentCourseTokensResponse currentCourseTokensResponseFromJson(String str) => CurrentCourseTokensResponse.fromJson(json.decode(str));
+CurrentCourseTokensResponse currentCourseTokensResponseFromJson(String str) =>
+    CurrentCourseTokensResponse.fromJson(json.decode(str));
 
-String currentCourseTokensResponseToJson(CurrentCourseTokensResponse data) => json.encode(data.toJson());
+String currentCourseTokensResponseToJson(CurrentCourseTokensResponse data) =>
+    json.encode(data.toJson());
 
 class CurrentCourseTokensResponse {
   CurrentCourseTokensResponse({
@@ -19,15 +21,16 @@ class CurrentCourseTokensResponse {
   String? price;
   String? timestamp;
 
-  factory CurrentCourseTokensResponse.fromJson(Map<String, dynamic> json) => CurrentCourseTokensResponse(
-    symbol: json["symbol"],
-    price: json["price"],
-    timestamp: json["timestamp"],
-  );
+  factory CurrentCourseTokensResponse.fromJson(Map<String, dynamic> json) =>
+      CurrentCourseTokensResponse(
+        symbol: json["symbol"],
+        price: json["price"],
+        timestamp: json["timestamp"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "symbol": symbol,
-    "price": price,
-    "timestamp": timestamp,
-  };
+        "symbol": symbol,
+        "price": price,
+        "timestamp": timestamp,
+      };
 }

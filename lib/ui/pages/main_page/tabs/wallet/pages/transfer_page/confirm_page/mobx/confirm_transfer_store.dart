@@ -14,23 +14,28 @@ import 'package:web3dart/json_rpc.dart';
 part 'confirm_transfer_store.g.dart';
 
 @injectable
-class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStore;
+class ConfirmTransferStore = ConfirmTransferStoreBase
+    with _$ConfirmTransferStore;
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) async {
+  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin,
+      Decimal fee) async {
     onLoading();
     try {
-      final _currentListTokens = WalletRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens =
+          WalletRepository().getConfigNetwork().dataCoins;
       final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
-      await Web3Utils.checkPossibilityTx(typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
+      await Web3Utils.checkPossibilityTx(
+          typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
       await WalletRepository().client!.sendTransaction(
-        isToken: _isToken,
-        addressTo: _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
-        amount: amount,
-        coin: typeCoin,
-      );
+            isToken: _isToken,
+            addressTo:
+                _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
+            amount: amount,
+            coin: typeCoin,
+          );
       GetIt.I.get<WalletStore>().getCoins();
       onSuccess(true);
     } on SocketException catch (_) {

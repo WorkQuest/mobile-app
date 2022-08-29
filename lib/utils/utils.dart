@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 
-
 class DecimalFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     String truncated = newValue.text;
     TextSelection newSelection = newValue.selection;
     if (newValue.text.contains(",")) {

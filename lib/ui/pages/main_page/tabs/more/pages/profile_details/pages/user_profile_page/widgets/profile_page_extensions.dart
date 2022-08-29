@@ -16,7 +16,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:share/share.dart';
 
-
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse info,
       StreamController<AppBarParams> streamController, Function() updateState) {
@@ -49,8 +48,7 @@ extension CustomAppBar on UserProfileState {
                 late String _url;
                 if (WalletRepository().notifierNetwork.value ==
                     Network.mainnet) {
-                  _url =
-                      "https://app.workquest.co/profile/${info.id}";
+                  _url = "https://app.workquest.co/profile/${info.id}";
                 } else {
                   _url =
                       "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/profile/${info.id}";

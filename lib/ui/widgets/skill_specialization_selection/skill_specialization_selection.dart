@@ -17,7 +17,8 @@ class SkillSpecializationSelection extends StatefulWidget {
       _SkillSpecializationSelectionState();
 }
 
-class _SkillSpecializationSelectionState extends State<SkillSpecializationSelection>
+class _SkillSpecializationSelectionState
+    extends State<SkillSpecializationSelection>
     with AutomaticKeepAliveClientMixin {
   final store = SkillSpecializationStore();
   final maxLength = 5;
@@ -150,7 +151,8 @@ class _SkillSpecializationSelectionState extends State<SkillSpecializationSelect
                 .map((str) => skillBody("filters.items.$title.sub.$str", () {
                       store.selectedSkills[count]!.remove(str);
                       if (widget.callback != null) {
-                        widget.callback!.call(store.selectedSkills[count]!.length);
+                        widget.callback!
+                            .call(store.selectedSkills[count]!.length);
                       }
                       setState(() {});
                     }))
@@ -320,7 +322,8 @@ class SkillSpecializationController {
         int index = int.tryParse(pars.first) ?? 0;
         if (!equivalent.containsKey(index)) {
           if (store.selectedSpices[store.numberOfSpices] == null) {
-            store.selectedSpices[store.numberOfSpices] = store.allSpices[index - 1];
+            store.selectedSpices[store.numberOfSpices] =
+                store.allSpices[index - 1];
             equivalent[index] = store.numberOfSpices;
             store.numberOfSpices++;
           }

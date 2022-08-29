@@ -56,7 +56,8 @@ class _QuestsListTypeState extends State<QuestsListType> {
                     ),
                     child: ElevatedButton(
                       onPressed: () async {
-                        await Navigator.of(context, rootNavigator: true).pushNamed<bool>(
+                        await Navigator.of(context, rootNavigator: true)
+                            .pushNamed<bool>(
                           CreateQuestPage.routeName,
                         );
                       },

@@ -48,8 +48,10 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     store = widget.arguments.store;
-    if (isReviews) store.getReviews(userId: widget.arguments.userId, isForce: true);
-    if (isPortfolio) store.getPortfolio(userId: widget.arguments.userId, isForce: true);
+    if (isReviews)
+      store.getReviews(userId: widget.arguments.userId, isForce: true);
+    if (isPortfolio)
+      store.getPortfolio(userId: widget.arguments.userId, isForce: true);
     super.initState();
   }
 
@@ -152,9 +154,11 @@ class _ReviewPageState extends State<ReviewPage> {
                     }
                     final review = store.reviewsList[index];
                     return ReviewsWidget(
-                      avatar:
-                          review.fromUser.avatar?.url ?? Constants.defaultImageNetwork,
-                      name: review.fromUser.firstName + " " + review.fromUser.lastName,
+                      avatar: review.fromUser.avatar?.url ??
+                          Constants.defaultImageNetwork,
+                      name: review.fromUser.firstName +
+                          " " +
+                          review.fromUser.lastName,
                       mark: review.mark,
                       userRole: review.fromUser.role == UserRole.Employer
                           ? "role.employer"
@@ -175,7 +179,8 @@ class _ReviewPageState extends State<ReviewPage> {
                       ? store.portfolioList.length + 1
                       : store.portfolioList.length,
                   itemBuilder: (_, index) {
-                    if (store.isLoading && index == store.portfolioList.length) {
+                    if (store.isLoading &&
+                        index == store.portfolioList.length) {
                       return Column(
                         children: const [
                           SizedBox(
@@ -194,8 +199,9 @@ class _ReviewPageState extends State<ReviewPage> {
                           ? Constants.defaultImageNetwork
                           : portfolio.medias.first.url,
                       title: portfolio.title,
-                      isProfileYour: GetIt.I.get<ProfileMeStore>().userData!.id ==
-                          widget.arguments.userId,
+                      isProfileYour:
+                          GetIt.I.get<ProfileMeStore>().userData!.id ==
+                              widget.arguments.userId,
                     );
                   },
                 );

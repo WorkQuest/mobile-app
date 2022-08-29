@@ -6,7 +6,8 @@ abstract class IMyQuestRepository {
 
   Future<List<BaseQuestResponse>> getFavoritesQuests({int offset = 0});
 
-  Future<List<BaseQuestResponse>> getEmployerQuests({required List<int> statuses, int offset = 0});
+  Future<List<BaseQuestResponse>> getEmployerQuests(
+      {required List<int> statuses, int offset = 0});
 
   Future<List<BaseQuestResponse>> getWorkerQuests({
     required List<int> statuses,
@@ -22,7 +23,8 @@ class MyQuestRepository extends IMyQuestRepository {
   final ApiProvider _apiProvider;
 
   @override
-  Future<List<BaseQuestResponse>> getEmployerQuests({required List<int> statuses, int offset = 0}) async {
+  Future<List<BaseQuestResponse>> getEmployerQuests(
+      {required List<int> statuses, int offset = 0}) async {
     try {
       return await _apiProvider.getEmployerQuests(
         offset: offset,

@@ -59,7 +59,8 @@ abstract class ChangeProfileStoreBase with Store {
   @action
   Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
     if (firstPhone.fullPhone.isNotEmpty) {
-      phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
+      phoneNumber =
+          await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
       oldPhoneNumber =
           await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
     }
@@ -71,7 +72,8 @@ abstract class ChangeProfileStoreBase with Store {
           Phone(phone: "", fullPhone: "", codeRegion: "");
 
     phoneNumber ??= PhoneNumber(phoneNumber: "", dialCode: "+1", isoCode: "US");
-    secondPhoneNumber ??= PhoneNumber(phoneNumber: "", dialCode: "+1", isoCode: "US");
+    secondPhoneNumber ??=
+        PhoneNumber(phoneNumber: "", dialCode: "+1", isoCode: "US");
     oldPhoneNumber ??= PhoneNumber(dialCode: '+1', isoCode: "US");
   }
 
@@ -95,13 +97,14 @@ abstract class ChangeProfileStoreBase with Store {
       userData.tempPhone = Phone(
         codeRegion: phoneNumber?.dialCode ?? "",
         fullPhone: phoneNumber?.phoneNumber ?? "",
-        phone:
-            phoneNumber?.phoneNumber?.replaceAll((phoneNumber?.dialCode ?? ""), "") ?? "",
+        phone: phoneNumber?.phoneNumber
+                ?.replaceAll((phoneNumber?.dialCode ?? ""), "") ??
+            "",
       );
     } else {
       userData.tempPhone!.codeRegion = phoneNumber?.dialCode ?? "";
-      userData.tempPhone!.phone =
-          phoneNumber!.phoneNumber!.replaceAll((phoneNumber?.dialCode ?? ""), "");
+      userData.tempPhone!.phone = phoneNumber!.phoneNumber!
+          .replaceAll((phoneNumber?.dialCode ?? ""), "");
       userData.tempPhone!.fullPhone = phoneNumber?.phoneNumber ?? "";
     }
   }
@@ -119,7 +122,8 @@ abstract class ChangeProfileStoreBase with Store {
     } else {
       userData.additionalInfo?.secondMobileNumber?.codeRegion =
           secondPhoneNumber?.dialCode ?? "";
-      userData.additionalInfo?.secondMobileNumber?.phone = secondPhoneNumber?.phoneNumber
+      userData.additionalInfo?.secondMobileNumber?.phone = secondPhoneNumber
+              ?.phoneNumber
               ?.replaceAll((secondPhoneNumber?.dialCode ?? ""), "") ??
           "";
       userData.additionalInfo?.secondMobileNumber?.fullPhone =
@@ -127,7 +131,8 @@ abstract class ChangeProfileStoreBase with Store {
     }
   }
 
-  bool validationKnowledge(List<Map<String, String>> list, BuildContext context) {
+  bool validationKnowledge(
+      List<Map<String, String>> list, BuildContext context) {
     bool chek = true;
     list.forEach((element) {
       if (element["from"]!.isEmpty ||
@@ -181,7 +186,9 @@ abstract class ChangeProfileStoreBase with Store {
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
-    if (this.userData.role == UserRole.Worker) if (this.userData.userSpecializations !=
+    if (this.userData.role == UserRole.Worker) if (this
+            .userData
+            .userSpecializations !=
         userData.userSpecializations) return true;
 
     if (this.userData.costPerHour != userData.costPerHour) return true;

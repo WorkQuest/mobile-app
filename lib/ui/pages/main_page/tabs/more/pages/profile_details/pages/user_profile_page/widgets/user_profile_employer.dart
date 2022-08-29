@@ -8,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
-
 class EmployerProfile extends UserProfile {
   EmployerProfile(ProfileArguments? arguments) : super(arguments);
 
@@ -93,14 +92,16 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                   ? userStore!.userData!.questsStatistic!.completed.toString()
                   : '0'
               : viewOtherUser!.userData!.questsStatistic != null
-                  ? viewOtherUser!.userData!.questsStatistic!.completed.toString()
+                  ? viewOtherUser!.userData!.questsStatistic!.completed
+                      .toString()
                   : '0',
           averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
           reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
+                  .toString(),
           userId: viewOtherUser?.userData == null
               ? userStore!.userData!.id
               : viewOtherUser!.userData!.id,

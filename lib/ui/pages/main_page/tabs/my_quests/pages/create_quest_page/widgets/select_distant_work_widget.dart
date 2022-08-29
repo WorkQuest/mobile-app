@@ -42,7 +42,8 @@ class SelectDistantWorkWidget extends StatelessWidget {
                   isExpanded: true,
                   value: QuestUtils.getWorkplace(workplace),
                   onChanged: onSelect,
-                  items: QuestConstants.distantWorkList.map<DropdownMenuItem<String>>((String value) {
+                  items: QuestConstants.distantWorkList
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: new Text(value),

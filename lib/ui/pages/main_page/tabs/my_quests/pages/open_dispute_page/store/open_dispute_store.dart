@@ -16,7 +16,8 @@ class OpenDisputeStore extends _OpenDisputeStore with _$OpenDisputeStore {
 abstract class _OpenDisputeStore extends IStore<OpenDisputeState> with Store {
   final IOpenDisputeRepository _repository;
 
-  _OpenDisputeStore(ApiProvider apiProvider) : _repository = OpenDisputeRepository(apiProvider);
+  _OpenDisputeStore(ApiProvider apiProvider)
+      : _repository = OpenDisputeRepository(apiProvider);
 
   @observable
   String theme = "dispute_page.theme";
@@ -29,7 +30,10 @@ abstract class _OpenDisputeStore extends IStore<OpenDisputeState> with Store {
   String resultDisputeId = '';
 
   @computed
-  bool get isButtonEnable => theme != "dispute_page.theme" && description.isNotEmpty && !this.isLoading;
+  bool get isButtonEnable =>
+      theme != "dispute_page.theme" &&
+      description.isNotEmpty &&
+      !this.isLoading;
 
   @action
   setDescription(String value) => description = value;

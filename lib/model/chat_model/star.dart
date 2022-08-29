@@ -23,8 +23,12 @@ class Star {
         chatId: json["chatId"] == null ? null : json["chatId"],
         adminId: json["adminId"] == null ? null : json["adminId"],
         messageId: json["messageId"] == null ? null : json["messageId"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {

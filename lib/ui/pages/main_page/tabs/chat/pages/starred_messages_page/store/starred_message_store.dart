@@ -12,11 +12,13 @@ import 'package:app/http/chat_extension.dart';
 part 'starred_message_store.g.dart';
 
 @injectable
-class StarredMessageStore extends _StarredMessageStore with _$StarredMessageStore {
+class StarredMessageStore extends _StarredMessageStore
+    with _$StarredMessageStore {
   StarredMessageStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _StarredMessageStore extends IStore<StarredMessageStoreState> with Store {
+abstract class _StarredMessageStore extends IStore<StarredMessageStoreState>
+    with Store {
   _StarredMessageStore(this._apiProvider);
 
   final ApiProvider _apiProvider;
@@ -35,7 +37,8 @@ abstract class _StarredMessageStore extends IStore<StarredMessageStoreState> wit
         messages.clear();
         mediaPaths.clear();
       }
-      final response = await _apiProvider.getStarredMessagePage(offset: messages.length);
+      final response =
+          await _apiProvider.getStarredMessagePage(offset: messages.length);
       messages.addAll(response);
       mediaPaths.addAll(await Thumbnail().getThumbnail(messages));
       onSuccess(StarredMessageStoreState.getMessages);
@@ -53,7 +56,8 @@ abstract class _StarredMessageStore extends IStore<StarredMessageStoreState> wit
         await _apiProvider.removeStarFromMsg(messageId: message.id);
         messages[index].star = null;
       } else {
-        await _apiProvider.setMessageStar(chatId: message.chatId!, messageId: message.id);
+        await _apiProvider.setMessageStar(
+            chatId: message.chatId!, messageId: message.id);
         messages[index].star = Star();
       }
       onSuccess(StarredMessageStoreState.removeStar);

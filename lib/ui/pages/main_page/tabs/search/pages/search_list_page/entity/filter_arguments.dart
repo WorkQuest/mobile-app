@@ -40,15 +40,21 @@ class FilterArguments {
     String result = '';
     if (role == UserRole.Worker) {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        final _fromPrice = Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') * Decimal.fromInt(10).pow(18);
+        final _fromPrice =
+            Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
+                Decimal.fromInt(10).pow(18);
         result += '&priceBetween[from]=${_fromPrice.toBigInt()}';
-        final _toPrice = Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') * Decimal.fromInt(10).pow(18);
+        final _toPrice =
+            Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
+                Decimal.fromInt(10).pow(18);
         result += '&priceBetween[to]=${_toPrice.toBigInt()}';
       }
     } else {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result += '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+        result +=
+            '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+            '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
       }
     }
     return result;

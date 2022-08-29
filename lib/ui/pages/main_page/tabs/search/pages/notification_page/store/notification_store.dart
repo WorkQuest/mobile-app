@@ -18,7 +18,8 @@ abstract class _NotificationStore extends IStore<bool> with Store {
   _NotificationStore(this._apiProvider);
 
   @observable
-  ObservableList<NotificationElement> listOfNotifications = ObservableList.of([]);
+  ObservableList<NotificationElement> listOfNotifications =
+      ObservableList.of([]);
 
   @observable
   ObservableMap<String, DisputeModel> disputes = ObservableMap.of({});
@@ -30,7 +31,8 @@ abstract class _NotificationStore extends IStore<bool> with Store {
       listOfNotifications.clear();
     }
     try {
-      final _result = await _apiProvider.getNotifications(offset: listOfNotifications.length);
+      final _result = await _apiProvider.getNotifications(
+          offset: listOfNotifications.length);
       listOfNotifications.addAll(_result.notifications);
       this.onSuccess(true);
     } catch (e) {
@@ -43,7 +45,8 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteNotification(notificationId: notificationId);
-      listOfNotifications.removeWhere((element) => element.id == notificationId);
+      listOfNotifications
+          .removeWhere((element) => element.id == notificationId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

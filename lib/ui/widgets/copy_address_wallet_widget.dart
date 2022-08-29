@@ -21,7 +21,8 @@ class CopyAddressWalletWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CopyAddressWalletWidget> createState() => _CopyAddressWalletWidgetState();
+  State<CopyAddressWalletWidget> createState() =>
+      _CopyAddressWalletWidgetState();
 }
 
 class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
@@ -38,7 +39,8 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
       return WalletRepository().userWallet?.address ?? '111111111111111111';
     }
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(WalletRepository().userWallet?.address ?? '111111111111111111')
+        ? AddressService.hexToBech32(
+            WalletRepository().userWallet?.address ?? '111111111111111111')
         : WalletRepository().userWallet?.address ?? '111111111111111111';
   }
 
@@ -77,7 +79,8 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
                               const SizedBox(
                                 width: 12,
                               ),
-                              SvgPicture.asset('assets/arrow_dropdown_icon.svg'),
+                              SvgPicture.asset(
+                                  'assets/arrow_dropdown_icon.svg'),
                             ],
                           ),
                           if (Platform.isAndroid)
@@ -141,8 +144,9 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
                       height: 34,
                       width: 34,
                       padding: const EdgeInsets.all(7.0),
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.0),
+                          color: AppColor.disabledButton),
                       child: SvgPicture.asset(
                         'assets/copy_icon.svg',
                         color: AppColor.enabledButton,

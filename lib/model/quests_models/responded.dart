@@ -27,8 +27,10 @@ class Responded {
       type: json["type"],
       status: json["status"],
       message: json["message"],
-      createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-      updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      updatedAt:
+          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     );
   }
 

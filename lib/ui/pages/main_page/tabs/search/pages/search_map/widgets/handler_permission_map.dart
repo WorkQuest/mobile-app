@@ -21,10 +21,12 @@ class HandlerPermissionMapWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HandlerPermissionMapWidget> createState() => _HandlerPermissionMapWidgetState();
+  State<HandlerPermissionMapWidget> createState() =>
+      _HandlerPermissionMapWidgetState();
 }
 
-class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget> with WidgetsBindingObserver {
+class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
+    with WidgetsBindingObserver {
   GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
   late Future<CameraPosition?> _positionOnMap;
 
@@ -41,7 +43,8 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
         setState(() {});
         return _currentPosition;
       }
-      LocationPermission permission = await _geoLocatorPlatform.checkPermission();
+      LocationPermission permission =
+          await _geoLocatorPlatform.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await _geoLocatorPlatform.requestPermission();
         if (permission == LocationPermission.denied) {
@@ -52,8 +55,6 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
         _requestPermissionDialog();
         return _defaultPosition;
       }
-
-
 
       final position = await _geoLocatorPlatform.getCurrentPosition();
       return CameraPosition(
@@ -83,7 +84,8 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (this.state != null) {
-      if (state == AppLifecycleState.resumed && this.state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.resumed &&
+          this.state == AppLifecycleState.paused) {
         _positionOnMap = getPosition();
       }
     }
@@ -96,7 +98,8 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
       future: _positionOnMap,
       builder: (context, AsyncSnapshot<CameraPosition?> snapshot) {
         final position = snapshot.data;
-        if (snapshot.connectionState == ConnectionState.waiting || position == null) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            position == null) {
           return Center(child: CircularProgressIndicator.adaptive());
         }
         if (snapshot.connectionState == ConnectionState.done) {

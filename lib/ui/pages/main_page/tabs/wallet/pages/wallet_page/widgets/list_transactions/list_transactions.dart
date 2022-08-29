@@ -60,7 +60,8 @@ class ListTransactions extends StatelessWidget {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (store.isMoreLoading && index == store.transactions.length) {
+                  if (store.isMoreLoading &&
+                      index == store.transactions.length) {
                     return Column(
                       children: const [
                         SizedBox(
@@ -76,7 +77,9 @@ class ListTransactions extends StatelessWidget {
                     opacity: !store.transactions[index].show,
                   );
                 },
-                childCount: store.isMoreLoading ? store.transactions.length + 1 : store.transactions.length,
+                childCount: store.isMoreLoading
+                    ? store.transactions.length + 1
+                    : store.transactions.length,
               ),
             );
           } else {
@@ -140,13 +143,15 @@ class TransactionItem extends StatefulWidget {
   _TransactionItemState createState() => _TransactionItemState();
 }
 
-class _TransactionItemState extends State<TransactionItem> with TickerProviderStateMixin {
+class _TransactionItemState extends State<TransactionItem>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 350), value: 0.15);
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 350), value: 0.15);
   }
 
   @override
@@ -161,7 +166,8 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       _animationController.forward();
     }
     widget.transaction.show = true;
-    bool increase = widget.transaction.fromAddressHash!.hex! != WalletRepository().userAddress;
+    bool increase = widget.transaction.fromAddressHash!.hex! !=
+        WalletRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score = _getScore(widget.transaction);
     return AnimatedBuilder(
@@ -169,7 +175,11 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       builder: (context, child) {
         return Transform.translate(
           filterQuality: FilterQuality.low,
-          offset: Offset(widget.opacity ? (50 - (50 * _animationController.value - 0.001)) : 0.0, 0.0),
+          offset: Offset(
+              widget.opacity
+                  ? (50 - (50 * _animationController.value - 0.001))
+                  : 0.0,
+              0.0),
           child: AnimatedOpacity(
             opacity: widget.opacity ? _animationController.value : 1.0,
             duration: const Duration(milliseconds: 450),
@@ -192,7 +202,9 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
         collapsed: const SizedBox(),
         expanded: _ExpandedTransactionWidget(
           hashTransaction: widget.transaction.hash!,
-          address: increase ? widget.transaction.fromAddressHash!.hex! : widget.transaction.toAddressHash!.hex!,
+          address: increase
+              ? widget.transaction.fromAddressHash!.hex!
+              : widget.transaction.toAddressHash!.hex!,
           increase: increase,
         ),
       ),
@@ -207,9 +219,11 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       return BigInt.parse(tx.amount!).toDouble() * pow(10, -18);
     }
     if (widget.coin == TokenSymbols.USDT) {
-      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -6);
+      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+          pow(10, -6);
     }
-    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -18);
+    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+        pow(10, -18);
   }
 }
 
@@ -331,7 +345,9 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           ),
           _ItemInfoFromTransaction(
             info: address,
-            title: increase ? "settings.education.from".tr() : "settings.education.to".tr(),
+            title: increase
+                ? "settings.education.from".tr()
+                : "settings.education.to".tr(),
           ),
         ],
       ),
@@ -357,7 +373,7 @@ class _ItemInfoFromTransaction extends StatelessWidget {
       TextSpan(
         text: "$title: ",
         style:
-        const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+            const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
         children: [
           TextSpan(
             text: info,
@@ -365,7 +381,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
               color: isEnabled ? AppColor.enabledButton : Colors.black,
               decoration: isEnabled ? TextDecoration.underline : null,
             ),
-            recognizer: TapGestureRecognizer()..onTap = isEnabled ? _onTapTxHash : null,
+            recognizer: TapGestureRecognizer()
+              ..onTap = isEnabled ? _onTapTxHash : null,
           ),
         ],
       ),
@@ -379,7 +396,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {
-      launchUrl(Uri.parse('https://${Constants.isTestnet ? 'testnet' : 'dev'}-explorer.workquest.co/tx/$info'));
+      launchUrl(Uri.parse(
+          'https://${Constants.isTestnet ? 'testnet' : 'dev'}-explorer.workquest.co/tx/$info'));
     }
   }
 }
@@ -399,7 +417,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
               height: 34,
               width: 34,
               padding: const EdgeInsets.all(10.0),
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
             ),
           ),
           const SizedBox(
@@ -412,7 +431,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 child: Container(
                   height: 20,
                   width: 120,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(
@@ -422,7 +443,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 child: Container(
                   height: 14,
                   width: 150,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -436,7 +459,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
               child: Container(
                 height: 20,
                 width: 100,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.white),
               ),
             ),
           )

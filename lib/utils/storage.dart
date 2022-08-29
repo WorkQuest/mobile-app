@@ -5,7 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
-
   static FlutterSecureStorage get _secureStorage => FlutterSecureStorage();
 
   static Future<void> writeToSecureStorage({
