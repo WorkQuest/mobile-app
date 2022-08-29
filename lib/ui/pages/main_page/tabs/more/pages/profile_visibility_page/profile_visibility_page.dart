@@ -3,8 +3,9 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_visibility_page/store/profile_visibility_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_visibility_page/widgets/card_options_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/profile_visibility_page/widgets/radio_tile_widget.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
-import 'package:app/ui/widgets/default_radio.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
               absorbing: _store.isLoading,
               child: Column(
                 children: [
-                  _CardOptionsWidget(
+                  CardOptionsWidget(
                     children: [
                       Text(
                         widget.profile.role == UserRole.Worker
@@ -89,7 +90,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
                       SizedBox(
                         height: 4,
                       ),
-                      _RadioTileWidget(
+                      RadioTileWidget(
                         status: _getStatusAllFromTypes(_store.mySearch),
                         type: null,
                         onPressed: () {
@@ -100,7 +101,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
                       ),
                       ...VisibilityTypes.values.map((type) {
                         final _status = _store.mySearch[type]!;
-                        return _RadioTileWidget(
+                        return RadioTileWidget(
                           type: type,
                           status: _status,
                           onPressed: () => _store.setMySearch(type, !_status),
@@ -111,7 +112,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
                   SizedBox(
                     height: 8,
                   ),
-                  _CardOptionsWidget(
+                  CardOptionsWidget(
                     children: [
                       Text(
                         widget.profile.role == UserRole.Worker
@@ -124,7 +125,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
                       SizedBox(
                         height: 4,
                       ),
-                      _RadioTileWidget(
+                      RadioTileWidget(
                         status: _getStatusAllFromTypes(
                             _store.canRespondOrInviteToQuest),
                         type: null,
@@ -137,7 +138,7 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
                       ),
                       ...VisibilityTypes.values.map((type) {
                         final _status = _store.canRespondOrInviteToQuest[type]!;
-                        return _RadioTileWidget(
+                        return RadioTileWidget(
                           type: type,
                           status: _status,
                           onPressed: () => _store.setCanRespondOrInviteToQuest(
@@ -164,88 +165,5 @@ class _ProfileVisibilityPageState extends State<ProfileVisibilityPage> {
       }
     });
     return _result;
-  }
-}
-
-class _CardOptionsWidget extends StatelessWidget {
-  final List<Widget> children;
-
-  const _CardOptionsWidget({
-    Key? key,
-    required this.children,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Color(0xFFF7F8FA),
-      borderRadius: BorderRadius.circular(6.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-class _RadioTileWidget extends StatelessWidget {
-  final Function()? onPressed;
-  final VisibilityTypes? type;
-  final bool status;
-
-  const _RadioTileWidget({
-    Key? key,
-    required this.onPressed,
-    required this.status,
-    required this.type,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: ColoredBox(
-        color: Colors.transparent,
-        child: SizedBox(
-          height: 36,
-          width: double.infinity,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              DefaultRadio(
-                status: status,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                _getTitleType(type),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: AppColor.subtitleText,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _getTitleType(VisibilityTypes? type) {
-    if (type == VisibilityTypes.notRated) {
-      return 'settings.typesVisibly.notRated'.tr();
-    } else if (type == VisibilityTypes.topRanked) {
-      return 'settings.typesVisibly.topRanked'.tr();
-    } else if (type == VisibilityTypes.reliable) {
-      return 'settings.typesVisibly.reliable'.tr();
-    } else if (type == VisibilityTypes.verified) {
-      return 'settings.typesVisibly.verified'.tr();
-    } else {
-      return 'settings.typesVisibly.allUsers'.tr();
-    }
   }
 }
