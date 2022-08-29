@@ -8,7 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 
-import 'my_quests_item.dart';
+import '../pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/my_quests_item.dart';
 
 enum FromQuestList { questSearch, myQuest }
 
@@ -26,8 +26,7 @@ class QuestsList extends StatelessWidget {
     this.questItemPriorityType,
     this.questsList, {
     this.update,
-    this.physics =
-        const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+    this.physics = const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
     required this.isLoading,
     required this.from,
     this.short = false,
@@ -95,9 +94,7 @@ class QuestsList extends StatelessWidget {
           SvgPicture.asset("assets/empty_quest_icon.svg"),
           const SizedBox(height: 10.0),
           Text(
-            "quests.youDontHaveAny".tr() +
-                " ${questItemPriorityType.name} " +
-                "quests.questYet".tr(),
+            "quests.youDontHaveAny".tr() + " ${questItemPriorityType.name} " + "quests.questYet".tr(),
             style: TextStyle(
               color: Color(0xFFD8DFE3),
             ),

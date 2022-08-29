@@ -24,8 +24,7 @@ class UserProfile extends StatefulWidget {
   UserProfileState createState() => UserProfileState();
 }
 
-class UserProfileState<T extends UserProfile> extends State<T>
-    with SingleTickerProviderStateMixin {
+class UserProfileState<T extends UserProfile> extends State<T> with SingleTickerProviderStateMixin {
   final TextStyle style = TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w500,
@@ -53,9 +52,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
     super.dispose();
   }
 
-  bool get isVerify => viewOtherUser != null
-      ? viewOtherUser!.userData?.phone != null
-      : userStore!.userData?.phone != null;
+  bool get isVerify =>
+      viewOtherUser != null ? viewOtherUser!.userData?.phone != null : userStore!.userData?.phone != null;
 
   @override
   void initState() {
@@ -82,11 +80,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
         isForce: true,
       );
       portfolioStore!.setOtherUserData(userStore!.userData);
-      myQuests!.getQuests(
-        role == UserRole.Worker ? QuestsType.Active : QuestsType.Performed,
-        role,
-        true,
-      );
+      myQuests!.getQuests(questType: role == UserRole.Worker ? QuestsType.Active : QuestsType.Performed);
     } else {
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.quests.clear();
@@ -103,9 +97,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
               isProfileYours: false,
             );
 
-          if (role == UserRole.Worker)
-            portfolioStore!
-                .getPortfolio(userId: viewOtherUser!.userData!.id, isForce: true);
+          if (role == UserRole.Worker) portfolioStore!.getPortfolio(userId: viewOtherUser!.userData!.id, isForce: true);
           portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
         });
       });
@@ -181,8 +173,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Observer(
-        builder: (_) => (userStore?.isLoading ?? false) ||
-                (viewOtherUser?.isLoading ?? false)
+        builder: (_) => (userStore?.isLoading ?? false) || (viewOtherUser?.isLoading ?? false)
             ? ProfileShimmer()
             : NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) => _scrollListener(),
@@ -195,9 +186,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                     return <Widget>[
                       //__________AppBar__________//
                       sliverAppBar(
-                        viewOtherUser?.userData == null
-                            ? userStore!.userData!
-                            : viewOtherUser!.userData!,
+                        viewOtherUser?.userData == null ? userStore!.userData! : viewOtherUser!.userData!,
                         _streamController,
                         _update,
                       ),
@@ -221,16 +210,14 @@ class UserProfileState<T extends UserProfile> extends State<T>
                               socialAccounts(
                                 socialNetwork: viewOtherUser?.userData == null
                                     ? userStore!.userData?.additionalInfo?.socialNetwork
-                                    : viewOtherUser!
-                                        .userData!.additionalInfo?.socialNetwork,
+                                    : viewOtherUser!.userData!.additionalInfo?.socialNetwork,
                               ),
 
                               ///Contact Details
                               contactDetails(
                                 location: viewOtherUser?.userData == null
                                     ? userStore!.userData?.additionalInfo?.address ?? ''
-                                    : viewOtherUser!.userData!.additionalInfo?.address ??
-                                        "",
+                                    : viewOtherUser!.userData!.additionalInfo?.address ?? "",
                                 number: viewOtherUser?.userData == null
                                     ? userStore!.userData?.phone?.fullPhone ??
                                         userStore!.userData?.tempPhone?.fullPhone ??
@@ -239,12 +226,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                         viewOtherUser!.userData!.tempPhone?.fullPhone ??
                                         "",
                                 secondNumber: viewOtherUser?.userData == null
-                                    ? userStore!.userData?.additionalInfo
-                                            ?.secondMobileNumber?.fullPhone ??
-                                        ""
-                                    : viewOtherUser!.userData!.additionalInfo
-                                            ?.secondMobileNumber?.fullPhone ??
-                                        "",
+                                    ? userStore!.userData?.additionalInfo?.secondMobileNumber?.fullPhone ?? ""
+                                    : viewOtherUser!.userData!.additionalInfo?.secondMobileNumber?.fullPhone ?? "",
                                 email: viewOtherUser?.userData == null
                                     ? userStore!.userData?.email ?? " "
                                     : viewOtherUser!.userData!.email ?? " ",
@@ -254,15 +237,13 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                     : viewOtherUser!.userData!.role,
                                 company: viewOtherUser?.userData == null
                                     ? userStore!.userData!.additionalInfo?.company ?? ""
-                                    : viewOtherUser!.userData!.additionalInfo?.company ??
-                                        "",
+                                    : viewOtherUser!.userData!.additionalInfo?.company ?? "",
                                 ceo: viewOtherUser?.userData == null
                                     ? userStore!.userData!.additionalInfo?.ceo ?? ""
                                     : viewOtherUser!.userData!.additionalInfo?.ceo ?? "",
                                 website: viewOtherUser?.userData == null
                                     ? userStore!.userData!.additionalInfo?.website ?? ""
-                                    : viewOtherUser!.userData!.additionalInfo?.website ??
-                                        "",
+                                    : viewOtherUser!.userData!.additionalInfo?.website ?? "",
                               ),
 
                               ...ratingsWidget(),

@@ -50,10 +50,12 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
-  Future<void> getQuests(
-      QuestsType questType, UserRole role, bool createNewList) {
+  Future<void> getQuests({
+        required QuestsType questType,
+        bool isForce = true,
+      }) {
     return _$getQuestsAsyncAction
-        .run(() => super.getQuests(questType, role, createNewList));
+        .run(() => super.getQuests(questType: questType, isForce: isForce));
   }
 
   final _$_MyQuestStoreActionController =

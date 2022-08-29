@@ -101,14 +101,14 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   ),
                 ),
                 if (widget.questInfo.responded != null)
-                  if (store.isResponded(widget.questInfo))
+                  if (QuestUtils.isResponded(widget.questInfo))
                     Row(
                       children: [
                         const SizedBox(width: 5),
                         Text("quests.youResponded".tr()),
                       ],
                     ),
-                if (store.isInvited(widget.questInfo))
+                if (QuestUtils.isInvited(widget.questInfo))
                   Row(
                     children: [
                       const SizedBox(width: 5),
@@ -134,7 +134,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
               ],
             ),
             const SizedBox(height: 17.5),
-            if (store.isLocation(widget.questInfo))
+            if (QuestUtils.isLocation(widget.questInfo))
               Column(
                 children: [
                   Row(
@@ -160,7 +160,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
               ),
             Row(
               children: [
-                if (store.isRaised(widget.questInfo))
+                if (QuestUtils.isRaised(widget.questInfo))
                   Row(
                     children: [
                       SvgPicture.asset(

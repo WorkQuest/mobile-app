@@ -12,7 +12,6 @@ import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/wi
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/widgets/warning_field_widget.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -58,7 +57,6 @@ class CreateQuestPage extends StatefulWidget {
 class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
   late SkillSpecializationController _controller;
-  late ProfileMeStore? profile;
   late final CreateQuestStore store;
 
   bool get isEdit => widget.questInfo != null;
@@ -74,7 +72,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   void initState() {
     super.initState();
-    profile = context.read<ProfileMeStore>();
     store = context.read<CreateQuestStore>();
     _controller = SkillSpecializationController();
     if (widget.questInfo != null) {
@@ -120,8 +117,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     if (store.successData == CreateQuestStoreState.createQuest) {
       await Future.wait(
         [
-          context.read<MyQuestStore>().getQuests(QuestsType.Created, UserRole.Employer, true),
-          context.read<MyQuestStore>().getQuests(QuestsType.All, UserRole.Employer, true)
+          context.read<MyQuestStore>().getQuests(questType: QuestsType.Created),
+          context.read<MyQuestStore>().getQuests(questType: QuestsType.All)
         ],
       );
 
@@ -133,8 +130,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     if (store.successData == CreateQuestStoreState.editQuest) {
       await Future.wait(
         [
-          context.read<MyQuestStore>().getQuests(QuestsType.Created, UserRole.Employer, true),
-          context.read<MyQuestStore>().getQuests(QuestsType.All, UserRole.Employer, true)
+          context.read<MyQuestStore>().getQuests(questType: QuestsType.Created),
+          context.read<MyQuestStore>().getQuests(questType: QuestsType.All)
         ],
       );
       Navigator.of(context, rootNavigator: true).pop();

@@ -2,7 +2,7 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/profile_quests_page/store/profile_quests_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_list.dart';
+import 'package:app/ui/widgets/quests_list.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';

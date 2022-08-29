@@ -1,14 +1,14 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_list.dart';
+import 'package:app/ui/widgets/quests_list.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 
-class QuestsTab extends StatefulWidget {
-  const QuestsTab({
+class QuestsListType extends StatefulWidget {
+  const QuestsListType({
     required this.store,
     required this.type,
     required this.role,
@@ -19,17 +19,16 @@ class QuestsTab extends StatefulWidget {
   final UserRole role;
 
   @override
-  State<QuestsTab> createState() => _QuestsTabState();
+  State<QuestsListType> createState() => _QuestsListTypeState();
 }
 
-class _QuestsTabState extends State<QuestsTab>
-    with AutomaticKeepAliveClientMixin {
+class _QuestsListTypeState extends State<QuestsListType> with AutomaticKeepAliveClientMixin {
   final _key = GlobalKey<FormState>();
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.store.getQuests(widget.type, widget.role, true);
+      widget.store.getQuests(questType: widget.type);
     });
     super.initState();
   }
@@ -40,18 +39,9 @@ class _QuestsTabState extends State<QuestsTab>
     return Form(
       key: _key,
       child: RefreshIndicator(
-        onRefresh: () {
-          return widget.store.getQuests(widget.type, widget.role, true);
-        },
+        onRefresh: _onRefresh,
         child: NotificationListener<ScrollEndNotification>(
-          onNotification: (scrollEnd) {
-            final metrics = scrollEnd.metrics;
-            if (metrics.maxScrollExtent < metrics.pixels &&
-                !widget.store.isLoading) {
-              widget.store.getQuests(widget.type, widget.role, false);
-            }
-            return true;
-          },
+          onNotification: _onScrollListener,
           child: Observer(
             builder: (_) => Column(
               children: [
@@ -65,8 +55,7 @@ class _QuestsTabState extends State<QuestsTab>
                     ),
                     child: ElevatedButton(
                       onPressed: () async {
-                        await Navigator.of(context, rootNavigator: true)
-                            .pushNamed<bool>(
+                        await Navigator.of(context, rootNavigator: true).pushNamed<bool>(
                           CreateQuestPage.routeName,
                         );
                       },
@@ -88,6 +77,18 @@ class _QuestsTabState extends State<QuestsTab>
         ),
       ),
     );
+  }
+
+  Future<void> _onRefresh() {
+    return widget.store.getQuests(questType: widget.type);
+  }
+
+  bool _onScrollListener(ScrollEndNotification scrollEnd) {
+    final metrics = scrollEnd.metrics;
+    if (metrics.maxScrollExtent < metrics.pixels && !widget.store.isLoading) {
+      widget.store.getQuests(questType: widget.type, isForce: false);
+    }
+    return true;
   }
 
   @override

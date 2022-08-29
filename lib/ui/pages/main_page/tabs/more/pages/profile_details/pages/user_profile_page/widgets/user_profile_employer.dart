@@ -3,7 +3,7 @@ import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/pro
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/profile_quests_page/store/profile_quests_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/widgets/profile_widgets.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/widgets/quests_list.dart';
+import 'package:app/ui/widgets/quests_list.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';

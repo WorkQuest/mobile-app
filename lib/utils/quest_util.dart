@@ -1,7 +1,11 @@
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class QuestConstants {
   static final List<String> priorityList = [
@@ -229,4 +233,22 @@ class QuestUtils {
       return Colors.transparent;
     }
   }
+
+  static bool isResponded(BaseQuestResponse questItem) =>
+      (questItem.responded!.workerId == GetIt.I.get<ProfileMeStore>().userData?.id &&
+              (questItem.status == QuestConstants.questCreated ||
+                  questItem.status == QuestConstants.questWaitWorkerOnAssign) ||
+          questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeResponded) &&
+      GetIt.I.get<ProfileMeStore>().userData?.role == UserRole.Worker;
+
+  static bool isLocation(BaseQuestResponse questItem) =>
+      questItem.userId != GetIt.I.get<ProfileMeStore>().userData?.id &&
+          questItem.status != QuestConstants.questWaitEmployerConfirm &&
+          questItem.status != QuestConstants.questDone;
+
+  static bool isInvited(BaseQuestResponse questItem) =>
+      questItem.responded != null && questItem.responded?.type == QuestConstants.questResponseTypeInvited;
+
+  static bool isRaised(BaseQuestResponse questItem) =>
+      questItem.raiseView != null && questItem.raiseView!.status != null && questItem.raiseView!.status == 0;
 }
