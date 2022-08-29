@@ -47,6 +47,15 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
     });
   }
 
+  final _$getGasOpenDisputeAsyncAction =
+      AsyncAction('_OpenDisputeStore.getGasOpenDispute');
+
+  @override
+  Future getGasOpenDispute(String contractAddress) {
+    return _$getGasOpenDisputeAsyncAction
+        .run(() => super.getGasOpenDispute(contractAddress));
+  }
+
   final _$openDisputeAsyncAction = AsyncAction('_OpenDisputeStore.openDispute');
 
   @override

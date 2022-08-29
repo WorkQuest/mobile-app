@@ -204,11 +204,11 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void changedDistantWork(String selectedEmployment) {
+  void changedDistantWork(String distantWork) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.changedDistantWork');
     try {
-      return super.changedDistantWork(selectedEmployment);
+      return super.changedDistantWork(distantWork);
     } finally {
       _$_CreateQuestStoreActionController.endAction(_$actionInfo);
     }

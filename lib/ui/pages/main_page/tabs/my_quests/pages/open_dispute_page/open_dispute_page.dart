@@ -1,7 +1,7 @@
-import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/widgets/titled_field_widget.dart';
 import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
@@ -9,8 +9,6 @@ import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/dispute_util.dart';
-import 'package:app/utils/web3_utils.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -46,21 +44,27 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
     super.dispose();
   }
 
+  _stateListener() async {
+    if (store.successData == OpenDisputeState.getGasOpenDispute) {
+      _openDispute();
+    } else if (store.successData == OpenDisputeState.openDispute) {
+      Navigator.of(context, rootNavigator: true).pop();
+      await AlertDialogUtils.showSuccessDialog(context);
+      final _dispute = OpenDispute(
+        id: store.resultDisputeId,
+        openDisputeUserId: null,
+        opponentUserId: null,
+        assignedAdminId: null,
+        status: 0,
+      );
+      Navigator.pop(context, _dispute);
+    }
+  }
+
   @override
   Widget build(context) {
     return ObserverListener<OpenDisputeStore>(
-      onSuccess: () async {
-        Navigator.of(context, rootNavigator: true).pop();
-        await AlertDialogUtils.showSuccessDialog(context);
-        final _dispute = OpenDispute(
-          id: store.successData!,
-          openDisputeUserId: null,
-          opponentUserId: null,
-          assignedAdminId: null,
-          status: 0,
-        );
-        Navigator.pop(context, _dispute);
-      },
+      onSuccess: _stateListener,
       onFailure: () {
         Navigator.of(context, rootNavigator: true).pop();
         return false;
@@ -76,7 +80,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _TitledField(
+                  TitledField(
                     title: "modals.disputeTheme".tr(),
                     child: Container(
                       height: 50,
@@ -91,7 +95,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       ),
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: () => modalBottomSheet(store),
+                        onTap: _onPressedModalBottomSheet,
                         child: Row(
                           children: [
                             Expanded(
@@ -112,7 +116,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       ),
                     ),
                   ),
-                  _TitledField(
+                  TitledField(
                     title: "modals.description".tr(),
                     child: SizedBox(
                       height: 200,
@@ -160,9 +164,8 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           ),
           child: Observer(
             builder: (_) => LoginButton(
-              enabled: store.isLoading,
               title: "modals.openADispute".tr(),
-              onTap: store.isButtonEnable ? _onPressedOpenDispute : null,
+              onTap: store.isButtonEnable && !store.isLoading ? _onPressedOpenDispute : null,
             ),
           ),
         ),
@@ -170,7 +173,30 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
     );
   }
 
-  modalBottomSheet(OpenDisputeStore store) => showModalBottomSheet(
+  _onPressedOpenDispute() async {
+    store.getGasOpenDispute(widget.quest.contractAddress!);
+  }
+
+  _openDispute() {
+    confirmTransaction(
+      context,
+      fee: store.fee,
+      transaction: "ui.txInfo".tr(),
+      address: widget.quest.contractAddress!,
+      amount: null,
+      onPressConfirm: () async {
+        store.openDispute(
+          widget.quest.id,
+          widget.quest.contractAddress!,
+        );
+        Navigator.pop(context);
+        AlertDialogUtils.showLoadingDialog(context);
+      },
+      onPressCancel: () => Navigator.pop(context),
+    );
+  }
+
+  _onPressedModalBottomSheet() => showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
@@ -202,8 +228,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                 width: double.infinity,
                 child: InkWell(
                   onTap: () {
-                    final _theme = DisputeUtil.changeTheme(
-                        DisputeConstants.disputeCategoriesList[index]);
+                    final _theme = DisputeUtil.changeTheme(DisputeConstants.disputeCategoriesList[index]);
                     store.setTheme(_theme);
                     Navigator.pop(context);
                   },
@@ -219,83 +244,5 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           );
         },
       );
-
-  _onPressedOpenDispute() async {
-    try {
-      await _checkPossibilityTx();
-    } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: 'modals.error'.tr(),
-        content: e.message,
-      );
-      return;
-    } catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: 'modals.error'.tr(),
-        content: e.toString(),
-      );
-      return;
-    }
-    await confirmTransaction(
-      context,
-      fee: store.fee,
-      transaction: "ui.txInfo".tr(),
-      address: widget.quest.contractAddress!,
-      amount: null,
-      onPressConfirm: () async {
-        store.openDispute(
-          widget.quest.id,
-          widget.quest.contractAddress!,
-        );
-        Navigator.pop(context);
-        AlertDialogUtils.showLoadingDialog(context);
-      },
-      onPressCancel: () => Navigator.pop(context),
-    );
-  }
-
-  _checkPossibilityTx() async {
-    await store.getFee(widget.quest.contractAddress!);
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WQT,
-      fee: Decimal.parse(store.fee),
-      amount: 0.0,
-      isMain: true,
-    );
-  }
 }
 
-class _TitledField extends StatelessWidget {
-  final String title;
-  final Widget child;
-
-  const _TitledField({
-    Key? key,
-    required this.title,
-    required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        SizedBox(
-          height: 6,
-        ),
-        child,
-        SizedBox(
-          height: 20,
-        ),
-      ],
-    );
-  }
-}
