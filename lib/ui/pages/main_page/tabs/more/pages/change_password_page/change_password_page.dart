@@ -1,5 +1,6 @@
 import 'package:app/di/injector.dart';
 import 'package:app/main.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/store/change_password_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/widgets/form_text_field_widget.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
@@ -20,7 +21,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
-import '../../../../../../../observer_consumer.dart';
 
 final spacer = const SizedBox(
   height: 20.0,
