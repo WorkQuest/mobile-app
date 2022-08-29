@@ -1,7 +1,12 @@
+import 'package:app/di/injector.dart';
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/store/change_password_store.dart';
+import 'package:app/ui/pages/main_page/tabs/more/pages/change_password_page/widgets/form_text_field_widget.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
-import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
@@ -13,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 import '../../../../../../../observer_consumer.dart';
 
@@ -48,94 +54,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        appBar: CupertinoNavigationBar(
-          automaticallyImplyLeading: true,
-          middle: Text("settings.changePass".tr()),
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _FormTextField(
-                    controller: _currentPasswordController,
-                    title: "modals.currentPassword".tr(),
-                    hint: "modals.currentPassword".tr(),
-                    onChanged: store.setPassword,
-                    validator: Validators.signUpPasswordValidator,
-                  ),
-                  spacer,
-                  _FormTextField(
-                    controller: _newPasswordController,
-                    title: "modals.newPassword".tr(),
-                    hint: "modals.newPassword".tr(),
-                    onChanged: store.setNewPassword,
-                    validator: Validators.signUpPasswordValidator,
-                  ),
-                  spacer,
-                  _FormTextField(
-                    controller: _confirmNewPasswordController,
-                    title: "modals.confirmNewPassword".tr(),
-                    hint: "modals.confirmNewPassword".tr(),
-                    onChanged: store.setConfirmNewPassword,
-                    validator: (value) {
-                      if (value == null || value.isEmpty || value.length < 8) {
-                        return "modals.lengthPassword".tr();
-                      }
-                      if (value != _newPasswordController.text) {
-                        return "modals.mustMatchNewPassword".tr();
-                      }
-                      return null;
-                    },
-                  ),
-                  spacer,
-                  ObserverListener<ChangePasswordStore>(
-                    onFailure: () {
-                      return false;
-                    },
-                    onSuccess: () {
-                      Navigator.pop(context);
-                    },
-                    child: Observer(
-                      builder: (context) {
-                        return LoginButton(
-                          enabled: store.isLoading,
-                          onTap: store.canSubmit
-                              ? () async {
-                                  if (_formKey.currentState?.validate() ??
-                                      false) {
-                                    _changePasswordOnPressed();
-                                  }
-                                }
-                              : null,
-                          title: "meta.submit".tr(),
-                        );
-                      },
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _changePasswordOnPressed() async {
-    await store.changePassword();
-    if (store.isSuccess) {
-      await store.deleteToken();
+  _stateListener() {
+    if (store.successData == ChangePasswordState.changePassword) {
+      store.deleteToken();
       Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
         SignInPage.routeName,
-        (route) => false,
+        (_) => false,
       );
+      getIt.get<ProfileMeStore>().deletePushToken();
+      getIt.get<SearchListStore>().clearData();
+      getIt.get<FilterQuestsStore>().clearFilters();
+      getIt.get<MyQuestStore>().clearData();
+      final cookieManager = WebviewCookieManager();
+      cookieManager.clearCookies();
       WalletRepository().clearData();
       Storage.deleteAllFromSecureStorage();
       AlertDialogUtils.showInfoAlertDialog(
@@ -145,43 +76,79 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       );
     }
   }
-}
-
-class _FormTextField extends StatelessWidget {
-  final String? Function(String?)? validator;
-  final TextEditingController controller;
-  final Function(String) onChanged;
-  final String title;
-  final String hint;
-
-  const _FormTextField({
-    Key? key,
-    required this.title,
-    required this.hint,
-    required this.validator,
-    required this.onChanged,
-    required this.controller,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title),
-        const SizedBox(
-          height: 5.0,
+    return ObserverListener<ChangePasswordStore>(
+      onSuccess: _stateListener,
+      onFailure: () => false,
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          appBar: CupertinoNavigationBar(
+            automaticallyImplyLeading: true,
+            middle: Text("settings.changePass".tr()),
+          ),
+          body: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      FormTextField(
+                        controller: _currentPasswordController,
+                        title: "modals.currentPassword".tr(),
+                        hint: "modals.currentPassword".tr(),
+                        onChanged: store.setPassword,
+                        validator: Validators.signUpPasswordValidator,
+                      ),
+                      spacer,
+                      FormTextField(
+                        controller: _newPasswordController,
+                        title: "modals.newPassword".tr(),
+                        hint: "modals.newPassword".tr(),
+                        onChanged: store.setNewPassword,
+                        validator: Validators.signUpPasswordValidator,
+                      ),
+                      spacer,
+                      FormTextField(
+                        controller: _confirmNewPasswordController,
+                        title: "modals.confirmNewPassword".tr(),
+                        hint: "modals.confirmNewPassword".tr(),
+                        onChanged: store.setConfirmNewPassword,
+                        validator: (value) {
+                          if (value == null || value.isEmpty || value.length < 8) {
+                            return "modals.lengthPassword".tr();
+                          }
+                          if (value != _newPasswordController.text) {
+                            return "modals.mustMatchNewPassword".tr();
+                          }
+                          return null;
+                        },
+                      ),
+                      spacer,
+                      Observer(
+                        builder: (_) => LoginButton(
+                          enabled: store.isLoading,
+                          onTap: store.canSubmit ? _changePasswordOnPressed : null,
+                          title: "meta.submit".tr(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        DefaultTextField(
-          controller: controller,
-          onChanged: onChanged,
-          isPassword: true,
-          hint: hint,
-          validator: validator,
-          suffixIcon: null,
-          inputFormatters: [],
-        ),
-      ],
+      ),
     );
+  }
+
+  _changePasswordOnPressed() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      store.changePassword();
+    }
   }
 }

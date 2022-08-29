@@ -17,36 +17,6 @@ mixin _$ChangePasswordStore on _ChangePasswordStore, Store {
               name: '_ChangePasswordStore.canSubmit'))
           .value;
 
-  final _$privacyAtom = Atom(name: '_ChangePasswordStore.privacy');
-
-  @override
-  int get privacy {
-    _$privacyAtom.reportRead();
-    return super.privacy;
-  }
-
-  @override
-  set privacy(int value) {
-    _$privacyAtom.reportWrite(value, super.privacy, () {
-      super.privacy = value;
-    });
-  }
-
-  final _$filterAtom = Atom(name: '_ChangePasswordStore.filter');
-
-  @override
-  int get filter {
-    _$filterAtom.reportRead();
-    return super.filter;
-  }
-
-  @override
-  set filter(int value) {
-    _$filterAtom.reportWrite(value, super.filter, () {
-      super.filter = value;
-    });
-  }
-
   final _$passwordAtom = Atom(name: '_ChangePasswordStore.password');
 
   @override
@@ -132,8 +102,6 @@ mixin _$ChangePasswordStore on _ChangePasswordStore, Store {
   @override
   String toString() {
     return '''
-privacy: ${privacy},
-filter: ${filter},
 password: ${password},
 newPassword: ${newPassword},
 confirmNewPassword: ${confirmNewPassword},
