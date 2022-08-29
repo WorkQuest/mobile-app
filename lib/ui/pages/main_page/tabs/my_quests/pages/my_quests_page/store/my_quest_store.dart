@@ -143,6 +143,11 @@ abstract class _MyQuestStore extends IStore<MyQuestStoreState> with Store {
         return [];
     }
   }
+
+  @action
+  clearData() {
+    quests = ObservableMap.of({});
+  }
 }
 
 enum MyQuestStoreState { getQuests, setStar }

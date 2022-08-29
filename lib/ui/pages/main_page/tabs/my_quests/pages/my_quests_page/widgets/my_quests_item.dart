@@ -1,9 +1,12 @@
 import 'package:app/constants.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/employer/quest_employer_page/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/quest_worker_page.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
@@ -47,7 +50,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
     return GestureDetector(
       onTap: () async {
         final result = await Navigator.of(context, rootNavigator: true).pushNamed(
-          QuestDetails.routeName,
+          getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker ? QuestWorkerPage.routeName : QuestEmployerPage.routeName,
           arguments: QuestArguments(id: widget.questInfo.id),
         );
         if (result != null && result as bool) {

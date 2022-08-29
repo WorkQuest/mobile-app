@@ -48,12 +48,10 @@ import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/s
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/store/open_dispute_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/store/quest_details_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/widgets/map_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_employer_page/store/employer_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_worker_page/quest_worker_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_worker_page/store/worker_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/employer/quest_employer_page/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/employer/quest_employer_page/store/employer_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/map_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/filter_quests_page.dart';
@@ -102,7 +100,7 @@ import 'ui/pages/main_page/tabs/more/pages/change_profile_page/change_profile_pa
 import 'ui/pages/main_page/tabs/more/pages/profile_details/pages/create_portfolio_page/create_portfolio_page.dart';
 import 'ui/pages/main_page/tabs/more/pages/profile_details/pages/profile_quests_page/profile_quests_page.dart';
 import 'ui/pages/main_page/tabs/my_quests/pages/create_quest_page/create_quest_page.dart';
-import 'ui/pages/main_page/tabs/my_quests/pages/quest_employer_page/quest_employer_page.dart';
+import 'ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/quest_worker_page.dart';
 import 'ui/pages/main_page/tabs/wallet/pages/swap_page/swap_page.dart';
 import 'ui/pages/sign_up/pages/choose_role/pages/approve_role_page.dart';
 import 'ui/pages/sign_up/pages/sign_up_page/sign_up_page.dart';
@@ -259,66 +257,63 @@ class Routes {
           ),
         );
 
-      case QuestDetails.routeName:
+      case QuestEmployerPage.routeName:
         return MaterialPageRoute(
           builder: (context) {
-            final role = getIt.get<ProfileMeStore>().userData?.role;
             final arguments = settings.arguments as QuestArguments;
-            if (role == UserRole.Employer)
-              return MultiProvider(
-                providers: [
-                  Provider(
-                    create: (context) => getIt.get<EmployerStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<ProfileMeStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<MyQuestStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<QuestDetailsStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<ChatStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<SearchListStore>(),
-                  ),
-                ],
-                child: Directionality(
-                  textDirection: checkDirection(context),
-                  child: QuestEmployer(arguments),
+            return MultiProvider(
+              providers: [
+                Provider(
+                  create: (context) => getIt.get<EmployerStore>(),
                 ),
-              );
-            else {
-              return MultiProvider(
-                providers: [
-                  Provider(
-                    create: (context) => getIt.get<WorkerStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<ProfileMeStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<MyQuestStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<SearchListStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<QuestDetailsStore>(),
-                  ),
-                  Provider(
-                    create: (context) => getIt.get<ChatStore>(),
-                  ),
-                ],
-                child: Directionality(
-                  textDirection: checkDirection(context),
-                  child: QuestWorker(arguments),
+                Provider(
+                  create: (context) => getIt.get<ProfileMeStore>(),
                 ),
-              );
-            }
+                Provider(
+                  create: (context) => getIt.get<MyQuestStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<ChatStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<SearchListStore>(),
+                ),
+              ],
+              child: Directionality(
+                textDirection: checkDirection(context),
+                child: QuestEmployerPage(arguments),
+              ),
+            );
+          },
+        );
+
+      case QuestWorkerPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) {
+            final arguments = settings.arguments as QuestArguments;
+            return MultiProvider(
+              providers: [
+                Provider(
+                  create: (context) => getIt.get<WorkerStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<ProfileMeStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<MyQuestStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<SearchListStore>(),
+                ),
+                Provider(
+                  create: (context) => getIt.get<ChatStore>(),
+                ),
+              ],
+              child: Directionality(
+                textDirection: checkDirection(context),
+                child: QuestWorkerPage(arguments),
+              ),
+            );
           },
         );
 
@@ -480,9 +475,7 @@ class Routes {
 
       case UserProfile.routeName:
         final arguments = settings.arguments as ProfileArguments?;
-        final _isWorker =
-            (arguments?.role ?? GetIt.I.get<ProfileMeStore>().userData!.role) ==
-                UserRole.Worker;
+        final _isWorker = (arguments?.role ?? GetIt.I.get<ProfileMeStore>().userData!.role) == UserRole.Worker;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -529,6 +522,9 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
               ),
             ],
             child: Directionality(

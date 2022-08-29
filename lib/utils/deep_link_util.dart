@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:app/constants.dart';
+import 'package:app/di/injector.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/employer/quest_employer_page/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/quest_worker_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up/pages/confirm_email_page/confirm_email_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/storage.dart';
@@ -82,15 +86,15 @@ class DeepLinkUtil {
   Future<void> _goToPage(Uri uri) async {
     final argument = uri.path.split("/").last;
     if (!_clientHaveToken) return;
-    if (uri.path.contains("quests"))
+    if (uri.path.contains("quests")) {
       Navigator.of(navigatorKey.currentState!.context, rootNavigator: true)
           .pushNamed(
-        QuestDetails.routeName,
+        getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker ? QuestWorkerPage.routeName : QuestEmployerPage.routeName,
         arguments: QuestArguments(
           id: argument,
         ),
       );
-    else if (uri.path.contains("profile")) {
+    } else if (uri.path.contains("profile")) {
       final questHolder = await GetIt.I.get<ApiProvider>().getProfileUser(userId: argument);
       await Navigator.of(navigatorKey.currentState!.context,
               rootNavigator: true)

@@ -10,8 +10,8 @@ import 'package:app/ui/pages/main_page/tabs/more/pages/my_disputes/pages/dispute
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/open_dispute_page/open_dispute_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_worker_page/store/worker_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/store/worker_store.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/widgets/quest_details_body_widget.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/report_page/report_page.dart';
@@ -32,15 +32,24 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
+class QuestArguments {
+  QuestArguments({required this.id});
 
-class QuestWorker extends QuestDetails {
-  QuestWorker(QuestArguments arguments) : super(arguments);
-
-  @override
-  _QuestWorkerState createState() => _QuestWorkerState();
+  String? id;
 }
 
-class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
+class QuestWorkerPage extends StatefulWidget {
+  final QuestArguments arguments;
+
+  static const String routeName = "/QuestWorker";
+
+  const QuestWorkerPage(this.arguments);
+
+  @override
+  _QuestWorkerPageState createState() => _QuestWorkerPageState();
+}
+
+class _QuestWorkerPageState extends State<QuestWorkerPage> with SingleTickerProviderStateMixin {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late SearchListStore questStore;
@@ -48,43 +57,43 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   AnimationController? controller;
 
-  bool get isMyQuest => (store.quest.value?.userId ?? '') == profile!.userData!.id;
+  String get myId => context.read<ProfileMeStore>().userData!.id;
+
+  bool get isMyQuest => (store.quest.value?.userId ?? '') == myId;
 
   bool get canCreateReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-      ((store.quest.value?.userId == profile!.userData!.id ||
-              store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
+      ((store.quest.value?.userId == myId ||
+              store.quest.value?.assignedWorker?.id == myId) &&
           store.quest.value?.yourReview == null);
 
   bool get showReview =>
       store.quest.value?.status == QuestConstants.questDone &&
-      ((store.quest.value?.userId == profile!.userData!.id ||
-              store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
+      ((store.quest.value?.userId == myId ||
+              store.quest.value?.assignedWorker?.id == myId) &&
           store.quest.value?.yourReview != null);
 
   bool get canSendRequest =>
-      store.quest.value?.status == QuestConstants.questCreated &&
-      store.quest.value!.responded == null;
+      store.quest.value?.status == QuestConstants.questCreated && store.quest.value!.responded == null;
 
   bool get canAnswerAnQuest =>
       (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
-          store.quest.value?.assignedWorker?.id == profile!.userData!.id) ||
+          store.quest.value?.assignedWorker?.id == myId) ||
       (store.quest.value?.responded != null &&
           store.quest.value?.status == QuestConstants.questCreated &&
           store.quest.value?.responded?.status == 0 &&
-          store.quest.value!.responded?.type !=
-              QuestConstants.questResponseTypeResponded);
+          store.quest.value!.responded?.type != QuestConstants.questResponseTypeResponded);
 
   bool get canCompleteQuest =>
       store.quest.value?.status == QuestConstants.questWaitWorker &&
-      store.quest.value?.assignedWorker?.id == profile!.userData!.id;
+      store.quest.value?.assignedWorker?.id == myId;
 
   bool get canCreateDispute =>
-      store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
+      store.quest.value?.assignedWorker?.id == myId &&
       store.quest.value?.status == QuestConstants.questWaitEmployerConfirm;
 
   bool get canPushToDispute =>
-      store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
+      store.quest.value?.assignedWorker?.id == myId &&
       store.quest.value?.status == QuestConstants.questDispute &&
       store.quest.value?.openDispute != null;
 
@@ -93,7 +102,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     store = context.read<WorkerStore>();
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<SearchListStore>();
-    profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
 
     store.getQuest(widget.arguments.id ?? "");
@@ -105,87 +113,94 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   @override
-  Future<dynamic> update() => store.getQuest(store.quest.value!.id);
-
-  @override
-  List<Widget>? actionAppBar() {
-    return <Widget>[
-      IconButton(
-        icon: Icon(
-          Icons.share_outlined,
-          color: Color(0xFFD8DFE3),
-        ),
-        onPressed: () {
-          late String _url;
-          if (WalletRepository().notifierNetwork.value == Network.mainnet) {
-            _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
-          } else {
-            _url =
-                "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
-          }
-          Share.share(_url);
-        },
-      ),
-      Observer(
-        builder: (_) => IconButton(
-          icon: Icon(
-            store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
-            color:
-                store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
-          ),
-          onPressed: () async {
-            await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
-            store.onStar();
-            questStore.setStar(store.quest.value!.id, store.quest.value!.star);
-          },
-        ),
-      ),
-      IconButton(
-        icon: Icon(
-          Icons.warning_amber_outlined,
-          color: Color(0xFFD8DFE3),
-        ),
-        onPressed: () {
-          Navigator.of(context, rootNavigator: true).pushNamed(
-            ReportPage.routeName,
-            arguments: ReportPageArguments(
-              entityType: ReportEntityType.quest,
-              entityId: store.quest.value!.id,
-            ),
-          );
-        },
-      ),
-      if (store.quest.value?.status == QuestConstants.questPending)
-        IconButton(
-          icon: Icon(Icons.share_outlined),
-          onPressed: () {
-            late String _url;
-            if (WalletRepository().notifierNetwork.value == Network.mainnet) {
-              _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
-            } else {
-              _url =
-                  "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
-            }
-            Share.share(_url);
-          },
-        ),
-    ];
-  }
-
-  @override
-  Widget questHeader() {
+  Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => QuestHeader(
-        itemType: QuestsType.All,
-        questStatus: store.quest.value?.status ?? 0,
-        rounded: false,
-        role: UserRole.Worker,
-        responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
+      builder: (_) => Scaffold(
+        appBar: store.quest.value == null
+            ? null
+            : AppBar(
+                actions: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.share_outlined,
+                      color: Color(0xFFD8DFE3),
+                    ),
+                    onPressed: () {
+                      late String _url;
+                      if (WalletRepository().notifierNetwork.value == Network.mainnet) {
+                        _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+                      } else {
+                        _url =
+                            "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
+                      }
+                      Share.share(_url);
+                    },
+                  ),
+                  Observer(
+                    builder: (_) => IconButton(
+                      icon: Icon(
+                        store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
+                        color: store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+                      ),
+                      onPressed: () async {
+                        await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
+                        store.onStar();
+                        questStore.setStar(store.quest.value!.id, store.quest.value!.star);
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.warning_amber_outlined,
+                      color: Color(0xFFD8DFE3),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pushNamed(
+                        ReportPage.routeName,
+                        arguments: ReportPageArguments(
+                          entityType: ReportEntityType.quest,
+                          entityId: store.quest.value!.id,
+                        ),
+                      );
+                    },
+                  ),
+                  if (store.quest.value?.status == QuestConstants.questPending)
+                    IconButton(
+                      icon: Icon(Icons.share_outlined),
+                      onPressed: () {
+                        late String _url;
+                        if (WalletRepository().notifierNetwork.value == Network.mainnet) {
+                          _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+                        } else {
+                          _url =
+                              "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${widget.arguments.id}";
+                        }
+                        Share.share(_url);
+                      },
+                    ),
+                ],
+              ),
+        body: QuestDetailsBodyWidget(
+            onRefresh: () async  {
+              store.getQuest(store.quest.value!.id);
+            },
+            quest: store.quest.value,
+            questHeader: Observer(
+              builder: (_) => QuestHeader(
+                itemType: QuestsType.All,
+                questStatus: store.quest.value?.status ?? 0,
+                rounded: false,
+                role: UserRole.Worker,
+                responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
+              ),
+            ),
+            inProgressBy: SizedBox(),
+            bottomBody: getBodyBottom(),
+            review: review()),
       ),
     );
   }
 
-  @override
   Widget review() {
     if (canCreateReview) {
       return Column(
@@ -232,14 +247,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     return SizedBox();
   }
 
-  @override
-  Widget getBody() {
-    print('body: ${store.quest.value?.toJson()}');
+  Widget getBodyBottom() {
     if (isMyQuest) return const SizedBox();
-    final _dif = DateTime.now()
-        .toUtc()
-        .difference(store.quest.value?.startedAt ?? DateTime.now().toUtc())
-        .inHours;
+    final _dif = DateTime.now().toUtc().difference(store.quest.value?.startedAt ?? DateTime.now().toUtc()).inHours;
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -346,10 +356,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5);
+                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                             return const Color(0xFF0083C7);
                           },
                         ),
@@ -373,10 +380,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
-                              return Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5);
+                              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                             return const Color(0xFF0083C7);
                           },
                         ),
@@ -418,8 +422,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                         );
                                         if (result != null && result is OpenDispute) {
                                           print('result: ${result.toJson()}');
-                                          store.quest.value!.status =
-                                              QuestConstants.questDispute;
+                                          store.quest.value!.status = QuestConstants.questDispute;
                                           store.quest.value!.openDispute = result;
                                           store.quest.reportChanged();
                                         }
@@ -439,10 +442,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           backgroundColor: MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
-                                return Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.5);
+                                return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                               return const Color(0xFF0083C7);
                             },
                           ),
@@ -553,9 +553,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           builder: (_) => LoginButton(
             withColumn: true,
             enabled: store.isLoading,
-            onTap: store.opinion.isNotEmpty ||
-                    store.mediaFile.isNotEmpty ||
-                    store.mediaIds.isNotEmpty
+            onTap: store.opinion.isNotEmpty || store.mediaFile.isNotEmpty || store.mediaIds.isNotEmpty
                 ? () async {
                     store.sendRespondOnQuest(store.opinion);
                   }
@@ -588,8 +586,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 ? null
                 : () async {
                     print('assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
-                    print('id: ${profile!.userData!.id}');
-                    if (store.quest.value!.assignedWorkerId == profile!.userData!.id) {
+                    print('id: ${myId}');
+                    if (store.quest.value!.assignedWorkerId == myId) {
                       await sendTransaction(
                         onPress: () async {
                           Navigator.pop(context);
@@ -608,7 +606,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         const SizedBox(height: 15),
         if (store.quest.value!.responded != null &&
             store.quest.value!.responded?.status == QuestConstants.questResponseOpen &&
-            store.quest.value!.assignedWorkerId != profile!.userData!.id)
+            store.quest.value!.assignedWorkerId != myId)
           Column(
             children: [
               Observer(
@@ -636,13 +634,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     try {
       await _checkPossibilityTx(functionName);
     } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'modals.error'.tr(), content: e.message);
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
       return;
     } catch (e, trace) {
       print('_checkPossibilityTx | $e\n$trace');
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'modals.error'.tr(), content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
       return;
     }
     await confirmTransaction(

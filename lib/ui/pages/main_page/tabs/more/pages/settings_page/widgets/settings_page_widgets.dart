@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/user_profile_page/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/tabs/search/pages/search_list_page/store/search_list_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -178,6 +179,7 @@ class LogoutButton extends StatelessWidget {
             context.read<ProfileMeStore>().deletePushToken();
             context.read<SearchListStore>().clearData();
             context.read<FilterQuestsStore>().clearFilters();
+            context.read<MyQuestStore>().clearData();
             final cookieManager = WebviewCookieManager();
             cookieManager.clearCookies();
             WalletRepository().clearData();

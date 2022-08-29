@@ -22,20 +22,21 @@ class QuestsListType extends StatefulWidget {
   State<QuestsListType> createState() => _QuestsListTypeState();
 }
 
-class _QuestsListTypeState extends State<QuestsListType> with AutomaticKeepAliveClientMixin {
+class _QuestsListTypeState extends State<QuestsListType> {
   final _key = GlobalKey<FormState>();
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.store.getQuests(questType: widget.type);
+      if (widget.store.quests[widget.type] == null) {
+        widget.store.getQuests(questType: widget.type);
+      }
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Form(
       key: _key,
       child: RefreshIndicator(
@@ -90,7 +91,4 @@ class _QuestsListTypeState extends State<QuestsListType> with AutomaticKeepAlive
     }
     return true;
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

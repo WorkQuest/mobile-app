@@ -81,6 +81,17 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   }
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 quests: ${quests}

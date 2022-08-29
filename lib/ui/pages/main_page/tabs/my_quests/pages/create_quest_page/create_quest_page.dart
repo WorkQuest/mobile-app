@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/observer_consumer.dart';
@@ -11,7 +12,9 @@ import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/wi
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/widgets/title_with_field.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/create_quest_page/widgets/warning_field_widget.dart';
 import 'package:app/ui/pages/main_page/tabs/my_quests/pages/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/employer/quest_employer_page/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/tabs/my_quests/pages/quest_details/pages/worker/quest_worker_page/quest_worker_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -138,7 +141,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       Navigator.pop(context);
       Navigator.pushReplacementNamed(
         context,
-        QuestDetails.routeName,
+        getIt.get<ProfileMeStore>().userData!.role == UserRole.Worker ? QuestWorkerPage.routeName : QuestEmployerPage.routeName,
         arguments: QuestArguments(
           id: widget.questInfo!.id,
         ),
