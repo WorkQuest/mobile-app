@@ -57,12 +57,11 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_ChooseQuestStore.getQuests');
 
   @override
-  Future<void> getQuests(
-      {required String userId,
-      required bool newList,
-      required bool isProfileYours}) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(
-        userId: userId, newList: newList, isProfileYours: isProfileYours));
+  Future<void> getQuests({
+    required String userId,
+    bool isForce = true,
+  }) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(userId: userId, isForce: isForce));
   }
 
   final _$startQuestAsyncAction = AsyncAction('_ChooseQuestStore.startQuest');
@@ -72,13 +71,11 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
     return _$startQuestAsyncAction.run(() => super.startQuest(userId: userId));
   }
 
-  final _$_ChooseQuestStoreActionController =
-      ActionController(name: '_ChooseQuestStore');
+  final _$_ChooseQuestStoreActionController = ActionController(name: '_ChooseQuestStore');
 
   @override
   void setQuest(String id) {
-    final _$actionInfo = _$_ChooseQuestStoreActionController.startAction(
-        name: '_ChooseQuestStore.setQuest');
+    final _$actionInfo = _$_ChooseQuestStoreActionController.startAction(name: '_ChooseQuestStore.setQuest');
     try {
       return super.setQuest(id);
     } finally {

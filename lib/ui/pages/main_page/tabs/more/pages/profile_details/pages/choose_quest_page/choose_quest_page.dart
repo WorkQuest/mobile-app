@@ -1,3 +1,4 @@
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/tabs/chat/pages/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/profile_details/pages/choose_quest_page/store/choose_quest_store.dart';
@@ -10,9 +11,7 @@ import 'package:provider/provider.dart';
 class ChooseQuestPage extends StatefulWidget {
   static const String routeName = '/chooseQuestPage';
 
-  const ChooseQuestPage({
-    required this.workerId,
-  });
+  const ChooseQuestPage({required this.workerId});
 
   final String workerId;
 
@@ -26,55 +25,88 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
   @override
   void initState() {
     store = context.read<ChooseQuestStore>();
-    store.getQuests(
-      userId: widget.workerId,
-      newList: true,
-      isProfileYours: false,
-    );
+    store.getQuests(userId: widget.workerId);
     super.initState();
+  }
+
+  _stateListener() {
+    if (store.successData == ChooseQuestState.startQuest) {
+      context.read<ChatStore>().refreshChats();
+      Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+        ChatRoomPage.routeName,
+        arguments: ChatRoomArguments(store.chatId, true),
+      );
+      AlertDialogUtils.showSuccessDialog(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      persistentFooterButtons: [buttonRow(context, store)],
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.arrow_back_ios_sharp,
+    return ObserverListener<ChooseQuestStore>(
+      onSuccess: _stateListener,
+      onFailure: () => false,
+      child: Scaffold(
+        persistentFooterButtons: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 45.0,
+                    child: OutlinedButton(
+                      onPressed: _onPressedCancel,
+                      child: Text("meta.cancel".tr()),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          width: 1.0,
+                          color: Color(0xFF0083C7).withOpacity(0.1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20.0),
+                Expanded(
+                  child: Observer(
+                    builder: (_) => ElevatedButton(
+                      onPressed: store.questId.isNotEmpty && !store.isLoading ? _onPressedAddToQuest : null,
+                      child: Text("quests.addToQuest".tr()),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios_sharp,
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            "quests.quests".tr(),
+            style: TextStyle(
+              color: Color(0xFF1D2127),
+            ),
           ),
         ),
-        centerTitle: true,
-        title: Text(
-          "quests.quests".tr(),
-          style: TextStyle(
-            color: Color(0xFF1D2127),
-          ),
-        ),
-      ),
-      body: Observer(
-        builder: (_) => store.quests.isEmpty && store.isLoading
-            ? Center(child: CircularProgressIndicator.adaptive())
-            : NotificationListener<ScrollEndNotification>(
-                onNotification: (scrollEnd) {
-                  final metrics = scrollEnd.metrics;
-                  if ((metrics.atEdge ||
-                          metrics.maxScrollExtent < metrics.pixels) &&
-                      !store.isLoading) {
-                    store.getQuests(
-                      userId: widget.workerId,
-                      newList: false,
-                      isProfileYours: false,
-                    );
-                  }
-                  return true;
-                },
-                child: ListView.builder(
-                  itemBuilder: (context, index) => Observer(builder: (_) {
+        body: Observer(
+          builder: (_) {
+            if (store.quests.isEmpty && store.isLoading) {
+              return Center(child: CircularProgressIndicator.adaptive());
+            }
+            return NotificationListener<ScrollEndNotification>(
+              onNotification: _onScrollListener,
+              child: ListView.builder(
+                itemBuilder: (context, index) => Observer(
+                  builder: (_) {
                     if (store.showMore && index == store.quests.length) {
                       return Column(
                         children: const [
@@ -91,70 +123,36 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                       ),
                       value: store.quests[index].id,
                       groupValue: store.questId,
-                      onChanged: (value) {
-                        store.setQuest(
-                          store.quests[index].id,
-                        );
-                      },
+                      onChanged: (_) => _onPressedSetQuest(store.quests[index].id),
                     );
-                  }),
-                  itemCount: store.showMore
-                      ? store.quests.length + 1
-                      : store.quests.length,
+                  },
                 ),
+                itemCount: store.showMore ? store.quests.length + 1 : store.quests.length,
               ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget buttonRow(
-    BuildContext context,
-    ChooseQuestStore store,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 45.0,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("meta.cancel".tr()),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      width: 1.0,
-                      color: Color(0xFF0083C7).withOpacity(0.1),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 20.0),
-            Expanded(
-              child: Observer(
-                builder: (_) => ElevatedButton(
-                  onPressed: store.questId.isNotEmpty
-                      ? () async {
-                          await store.startQuest(userId: widget.workerId);
-                          if (store.isSuccess) {
-                            context.read<ChatStore>().refreshChats();
-                            Navigator.of(context, rootNavigator: true)
-                                .pushReplacementNamed(
-                              ChatRoomPage.routeName,
-                              arguments: ChatRoomArguments(store.chatId, true),
-                            );
-                            AlertDialogUtils.showSuccessDialog(context);
-                          }
-                        }
-                      : null,
-                  child: Text("quests.addToQuest".tr()),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+  _onPressedAddToQuest() {
+    store.startQuest(userId: widget.workerId);
+  }
+
+  _onPressedCancel() {
+    Navigator.pop(context);
+  }
+
+  bool _onScrollListener(ScrollEndNotification scrollEnd) {
+    final metrics = scrollEnd.metrics;
+    if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) && !store.isLoading) {
+      store.getQuests(userId: widget.workerId, isForce: false);
+    }
+    return true;
+  }
+
+  _onPressedSetQuest(String questId) {
+    store.setQuest(questId);
+  }
 }

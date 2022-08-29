@@ -12,7 +12,7 @@ class ChooseQuestStore extends _ChooseQuestStore with _$ChooseQuestStore {
   ChooseQuestStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _ChooseQuestStore extends IStore<bool> with Store {
+abstract class _ChooseQuestStore extends IStore<ChooseQuestState> with Store {
   final ApiProvider _apiProvider;
 
   _ChooseQuestStore(this._apiProvider);
@@ -32,28 +32,22 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   String chatId = "";
 
   @action
-  Future<void> getQuests({
+  getQuests({
     required String userId,
-    required bool newList,
-    required bool isProfileYours,
+    bool isForce = true,
   }) async {
     try {
-      if (newList) {
+      if (isForce) {
         this.onLoading();
         quests.clear();
       } else {
         showMore = true;
       }
-      quests.addAll(await _apiProvider.getAvailableQuests(
-        userId: userId,
-        offset: quests.length,
-      ));
-
-      quests.toList().sort((key1, key2) =>
-          key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch
-              ? 1
-              : 0);
-      this.onSuccess(true);
+      final result = await _apiProvider.getAvailableQuests(userId: userId, offset: quests.length);
+      quests.addAll(result);
+      quests.toList().sort(
+          (key1, key2) => key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch ? 1 : 0);
+      this.onSuccess(ChooseQuestState.getQuests);
     } catch (e) {
       this.onError(e.toString());
     }
@@ -61,7 +55,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<void> startQuest({
+  startQuest({
     required String userId,
   }) async {
     try {
@@ -71,10 +65,11 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
         userId: userId,
         message: "quests.inviteToQuest".tr(),
       );
-      this.onSuccess(true);
+      this.onSuccess(ChooseQuestState.startQuest);
     } catch (e) {
-      print("getQuests error: $e");
       this.onError(e.toString());
     }
   }
 }
+
+enum ChooseQuestState { getQuests, startQuest }
