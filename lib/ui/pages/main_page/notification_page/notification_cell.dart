@@ -157,7 +157,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        DateFormat('dd MMM yyyy, kk:mm').format(widget.body.createdAt),
+                        DateFormat('dd MMM yyyy, kk:mm').format(widget.body.createdAt.toLocal()),
                         style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFFAAB0B9),

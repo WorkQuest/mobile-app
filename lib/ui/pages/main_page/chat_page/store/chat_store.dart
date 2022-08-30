@@ -239,8 +239,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     bool check = false;
     chats.forEach((key, value) {
       value.chat.forEach((element) {
-        if (element.chatData.lastMessage!.senderStatus == "Unread" &&
-            element.chatData.lastMessage!.sender?.userId != GetIt.I.get<ProfileMeStore>().userData!.id) {
+        if (element.chatData.lastMessage?.senderStatus == "Unread" &&
+            element.chatData.lastMessage?.sender?.userId != GetIt.I.get<ProfileMeStore>().userData!.id) {
           check = true;
           return;
         }
