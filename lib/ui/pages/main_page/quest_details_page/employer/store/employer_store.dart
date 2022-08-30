@@ -87,30 +87,36 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   }
 
   getFee(String userId, String functionName) async {
-    final _needParams = functionName == WQContractFunctions.assignJob.name;
-    List<dynamic> _params = [];
-    final _client = WalletRepository().getClientWorkNet();
-    final _contract = await _client.getDeployedContract(
-      "WorkQuest",
-      quest.value!.contractAddress!,
-    );
-    final _function = _contract.function(functionName);
-    if (_needParams) {
-      final _user = await _apiProvider.getProfileUser(userId: userId);
-      _params = [EthereumAddress.fromHex(_user.walletAddress!)];
+    try {
+      onLoading();
+      final _needParams = functionName == WQContractFunctions.assignJob.name;
+      List<dynamic> _params = [];
+      final _client = WalletRepository().getClientWorkNet();
+      final _contract = await _client.getDeployedContract(
+        "WorkQuest",
+        quest.value!.contractAddress!,
+      );
+      final _function = _contract.function(functionName);
+      if (_needParams) {
+        final _user = await _apiProvider.getProfileUser(userId: userId);
+        _params = [EthereumAddress.fromHex(_user.walletAddress!)];
+      }
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract,
+          function: _function,
+          params: _params,
+          value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
+      await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.WQT,
+        fee: Decimal.parse(_gas.toString()),
+        amount: 0.0,
+        isMain: true,
+      );
+      fee = _gas.toStringAsFixed(17);
+      onSuccess(EmployerStoreState.getFee);
+    } catch (e) {
+      onError(e.toString());
     }
-    final _gas = await _client.getEstimateGasCallContract(
-        contract: _contract,
-        function: _function,
-        params: _params,
-        value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WQT,
-      fee: Decimal.parse(_gas.toString()),
-      amount: 0.0,
-      isMain: true,
-    );
-    fee = _gas.toStringAsFixed(17);
   }
 
   @action

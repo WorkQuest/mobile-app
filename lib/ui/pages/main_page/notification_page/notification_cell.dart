@@ -43,8 +43,7 @@ class _NotificationCellState extends State<NotificationCell> {
         widget.store.getDispute(widget.body.notification.data.disputeId!);
       });
     user = widget.body.notification.data.user;
-    senderName =
-        (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
+    senderName = (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
     super.initState();
   }
 
@@ -64,11 +63,7 @@ class _NotificationCellState extends State<NotificationCell> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Observer(
-                    builder: (_) => widget
-                                .store
-                                .disputes[
-                                    widget.body.notification.data.disputeId ??
-                                        ""]
+                    builder: (_) => widget.store.disputes[widget.body.notification.data.disputeId ?? ""]
                                 ?.currentUserDisputeReview !=
                             null
                         ? OutlinedButton(
@@ -162,8 +157,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        DateFormat('dd MMM yyyy, kk:mm')
-                            .format(widget.body.createdAt),
+                        DateFormat('dd MMM yyyy, kk:mm').format(widget.body.createdAt),
                         style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFFAAB0B9),
@@ -204,18 +198,18 @@ class _NotificationCellState extends State<NotificationCell> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.body.notification.data.title ??
-                          _userRating(widget.body.notification.data.status),
+                      widget.body.notification.data.title ?? _userRating(widget.body.notification.data.status),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Colors.blueAccent,
-                    size: 20,
-                  ),
+                  if (hasNavigation())
+                    Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Colors.blueAccent,
+                      size: 20,
+                    ),
                 ],
               ),
             ),
@@ -225,14 +219,13 @@ class _NotificationCellState extends State<NotificationCell> {
     );
   }
 
-  void _navigate() async {
+  _navigate() async {
     if (action.contains("workquestwikipage")) {
       await Navigator.of(context, rootNavigator: true).pushNamed(
         WebViewPage.routeName,
         arguments: "https://workquest.wiki/",
       );
-    }
-    else if (action.contains("quest")) {
+    } else if (action.contains("quest")) {
       await Navigator.of(context, rootNavigator: true).pushNamed(
         QuestDetails.routeName,
         arguments: QuestArguments(
@@ -271,6 +264,28 @@ class _NotificationCellState extends State<NotificationCell> {
         WebViewPage.routeName,
         arguments: "referral",
       );
+    }
+  }
+
+  bool hasNavigation() {
+    if (action.contains("workquestwikipage")) {
+      return true;
+    } else if (action.contains("quest")) {
+      return true;
+    } else if (action.contains("dispute")) {
+      return true;
+    } else if (action.contains("updateratingstatistic")) {
+      return true;
+    } else if (action.contains("fillprofiledataonsettings")) {
+      return true;
+    } else if (action.contains("enablesumsubkyc")) {
+      return true;
+    } else if (action.contains("enabledoubleauthentication")) {
+      return true;
+    } else if (action.contains("invitefriendsreward")) {
+      return true;
+    } else {
+      return false;
     }
   }
 
