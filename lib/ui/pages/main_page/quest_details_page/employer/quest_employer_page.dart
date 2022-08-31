@@ -697,6 +697,80 @@ class _RespondedListState extends State<_RespondedList> {
             )
           ],
         );
+      } else if (widget.store.quest.value!.status == QuestConstants.questWaitWorker) {
+        return Observer(
+          builder: (_) => TextButton(
+            onPressed: widget.store.isLoading
+                ? null
+                : DateTime.now()
+                            .toUtc()
+                            .difference(widget.store.quest.value?.startedAt ?? DateTime.now().toUtc())
+                            .inHours <
+                        24
+                    ? () {
+                        AlertDialogUtils.showInfoAlertDialog(
+                          context,
+                          title: "Error",
+                          content: "You cannot create a dispute until 24"
+                              " hours have passed from the start of "
+                              "this quest",
+                        );
+                      }
+                    : () async {
+                        await widget.store.getFee(
+                          widget.store.quest.value!.assignedWorkerId!,
+                          WQContractFunctions.arbitration.name,
+                        );
+                        await AlertDialogUtils.showAlertDialog(
+                          context,
+                          title: Text("Dispute payment"),
+                          content: Text(
+                            "You need to pay\n"
+                            "${double.parse(widget.store.fee) + 1.0} WUSD\n"
+                            "to open a dispute",
+                          ),
+                          needCancel: true,
+                          titleCancel: "Cancel",
+                          titleOk: "Ok",
+                          onTabCancel: () => Navigator.pop(context),
+                          onTabOk: () async {
+                            final _result = await Navigator.pushNamed(
+                              context,
+                              OpenDisputePage.routeName,
+                              arguments: widget.store.quest.value!,
+                            );
+                            if (_result != null && _result is OpenDispute) {
+                              Navigator.pop(context);
+                              widget.store.quest.value!.status = QuestConstants.questDispute;
+                              widget.store.quest.value!.openDispute = _result;
+                              widget.store.quest.reportChanged();
+                            }
+                          },
+                          colorCancel: Colors.blue,
+                          colorOk: Colors.red,
+                        );
+                      },
+            child: Text(
+              "btn.dispute".tr(),
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) return const Color(0xFFF7F8FA);
+                  if (states.contains(MaterialState.pressed))
+                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                  return const Color(0xFF0083C7);
+                },
+              ),
+              fixedSize: MaterialStateProperty.all(
+                Size(double.maxFinite, 43),
+              ),
+            ),
+          ),
+        );
       }
       return const SizedBox();
     });
