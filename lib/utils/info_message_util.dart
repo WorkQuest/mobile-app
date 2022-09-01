@@ -32,6 +32,7 @@ class InfoMessageUtil {
   bool needNameFinish(String action) {
     if (action.contains(".youHaveRemovedFromChat") ||
         action.contains(".userAddedToChat") ||
+        action.contains(".removedFromChat") ||
         action.contains(".userRemovedFromChat")) return true;
     return false;
   }
