@@ -136,7 +136,6 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
           return;
         }
       }
-      totp = '';
       onSuccess(SignInStoreState.signIn);
     } on FormatException catch (e, trace) {
       print('e: $e\ntrace: $trace');
@@ -145,6 +144,7 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
       print('e: $e\ntrace: $trace');
       this.onError(e.toString());
     }
+    totp = '';
   }
 
   Future<void> deletePushToken() async {
