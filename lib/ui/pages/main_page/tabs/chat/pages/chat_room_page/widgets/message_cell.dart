@@ -34,14 +34,11 @@ class MessageCell extends StatelessWidget {
     bool isNeedNameFinish = false;
     String infoMessage = "";
     String message = "";
-    String senderName =
-        (mess.sender!.user!.firstName ?? '') + " " + (mess.sender!.user!.lastName ?? '');
-    String recipientName = (mess.infoMessage?.member?.user?.firstName ?? "") +
-        " " +
-        (mess.infoMessage?.member?.user?.lastName ?? "");
+    String senderName = (mess.sender!.user?.firstName ?? "WorkQuest") + " " + (mess.sender!.user?.lastName ?? "Admin");
+    String recipientName =
+        (mess.infoMessage?.member?.user?.firstName ?? "") + " " + (mess.infoMessage?.member?.user?.lastName ?? "");
     if (mess.infoMessage != null) {
-      infoMessage =
-          InfoMessageUtil().getMessage(mess.infoMessage!.messageAction, itsMe);
+      infoMessage = InfoMessageUtil().getMessage(mess.infoMessage!.messageAction, itsMe);
       isNeedNameStart = InfoMessageUtil().needNameStart(infoMessage, itsMe);
       isNeedNameFinish = InfoMessageUtil().needNameFinish(infoMessage);
       message = "${isNeedNameStart ? senderName + " " : ""}"
@@ -71,9 +68,7 @@ class MessageCell extends StatelessWidget {
       },
       child: Observer(
         builder: (_) => Container(
-          color: store.selectedMessages[mess] ?? false
-              ? Color(0xFFE9EDF2)
-              : Color(0xFFFFFFFF),
+          color: store.selectedMessages[mess] ?? false ? Color(0xFFE9EDF2) : Color(0xFFFFFFFF),
           child: Padding(
             key: key,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -95,9 +90,7 @@ class MessageCell extends StatelessWidget {
                             Text(
                               mess.text ?? "",
                               style: TextStyle(
-                                color: !itsMe
-                                    ? Color(0xFFFFFFFF)
-                                    : Color(0xFF1D2127),
+                                color: !itsMe ? Color(0xFFFFFFFF) : Color(0xFF1D2127),
                               ),
                             ),
                             const SizedBox(height: 5),
@@ -105,9 +98,7 @@ class MessageCell extends StatelessWidget {
                               Center(
                                 child: ImageViewerWidget(
                                   mess.medias!,
-                                  !itsMe
-                                      ? Color(0xFFFFFFFF)
-                                      : Color(0xFF1D2127),
+                                  !itsMe ? Color(0xFFFFFFFF) : Color(0xFF1D2127),
                                   medias,
                                 ),
                               ),

@@ -63,7 +63,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       chatType = _store.chatRoom?.type;
       List<Member> members = _store.chatRoom!.members!;
       members.forEach((element) {
-        if (element.userId == profile!.userData!.id) meMember = true;
+        if ((element.userId ?? element.adminId) == profile!.userData!.id)
+          meMember = true;
       });
 
       if (chatType == TypeChat.group) {
@@ -75,11 +76,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         }
         if (members.length > 2)
           members.removeWhere((element) => element.type == "Admin");
-        id1 = members[0].userId;
-        firstName1 = members[0].user!.firstName;
-        lastName1 = members[0].user!.lastName;
-        url1 = members[0].user!.avatar?.url ?? Constants.defaultImageNetwork;
-        id2 = members[1].userId;
+        id1 = members[0].userId ?? members[0].adminId;
+        firstName1 = members[0].user?.firstName ?? "WorkQuest";
+        lastName1 = members[0].user?.lastName ?? "Admin";
+        url1 = members[0].user?.avatar?.url ?? Constants.defaultImageNetwork;
+        id2 = members[1].userId ?? members[1].adminId;
         firstName2 = members[1].user?.firstName ?? members[1].admin!.firstName;
         lastName2 = members[1].user?.lastName ?? members[1].admin!.lastName;
         url2 = members[1].user?.avatar?.url ?? Constants.defaultImageNetwork;
