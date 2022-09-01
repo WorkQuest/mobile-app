@@ -325,18 +325,18 @@ class _TransferPageState extends State<TransferPage> {
         if (store.addressTo.toLowerCase() ==
             AddressService.hexToBech32(WalletRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
         if (store.addressTo.toLowerCase() == WalletRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       store.checkBeforeSend();
