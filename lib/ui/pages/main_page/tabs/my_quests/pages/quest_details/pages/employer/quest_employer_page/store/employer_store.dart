@@ -54,8 +54,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   @action
   getRespondedList(String id) async {
     respondedList = await _apiProvider.responsesQuest(id);
-    respondedList = respondedList
-        .where((element) => (element.status == 0 && element.type == 0))
+    respondedList = respondedList.where((element) => (element.status == 1 || (element.status == 0 && element.type == 0)))
         .toList();
   }
 
