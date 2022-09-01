@@ -36,8 +36,7 @@ class _NotificationCellState extends State<NotificationCell> {
 
   String get action => widget.body.notification.action.toLowerCase();
 
-  String get senderName =>
-      (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
+  String get senderName => (user?.firstName ?? "Workquest") + " " + (user?.lastName ?? "info");
 
   @override
   void initState() {
@@ -65,11 +64,7 @@ class _NotificationCellState extends State<NotificationCell> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Observer(
-                    builder: (_) => widget
-                                .store
-                                .disputes[
-                                    widget.body.notification.data.disputeId ??
-                                        ""]
+                    builder: (_) => widget.store.disputes[widget.body.notification.data.disputeId ?? ""]
                                 ?.currentUserDisputeReview !=
                             null
                         ? OutlinedButton(
@@ -127,8 +122,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        DateFormat('dd MMM yyyy, kk:mm')
-                            .format(widget.body.createdAt),
+                        DateFormat('dd MMM yyyy, kk:mm').format(widget.body.createdAt),
                         style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFFAAB0B9),
@@ -169,18 +163,18 @@ class _NotificationCellState extends State<NotificationCell> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.body.notification.data.title ??
-                          _userRating(widget.body.notification.data.status),
+                      widget.body.notification.data.title ?? _userRating(widget.body.notification.data.status),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Colors.blueAccent,
-                    size: 20,
-                  ),
+                  if (hasNavigation())
+                    Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Colors.blueAccent,
+                      size: 20,
+                    ),
                 ],
               ),
             ),
@@ -195,8 +189,7 @@ class _NotificationCellState extends State<NotificationCell> {
       final isMy = user!.id == getIt.get<ProfileMeStore>().userData!.id;
       Navigator.of(context, rootNavigator: true).pushNamed(
         UserProfile.routeName,
-        arguments:
-            isMy ? null : ProfileArguments(role: user!.role, userId: user!.id),
+        arguments: isMy ? null : ProfileArguments(role: user!.role, userId: user!.id),
       );
     }
   }
@@ -273,6 +266,28 @@ class _NotificationCellState extends State<NotificationCell> {
         WebViewPage.routeName,
         arguments: "referral",
       );
+    }
+  }
+
+  bool hasNavigation() {
+    if (action.contains("workquestwikipage")) {
+      return true;
+    } else if (action.contains("quest")) {
+      return true;
+    } else if (action.contains("dispute")) {
+      return true;
+    } else if (action.contains("updateratingstatistic")) {
+      return true;
+    } else if (action.contains("fillprofiledataonsettings")) {
+      return true;
+    } else if (action.contains("enablesumsubkyc")) {
+      return true;
+    } else if (action.contains("enabledoubleauthentication")) {
+      return true;
+    } else if (action.contains("invitefriendsreward")) {
+      return true;
+    } else {
+      return false;
     }
   }
 
