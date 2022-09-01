@@ -72,14 +72,6 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
       this.onError(e.toString());
     }
   }
-
-  Future submitPhoneNumber() async {
-    try {
-      await apiProvider.submitPhoneNumber();
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
 }
 
 enum SMSVerificationStatus { submitCode, startTimer }
