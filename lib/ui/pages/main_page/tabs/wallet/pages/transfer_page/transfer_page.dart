@@ -261,8 +261,8 @@ class _TransferPageState extends State<TransferPage> {
                             if (store.currentCoin != null) {
                               store.getMaxAmount();
                             } else {
-                              final title = 'meta.error'.tr();
-                              final content = 'crediting.chooseCoin'.tr();
+                              final title = 'modals.error'.tr();
+                              final content = 'wallet.chooseCoin'.tr();
                               AlertDialogUtils.showInfoAlertDialog(context,
                                   title: title, content: content);
                             }
