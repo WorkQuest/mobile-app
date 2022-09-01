@@ -64,7 +64,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
     bool loadMore = false,
     bool? starred,
     String query = '',
-    TypeChat type = TypeChat.active,
+    TypeChat type = TypeChat.all,
     int? questChatStatus,
   }) async {
     chats[type] ??= Chats([]);

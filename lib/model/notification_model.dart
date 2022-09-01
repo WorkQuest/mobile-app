@@ -136,7 +136,7 @@ class Data {
                   ? json["quest"] == null
                       ? null
                       : User.fromJson(json["quest"]["user"])
-                  : User.fromJson(json["sender"]["user"])
+                  : User.fromJson(json["sender"]["user"] ?? json["sender"])
               : User.fromJson(json["user"])
           : User.fromJson(json["fromUser"]),
       status: json["user"] != null ? json["user"]["status"] : null,

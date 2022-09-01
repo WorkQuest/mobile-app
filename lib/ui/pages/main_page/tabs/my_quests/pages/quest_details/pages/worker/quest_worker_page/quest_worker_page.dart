@@ -275,7 +275,7 @@ class _QuestWorkerPageState extends State<QuestWorkerPage>
         if (store.successData == WorkerStoreState.rejectInvite) {
           await store.getQuest(store.quest.value!.id);
           Navigator.pop(context);
-          chatStore!.loadChats(starred: false);
+          chatStore!.loadChats();
           await Future.delayed(const Duration(milliseconds: 250));
           AlertDialogUtils.showSuccessDialog(context);
         }
@@ -303,7 +303,7 @@ class _QuestWorkerPageState extends State<QuestWorkerPage>
               role: UserRole.Worker, searchLine: questStore.searchWord);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
-          chatStore!.loadChats(starred: false);
+          chatStore!.loadChats();
           await Future.delayed(const Duration(milliseconds: 250));
           Navigator.pop(context);
           await AlertDialogUtils.showSuccessDialog(context);
