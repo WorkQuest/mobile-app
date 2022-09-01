@@ -297,7 +297,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
             await _client.createNewContract(
               jobHash: description,
               price: _price.toBigInt(),
-              deadline: 0.toString(),
+              deadline: DateTime.now().add(const Duration(days: 1)).millisecondsSinceEpoch.toString(),
               nonce: nonce,
             );
           } else {
