@@ -121,6 +121,7 @@ abstract class _SignInStore extends IStore<SignInStoreState> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
+    totp = '';
   }
 
   Future<void> deletePushToken() async {
