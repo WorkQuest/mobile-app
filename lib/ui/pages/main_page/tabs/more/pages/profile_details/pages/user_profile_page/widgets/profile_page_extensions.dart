@@ -20,6 +20,7 @@ extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse info,
       StreamController<AppBarParams> streamController, Function() updateState) {
     final mark = info.ratingStatistic!.averageMark;
+    final name = "${info.firstName ?? 'Nameless'} ${info.lastName ?? info.role.name}";
     final markDev = mark.toInt();
     final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
     return StreamBuilder<AppBarParams>(
@@ -156,7 +157,7 @@ extension CustomAppBar on UserProfileState {
               ],
             ),
             title: appBarTitle(
-              "${info.firstName} ${info.lastName}",
+              name,
               snapshot.data!.appBarPosition,
               info.ratingStatistic?.status ?? 1,
               snapshot.data!.width,

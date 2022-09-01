@@ -96,8 +96,8 @@ abstract class _EditChatStore extends IStore<bool> with Store {
     userName = text;
     foundUsers.clear();
     users.keys.toList().forEach((element) {
-      if (element.firstName.toLowerCase().contains(text.toLowerCase()) ||
-          element.lastName.toLowerCase().contains(text.toLowerCase()))
+      if ((element.firstName ?? '').toLowerCase().contains(text.toLowerCase()) ||
+          (element.lastName ?? '').toLowerCase().contains(text.toLowerCase()))
         foundUsers.add(element);
     });
   }

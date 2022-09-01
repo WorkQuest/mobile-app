@@ -693,7 +693,7 @@ extension UserInfoService on ApiProvider {
         "fullPhone": _phone.fullPhone,
       },
       "firstName": userData.firstName,
-      "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
+      "lastName": (userData.lastName ?? '').isNotEmpty ? userData.lastName : null,
       if (userData.role == UserRole.Worker) "costPerHour": userData.costPerHour,
       if (userData.role == UserRole.Worker) "priority": userData.priority,
       if (userData.role == UserRole.Worker) "workplace": userData.workplace,
@@ -791,7 +791,7 @@ extension UserInfoService on ApiProvider {
             "profile": profile,
           };
 
-    if (userData.firstName.isEmpty) throw Exception("firstName is empty");
+    if ((userData.firstName ?? '').isEmpty) throw Exception("firstName is empty");
 
     if (userData.role == UserRole.Worker) {
       final responseData =

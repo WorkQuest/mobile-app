@@ -39,8 +39,8 @@ class ProfileMeResponse with ClusterItem {
 
   String id;
   String avatarId;
-  String firstName;
-  String lastName;
+  String? firstName;
+  String? lastName;
 
   Phone? phone;
   Phone? tempPhone;
@@ -108,8 +108,8 @@ class ProfileMeResponse with ClusterItem {
     return ProfileMeResponse(
       id: json["id"] ?? "",
       avatarId: json["avatarId"] ?? "",
-      firstName: json["firstName"] ?? "",
-      lastName: json["lastName"] ?? "",
+      firstName: json["firstName"],
+      lastName: json["lastName"],
       phone: json["phone"] == null
           ? null
           : Phone.fromJson(

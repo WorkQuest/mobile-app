@@ -140,7 +140,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 InputWidget(
                   title: "labels.firstName".tr(),
-                  initialValue: store.userData.firstName,
+                  initialValue: store.userData.firstName ?? '',
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.firstName = text;
@@ -151,7 +151,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 InputWidget(
                   title: "labels.lastName".tr(),
-                  initialValue: store.userData.lastName,
+                  initialValue: store.userData.lastName ?? '',
                   onChanged: (text) {
                     ProfileMeResponse data = store.userData;
                     data.lastName = text;

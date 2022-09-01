@@ -65,7 +65,7 @@ class WorkersItem extends StatelessWidget {
                     children: [
                       const SizedBox(height: 5),
                       Text(
-                        workersInfo.firstName + " " + workersInfo.lastName,
+                        (workersInfo.firstName ?? "Nameless") + " " + (workersInfo.lastName ?? 'worker'),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,

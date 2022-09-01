@@ -35,7 +35,7 @@ class MessageCell extends StatelessWidget {
     String infoMessage = "";
     String message = "";
     String senderName =
-        mess.sender!.user!.firstName + " " + mess.sender!.user!.lastName;
+        (mess.sender!.user!.firstName ?? '') + " " + (mess.sender!.user!.lastName ?? '');
     String recipientName = (mess.infoMessage?.member?.user?.firstName ?? "") +
         " " +
         (mess.infoMessage?.member?.user?.lastName ?? "");
