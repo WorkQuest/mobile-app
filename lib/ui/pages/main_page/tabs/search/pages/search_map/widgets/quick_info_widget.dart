@@ -35,16 +35,32 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                 : mapStore.currentWorkerCluster.length,
             itemBuilder: (_, index) {
               if (mapStore.isWorker ?? true)
-                return MyQuestsItem(
-                  questInfo: mapStore.currentQuestCluster[index],
-                  itemType: QuestsType.All,
-                  isExpanded: true,
-                  showStar: false,
+                return Column(
+                  children: [
+                    MyQuestsItem(
+                      questInfo: mapStore.currentQuestCluster[index],
+                      itemType: QuestsType.All,
+                      isExpanded: true,
+                      showStar: false,
+                    ),
+                    if (index == mapStore.currentQuestCluster.length - 1)
+                      SizedBox(
+                        height: kBottomNavigationBarHeight,
+                      ),
+                  ],
                 );
-              return WorkersItem(
-                mapStore.currentWorkerCluster[index],
-                context.read<SearchListStore>(),
-                showRating: true,
+              return Column(
+                children: [
+                  WorkersItem(
+                    mapStore.currentWorkerCluster[index],
+                    context.read<SearchListStore>(),
+                    showRating: true,
+                  ),
+                  if (index == mapStore.currentWorkerCluster.length - 1)
+                    SizedBox(
+                      height: kBottomNavigationBarHeight,
+                    ),
+                ],
               );
             }),
       ),
