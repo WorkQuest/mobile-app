@@ -28,7 +28,6 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
   void initState() {
     smsStore = context.read<SMSVerificationStore>();
     if (!(smsStore.timer?.isActive ?? false)) {
-      smsStore.submitPhoneNumber();
       smsStore.startTimer();
     }
     smsStore.setCode("");
