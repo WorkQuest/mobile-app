@@ -1,15 +1,28 @@
 class SocialNetwork {
   SocialNetwork({
-    required this.instagram,
-    required this.twitter,
-    required this.linkedin,
-    required this.facebook,
+    this.instagram,
+    this.twitter,
+    this.linkedin,
+    this.facebook,
   });
 
   String? instagram;
   String? twitter;
   String? linkedin;
   String? facebook;
+
+  SocialNetwork copyWith({
+    String? instagram,
+    String? twitter,
+    String? linkedin,
+    String? facebook,
+  }) =>
+      SocialNetwork(
+        instagram: instagram ?? this.instagram,
+        twitter: twitter ?? this.twitter,
+        linkedin: linkedin ?? this.linkedin,
+        facebook: facebook ?? this.facebook,
+      );
 
   factory SocialNetwork.fromJson(Map<String, dynamic> json) => SocialNetwork(
         instagram: json["instagram"],

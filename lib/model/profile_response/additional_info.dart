@@ -4,18 +4,19 @@ import 'package:app/model/profile_response/social_network.dart';
 import 'avatar.dart';
 
 class AdditionalInfo {
-  AdditionalInfo(
-      {required this.secondMobileNumber,
-      required this.address,
-      required this.socialNetwork,
-      required this.description,
-      required this.company,
-      required this.ceo,
-      required this.website,
-      required this.skills,
-      required this.educations,
-      required this.workExperiences,
-      required this.avatar});
+  AdditionalInfo({
+    this.secondMobileNumber,
+    this.address,
+    this.socialNetwork,
+    this.description,
+    this.company,
+    this.ceo,
+    this.website,
+    this.skills,
+    this.educations = const [],
+    this.workExperiences = const [],
+    this.avatar,
+  });
 
   Phone? secondMobileNumber;
   String? address;
@@ -25,35 +26,58 @@ class AdditionalInfo {
   String? ceo;
   String? website;
   List<String>? skills;
-  List<Map<String, String>> educations = [];
-  List<Map<String, String>> workExperiences = [];
+  List<Map<String, String>> educations;
+  List<Map<String, String>> workExperiences;
+
   Avatar? avatar;
+
+  AdditionalInfo copyWith({
+    Phone? secondMobileNumber,
+    String? address,
+    SocialNetwork? socialNetwork,
+    String? description,
+    String? company,
+    String? ceo,
+    String? website,
+    List<String>? skills,
+    List<Map<String, String>>? educations,
+    List<Map<String, String>>? workExperiences,
+    Avatar? avatar,
+  }) =>
+      AdditionalInfo(
+        secondMobileNumber: secondMobileNumber,
+        address: address ?? this.address,
+        socialNetwork: socialNetwork ?? this.socialNetwork,
+        description: description ?? this.description,
+        company: company ?? this.company,
+        ceo: ceo ?? this.ceo,
+        website: website ?? this.website,
+        skills: skills ?? this.skills,
+        educations: educations ?? this.educations,
+        workExperiences: workExperiences ?? this.workExperiences,
+        avatar: avatar ?? this.avatar,
+      );
 
   AdditionalInfo.clone(AdditionalInfo object)
       : this(
-            secondMobileNumber: object.secondMobileNumber,
-            address: object.address,
-            socialNetwork: object.socialNetwork != null
-                ? SocialNetwork.clone(object.socialNetwork!)
-                : null,
-            description: object.description,
-            company: object.company,
-            ceo: object.ceo,
-            website: object.website,
-            skills: object.skills,
-            educations: object.educations,
-            workExperiences: object.workExperiences,
-            avatar: object.avatar);
+          secondMobileNumber: object.secondMobileNumber,
+          address: object.address,
+          socialNetwork: object.socialNetwork != null ? SocialNetwork.clone(object.socialNetwork!) : null,
+          description: object.description,
+          company: object.company,
+          ceo: object.ceo,
+          website: object.website,
+          skills: object.skills,
+          educations: object.educations,
+          workExperiences: object.workExperiences,
+          avatar: object.avatar,
+        );
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: json["secondMobileNumber"] == null
-          ? null
-          : Phone.fromJson(json["secondMobileNumber"]),
+      secondMobileNumber: json["secondMobileNumber"] == null ? null : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
-      socialNetwork: json["socialNetwork"] == null
-          ? null
-          : SocialNetwork.fromJson(json["socialNetwork"]),
+      socialNetwork: json["socialNetwork"] == null ? null : SocialNetwork.fromJson(json["socialNetwork"]),
       company: json["company"],
       ceo: json["CEO"],
       website: json["website"],

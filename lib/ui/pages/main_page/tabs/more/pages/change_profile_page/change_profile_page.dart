@@ -311,10 +311,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       return;
     }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!store.validationKnowledge(
+      if (!ProfileUtils.validationKnowledge(
           _controllerKnowledge!.getListMap(), context)) return;
-      if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
-      if (!store.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return;
       if (Constants.isTestnet)
         _nextStep();
       else if (!store.userData.neverEditedProfileFlag!) {

@@ -1,4 +1,7 @@
 import 'package:app/enums.dart';
+import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class ProfileConstants {
   static const Map<UserStatuses, int> userStatuses = {
@@ -71,7 +74,7 @@ class ProfileUtils {
       case "ByAgreement":
         return "quests.payPeriod.byAgreement";
       default:
-        throw FormatException('Unknown pay period');
+        return "quests.payPeriod.hourly";
     }
   }
 
@@ -154,5 +157,47 @@ class ProfileUtils {
       default:
         return distantWork ?? "Hybrid";
     }
+  }
+
+  static bool validationKnowledge(List<Map<String, String>> list, BuildContext context) {
+    bool chek = true;
+    list.forEach((element) {
+      if (element["from"]!.isEmpty || element["to"]!.isEmpty || element["place"]!.isEmpty) {
+        errorAlert(context, "modals.errorEducation".tr());
+        chek = false;
+      }
+
+      String dateFrom = "";
+      element["from"]!.split("-").forEach((element) {
+        print('element from: $element');
+        if (element.length < 2) element = "0" + element;
+        dateFrom += element + "-";
+      });
+      dateFrom = dateFrom.substring(0, dateFrom.length - 1);
+
+      String dateTo = "";
+      element["to"]!.split("-").forEach((element) {
+        if (element.length < 2) element = "0" + element;
+        dateTo += element + "-";
+      });
+      dateTo = dateTo.substring(0, dateTo.length - 1);
+
+      if (DateTime.parse(dateFrom).millisecondsSinceEpoch > DateTime.parse(dateTo).millisecondsSinceEpoch) {
+        errorAlert(context, "modals.errorDate".tr());
+        chek = false;
+      }
+    });
+    return chek;
+  }
+
+  static bool validationWork(List<Map<String, String>> list, BuildContext context) {
+    bool chek = true;
+    list.forEach((element) {
+      if (element["from"]!.isEmpty || element["to"]!.isEmpty || element["place"]!.isEmpty) {
+        errorAlert(context, "modals.errorEducation".tr());
+        chek = false;
+      }
+    });
+    return chek;
   }
 }
