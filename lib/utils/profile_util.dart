@@ -1,4 +1,5 @@
 import 'package:app/enums.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -199,5 +200,62 @@ class ProfileUtils {
       }
     });
     return chek;
+  }
+
+  static bool areThereAnyChanges({
+    required ProfileMeResponse? userData,
+    required ProfileMeResponse currentUserData,
+  }) {
+    if (userData == null) return false;
+
+    if (currentUserData.role == UserRole.Worker) if (currentUserData.userSpecializations != userData.userSpecializations)
+      return true;
+
+    if (currentUserData.costPerHour != userData.costPerHour) return true;
+
+    if (currentUserData.firstName != userData.firstName) return true;
+
+    if (currentUserData.lastName != userData.lastName) return true;
+
+    if ((currentUserData.additionalInfo!.address ?? "") != (userData.additionalInfo!.address ?? "")) return true;
+
+    if (currentUserData.phone != userData.phone) {
+      if (currentUserData.phone!.phone == userData.phone!.phone &&
+          currentUserData.phone!.fullPhone == userData.phone!.fullPhone &&
+          currentUserData.phone!.codeRegion == userData.phone!.codeRegion)
+        print("number hasn't changed");
+      else
+        return true;
+    }
+
+    if (currentUserData.additionalInfo?.secondMobileNumber?.phone == "")
+      currentUserData.additionalInfo?.secondMobileNumber = null;
+
+    if (currentUserData.role == UserRole.Employer) if (currentUserData.additionalInfo?.secondMobileNumber !=
+        userData.additionalInfo?.secondMobileNumber) return true;
+
+    if ((currentUserData.email ?? "") != (userData.email ?? "")) return true;
+
+    if ((currentUserData.additionalInfo!.description ?? "") != (userData.additionalInfo!.description ?? "")) return true;
+
+    if ((currentUserData.additionalInfo?.socialNetwork?.facebook ?? "") !=
+        (userData.additionalInfo?.socialNetwork?.facebook ?? "")) return true;
+
+    if ((currentUserData.additionalInfo?.socialNetwork?.instagram ?? "") !=
+        (userData.additionalInfo?.socialNetwork?.instagram ?? "")) return true;
+
+    if ((currentUserData.additionalInfo?.socialNetwork?.linkedin ?? "") !=
+        (userData.additionalInfo?.socialNetwork?.linkedin ?? "")) return true;
+
+    if ((currentUserData.additionalInfo?.socialNetwork?.twitter ?? "") !=
+        (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
+
+    if (currentUserData.role == UserRole.Worker) if ((currentUserData.additionalInfo?.workExperiences ?? "") !=
+        (userData.additionalInfo?.workExperiences ?? "")) return true;
+
+    if (currentUserData.role == UserRole.Worker) if ((currentUserData.additionalInfo?.educations ?? "") !=
+        (userData.additionalInfo?.educations ?? "")) return true;
+
+    return false;
   }
 }

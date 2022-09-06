@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/main_page/tabs/more/pages/change_profile_page/widgets/input_widget.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/profile_util.dart';
@@ -13,16 +12,14 @@ class FieldsForWorkerWidget extends StatefulWidget {
   final KnowledgeWorkSelectionController controllerKnowledge;
   final KnowledgeWorkSelectionController controllerWork;
   final SkillSpecializationController controller;
-  final ChangeProfileStore pageStore;
-  final ProfileMeStore profile;
+  final ChangeProfileStore store;
 
   const FieldsForWorkerWidget({
     Key? key,
     required this.controllerKnowledge,
     required this.controllerWork,
     required this.controller,
-    required this.pageStore,
-    required this.profile,
+    required this.store,
   }) : super(key: key);
 
   @override
@@ -38,17 +35,15 @@ class _FieldsForWorkerWidgetState extends State<FieldsForWorkerWidget> {
         Observer(
           builder: (_) => _dropDownMenuWidget(
             title: "settings.priority",
-            value: widget.profile.priorityValue,
+            value: ProfileUtils.priorityToValue(widget.store.userData.priority),
             list: ProfileConstants.priorityList,
-            onChanged: (priority) {
-              widget.profile.setPriorityValue(priority!);
-            },
+            onChanged: (value) => widget.store.setPriority(ProfileUtils.valueToPriority(value!)),
           ),
         ),
         InputWidget(
           title: "settings.costPerHour".tr(),
-          initialValue: widget.pageStore.userData.costPerHour,
-          onChanged: (text) => widget.pageStore.userData.costPerHour = text,
+          initialValue: widget.store.userData.costPerHour,
+          onChanged: (value) => widget.store.setPerHour(value),
           validator: Validators.emptyValidator,
           inputType: TextInputType.number,
           maxLength: null,
@@ -56,34 +51,30 @@ class _FieldsForWorkerWidgetState extends State<FieldsForWorkerWidget> {
         Observer(
           builder: (_) => _dropDownMenuWidget(
             title: "settings.distantWork",
-            value: widget.profile.distantWork,
+            value: widget.store.userData.workplace ?? 'Remote work',
             list: ProfileConstants.distantWorkList,
-            onChanged: (text) {
-              widget.profile.setWorkplaceValue(text!);
-            },
+            onChanged: (value) => widget.store.setWorkplace(value!),
           ),
         ),
         Observer(
           builder: (_) => _dropDownMenuWidget(
             title: "quests.payPeriod.title",
-            value: widget.profile.payPeriod,
+            value: ProfileUtils.payPeriodToValue(widget.store.userData.payPeriod),
             list: ProfileConstants.payPeriodLists,
-            onChanged: (text) {
-              widget.profile.setPayPeriod(text!);
-            },
+            onChanged: (value) => widget.store.setPayPeriod(ProfileUtils.valueToPayPeriod(value!)),
           ),
         ),
         KnowledgeWorkSelection(
           title: "Knowledge",
           hintText: "settings.education.educationalInstitution".tr(),
           controller: widget.controllerKnowledge,
-          data: widget.pageStore.userData.additionalInfo?.educations,
+          data: widget.store.userData.additionalInfo?.educations,
         ),
         KnowledgeWorkSelection(
           title: "Work experience",
           hintText: "Work place",
           controller: widget.controllerWork,
-          data: widget.pageStore.userData.additionalInfo?.workExperiences,
+          data: widget.store.userData.additionalInfo?.workExperiences,
         ),
       ],
     );

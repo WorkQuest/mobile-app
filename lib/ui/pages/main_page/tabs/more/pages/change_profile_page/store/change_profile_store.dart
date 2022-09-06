@@ -1,27 +1,35 @@
 import 'dart:io';
 
-import 'package:app/enums.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/social_network.dart';
+import 'package:app/model/quests_models/location_full.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:injectable/injectable.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/base_store/i_store.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
 
 part 'change_profile_store.g.dart';
 
-class ChangeProfileStore = ChangeProfileStoreBase with _$ChangeProfileStore;
+@injectable
+class ChangeProfileStore extends ChangeProfileStoreBase with _$ChangeProfileStore {
+  ChangeProfileStore(ApiProvider apiProvider) : super(apiProvider);
+}
 
-abstract class ChangeProfileStoreBase with Store {
+abstract class ChangeProfileStoreBase extends IStore<ChangeProfileState> with Store {
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
-  ChangeProfileStoreBase(this.userData);
+  final ApiProvider _apiProvider;
+
+  ChangeProfileStoreBase(this._apiProvider);
 
   @observable
-  ProfileMeResponse userData;
+  late ProfileMeResponse userData;
 
   @observable
   File? media;
@@ -37,6 +45,9 @@ abstract class ChangeProfileStoreBase with Store {
 
   @observable
   PhoneNumber? oldPhoneNumber;
+
+  @action
+  initPage(ProfileMeResponse profile) => userData = profile;
 
   @action
   setFirstName(String value) => this.userData = userData.copyWith(firstName: value);
@@ -150,7 +161,6 @@ abstract class ChangeProfileStoreBase with Store {
     );
   }
 
-
   @action
   setUserData(ProfileMeResponse value) {
     this.userData = value;
@@ -167,6 +177,7 @@ abstract class ChangeProfileStoreBase with Store {
     if (p != null) {
       address = p.description!;
       userData = userData.copyWith(locationPlaceName: p.description!);
+      displayPrediction(p.description!);
     }
   }
 
@@ -189,98 +200,35 @@ abstract class ChangeProfileStoreBase with Store {
   @action
   Future<Null> displayPrediction(String? p) async {
     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
-    userData.locationCode!.latitude = detail.result.geometry!.location.lat;
-    userData.locationCode!.longitude = detail.result.geometry!.location.lng;
-    userData.locationPlaceName = address;
-    userData.additionalInfo?.address = address;
+    userData = userData.copyWith(
+      locationCode: LocationCode(
+        longitude: detail.result.geometry!.location.lng,
+        latitude: detail.result.geometry!.location.lat,
+      ),
+      locationPlaceName: p,
+      additionalInfo: (userData.additionalInfo ?? AdditionalInfo()).copyWith(
+        address: p,
+      ),
+    );
   }
 
-  void savePhoneNumber() {
-    if (userData.tempPhone == null) {
-      userData.tempPhone = Phone(
-        codeRegion: phoneNumber?.dialCode ?? "",
-        fullPhone: phoneNumber?.phoneNumber ?? "",
-        phone: phoneNumber?.phoneNumber?.replaceAll((phoneNumber?.dialCode ?? ""), "") ?? "",
-      );
-    } else {
-      userData.tempPhone!.codeRegion = phoneNumber?.dialCode ?? "";
-      userData.tempPhone!.phone = phoneNumber!.phoneNumber!.replaceAll((phoneNumber?.dialCode ?? ""), "");
-      userData.tempPhone!.fullPhone = phoneNumber?.phoneNumber ?? "";
-    }
-  }
-
-  void saveSecondPhoneNumber() {
-    if ((secondPhoneNumber?.phoneNumber ?? "").isEmpty) return;
-    if (userData.additionalInfo?.secondMobileNumber == null) {
-      userData.additionalInfo?.secondMobileNumber = Phone(
-        codeRegion: secondPhoneNumber?.dialCode ?? "",
-        fullPhone: secondPhoneNumber?.phoneNumber ?? "",
-        phone: secondPhoneNumber?.phoneNumber?.replaceAll((secondPhoneNumber?.dialCode ?? ""), "") ?? "",
-      );
-    } else {
-      userData.additionalInfo?.secondMobileNumber?.codeRegion = secondPhoneNumber?.dialCode ?? "";
-      userData.additionalInfo?.secondMobileNumber?.phone =
-          secondPhoneNumber?.phoneNumber?.replaceAll((secondPhoneNumber?.dialCode ?? ""), "") ?? "";
-      userData.additionalInfo?.secondMobileNumber?.fullPhone = secondPhoneNumber?.phoneNumber ?? "";
+  @action
+  changeProfile() async {
+    try {
+      onLoading();
+      if (media != null) {
+        userData.avatarId = (await _apiProvider.uploadMedia(medias: [media!]))[0];
+      }
+      await _apiProvider.changeProfileMe(userData);
+      final isNumberChanged = numberChanged(oldPhoneNumber?.phoneNumber);
+      onSuccess(isNumberChanged ? ChangeProfileState.changeProfileWithPhone : ChangeProfileState.changeProfile);
+    } catch (e) {
+      onError(e.toString());
     }
   }
 
   bool numberChanged(String? tempPhone) =>
-      (this.userData.tempPhone!.fullPhone != tempPhone && userData.tempPhone!.fullPhone.isNotEmpty);
-
-  bool areThereAnyChanges(ProfileMeResponse? userData) {
-    if (userData == null) return false;
-
-    if (this.userData.role == UserRole.Worker) if (this.userData.userSpecializations != userData.userSpecializations)
-      return true;
-
-    if (this.userData.costPerHour != userData.costPerHour) return true;
-
-    if (this.userData.firstName != userData.firstName) return true;
-
-    if (this.userData.lastName != userData.lastName) return true;
-
-    if ((this.userData.additionalInfo!.address ?? "") != (userData.additionalInfo!.address ?? "")) return true;
-
-    if (this.userData.phone != userData.phone) {
-      if (this.userData.phone!.phone == userData.phone!.phone &&
-          this.userData.phone!.fullPhone == userData.phone!.fullPhone &&
-          this.userData.phone!.codeRegion == userData.phone!.codeRegion)
-        print("number hasn't changed");
-      else
-        return true;
-    }
-
-    if (this.userData.additionalInfo?.secondMobileNumber?.phone == "")
-      this.userData.additionalInfo?.secondMobileNumber = null;
-
-    if (this.userData.role == UserRole.Employer) if (this.userData.additionalInfo?.secondMobileNumber !=
-        userData.additionalInfo?.secondMobileNumber) return true;
-
-    if ((this.userData.email ?? "") != (userData.email ?? "")) return true;
-
-    if ((this.userData.additionalInfo!.description ?? "") != (userData.additionalInfo!.description ?? "")) return true;
-
-    if ((this.userData.additionalInfo?.socialNetwork?.facebook ?? "") !=
-        (userData.additionalInfo?.socialNetwork?.facebook ?? "")) return true;
-
-    if ((this.userData.additionalInfo?.socialNetwork?.instagram ?? "") !=
-        (userData.additionalInfo?.socialNetwork?.instagram ?? "")) return true;
-
-    if ((this.userData.additionalInfo?.socialNetwork?.linkedin ?? "") !=
-        (userData.additionalInfo?.socialNetwork?.linkedin ?? "")) return true;
-
-    if ((this.userData.additionalInfo?.socialNetwork?.twitter ?? "") !=
-        (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
-
-    if (this.userData.role == UserRole.Worker) if ((this.userData.additionalInfo?.workExperiences ?? "") !=
-        (userData.additionalInfo?.workExperiences ?? "")) return true;
-
-    if (this.userData.role == UserRole.Worker) if ((this.userData.additionalInfo?.educations ?? "") !=
-        (userData.additionalInfo?.educations ?? "")) return true;
-
-    if (media != null) return true;
-
-    return false;
-  }
+      (this.userData.tempPhone!.fullPhone != oldPhoneNumber?.phoneNumber && userData.tempPhone!.fullPhone.isNotEmpty);
 }
+
+enum ChangeProfileState { changeProfile, changeProfileWithPhone }

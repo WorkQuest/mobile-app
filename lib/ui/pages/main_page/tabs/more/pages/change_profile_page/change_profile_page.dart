@@ -33,7 +33,7 @@ class ChangeProfilePage extends StatefulWidget {
 }
 
 class _ChangeProfilePageState extends State<ChangeProfilePage> {
-  ProfileMeStore? profile;
+  late ProfileMeStore profile;
   late ChangeProfileStore store;
 
   final _formKey = GlobalKey<FormState>();
@@ -45,21 +45,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   @override
   void initState() {
     profile = context.read<ProfileMeStore>();
-    store = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
-    profile!.distantWork =
-        ProfileUtils.workplaceToValue(profile!.userData!.workplace);
-    profile!.priorityValue =
-        ProfileUtils.priorityToValue(profile!.userData!.priority);
-    profile!.payPeriod =
-        ProfileUtils.payPeriodToValue(profile!.userData!.payPeriod);
-    if (profile!.userData!.additionalInfo?.address != null)
-      store.address = profile!.userData!.additionalInfo!.address!;
-    store.getInitCode(store.userData.phone ?? store.userData.tempPhone!,
-        store.userData.additionalInfo?.secondMobileNumber);
-    if (profile!.userData!.locationPlaceName != null)
-      store.address = profile!.userData!.locationPlaceName!;
-    _controller = SkillSpecializationController(
-        initialValue: store.userData.userSpecializations);
+    store.initPage(profile.userData!);
+    store.getInitCode(
+      store.userData.phone ?? store.userData.tempPhone!,
+      store.userData.additionalInfo?.secondMobileNumber,
+    );
+    _controller = SkillSpecializationController(initialValue: store.userData.userSpecializations);
     _controllerKnowledge = KnowledgeWorkSelectionController();
     _controllerWork = KnowledgeWorkSelectionController();
     super.initState();
@@ -67,48 +58,48 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: _onBackPressed,
-        ),
-        title: Text(
-          "settings.changeProfile".tr(),
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 17,
+    return ObserverListener<ChangeProfileStore>(
+      onSuccess: () {},
+      onFailure: () => false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: _onBackPressed,
           ),
-        ),
-        centerTitle: true,
-        actions: [
-          TextButton(
-            onPressed: _onSave,
-            child: Text("settings.save".tr()),
+          title: Text(
+            "settings.changeProfile".tr(),
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 17,
+            ),
           ),
-        ],
-      ),
-      body: ObserverListener<ProfileMeStore>(
-        onSuccess: () async {
-          if (store.phoneNumber != null &&
-              store.phoneNumber!.phoneNumber!.isNotEmpty &&
-              !store.numberChanged(store.oldPhoneNumber!.phoneNumber)) {
-            await AlertDialogUtils.showSuccessDialog(context);
-            Navigator.pop(context, true);
-          } else {
-            profile!.userData?.phone = null;
-            await AlertDialogUtils.showSuccessDialog(context,
-                text: 'settings.enterSMS'.tr());
-            await Navigator.of(context, rootNavigator: true)
-                .pushReplacementNamed(
-              SMSVerificationPage.routeName,
-            );
-          }
-        },
-        child: Observer(
-          builder: (_) => profile!.isLoading
-              ? Center(child: CircularProgressIndicator.adaptive())
-              : getBody(),
+          centerTitle: true,
+          actions: [
+            TextButton(
+              onPressed: _onSave,
+              child: Text("settings.save".tr()),
+            ),
+          ],
+        ),
+        body: ObserverListener<ProfileMeStore>(
+          onSuccess: () async {
+            if (store.phoneNumber != null &&
+                store.phoneNumber!.phoneNumber!.isNotEmpty &&
+                !store.numberChanged(store.oldPhoneNumber!.phoneNumber)) {
+              await AlertDialogUtils.showSuccessDialog(context);
+              Navigator.pop(context, true);
+            } else {
+              profile.userData?.phone = null;
+              await AlertDialogUtils.showSuccessDialog(context, text: 'settings.enterSMS'.tr());
+              await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+                SMSVerificationPage.routeName,
+              );
+            }
+          },
+          child: Observer(
+            builder: (_) => profile.isLoading ? Center(child: CircularProgressIndicator.adaptive()) : getBody(),
+          ),
         ),
       ),
     );
@@ -126,14 +117,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ImageProfile(
                   file: store.media,
                   hasMedia: store.media == null,
-                  url: profile!.userData!.avatar?.url,
+                  url: profile.userData!.avatar?.url,
                   onPressed: () async {
                     final result = await FilePicker.platform.pickFiles(
                       type: FileType.image,
                     );
                     if (result != null) {
-                      List<File> files =
-                          result.paths.map((path) => File(path!)).toList();
+                      List<File> files = result.paths.map((path) => File(path!)).toList();
                       store.media = files.first;
                     }
                   },
@@ -141,11 +131,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 InputWidget(
                   title: "labels.firstName".tr(),
                   initialValue: store.userData.firstName ?? '',
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.firstName = text;
-                    store.setUserData(data);
-                  },
+                  onChanged: (value) => store.setFirstName(value),
                   validator: Validators.firstNameValidator,
                   maxLength: 15,
                 ),
@@ -162,13 +148,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
                 Observer(
                   builder: (_) => AddressProfileWidget(
-                    address: store.address.isEmpty
-                        ? profile!.userData!.additionalInfo?.address ??
-                            store.address
-                        : store.address,
-                    onTap: () {
-                      store.getPrediction(context);
-                    },
+                    address: store.userData.additionalInfo?.address ?? '',
+                    onTap: () => store.getPrediction(context),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -176,49 +157,34 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   builder: (_) => PhoneNumberWidget(
                     title: "modals.phoneNumber",
                     initialValue: store.oldPhoneNumber,
-                    onChanged: (PhoneNumber phone) {
-                      store.setPhoneNumber(phone);
-                    },
-                    needValidator:
-                        store.phoneNumber?.phoneNumber?.isEmpty ?? true,
+                    onChanged: (PhoneNumber phone) => store.setPhoneNumber(phone),
+                    needValidator: store.phoneNumber?.phoneNumber?.isEmpty ?? true,
                   ),
                 ),
-                if (profile!.userData!.role == UserRole.Employer)
+                if (profile.userData!.role == UserRole.Employer)
                   Observer(
                     builder: (_) => PhoneNumberWidget(
                       title: "modals.secondPhoneNumber",
                       initialValue: store.secondPhoneNumber,
-                      onChanged: (PhoneNumber phone) {
-                        store.setSecondPhoneNumber(phone);
-                      },
+                      onChanged: (PhoneNumber phone) => store.setSecondPhoneNumber(phone),
                     ),
                   ),
                 InputWidget(
                   title: "signUp.email".tr(),
                   readOnly: true,
                   initialValue: store.userData.email ?? "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.email = text;
-                    store.setUserData(data);
-                  },
+                  onChanged: (value) => store.setEmail(value),
                   validator: Validators.emailValidator,
                   maxLength: null,
                 ),
                 if (store.userData.role == UserRole.Employer)
                   FieldForEmployerWorker(
-                    pageStore: store,
-                    profile: profile!,
+                    store: store,
                   ),
                 InputWidget(
                   title: "modals.title".tr(),
-                  initialValue:
-                      store.userData.additionalInfo!.description ?? "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.additionalInfo!.description = text;
-                    store.setUserData(data);
-                  },
+                  initialValue: store.userData.additionalInfo!.description ?? "",
+                  onChanged: (value) => store.setDescription(value),
                   maxLines: null,
                   validator: Validators.descriptionValidator,
                   maxLength: null,
@@ -228,58 +194,33 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     controllerKnowledge: _controllerKnowledge!,
                     controllerWork: _controllerWork!,
                     controller: _controller!,
-                    pageStore: store,
-                    profile: profile!,
+                    store: store,
                   ),
                 InputWidget(
                   title: "settings.twitterUsername".tr(),
-                  initialValue:
-                      store.userData.additionalInfo!.socialNetwork?.twitter ??
-                          "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.additionalInfo!.socialNetwork?.twitter = text;
-                    store.setUserData(data);
-                  },
+                  initialValue: store.userData.additionalInfo!.socialNetwork?.twitter ?? "",
+                  onChanged: (value) => store.setTwitter(value),
                   validator: Validators.nicknameTwitterValidator,
                   maxLength: 30,
                 ),
                 InputWidget(
                   title: "settings.facebookUsername".tr(),
-                  initialValue:
-                      store.userData.additionalInfo!.socialNetwork?.facebook ??
-                          "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.additionalInfo!.socialNetwork?.facebook = text;
-                    store.setUserData(data);
-                  },
+                  initialValue: store.userData.additionalInfo!.socialNetwork?.facebook ?? "",
+                  onChanged: (value) => store.setFacebook(value),
                   validator: Validators.nicknameFacebookValidator,
                   maxLength: 50,
                 ),
                 InputWidget(
                   title: "settings.linkedInUsername".tr(),
-                  initialValue:
-                      store.userData.additionalInfo!.socialNetwork?.linkedin ??
-                          "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.additionalInfo!.socialNetwork?.linkedin = text;
-                    store.setUserData(data);
-                  },
+                  initialValue: store.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
+                  onChanged: (value) => store.setLinkedIn(value),
                   validator: Validators.nicknameLinkedInValidator,
                   maxLength: 30,
                 ),
                 InputWidget(
                   title: "settings.instagramUsername".tr(),
-                  initialValue:
-                      store.userData.additionalInfo!.socialNetwork?.instagram ??
-                          "",
-                  onChanged: (text) {
-                    ProfileMeResponse data = store.userData;
-                    data.additionalInfo!.socialNetwork?.instagram = text;
-                    store.setUserData(data);
-                  },
+                  initialValue: store.userData.additionalInfo!.socialNetwork?.instagram ?? "",
+                  onChanged: (value) => store.setInstagram(value),
                   validator: Validators.nicknameLinkedInValidator,
                   maxLength: 30,
                 ),
@@ -293,14 +234,17 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onBackPressed() {
-    if (profile!.isLoading) return;
-    if (!store.areThereAnyChanges(profile!.userData))
+    if (profile.isLoading) return;
+    if (!ProfileUtils.areThereAnyChanges(
+      userData: profile.userData,
+      currentUserData: store.userData,
+    ))
       Navigator.pop(context);
     else
       AlertDialogUtils.showProfileDialog(context, onSave: _onSave);
   }
 
-  _onSave() async {
+  bool _validate() {
     if ((store.userData.tempPhone?.fullPhone ?? "").contains("-") ||
         (store.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
       AlertDialogUtils.showInfoAlertDialog(
@@ -308,20 +252,27 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         title: "modals.warning".tr(),
         content: "errors.numberContainDashesOrSpaces".tr(),
       );
-      return;
+      throw Exception('Error validate');
     }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!ProfileUtils.validationKnowledge(
-          _controllerKnowledge!.getListMap(), context)) return;
-      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return;
-      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!ProfileUtils.validationKnowledge(_controllerKnowledge!.getListMap(), context)) return false;
+      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return false;
+      if (!ProfileUtils.validationWork(_controllerWork!.getListMap(), context)) return false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  _onSave() async {
+    if (_validate()) {
       if (Constants.isTestnet)
         _nextStep();
       else if (!store.userData.neverEditedProfileFlag!) {
         if (store.userData.isTotpActive ?? false)
           AlertDialogUtils.showSecurityTotpPDialog(
             context,
-            setTotp: profile!.setTotp,
+            setTotp: profile.setTotp,
             onTapOk: _nextStep,
           );
         else
@@ -330,19 +281,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             title: "modals.warning".tr(),
             content: "modals.errorEditProfile2FA".tr(),
           );
-      } else
-        _nextStep();
+      }
     }
   }
 
   _nextStep() async {
-    store.userData.totpCode = profile!.totp;
+    store.userData.totpCode = profile.totp;
     if (store.userData.additionalInfo?.secondMobileNumber?.phone == "")
       store.userData.additionalInfo?.secondMobileNumber = null;
-    store.userData.additionalInfo?.educations =
-        _controllerKnowledge!.getListMap();
-    store.userData.additionalInfo?.workExperiences =
-        _controllerWork!.getListMap();
+    store.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
+    store.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
     if (store.address.isNotEmpty) {
       store.userData.additionalInfo!.address = store.address;
       store.userData.locationPlaceName = store.address;
@@ -352,20 +300,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         title: "Warning",
         content: "Address is empty",
       );
-    store.userData.priority =
-        ProfileUtils.valueToPriority(profile!.priorityValue);
-    store.userData.payPeriod =
-        ProfileUtils.valueToPayPeriod(profile!.payPeriod);
-    store.userData.workplace =
-        ProfileUtils.valueToWorkplace(profile!.distantWork);
+    store.userData.priority = ProfileUtils.valueToPriority(profile.priorityValue);
+    store.userData.payPeriod = ProfileUtils.valueToPayPeriod(profile.payPeriod);
+    store.userData.workplace = ProfileUtils.valueToWorkplace(profile.distantWork);
 
-    store.savePhoneNumber();
-    store.saveSecondPhoneNumber();
-
-    if (!profile!.isLoading)
-      store.userData.userSpecializations =
-          _controller!.getSkillAndSpecialization();
-    await profile!.changeProfile(
+    if (!profile.isLoading) store.userData.userSpecializations = _controller!.getSkillAndSpecialization();
+    await profile.changeProfile(
       store.userData,
       media: store.media,
     );
