@@ -103,9 +103,10 @@ final _theme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      primary: AppColor.primary,
-      onPrimary: Colors.white,
-      onSurface: const Color(0xFFCBCED2),
+      backgroundColor: AppColor.primary,
+      foregroundColor: Colors.white,
+      disabledForegroundColor: const Color(0xFFCBCED2),
+      disabledBackgroundColor: const Color(0xFFCBCED2),
       elevation: 0.0,
       shadowColor: Colors.transparent,
       animationDuration: Duration.zero,

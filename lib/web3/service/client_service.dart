@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/swap_page/store/swap_store.dart';
 import 'package:app/ui/pages/main_page/tabs/wallet/pages/wallet_page/store/wallet_store.dart';

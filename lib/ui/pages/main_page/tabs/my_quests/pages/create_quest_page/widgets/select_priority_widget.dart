@@ -44,7 +44,7 @@ class SelectPriorityWidget extends StatelessWidget {
                   child: DropdownButton(
                     isExpanded: true,
                     value: QuestUtils.getPriorityFromValue(priority),
-                    onChanged: onSelect as Function(String?)?,
+                    onChanged: onSelect,
                     items: QuestConstants.priorityList
                         .map<DropdownMenuItem<String>>(
                       (String value) {

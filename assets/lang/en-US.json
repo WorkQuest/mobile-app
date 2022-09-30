@@ -498,7 +498,7 @@
       "completedQuestRejected": "Completed quest rejected",
       "rejectCompletedQuest": "The quest went to the dispute"
     },
-    "price": "Price",
+    "price": "Price WUSD",
     "filter": {
       "btn": "Filters",
       "deliveryTime": "Quests delivery time",

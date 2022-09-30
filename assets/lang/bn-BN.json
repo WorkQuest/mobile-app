@@ -266,7 +266,7 @@
     "runtime": "পরিচালনার সময় (ঘণ্টা)",
     "uploadMaterials": "quest আরও ভালভাবে বর্ণনা করার জন্য উপকরণ আপলোড করুন",
     "uploadQuestMaterials": "বিস্তারিত বিবরণ যোগ করুন",
-    "price": "দাম",
+    "price": "দাম WUSD",
     "filter": {
       "btn": "ফিল্টার"
     },

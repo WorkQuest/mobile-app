@@ -266,7 +266,7 @@
     "runtime": "运行时间（小时）",
     "uploadMaterials": "上传材料以更好地描述 Quest",
     "uploadQuestMaterials": "添加详细说明",
-    "price": "价格",
+    "price": "价格 WUSD",
     "filter": {
       "btn": "筛选器"
     },

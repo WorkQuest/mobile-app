@@ -631,7 +631,7 @@ class _QuestWorkerPageState extends State<QuestWorkerPage>
                 : () async {
                     print(
                         'assignedWorkerId: ${store.quest.value!.assignedWorkerId}');
-                    print('id: ${myId}');
+                    print('id: $myId');
                     if (store.quest.value!.assignedWorkerId == myId) {
                       await sendTransaction(
                         onPress: () async {
