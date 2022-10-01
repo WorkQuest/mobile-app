@@ -4,7 +4,6 @@ import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_stor
 import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/quick_info_widget.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/widgets/search_bar_widget.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocator/geolocator.dart';
@@ -55,7 +54,8 @@ class _QuestMapState extends State<QuestMap> {
                     mapStore.debounce = Timer(
                       const Duration(milliseconds: 200),
                       () async {
-                        LatLngBounds bounds = await _controller.getVisibleRegion();
+                        LatLngBounds bounds =
+                            await _controller.getVisibleRegion();
                         mapStore.getQuestsOnMap(bounds);
                       },
                     );
@@ -76,7 +76,8 @@ class _QuestMapState extends State<QuestMap> {
                     LatLngBounds bounds = await _controller.getVisibleRegion();
                     await mapStore.getQuestsOnMap(bounds);
                     mapStore.clusterManager.setMapId(controller.mapId);
-                    widget.callbackPosition.call(mapStore.initialCameraPosition!);
+                    widget.callbackPosition
+                        .call(mapStore.initialCameraPosition!);
                     // _onMyLocationPressed();
                   },
                 ),
@@ -86,7 +87,9 @@ class _QuestMapState extends State<QuestMap> {
                     onTap: () {
                       mapStore.getPrediction(context, _controller);
                     },
-                    hintText: mapStore.address.isNotEmpty ? mapStore.address : "quests.ui.search".tr(),
+                    hintText: mapStore.address.isNotEmpty
+                        ? mapStore.address
+                        : "quests.ui.search".tr(),
                   ),
                 ),
               ],
@@ -114,7 +117,9 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore.hideInfo ? _onMyLocationPressed : mapStore.closeInfo,
+                onPressed: mapStore.hideInfo
+                    ? _onMyLocationPressed
+                    : mapStore.closeInfo,
                 child: Icon(
                   mapStore.hideInfo ? Icons.location_on : Icons.close,
                 ),

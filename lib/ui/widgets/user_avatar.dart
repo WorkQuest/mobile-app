@@ -46,7 +46,7 @@ class _UserAvatarState extends State<UserAvatar> {
       },
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               setState(() => loading = false);
             }

@@ -33,7 +33,7 @@ class CustomBannerPainter extends CustomPainter {
     this.textStyle = _kTextStyle,
   })  : assert(message != null),
         assert(textDirection != null),
-        super(repaint: PaintingBinding.instance!.systemFonts);
+        super(repaint: PaintingBinding.instance.systemFonts);
 
   /// The message to show in the banner.
   final String? message;

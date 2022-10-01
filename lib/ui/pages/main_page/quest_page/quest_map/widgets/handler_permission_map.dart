@@ -70,13 +70,13 @@ class _HandlerPermissionMapWidgetState extends State<HandlerPermissionMapWidget>
   @override
   void initState() {
     _positionOnMap = getPosition();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
