@@ -296,7 +296,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       Flexible(
                                         child: store.locationPlaceName.isEmpty
                                             ? Text(
-                                                "Moscow, Lenina street, 3",
+                                                 "Country/City/Address",
                                                 style: TextStyle(
                                                   color: Color(
                                                     0xFFD8DFE3,

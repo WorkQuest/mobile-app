@@ -266,7 +266,7 @@
     "runtime": "Durée (heures)",
     "uploadMaterials": "Téléverser des documents pour mieux décrire la quête",
     "uploadQuestMaterials": "Ajouter une description détaillée",
-    "price": "Prix",
+    "price": "Prix WUSD",
     "filter": {
       "btn": "Filtres"
     },

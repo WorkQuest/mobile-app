@@ -266,7 +266,7 @@
     "runtime": "रनटाइम (घंटे)",
     "uploadMaterials": "Quest का बेहतर वर्णन करने के लिए सामग्री अपलोड करें",
     "uploadQuestMaterials": "विस्तृत विवरण जोड़ें",
-    "price": "कीमत",
+    "price": "कीमत WUSD",
     "filter": {
       "btn": "फिल्टर"
     },

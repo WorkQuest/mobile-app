@@ -266,7 +266,7 @@
     "runtime": "Tempo de execução (horas)",
     "uploadMaterials": "Faça upload de materiais para descrever melhor a busca",
     "uploadQuestMaterials": "Adicionar descrição detalhada",
-    "price": "Preço",
+    "price": "Preço WUSD",
     "filter": {
       "btn": "Filtros"
     },
