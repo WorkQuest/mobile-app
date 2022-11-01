@@ -2,6 +2,11 @@ import 'dart:io';
 
 import 'package:app/constants.dart';
 import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/model_pages/modal_deposit/modal_deposit_1.dart';
+import 'package:app/ui/pages/model_pages/modal_deposit/model_deposit_2.dart';
+import 'package:app/ui/pages/model_pages/modal_generate/modal_generate_2.dart';
+import 'package:app/ui/pages/model_pages/modal_remove/modal_remove.dart';
+import 'package:app/ui/pages/new_wallet_page/new_wallet_page.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_in_page/widgets/alert_totp_widget.dart';
@@ -11,6 +16,8 @@ import 'package:app/ui/pages/sign_in_page/widgets/social_login_widget.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/wallets_page.dart';
+import 'package:app/ui/pages/model_pages/modal_generate/modal_generate_1.dart';
+import 'package:app/ui/pages/model_pages/success_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/deep_link_util.dart';
@@ -86,7 +93,8 @@ class _SignInPageState extends State<SignInPage> {
     return ObserverListener<SignInStore>(
       onSuccess: _stateListener,
       onFailure: () {
-        if (store.errorMessage == "Invalid TOTP" || store.errorMessage == "User must pass 2FA") {
+        if (store.errorMessage == "Invalid TOTP" ||
+            store.errorMessage == "User must pass 2FA") {
           _showAlertTotp();
           return true;
         }
@@ -138,6 +146,7 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                           ),
                         ),
+                        
                       ],
                     ),
                   ),
