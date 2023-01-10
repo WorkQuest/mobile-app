@@ -123,7 +123,7 @@ class SignInPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hint: "signIn.username".tr(),
+                      hint: "signIn.email".tr(),
                       inputFormatters: [],
                       suffixIcon: null,
                     ),

@@ -182,7 +182,7 @@
     "title": "Sign in",
     "mnemonic": "Mnemonic",
     "enterMnemonicPhrase": "Enter mnemonic phrase",
-    "username": "Username",
+    "email": "Email",
     "password": "Password",
     "account": "don't have an account?",
     "regs": "Registration",
