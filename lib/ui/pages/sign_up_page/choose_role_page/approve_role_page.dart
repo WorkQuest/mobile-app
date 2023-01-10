@@ -40,8 +40,8 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   !store.isChange
                       ? "role.yourRole".tr() +
-                          " ${store.userRole.toString().split(".").last} " +
-                          "role.right".tr()
+                          " " +
+                          "role.${store.userRole.toString().split(".").last.toLowerCase()}".tr()
                       : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
@@ -117,8 +117,7 @@ class ApproveRolePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<CreateWalletStore>(),
+                                                    create: (context) => getIt.get<CreateWalletStore>(),
                                                     child: ImportWalletPage(),
                                                   ),
                                                 ),
@@ -126,8 +125,7 @@ class ApproveRolePage extends StatelessWidget {
                                             },
                                             child: Text(
                                               "Import Wallet",
-                                              style: TextStyle(
-                                                  color: AppColor.enabledButton),
+                                              style: TextStyle(color: AppColor.enabledButton),
                                             ),
                                           ),
                                           TextButton(
@@ -137,8 +135,7 @@ class ApproveRolePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<CreateWalletStore>(),
+                                                    create: (context) => getIt.get<CreateWalletStore>(),
                                                     child: CreateWalletPage(),
                                                   ),
                                                 ),
@@ -146,16 +143,14 @@ class ApproveRolePage extends StatelessWidget {
                                             },
                                             child: Text(
                                               "Create Wallet",
-                                              style: TextStyle(
-                                                  color: AppColor.enabledButton),
+                                              style: TextStyle(color: AppColor.enabledButton),
                                             ),
                                           ),
                                         ],
                                       );
                                     },
                                   )
-                                : Navigator.of(ctx, rootNavigator: true)
-                                    .pushNamed(EnterTotpPage.routeName);
+                                : Navigator.of(ctx, rootNavigator: true).pushNamed(EnterTotpPage.routeName);
 
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
