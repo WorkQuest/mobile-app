@@ -70,8 +70,8 @@ class _WebViewPageState extends State<WebViewPage> {
             _getTokenThroughSocialMedia(url);
             String? accessToken = await Storage.readAccessToken();
             String? refreshToken = await Storage.readRefreshToken();
-            _controller.future.then((value) => value.evaluateJavascript(
-                """localStorage.setItem("accessToken","${accessToken ?? ''}");
+            _controller.future
+                .then((value) => value.evaluateJavascript("""localStorage.setItem("accessToken","${accessToken ?? ''}");
                 localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
           },
           gestureNavigationEnabled: true,
@@ -80,31 +80,16 @@ class _WebViewPageState extends State<WebViewPage> {
     );
   }
 
-  void _getTokenThroughSocialMedia(String url) async{
+  void _getTokenThroughSocialMedia(String url) async {
     if (url.contains("access") && url.contains("refresh")) {
       String accessToken = "";
       String refreshToken = "";
       String status = "";
-      accessToken = url
-          .split("/")
-          .where((element) => element.contains("access"))
-          .first
-          .split("&")
-          .first
-          .replaceRange(0, 8, "");
-      refreshToken = url
-          .split("/")
-          .where((element) => element.contains("refresh"))
-          .first
-          .split("&")[1].replaceRange(0, 8, "");
-      status = url
-          .split("/")
-          .where((element) => element.contains("refresh"))
-          .first
-          .split("&")
-          .last
-          .split("")
-          .last;
+      accessToken =
+          url.split("/").where((element) => element.contains("access")).first.split("&").first.replaceRange(0, 8, "");
+      refreshToken =
+          url.split("/").where((element) => element.contains("refresh")).first.split("&")[1].replaceRange(0, 8, "");
+      status = url.split("/").where((element) => element.contains("refresh")).first.split("&").last.split("").last;
       Storage.writeAccessToken(accessToken);
       Storage.writeRefreshToken(refreshToken);
       if (status == "2")
@@ -122,14 +107,13 @@ class _WebViewPageState extends State<WebViewPage> {
   void _onShowUserAgent(WebViewController controller, BuildContext context) async {
     // Send a message with the user agent string to the Toaster JavaScript channel we registered
     // with the WebView.
-    await controller
-        .evaluateJavascript('Toaster.postMessage("User Agent: " + navigator.userAgent);');
+    await controller.evaluateJavascript('Toaster.postMessage("User Agent: " + navigator.userAgent);');
   }
 
   void _onListCookies(WebViewController controller, BuildContext context) async {
     final String cookies = await controller.evaluateJavascript('document.cookie');
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -142,10 +126,10 @@ class _WebViewPageState extends State<WebViewPage> {
   }
 
   void _onAddToCache(WebViewController controller, BuildContext context) async {
-    await controller.evaluateJavascript(
-        'caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
+    await controller
+        .evaluateJavascript('caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Added a test entry to cache.'),
     ));
   }
@@ -159,7 +143,7 @@ class _WebViewPageState extends State<WebViewPage> {
   void _onClearCache(WebViewController controller, BuildContext context) async {
     await controller.clearCache();
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Cache cleared."),
     ));
   }
@@ -179,8 +163,7 @@ class _WebViewPageState extends State<WebViewPage> {
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture)
-      : assert(_webViewControllerFuture != null);
+  const NavigationControls(this._webViewControllerFuture) : assert(_webViewControllerFuture != null);
 
   final Future<WebViewController> _webViewControllerFuture;
 
@@ -202,7 +185,7 @@ class NavigationControls extends StatelessWidget {
                         await controller.goBack();
                       } else {
                         // ignore: deprecated_member_use
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("No back history item"),
                           ),
@@ -220,7 +203,7 @@ class NavigationControls extends StatelessWidget {
                         await controller.goForward();
                       } else {
                         // ignore: deprecated_member_use
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("No forward history item"),
                           ),
