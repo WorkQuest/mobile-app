@@ -284,7 +284,7 @@
       "done": "Done"
     },
     "inviteToQuest": "Hello! I invite you to the quest",
-    "addToQuest": "Add to quest",
+    "giveQuest": "Give a quest",
     "notification": {
       "questStarted": "Quest started",
       "workerRejectedQuest": "Worker rejected quest",
