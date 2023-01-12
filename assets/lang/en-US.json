@@ -158,7 +158,7 @@
     "showAllPortfolio": "Show all portfolios",
     "showAllQuests": "Show all quests",
     "later": "Later",
-    "iAgree": "I agree",
+    "iAgree": "Confirm",
     "next": "Next",
     "continue": "Continue",
     "change": "Change",
@@ -243,7 +243,7 @@
     "workerWant": "I want to find tasks and start freelancing",
     "chooseThis": "Select this role",
     "yourRole": "Your role is",
-    "change": "You want to change role on ",
+    "change": "You are going to change role to",
     "right": "right?"
   },
   "privacy": {

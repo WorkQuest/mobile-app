@@ -42,7 +42,7 @@ class ApproveRolePage extends StatelessWidget {
                       ? "role.yourRole".tr() +
                           " " +
                           "role.${store.userRole.toString().split(".").last.toLowerCase()}".tr()
-                      : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
+                      : "role.change".tr() + " " + "role.${store.getRole().toLowerCase()}".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
