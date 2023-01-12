@@ -95,8 +95,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(TwoFAPage.routeName);
+                                Navigator.of(context, rootNavigator: true).pushNamed(TwoFAPage.routeName);
                               },
                             ),
                           ],
@@ -116,8 +115,7 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title: "settings.smsVerification2".tr(),
-                                onTap: () =>
-                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                onTap: () => Navigator.of(context, rootNavigator: true).pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
@@ -157,8 +155,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "btn.myDisputes".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(MyDisputesPage.routeName);
+                                  Navigator.of(context, rootNavigator: true).pushNamed(MyDisputesPage.routeName);
                                 },
                               ),
                               _spacer,
@@ -171,14 +168,15 @@ class SettingsPage extends StatelessWidget {
                                   ),
                                   20.0,
                                 ),
-                                title:
-                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                title: "Language \n${Constants.languageList.keys.firstWhere(
                                   (k) => Constants.languageList[k] == context.locale,
                                 )}",
                                 onTap: () {
-                                  AlertDialogUtils.showInfoAlertDialog(context,
-                                      title: 'Warning'.tr(),
-                                      content: 'Service temporarily unavailable');
+                                  AlertDialogUtils.showInfoAlertDialog(
+                                    context,
+                                    title: 'Still under construction',
+                                    content: 'Other languages will be added soon',
+                                  );
 
                                   // Navigator.of(context, rootNavigator: true)
                                   //     .pushNamed(ChangeLanguagePage.routeName);

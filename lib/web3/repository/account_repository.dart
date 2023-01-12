@@ -1,6 +1,4 @@
-import 'package:app/constants.dart';
 import 'package:app/web3/service/client_service.dart';
-import 'package:flutter/widgets.dart';
 
 import '../wallet.dart';
 
@@ -15,14 +13,6 @@ class AccountRepository {
   List<Wallet>? userAddresses;
 
   String get privateKey => userAddresses!.first.privateKey!;
-  ValueNotifier<Network> notifierNetwork =
-      ValueNotifier<Network>(Network.mainnet);
-
-  // setNetwork(NetworkName networkName) {
-  //   this.networkName.value = networkName;
-  //   final _network = Web3Utils.getNetwork(networkName);
-  //   notifierNetwork.value = _network;
-  // }
 
   addWallet(Wallet wallet) {
     if (userAddresses == null || userAddresses!.isEmpty) {

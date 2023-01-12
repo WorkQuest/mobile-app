@@ -81,6 +81,6 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   String? signUpConfirmPasswordValidator(String? text) {
     return text! == _password
         ? null
-        : "Your passwords don’t match. Try again!";
+        : "Does not match password";
   }
 }

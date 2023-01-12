@@ -72,10 +72,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               : Column(
                   children: [
                     for (int index = 0;
-                        index <
-                            (portfolioStore!.portfolioList.length < 3
-                                ? portfolioStore!.portfolioList.length
-                                : 3);
+                        index < (portfolioStore!.portfolioList.length < 3 ? portfolioStore!.portfolioList.length : 3);
                         index++)
                       PortfolioWidget(
                         index: index,
@@ -139,8 +136,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     builder: (_) => SkillsWidget(
                       skills: store.parser(userStore!.userData!.userSpecializations),
                       isProfileMy: true,
-                      isExpanded: store.expandedSkills ||
-                          userStore!.userData!.userSpecializations.length < 5,
+                      isExpanded: store.expandedSkills || userStore!.userData!.userSpecializations.length < 5,
                       onPressed: (bool value) {
                         store.setExpandedSkills(value);
                       },
@@ -158,8 +154,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     builder: (_) => SkillsWidget(
                       skills: store.parser(widget.info!.userSpecializations),
                       isProfileMy: false,
-                      isExpanded: store.expandedSkills ||
-                          userStore!.userData!.userSpecializations.length < 5,
+                      isExpanded: store.expandedSkills || userStore!.userData!.userSpecializations.length < 5,
                       onPressed: (bool value) {
                         store.setExpandedSkills(value);
                       },
@@ -178,8 +173,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         ),
         Observer(builder: (_) {
           final description = widget.info == null
-              ? userStore!.userData?.additionalInfo?.description ??
-                  "modals.noDescription".tr()
+              ? userStore!.userData?.additionalInfo?.description ?? "modals.noDescription".tr()
               : widget.info!.additionalInfo?.description ?? "modals.noDescription".tr();
           return AnimationShowMore(
             text: description,
@@ -208,8 +202,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: userStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education =
-                          userStore!.userData!.additionalInfo!.educations[index];
+                      final education = userStore!.userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
@@ -254,11 +247,9 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        userStore!.userData!.additionalInfo!.workExperiences.length,
+                    itemCount: userStore!.userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          userStore!.userData!.additionalInfo!.workExperiences[index];
+                      final userExperience = userStore!.userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -278,8 +269,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: widget.info!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          widget.info!.additionalInfo!.workExperiences[index];
+                      final userExperience = widget.info!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -313,7 +303,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.offset = 0;
                 },
                 child: Text(
-                  "quests.addToQuest".tr(),
+                  "quests.giveQuest".tr(),
                 ),
               ),
             ],

@@ -181,7 +181,7 @@ class SignInPage extends StatelessWidget {
                       child: DropDownAdaptiveWidget<Network>(
                         colorText: Colors.black,
                         items: Network.values,
-                        value: AccountRepository().notifierNetwork.value,
+                        value: Network.values[1],
                         onChanged: (value) {
                           // setState(() {
                           final _networkName =

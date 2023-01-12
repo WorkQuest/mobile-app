@@ -44,9 +44,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ];
 
   final List<String> distantWorkList = [
-    "Remote work",
-    "In-office",
-    "Hybrid workplace",
+    "Distant work",
+    "Work in the office",
+    "Both variant",
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -135,7 +135,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @action
   void emptyField(BuildContext context) {
-    if (locationPlaceName.isEmpty) errorAlert(context, "Adress is empty");
+    if (locationPlaceName.isEmpty) errorAlert(context, "Address is empty");
     if (skillFilters.isEmpty) errorAlert(context, "Skills are empty");
   }
 

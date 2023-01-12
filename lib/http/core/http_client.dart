@@ -93,7 +93,7 @@ class _HttpClient implements IHttpClient {
   Future _sendRequest(Future<Response> request) async {
     final Response response = await request.catchError((error) {
       if (error is DioError) {
-        throw RequestErrorModel.fromJson(error.response?.data);
+        throw RequestErrorModel.fromJson(error.response!.data);
       }
     });
     return response.data["result"];

@@ -43,8 +43,8 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               const SizedBox(
                 height: 15,
               ),
-                Text( 
-                'Choose the ${store.indexFirstWord}' == 1 ? 'st' : 'th' 'and ${store.indexSecondWord}' == 1 ? 'st' : 'th' 'words of your mnemonic',
+              Text(
+                'Choose the ${store.indexFirstWord}th and ${store.indexSecondWord}th words of your mnemonic',
                 style: const TextStyle(
                   fontSize: 24,
                   color: Colors.black,
@@ -111,7 +111,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                     );
                   },
                   child: ElevatedButton(
-                    child: Text('Confirm'),
+                    child: Text('Open wallet'),
                     onPressed: store.statusGenerateButton
                         ? () {
                             AlertDialogUtils.showLoadingDialog(context);
