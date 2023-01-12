@@ -81,7 +81,7 @@ dependencies:
   ed25519_hd_key: ^2.2.0
 
   #url & app launcher
-  url_launcher: ^6.0.10
+  url_launcher: ^6.1.7
   flutter_custom_tabs: ^1.0.3
 
   #Media and Files

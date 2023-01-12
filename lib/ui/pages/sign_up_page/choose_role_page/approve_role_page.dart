@@ -20,7 +20,7 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://app.workquest.co/";
+  final String _baseUrl = "https://docs.google.com/viewer?url=https://app.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {
@@ -185,7 +185,10 @@ class ApproveRolePage extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () async {
-            await launch(_baseUrl + urlLink);
+            await launchUrl(
+              Uri.parse(_baseUrl + urlLink),
+              mode: LaunchMode.inAppWebView,
+            );
           },
           child: Text(
             title,
