@@ -65,11 +65,11 @@ abstract class _WalletStore extends IStore<bool> with Store {
             wqt.toString(),
           ),
           BalanceItem(
-            "wBNB",
+            "BNB",
             wBnb.toString(),
           ),
           BalanceItem(
-            "wETH",
+            "ETH",
             wEth.toString(),
           ),
         ]);
