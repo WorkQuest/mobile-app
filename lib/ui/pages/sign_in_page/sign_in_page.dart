@@ -126,7 +126,7 @@ class SignInPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hint: "signIn.username".tr(),
+                      hint: "signIn.email".tr(),
                       inputFormatters: [],
                       suffixIcon: null,
                     ),
@@ -159,8 +159,7 @@ class SignInPage extends StatelessWidget {
                         minSize: 22.0,
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          ClipboardData? data =
-                              await Clipboard.getData(Clipboard.kTextPlain);
+                          ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
                           mnemonicController.text = data?.text ?? "";
                           signInStore.setMnemonic(data?.text ?? "");
                         },
@@ -184,10 +183,9 @@ class SignInPage extends StatelessWidget {
                         value: Network.values[1],
                         onChanged: (value) {
                           // setState(() {
-                          final _networkName =
-                              (value as Network) == Network.mainnet
-                                  ? NetworkName.workNetMainnet
-                                  : NetworkName.workNetTestnet;
+                          final _networkName = (value as Network) == Network.mainnet
+                              ? NetworkName.workNetMainnet
+                              : NetworkName.workNetTestnet;
                           // AccountRepository().setNetwork(_networkName);
                           // Storage.write(
                           //     StorageKeys.networkName.name, _networkName.name);
@@ -371,8 +369,7 @@ class SignInPage extends StatelessWidget {
     if (signInStore.errorMessage == "unconfirmed") {
       print("error");
       await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamed(context, ConfirmEmail.routeName,
-          arguments: signInStore.getUsername());
+      Navigator.pushNamed(context, ConfirmEmail.routeName, arguments: signInStore.getUsername());
     } else if (signInStore.errorMessage == "TOTP is invalid") {
       AlertDialogUtils.showAlertDialog(
         context,
@@ -394,9 +391,7 @@ class SignInPage extends StatelessWidget {
         titleOk: 'OK',
         onTabCancel: null,
         onTabOk: () {
-          _onPressedSignIn(context,
-              signInStore: signInStore,
-              profile: context.read<ProfileMeStore>());
+          _onPressedSignIn(context, signInStore: signInStore, profile: context.read<ProfileMeStore>());
         },
         colorCancel: Colors.red,
         colorOk: AppColor.enabledButton,
@@ -407,8 +402,7 @@ class SignInPage extends StatelessWidget {
   }
 
   void _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: "Error", content: msg);
+      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
 
   Widget _iconButton(
     String iconPath,
