@@ -52,8 +52,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.mediaIds = ObservableList.of(widget.questInfo!.medias);
-      _controller = SkillSpecializationController(
-          initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -112,8 +111,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items:
-                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                    items: store.priorityList.map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -218,8 +216,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedEmployment(value!);
                                     },
-                                    items: store.employmentList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                    items: store.employmentList.map<DropdownMenuItem<String>>((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -271,8 +268,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedDistantWork(value!);
                                     },
-                                    items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                    items: store.distantWorkList.map<DropdownMenuItem<String>>((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -353,7 +349,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           validator: Validators.zeroValidator,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9]'),
+                              RegExp('[0-9.]'),
                             ),
                           ],
                           decoration: InputDecoration(
@@ -377,8 +373,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             true,
                           );
                           if (isEdit) {
-                            final updatedQuest =
-                                await store.getQuest(widget.questInfo!.id);
+                            final updatedQuest = await store.getQuest(widget.questInfo!.id);
                             Navigator.pushReplacementNamed(
                               context,
                               QuestDetails.routeName,
@@ -396,8 +391,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters =
-                                          _controller!.getSkillAndSpecialization();
+                                      store.skillFilters = _controller!.getSkillAndSpecialization();
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
                                           if (_formKey.currentState?.validate() ?? false)
@@ -407,8 +401,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             );
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false)
-                                          await store.createQuest();
+                                        if (_formKey.currentState?.validate() ?? false) await store.createQuest();
                                       } else
                                         store.emptyField(context);
                                     },
@@ -487,8 +480,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                 children: [
                   Expanded(
                     child: CupertinoPicker(
-                      scrollController: FixedExtentScrollController(
-                          initialItem: children.indexOf(value)),
+                      scrollController: FixedExtentScrollController(initialItem: children.indexOf(value)),
                       itemExtent: 32.0,
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];

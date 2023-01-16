@@ -10,8 +10,7 @@ class Validators {
     if (text.isEmpty) {
       return "Empty field";
     }
-    if (int.parse(text) < 1) return "Please enter a value greater than zero";
-    return null;
+    return double.parse(text) < 1 ? "Must be 1 or more" : null;
   }
 
   static String? emailValidator(String? email) {
@@ -20,6 +19,14 @@ class Validators {
     RegExp regExp = new RegExp(p);
 
     return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
+  }
+
+  static String? signInPasswordValidator(String? text) {
+    if (text!.length < 8) {
+      return "Password must contain at least 8 characters";
+    } else {
+      return null;
+    }
   }
 
   static String? mnemonicValidator(String? value) {

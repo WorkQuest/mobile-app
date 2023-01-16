@@ -137,6 +137,7 @@ class SignInPage extends StatelessWidget {
                       controller: passwordController,
                       isPassword: true,
                       onChanged: signInStore.setPassword,
+                      validator: Validators.signInPasswordValidator,
                       inputFormatters: [],
                       prefixIconConstraints: _prefixConstraints,
                       autofillHints: [AutofillHints.password],
