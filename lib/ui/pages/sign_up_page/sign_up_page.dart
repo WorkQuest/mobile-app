@@ -114,7 +114,6 @@ class SignUpPage extends StatelessWidget {
                       prefixIcon: SizedBox(
                         height: 15,
                         width: 15,
-                        //あいうえお@domain.com
                         child: SvgPicture.asset(
                           "assets/email_icon.svg",
                           fit: BoxFit.contain,

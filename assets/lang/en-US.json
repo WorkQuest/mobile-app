@@ -96,8 +96,8 @@
   "registration": {
     "edit": "Edit",
     "registration": "Registration",
-    "confirmYourEmail": "Confirm your email",
-    "emailConfirm": "Code has been sent on your email",
+    "confirmYourEmail": "Verify your email",
+    "emailConfirm": "We’ve sent an email with a verification code to",
     "emailConfirmTitle": "Check your email."
   },
   "login": {
@@ -153,7 +153,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "buyWUSD": "Buy WUSD",
-    "submit": "Submit",
+    "submit": "Continue",
     "showAllReviews": "Show all reviews",
     "showAllPortfolio": "Show all portfolios",
     "showAllQuests": "Show all quests",
@@ -912,7 +912,7 @@
     "leave": "Leave page?",
     "errorEducation": "Complete all fields in Education",
     "errorWork": "Complete all fields in Work Experience",
-    "code": "Code",
+    "code": "Enter verification code",
     "attention": "Attention",
     "goBack": "If you go back, you won't be able to continue.",
     "error": "Error",

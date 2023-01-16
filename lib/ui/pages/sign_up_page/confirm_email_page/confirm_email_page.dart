@@ -78,6 +78,16 @@ class ConfirmEmail extends StatelessWidget {
                       style: _style,
                     ),
                     SizedBox(
+                      height: 20.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "Resend code",
+                        style: _style.copyWith(color: Colors.blue),
+                      ),
+                    ),
+                    SizedBox(
                       height: 40.0,
                     ),
                     TextFormField(
@@ -119,7 +129,7 @@ class ConfirmEmail extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            "Didn't get code?",
+                            "Didn't get a code?",
                             style: _style,
                           ),
                           SizedBox(
