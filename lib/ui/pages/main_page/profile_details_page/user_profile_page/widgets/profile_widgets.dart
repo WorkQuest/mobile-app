@@ -438,11 +438,7 @@ Widget employerRating({
                   ],
                 ),
                 Text(
-                  "settings.education.from".tr() +
-                      " " +
-                      reviews +
-                      " " +
-                      "workers.reviews".tr(),
+                  "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                   style: TextStyle(
                     color: Color(0xFFD8DFE3),
                     fontSize: 12.0,
@@ -495,10 +491,7 @@ Widget workerQuestStats({
             ),
             GestureDetector(
               onTap: () async {
-                if (userId != null &&
-                    context != null &&
-                    userId != profile?.userData?.id &&
-                    thirdLine != "0") {
+                if (userId != null && context != null && userId != profile?.userData?.id && thirdLine != "0") {
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
@@ -509,8 +502,7 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration:
-                      title == "quests.activeQuests" ? TextDecoration.underline : null,
+                  decoration: title == "quests.activeQuests" ? TextDecoration.underline : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -594,11 +586,7 @@ Widget workerRating({
                 ],
               ),
               Text(
-                "settings.education.from".tr() +
-                    " " +
-                    reviews +
-                    " " +
-                    "workers.reviews".tr(),
+                "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                 style: TextStyle(
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
@@ -799,7 +787,7 @@ Widget contactDetails({
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Text(
-                      "Number Confirmed",
+                      "Confirmed",
                       style: TextStyle(
                         color: Color(0xFF0083C7),
                         fontSize: 8,
@@ -885,8 +873,7 @@ class SkillsWidget extends StatefulWidget {
   _SkillsWidgetState createState() => _SkillsWidgetState();
 }
 
-class _SkillsWidgetState extends State<SkillsWidget>
-    with TickerProviderStateMixin<SkillsWidget> {
+class _SkillsWidgetState extends State<SkillsWidget> with TickerProviderStateMixin<SkillsWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -138,7 +138,9 @@ class SignUpPage extends StatelessWidget {
                         "assets/lock.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z0-9!@#\$&*~]')),
+                      ],
                       suffixIcon: null,
                     ),
                   ),

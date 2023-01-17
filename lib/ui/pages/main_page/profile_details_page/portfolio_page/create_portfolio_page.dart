@@ -30,8 +30,7 @@ class CreatePortfolioPage extends StatelessWidget {
     if (allowEdit) {
       store.title = store.portfolioList[store.portfolioIndex].title;
       store.description = store.portfolioList[store.portfolioIndex].description;
-      store.mediaIds =
-          ObservableList.of(store.portfolioList[store.portfolioIndex].medias);
+      store.mediaIds = ObservableList.of(store.portfolioList[store.portfolioIndex].medias);
     }
     return Scaffold(
       appBar: CupertinoNavigationBar(
@@ -58,9 +57,10 @@ class CreatePortfolioPage extends StatelessWidget {
                       ),
                       _spacer,
                       TextFormField(
-                        initialValue: allowEdit
-                            ? store.portfolioList[store.portfolioIndex].title
-                            : "",
+                        initialValue: allowEdit ? store.portfolioList[store.portfolioIndex].title : "",
+                        decoration: const InputDecoration(
+                          hintText: 'Title',
+                        ),
                         onChanged: store.setTitle,
                       ),
                       const SizedBox(
@@ -71,16 +71,13 @@ class CreatePortfolioPage extends StatelessWidget {
                       ),
                       _spacer,
                       TextFormField(
-                        initialValue: allowEdit
-                            ? store
-                                .portfolioList[store.portfolioIndex].description
-                            : "",
+                        initialValue: allowEdit ? store.portfolioList[store.portfolioIndex].description : "",
                         //initialValue: store.description,
                         onChanged: store.setDescription,
                         keyboardType: TextInputType.multiline,
                         maxLines: 12,
                         decoration: const InputDecoration(
-                          hintText: 'Quest text',
+                          hintText: 'About my portfolio',
                         ),
                         style: const TextStyle(
                           fontSize: 16,
@@ -93,7 +90,8 @@ class CreatePortfolioPage extends StatelessWidget {
                         "uploader.files".tr(),
                       ),
                       _spacer,
-                      MediaUpload(allowEdit ? store.mediaIds : ObservableList(),
+                      MediaUpload(
+                        allowEdit ? store.mediaIds : ObservableList(),
                         mediaFile: store.media,
                       )
                     ],
@@ -122,11 +120,7 @@ class CreatePortfolioPage extends StatelessWidget {
                                 ? () async {
                                     allowEdit
                                         ? store.editPortfolio(
-                                            userId: userId,
-                                            portfolioId: store
-                                                .portfolioList[
-                                                    store.portfolioIndex]
-                                                .id)
+                                            userId: userId, portfolioId: store.portfolioList[store.portfolioIndex].id)
                                         : store.createPortfolio(
                                             userId: userId,
                                           );

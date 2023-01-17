@@ -181,7 +181,7 @@
   "signIn": {
     "title": "Sign in",
     "mnemonic": "Mnemonic",
-    "enterMnemonicPhrase": "Enter mnemonic phrase",
+    "enterMnemonicPhrase": "Enter secret phrase",
     "email": "Email",
     "password": "Password",
     "account": "don't have an account?",

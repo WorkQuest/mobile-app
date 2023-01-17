@@ -31,7 +31,7 @@ class Validators {
 
   static String? mnemonicValidator(String? value) {
     if (value!.length <= 24) {
-      return "A small number of words";
+      return "Entered secret phrase is too short";
     }
     if (value.split(' ').toList().length < 12) {
       return "Incorrect mnemonic format";
