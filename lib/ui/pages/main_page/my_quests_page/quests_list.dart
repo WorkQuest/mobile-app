@@ -96,8 +96,10 @@ class QuestsList extends StatelessWidget {
           height: 10.0,
         ),
         Text(
-          "quests.youDontHaveAny".tr() +
-              " ${questItemPriorityType.name} " +
+          "quests.userDontHaveAny".tr() +
+              " " +
+              "quests.${questItemPriorityType.name}".toLowerCase().tr().toLowerCase() +
+              " " +
               "quests.questYet".tr(),
           style: TextStyle(
             color: Color(0xFFD8DFE3),

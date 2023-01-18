@@ -325,8 +325,8 @@
       "fixedTerm": "Fixed term"
     },
     "addNewQuest": "Create a quest",
-    "youDontHaveAny": "You don't have any",
-    "questYet": "Quest yet",
+    "userDontHaveAny": "User does not have any",
+    "questYet": "quests yet",
     "aboutQuest": "About Quest",
     "disputeQuest": "Dispute quest",
     "waitConfirm": "Wait confirm",

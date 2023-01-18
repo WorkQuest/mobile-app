@@ -87,9 +87,7 @@ import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA"
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -302,8 +300,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -325,7 +322,7 @@ class Routes {
             create: (context) => getIt.get<ProfileMeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileQuestsPage(settings.arguments as String),
+              child: settings.arguments as ProfileQuestsPage,
             ),
           ),
         );

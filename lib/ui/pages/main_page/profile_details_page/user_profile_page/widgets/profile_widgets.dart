@@ -466,7 +466,7 @@ Widget workerQuestStats({
       child: Container(
         padding: EdgeInsets.all(16.0),
         height: 140,
-        width: 161,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Color(0xFFF7F8FA),
           borderRadius: BorderRadius.all(
@@ -495,14 +495,20 @@ Widget workerQuestStats({
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
-                    arguments: userId,
+                    arguments: ProfileQuestsPage(
+                        userId,
+                        title == "quests.activeQuests"
+                            ? QuestItemPriorityType.Active
+                            : QuestItemPriorityType.Performed),
                   );
                 }
               },
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests" ? TextDecoration.underline : null,
+                  decoration: title == "quests.activeQuests" || title == "quests.completedQuests"
+                      ? TextDecoration.underline
+                      : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -540,11 +546,15 @@ Widget workerRating({
               context: context,
               profile: profile,
             ),
+            SizedBox(width: 16),
             workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime',
+              thirdLine: 'workers.showAll',
               textColor: Color(0xFF0083C7),
+              userId: userId,
+              context: context,
+              profile: profile,
             ),
           ],
         ),

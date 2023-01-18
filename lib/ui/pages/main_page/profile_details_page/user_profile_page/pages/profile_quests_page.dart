@@ -9,9 +9,10 @@ import 'package:provider/provider.dart';
 class ProfileQuestsPage extends StatefulWidget {
   static const String routeName = "/questsPage";
 
-  ProfileQuestsPage(this.userId);
+  ProfileQuestsPage(this.userId, this.questsType);
 
   final String userId;
+  final QuestItemPriorityType questsType;
 
   @override
   _ProfileQuestsPageState createState() => _ProfileQuestsPageState();
@@ -36,9 +37,15 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
     if (profileMeStore!.userData!.id != widget.userId) {
       await profileMeStore!.getQuestHolder(widget.userId);
       role = profileMeStore!.questHolder!.role;
-      role == UserRole.Worker
-          ? profileMeStore!.getActiveQuests(profileMeStore!.questHolder!.id, true)
-          : profileMeStore!.getCompletedQuests(profileMeStore!.questHolder!.id, true);
+      if (role == UserRole.Worker) {
+        if (widget.questsType == QuestItemPriorityType.Active) {
+          profileMeStore!.getActiveQuests(profileMeStore!.questHolder!.id, true);
+        } else {
+          profileMeStore!.getCompletedQuests(profileMeStore!.questHolder!.id, true);
+        }
+      } else {
+        profileMeStore!.getCompletedQuests(profileMeStore!.questHolder!.id, true);
+      }
     } else {
       await profileMeStore!.getCompletedQuests(profileMeStore!.userData!.id, true);
       role = profileMeStore!.userData!.role;
@@ -63,30 +70,28 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
             return NotificationListener<ScrollEndNotification>(
               onNotification: (scrollEnd) {
                 final metrics = scrollEnd.metrics;
-                if (metrics.atEdge ||
-                    metrics.maxScrollExtent < metrics.pixels &&
-                        !profileMeStore!.isLoading) {
-                  if (snapshot.data == UserRole.Worker)
+                if (metrics.atEdge || metrics.maxScrollExtent < metrics.pixels && !profileMeStore!.isLoading) {
+                  if (snapshot.data == UserRole.Worker) if (widget.questsType == QuestItemPriorityType.Active) {
                     profileMeStore!.getActiveQuests(widget.userId, false);
-                  else
+                  } else {
                     profileMeStore!.getCompletedQuests(widget.userId, false);
+                  }
+                } else {
+                  profileMeStore!.getCompletedQuests(widget.userId, false);
                 }
                 return true;
               },
               child: Observer(
-                  builder: (_) => profileMeStore!.questHolder == null &&
-                          profileMeStore!.isLoading &&
-                          profileMeStore!.quests.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : QuestsList(
-                          snapshot.data == UserRole.Worker
-                              ? QuestItemPriorityType.Active
-                              : QuestItemPriorityType.Performed,
-                          profileMeStore!.quests,
-                          isLoading: profileMeStore!.isLoading,
-                        )),
+                  builder: (_) =>
+                      profileMeStore!.questHolder == null && profileMeStore!.isLoading && profileMeStore!.quests.isEmpty
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : QuestsList(
+                              snapshot.data == UserRole.Worker ? widget.questsType : QuestItemPriorityType.Performed,
+                              profileMeStore!.quests,
+                              isLoading: profileMeStore!.isLoading,
+                            )),
             );
           }
           return Center(child: CircularProgressIndicator());
