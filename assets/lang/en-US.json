@@ -1,0 +1,1833 @@
+{
+  "startPage": {
+    "welcome": "welcome to",
+    "workQuest": "WorkQuest",
+    "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum est suspendisse orci nunc fringilla a morbi. Fusce pellentesque eu, amet a.",
+    "skip": "Skip",
+    "next": "Next"
+  },
+  "invite": {
+    "title": "Guest"
+  },
+  "response": {
+    "title": "Reply sent"
+  },
+  "active": {
+    "title": "Reply sent"
+  },
+  "company": {
+    "from": "from"
+  },
+  "performed": {
+    "title": "Executed"
+  },
+  "btn": {
+    "agree": "Agree",
+    "goToChat": "Access instant messaging",
+    "dispute": "Open dispute",
+    "myDisputes": "My Disputes",
+    "responded": "Reply sent",
+    "sendARequest": "Send a request",
+    "view": "View"
+  },
+  "distance": {
+    "m": "m"
+  },
+  "info": {
+    "showYourMessage": "Show your message"
+  },
+  "uploader": {
+    "loading": "Loading",
+    "uploadText": "Upload images or videos",
+    "uploadImage": "Upload images",
+    "upload": "Upload",
+    "files": "Files"
+  },
+  "messages": {
+    "alpha": "{_field_} field can only contain alphabetic characters",
+    "alpha_num": "{_field_} field can only contain alphanumeric characters",
+    "alpha_dash": "The {_field_} field can contain alphanumeric characters as well as hyphens and underscores",
+    "alpha_spaces": "The {_field_} field can only contain alphabetic characters as well as spaces",
+    "between": "The value of the {_field_} field must be between {min} and {max}",
+    "confirmed": "{_field_} field confirmation does not match",
+    "digits": "The {_field_} field must contain a numeric value consisting exactly of {length} digits",
+    "dimensions": "{_field_} field should measure {width} pixels over {height} pixels",
+    "email": "{_field_} field must contain a valid email address",
+    "excluded": "{_field_} field value is invalid",
+    "ext": "The value of the {_field_} field is not a valid file",
+    "image": "{_field_} field must contain an image",
+    "integer": "The value of the {_field_} field must be an integer",
+    "length": "The value of the {_field_} field must have a length of {length}",
+    "max_value": "The value of the {_field_} field must have a maximum length of {max}",
+    "max": "{_field_} field value must not exceed {length} characters",
+    "mimes": "{_field_} field must contain a valid file type",
+    "min_value": "The {_field_} field must have a minimum value of {min}",
+    "min": "{_field_} field must contain at least {length} characters",
+    "numeric": "{_field_} field can only contain numeric characters",
+    "oneOf": "{_field_} field value is invalid",
+    "regex": "{_field_} field format is invalid",
+    "required_if": "{_field_} field is required",
+    "required": "The {_field_} field is required",
+    "size": "{_field_} field size must be less than {size} Kb",
+    "decimal": "{_field_} field should contain only decimal values"
+  },
+  "labels": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Enter password"
+  },
+  "placeholders": {
+    "default": "Reserved space",
+    "firstName": "John",
+    "lastName": "Doe",
+    "mail": "votre@courriel.com",
+    "email": "Email address",
+    "password": "•••••••"
+  },
+  "about": {
+    "about": "About",
+    "contact": "Contact us",
+    "contented": {
+      "title": "About us",
+      "text": "WorkQuest is a social project based on blockchain technology aimed at facilitating job search and solving all the tasks of employers in quest mode. Are you looking for a job ? WorkQuest will help you find a quest next to your home or in your city. Do you need workers to achieve certain goals ? Just create a quest on the WorkQuest site. The service assumes warranty obligations for the execution of quests. Employer funds are kept with us. If the employee provides confirmation of the performance of the work, the funds are returned to his account. The system of ratings, ratings and the list of completed quests will help to easily find honest people and reliable specialists.Our goal is to simplify the communication between employers and employees, help millions of people find jobs, improve their financial situation, solve the constant problem of finding reliable professionals in all sectors to create a progressive digital economy based on the principles of trust, mutual respect and well-being of all its participants."
+    }
+  },
+  "registration": {
+    "edit": "Edit",
+    "registration": "Registration",
+    "confirmYourEmail": "Verify your email",
+    "emailConfirm": "We’ve sent an email with a verification code to",
+    "emailConfirmTitle": "Check your email."
+  },
+  "login": {
+    "signIn": "Login",
+    "account": "Don't have an account ?",
+    "remember": "Remember me",
+    "forgot": "Forgot password?",
+    "loginWith": "Log in with your social network account",
+    "create": "Create an account"
+  },
+  "profiler": {
+    "noInformation": "No Information",
+    "raiseViews": "Raise views",
+    "educations": "Education",
+    "prevWorkExp": "Previous professional experience",
+    "active": "active proposals",
+    "radius": "in your area",
+    "lead": "Implementation time",
+    "proposalLocation": "Proposal location \n based on your \n current location",
+    "proposalStatus": "Status of the proposal",
+    "urgent": "URGENT",
+    "details": "View details",
+    "available": "Available",
+    "viewProfile": "View \nprofile",
+    "invite": "INVITE THE REQUESTER",
+    "slogan": "Create a work proposal",
+    "add": "Add all the information and publication time to find the right one",
+    "create": "Create",
+    "writeAMessage": "Write a message",
+    "quests": "Quests",
+    "reviews": "Reviews",
+    "portfolio": "Portfolio",
+    "dontHavePortfolio": "You do not have any  Portfolio",
+    "dontHavePortfolioOtherUser": "You do not have any  Portfolio",
+    "sidebar": {
+      "filter": "Filter All quests",
+      "choose": "(Choose a simple category or specialized)",
+      "quests": "Quests",
+      "specialized": "SPECIALIZED QUESTS",
+      "find": "FIND A JOB"
+    }
+  },
+  "meta": {
+    "back": "Back",
+    "ok": "OK",
+    "send": "Send",
+    "save": "Save",
+    "close": "Close",
+    "reset": "Reset",
+    "accept": "Accept",
+    "fromYou": "close to your location",
+    "details": "Ver detalles",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "buyWUSD": "Buy WUSD",
+    "submit": "Continue",
+    "showAllReviews": "Show all reviews",
+    "showAllPortfolio": "Show all portfolios",
+    "showAllQuests": "Show all quests",
+    "later": "Later",
+    "iAgree": "Confirm",
+    "next": "Next",
+    "continue": "Continue",
+    "change": "Change",
+    "apply": "Apply",
+    "connectSMSVer": "Connect SMS verification",
+    "resendSMS": "Resend SMS",
+    "disable": "Disable",
+    "remindLater": "Remind me later",
+    "finish": "Finish"
+  },
+  "priority": {
+    "title": "Select priority",
+    "all": "All priorities",
+    "low": "Fixed delivery",
+    "normal": "Short term",
+    "urgent": "Urgent",
+    "lowPriority": "Low priority",
+    "normalPriority": "Normal priority"
+  },
+  "signIn": {
+    "title": "Sign in",
+    "mnemonic": "Mnemonic",
+    "enterMnemonicPhrase": "Enter secret phrase",
+    "email": "Email",
+    "password": "Password",
+    "account": "don't have an account?",
+    "regs": "Registration",
+    "login": "Login",
+    "remember": "Remember account",
+    "forgot": "Forgot password?",
+    "or": "Or",
+    "loginWith": "Log in with",
+    "welcomeToWorkQuest": "We welcome you to WorkQuest",
+    "pleaseSignIn": "Please sign in",
+    "workQuest": "WorkQuest",
+    "makingMoneyIsFast": "WorkQuest:\n The decentralized labour market\n of the world",
+    "dontHaveAnAccount": "Don't have an account?",
+    "signUp": "Sign Up",
+    "forgotYourPass": "Forgot your password?",
+    "totp": "2FA"
+  },
+  "signWorkQuest": {
+    "title": "WorkQuest social Network",
+    "description": "You can use your WorkQuest DAO username and password to log in",
+    "daoUsername": "DAO username",
+    "daoPass": "DAO Password"
+  },
+  "securityCheck": {
+    "title": "Security check",
+    "confCode": "Google confirmation code",
+    "placeholder": "Placeholder",
+    "confCodeDesc": "Enter the generated key in the Google Authenticator app"
+  },
+  "signUp": {
+    "title": "Register",
+    "haveAccount": "Already have an account?",
+    "auth": "Authorisation",
+    "firstName": "Name",
+    "lastName": "Lastname",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Repeat password",
+    "create": "Create account",
+    "back": "back"
+  },
+  "forgot": {
+    "title": "Forgot password?",
+    "desc": "We have sent you instructions to reset your password."
+  },
+  "restore": {
+    "title": "Reset password",
+    "enterEmail": "Enter Your Email",
+    "code": "A code will be sent to this email to help you restore your password.",
+    "modal": "Password changed"
+  },
+  "role": {
+    "employer": "Employer",
+    "worker": "Employee",
+    "enter": "Enter",
+    "choose": "Choose your role",
+    "employerWant": "I want to make tasks and find workers",
+    "workerWant": "I want to find tasks and start freelancing",
+    "chooseThis": "Select this role",
+    "yourRole": "Your role is",
+    "change": "You are going to change role to",
+    "right": "right?"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "desc": "",
+    "agree": "I agree with",
+    "privacyLink": "Privacy Policy",
+    "termsLink": "Terms and conditions",
+    "amlLink": "AML and CTF Policy"
+  },
+  "pinCode": {
+    "comeUp": "Come up with a PIN-code",
+    "repeat": "Repeat PIN-code",
+    "writePinCode": "Please, write your PIN-code",
+    "incorrectly": "PIN-code entered incorrectly: ",
+    "left": " attempts left"
+  },
+  "layout": {
+    "create": "Create an quest",
+    "links": {
+      "terms": "\t· Terms and conditions",
+      "privacy": "\t· Privacy policy"
+    }
+  },
+  "skills": {
+    "title": "Skills",
+    "yourSkills": "Your Skills",
+    "noSkills": "No skills"
+  },
+  "quests": {
+    "statuses": {
+      "created": "Created",
+      "active": "Active",
+      "closed": "Closed",
+      "dispute": "Dispute",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "done": "Done"
+    },
+    "inviteToQuest": "Hello! I invite you to the quest",
+    "giveQuest": "Give a quest",
+    "notification": {
+      "questStarted": "Quest started",
+      "workerRejectedQuest": "Worker rejected quest",
+      "workerAcceptedQuest": "Worker accepted quest",
+      "workerCompletedQuest": "Worker completed quest",
+      "employerAcceptedCompletedQuest": "Employer accepted completed quest",
+      "employerRejectedCompletedQuest": "Employer rejected completed quest",
+      "employerInvitedWorkerToQuest": "Employer invited worker to quest",
+      "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
+      "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
+      "employerRejectedWorkersResponse": "Employer rejected workers response",
+      "userLeftReviewAboutQuest": "User left review about quest",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "questEdited": "Quest edited",
+      "workerRespondedToQuest": "Worker responded to quest"
+    },
+    "youResponded": "You responded",
+    "title": "Quest Title",
+    "quests": "Quests",
+    "starred": "Starred",
+    "urgent": "Urgent",
+    "typeOfJob": "Job type",
+    "noQuest": "Quest not found",
+    "yourQuest": "Your quest",
+    "distantWork": {
+      "title": "Distant work",
+      "allWorkplaces": "All workplaces",
+      "distantWork": "Distant work",
+      "workInOffice": "Work in the office",
+      "bothVariant": "Both options"
+    },
+    "chooseWorker": "Choose a worker",
+    "employment": {
+      "title": "Employment",
+      "fullTime": "Full time",
+      "partTime": "Part time",
+      "fixedTerm": "Fixed term"
+    },
+    "addNewQuest": "Create a quest",
+    "userDontHaveAny": "User does not have any",
+    "questYet": "quests yet",
+    "aboutQuest": "About Quest",
+    "disputeQuest": "Dispute quest",
+    "waitConfirm": "Wait confirm",
+    "employerConfirmationPending": "Employer confirmation pending",
+    "questText": "Quest text",
+    "hours": "hours",
+    "invited": "Invited",
+    "active": "Active",
+    "performed": "Completed",
+    "areYouSureTheQuestIsComplete": "Are you sure the quest is complete?",
+    "completeTheQuest": "Complete the quest",
+    "requested": "Requested",
+    "youRequested": "You requested",
+    "youInvited": "You invited",
+    "youAreInvited": "You are invited",
+    "workerInvited": "Worker invited",
+    "inProgressBy": "In progress by:",
+    "showAllCases": "Show all cases",
+    "portfolio": "Works",
+    "searchQuests": "Search quests",
+    "readCompletely": "Read all",
+    "questBig": "Quest",
+    "fromBig": "From",
+    "fromYou": "from your user",
+    "reviews": "reviews",
+    "reviewsBig": "Reviews",
+    "addReview": "Add review",
+    "addYourReview": "Add your review",
+    "yourReview": "Your review",
+    "addNewReview": "Add new review",
+    "noReview": "You have no reviews yet",
+    "noReviewForOtherUser": "No reviews",
+    "addNew": "Add new",
+    "reviewSent": "Review sent",
+    "rateEmployer": "Rate this employer",
+    "MyQuests": "My Quest",
+    "activeQuest": "Active quests",
+    "proposal": "Proposal",
+    "category": "Select a category",
+    "address": "Address",
+    "runtime": "Runtime (hours)",
+    "workplace": "Workplace",
+    "uploadMaterials": "Upload documents to better describe the quest",
+    "uploadQuestMaterials": "Add a detailed description",
+    "answerOnQuest": {
+      "title": "Answer on quest",
+      "accept": "Accept quest",
+      "questAccepted": "Quest accepted",
+      "reject": "Reject quest",
+      "questRejected": "Quest rejected",
+      "questCompleted": "Quest completed",
+      "acceptCompleted": "Accept completed quest",
+      "completedQuestAccepted": "Completed quest accepted",
+      "rejectCompleted": "Reject completed quest",
+      "completedQuestRejected": "Completed quest rejected",
+      "rejectCompletedQuest": "The quest went to the dispute"
+    },
+    "price": "Price",
+    "filter": {
+      "btn": "Filters",
+      "deliveryTime": "Quests delivery time",
+      "priorityOfTheEmployee": "Priority of the employee",
+      "employeeRating": "Employee rating",
+      "sortBy": {
+        "title": "Sort by",
+        "addedTimeAscending": "Added time ascending",
+        "addedTimeDescending": "Added time descending",
+        "priceAscending": "Price ascending",
+        "priceDescending": "Price descending"
+      },
+      "sortByQuest": {
+        "selectAll": "Select all",
+        "specializedQuests": "Specialized quests (task that require specialized skills)",
+        "permanentJob": "Permanent job (job search by categories)",
+        "quests": "Quests (all type of work)"
+      },
+      "sortByQuestDelivery": {
+        "selectAll": "Select all",
+        "urgent": "Urgent",
+        "shortTerm": "Short-term",
+        "fixedDelivery": "Fixed delivery"
+      },
+      "sortByEmployment": {
+        "selectAll": "Select all",
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "fixedTerm": "Fixed term",
+        "contract": "Contract"
+      },
+      "sortByEmployeeRating": {
+        "selectAll": "Select all",
+        "verifiedEmployee": "Verified employee",
+        "reliableEmployee": "Reliable employee",
+        "aHigherLevelOfTrustEmployee": "A higher level of trust employee"
+      }
+    },
+    "ads": {
+      "promoteYourQuest": "Promote your quest",
+      "publishForFree": "Publish for free",
+      "boostYourPublications": "Improve your publication",
+      "costPerClick": "Cost per click"
+    },
+    "selectLocation": "Select location",
+    "city": "City",
+    "period": "Period of time",
+    "EstimatedPayment": "Estimated payment:",
+    "createAQuest": "Create a quest",
+    "activeQuests": "Active quests",
+    "completedQuests": "Completed quests",
+    "oneTime": "Once",
+    "fullTime": "Full time",
+    "uploadAImagesOrVideos": "Upload images or videos",
+    "averageRating": "Average rating",
+    "rating": "Rating",
+    "showAllActiveQuests": "Show all active quests",
+    "performanceTimer": "Activate until:",
+    "questAmount": "quests",
+    "otherQuestsSpec": "Other quests by specialization",
+    "questMaterials": "Additional documentation of the quest",
+    "searchResults": "Search results",
+    "type": "Type of job",
+    "time": "Creation time",
+    "priority": {
+      "all": "All priorities",
+      "low": "Low",
+      "normal": "Normal",
+      "urgent": "Urgent"
+    },
+    "ui": {
+      "showMap": "Show map",
+      "search": "City / Street / Place",
+      "access": "Access to geolocation is prohibited",
+      "openSettings": "Please open settings and allow WorkQuest to use your location"
+    },
+    "worker": "Worker",
+    "raiseViews": "Increase views",
+    "deleteQuest": "Delete quest",
+    "deleteQuestMessage": "Are you sure you want to delete quest?",
+    "approve": "Approve",
+    "startQuest": "Start quest"
+  },
+  "filters": {
+    "dd": {
+      "1": "Specialization",
+      "2": "Quests",
+      "3": "Urgent",
+      "4": "Type of work",
+      "5": "All priorities",
+      "6": "Price",
+      "7": "Hour of creation"
+    },
+    "title": "Filters",
+    "titleAll": "All filters",
+    "filterBtn": "Show all filters",
+    "commonSub": {
+      "selectAll": "Select all"
+    },
+    "items": {
+      "1": {
+        "title": "Retail, Sales & Purchasing",
+        "sub": {
+          "100": "Convenience Stores",
+          "101": "Grocery Stores",
+          "102": "Specialty retailers",
+          "103": "Clothing Stores",
+          "104": "Auto Retailers",
+          "105": "Home furnishing retailers",
+          "106": "Drug Stores",
+          "107": "Department Stores",
+          "108": "Super Markets and Hyper Markets",
+          "109": "Multichannel Stores",
+          "110": "Discount Stores",
+          "111": "Direct Sales Catalog and mail order companies",
+          "112": "E-commerce Stores",
+          "113": "Other Retail, Sales & Purchasing"
+        }
+      },
+      "2": {
+        "title": "Bars & Restaurants Staff",
+        "sub": {
+          "200": "Ethnic food",
+          "201": "Fast food",
+          "202": "Fast casual",
+          "203": "Casual dining",
+          "204": "Premium casual",
+          "205": "Family style",
+          "206": "Fine dining",
+          "207": "Brasserie and bistro",
+          "208": "Other Bars & Restaurants Staff"
+        }
+      },
+      "3": {
+        "title": "Accounting & Consulting ",
+        "sub": {
+          "300": "Accounting",
+          "301": "Financial planning",
+          "302": "Human resources",
+          "303": "Management consulting",
+          "304": "Other accounting and consulting positions"
+        }
+      },
+      "4": {
+        "title": "Admin Support",
+        "sub": {
+          "400": "Data entry",
+          "401": "Other Admin Support",
+          "402": "Personal / Virtual Assistance",
+          "403": "Project management",
+          "404": "Transcription",
+          "405": "Web Research",
+          "406": "Other Admin Support"
+        }
+      },
+      "5": {
+        "title": "Customer service",
+        "sub": {
+          "500": "Customer service",
+          "501": "Technical Support"
+        }
+      },
+      "6": {
+        "title": "Data Science & Analytics",
+        "sub": {
+          "601": "Data Extraction / ETL",
+          "600": "A / B Testing",
+          "602": "Data Mining & Management",
+          "603": "Data Visualization",
+          "604": "Machine Learning",
+          "605": "Quantitative analysis",
+          "606": "Other Data Science & Analytics"
+        }
+      },
+      "7": {
+        "title": "Personnel Management & HR",
+        "sub": {
+          "700": "Human Resource Planning",
+          "701": "Recruitment and Selection",
+          "702": "Performance Management",
+          "703": "Learning and Development",
+          "704": "Career Planning",
+          "705": "Function Evaluation",
+          "706": "Rewards",
+          "707": "Industrial Relations",
+          "708": "Employee Participation and Communication",
+          "709": "Health and Safety",
+          "710": "Personal well-being",
+          "711": "Administrative Responsibilities",
+          "712": "Other Personnel Management & HR"
+        }
+      },
+      "8": {
+        "title": "Security",
+        "sub": {
+          "800": "Risk manager",
+          "801": "Systems, Network & Web Penetration Tester",
+          "802": "Network Security Engineer",
+          "803": "Network Security Administrator",
+          "804": "Cyber Crime Investigatorr",
+          "805": "Information Security Analyst",
+          "806": "Security Analyst",
+          "807": "Security Manager",
+          "808": "Security Guard",
+          "809": "Other Security "
+        }
+      },
+      "9": {
+        "title": "Domestic workers",
+        "sub": {
+          "900": "Babysitting",
+          "901": "Governess",
+          "902": "Tutors",
+          "903": "Housekeepers",
+          "904": "Caregivers",
+          "905": "Cooks",
+          "906": "Gardeners",
+          "907": "Drivers",
+          "908": "Other domestic workers"
+        }
+      },
+      "10": {
+        "title": "Beauty, Fitness & Sport ",
+        "sub": {
+          "1000": "Athletic Trainer",
+          "1001": "Exercise Physiologist",
+          "1002": "Fitness Trainer",
+          "1003": "Massage Therapist",
+          "1004": "Occupational Therapist",
+          "1005": "Physical Therapist",
+          "1006": "Recreational Therapist",
+          "1007": "Beauty salon",
+          "1008": "Other Beauty, Fitness & Sport "
+        }
+      },
+      "11": {
+        "title": "Education",
+        "sub": {
+          "1100": "Teaching",
+          "1101": "Education Administration",
+          "1102": "School Counseling",
+          "1103": "School Social Work",
+          "1104": "Teaching Lanquages",
+          "1105": "Other Education"
+        }
+      },
+      "12": {
+        "title": "Culture & Arts",
+        "sub": {
+          "1200": "Actor",
+          "1201": "Community Arts Worker",
+          "1202": "Choreographer",
+          "1203": "Dancer",
+          "1204": "Dramatherapist",
+          "1205": "Music Producer",
+          "1206": "Music Therapist",
+          "1207": "Theatre Director",
+          "1208": "Multimedia Specialist ",
+          "1209": "Systems Designer",
+          "1210": "Product Designer",
+          "1211": "Curator",
+          "1212": "Art Director",
+          "1213": "Museum Director",
+          "1214": "Art Teacher",
+          "1215": "Art Therapist",
+          "1216": "Medical Illustrator",
+          "1217": "Film Director",
+          "1218": "Other Culture & Arts"
+        }
+      },
+      "13": {
+        "title": "IT / networks",
+        "sub": {
+          "1300": "Database Administration",
+          "1301": "ERP / CRM Software",
+          "1302": "Information Security",
+          "1303": "Network & System Administration",
+          "1304": "Other IT & Networking"
+        }
+      },
+      "14": {
+        "title": "Design",
+        "sub": {
+          "1400": "Layout Design",
+          "1401": "Branding",
+          "1402": "Gaming & AR / VR",
+          "1403": "Graphic, Editorial & Presentation Design",
+          "1404": "Product Design",
+          "1405": "Interior & Exterior Design",
+          "1406": "Other Design"
+        }
+      },
+      "15": {
+        "title": "Creative Production",
+        "sub": {
+          "1500": "Art & Illustration",
+          "1501": "Audio & Music Production",
+          "1502": "Performing Arts",
+          "1503": "Photography",
+          "1504": "Video & Animation",
+          "1505": "Voice Talent",
+          "1506": "3D Visualization",
+          "1507": "Other Creative Production"
+        }
+      },
+      "16": {
+        "title": "Engineering & Architecture",
+        "sub": {
+          "1600": "3D Modeling & CAD",
+          "1601": "Architecture",
+          "1602": "Chemical Engineering",
+          "1603": "Civil & Structural Engineering",
+          "1604": "Contract Manufacturing",
+          "1605": "Electrical Engineering",
+          "1606": "Mechanical Engineering",
+          "1607": "Physical Sciences",
+          "1608": "Other Engineering"
+        }
+      },
+      "17": {
+        "title": "Law & Legal Support",
+        "sub": {
+          "1700": "Contract Law",
+          "1701": "Corporate Law",
+          "1702": "Intellectual Property Law",
+          "1703": "Paralegal Services",
+          "1704": "Other Law & Legal Support"
+        }
+      },
+      "18": {
+        "title": "Marketing and sales",
+        "sub": {
+          "1800": "Display Advertising",
+          "1801": "Email & Marketing Automation",
+          "1802": "Lead Generation",
+          "1803": "Market & Customer Research",
+          "1804": "Marketing Strategy",
+          "1805": "Public Relations",
+          "1806": "SEM - Search Engine Marketing",
+          "1807": "SEO - Search Engine Optimization",
+          "1808": "SMM - Social Media Marketing",
+          "1809": "Other Sales & Marketing"
+        }
+      },
+      "19": {
+        "title": "Translation",
+        "sub": {
+          "1900": "General Translation",
+          "1901": "Legal Translation",
+          "1902": "Medical Translation",
+          "1903": "Technical Translation",
+          "1904": "Other Translation"
+        }
+      },
+      "20": {
+        "title": "Real Estate",
+        "sub": {
+          "2000": "Residential Real Estate",
+          "2001": "New Construction & Resale Homes",
+          "2002": "Commercial Real Estate",
+          "2003": "Industrial Real Estate",
+          "2004": "Vacant Land",
+          "2005": "Other Real Estate"
+        }
+      },
+      "21": {
+        "title": "Web, Mobile & Software Development",
+        "sub": {
+          "2100": "Desktop Software Development",
+          "2101": "Ecommerce Development",
+          "2102": "Game Development",
+          "2103": "Mobile Development",
+          "2104": "Other Software Development",
+          "2105": "Product Management",
+          "2106": "QA & Testing",
+          "2107": "Scripts & Utilities",
+          "2108": "Web & Mobile Design",
+          "2109": "Web Development",
+          "2110": "Other Web, Mobile & Software Dev"
+        }
+      },
+      "22": {
+        "title": "Writing",
+        "sub": {
+          "2200": "Content & Copywriting",
+          "2201": "Creative Writing",
+          "2202": "Editing & Proofreading",
+          "2203": "Grant Writing",
+          "2204": "Resumes & Cover Letters",
+          "2205": "Technical Writing",
+          "2206": "Other Writing"
+        }
+      },
+      "23": {
+        "title": "Agriculture & Agribusiness",
+        "sub": {
+          "2300": "Crops",
+          "2301": "Livestock (both production and animal health)",
+          "2302": "Fisheries and Aquaculture (including capture fisheries)",
+          "2303": "Forest",
+          "2304": "Other Agriculture & Agribusiness"
+        }
+      },
+      "24": {
+        "title": "Secretariat, Correspondence & Records Management",
+        "sub": {
+          "2400": "Property records - title deeds and settlements",
+          "2401": "Accounting papers - rentals, vouchers, surveys and valuations.",
+          "2402": "Legal papers",
+          "2403": "Inventories",
+          "2404": "Correspondence",
+          "2405": "Enclosure papers",
+          "2406": "Manorial papers - court rolls, custumals, terriers, surveys etc.",
+          "2407": "Personal and political papers",
+          "2408": "Maps and plans",
+          "2409": "Other Secretariat, Correspondence & Records Management"
+        }
+      },
+      "25": {
+        "title": "Medicine & Pharmacy",
+        "sub": {
+          "2800": "Retail Pharmacy",
+          "2801": "Hospital Pharmacy",
+          "2802": "Medication Distribution Center",
+          "2803": "Homecare & Hospice Pharmacy",
+          "2804": "Pharmacy Informatics",
+          "2805": "Ambulatory Care Pharmacy",
+          "2806": "Pharmacists",
+          "2807": "Other Medicine & Pharmacy"
+        }
+      },
+      "26": {
+        "title": "Transport & Logistics",
+        "sub": {
+          "2600": "Management",
+          "2601": "Inventory Planning",
+          "2602": "Warehousing",
+          "2603": "Procurement of Goods and Services",
+          "2604": "Packaging and Storage",
+          "2605": "Transportation",
+          "2606": "Customer service",
+          "2607": "Other Transport & Logistics"
+        }
+      },
+      "27": {
+        "title": "Construction",
+        "sub": {
+          "2700": "Residential Building",
+          "2701": "Institutional and Commercial Building",
+          "2702": "Infrastructure and Heavy Construction",
+          "2703": "Specialized Industrial Construction",
+          "2704": "Other Construction"
+        }
+      },
+      "29": {
+        "title": "Banking, Finance & Insurance",
+        "sub": {
+          "2900": "The Financial Services Industry",
+          "2901": "Financial Planning",
+          "2902": "Corporate Finance",
+          "2903": "Commercial Banking",
+          "2904": "Investment Banking",
+          "2905": "Hedge Funds",
+          "2906": "Private Equity, Venture Capital",
+          "2907": "Insurance",
+          "2908": "Other Banking, Finance & Insurance"
+        }
+      },
+      "30": {
+        "title": "Tourism, leisure and entertainment",
+        "sub": {
+          "3000": "Amusement Attendant",
+          "3001": "Concierge",
+          "3002": "Cruise Ship Director",
+          "3003": "Curator",
+          "3004": "Gaming Dealers",
+          "3005": "Lifeguard",
+          "3006": "Information Clerk",
+          "3007": "Recreation Worker",
+          "3008": "Tour and Travel Guide",
+          "3009": "Other Tourism, Leisure & Entertainment"
+        }
+      },
+      "31": {
+        "title": "Telecommunications",
+        "sub": {
+          "3100": "Telecommunications Systems Managers",
+          "3101": "Line Installers",
+          "3102": "Customer Service Representative",
+          "3103": "Computer Software Engineers",
+          "3104": "Computer Programmers",
+          "3105": "Professional Associations",
+          "3106": "Related Certification Bodies",
+          "3107": "Other Telecommunications"
+        }
+      },
+      "32": {
+        "title": "Early Career & Students",
+        "sub": {
+          "3200": "Courier",
+          "3201": "Waiter",
+          "3202": "Other Early Career & Students"
+        }
+      },
+      "33": {
+        "title": "Service staff",
+        "sub": {
+          "3300": "Restaurants & Food Services industry",
+          "3301": "Other Service Occupations"
+        }
+      }
+    }
+  },
+  "modals": {
+    "enter2FaCode": "Enter 2FA",
+    "exit": "Exit",
+    "modals": {
+      "title": "Create group chat",
+      "edit": "Edit group chat",
+      "enterName": "Enter chat name",
+      "enterUserName": "Enter user name",
+      "participants": "Participants",
+      "chatName": "Chat name"
+    },
+    "leave": "Leave page?",
+    "errorEducation": "Complete all fields in Education",
+    "errorWork": "Complete all fields in Work Experience",
+    "code": "Enter verification code",
+    "attention": "Attention",
+    "goBack": "If you go back, you won't be able to continue.",
+    "error": "Error",
+    "unsavedChanges": "You have unsaved changes that will be lost if you decide to leave this page",
+    "dontSave": "Leave this page",
+    "chooseCard": "Choose Card",
+    "copy": "Copy",
+    "alert": "Alert",
+    "fieldRequired": "All fields are required",
+    "changePercentDesc": "A percentage of the quest amount that will be automatically credited to your pension account",
+    "yourSkillsHaveBeenAdded": "Your abilities were correctly added.",
+    "yourAccountVerified": "Your account has been successfully verified",
+    "youCanUpdateThisInYourProfile": "You can easily update this information in your profile.",
+    "disable2Fa": "Disable 2FA",
+    "enterCodeToDisable2Fa": "Enter code from Google Authenticator app to disable 2FA",
+    "2FaActivation": "2FA Activation",
+    "cancel2Fa": "Are you sure you want to cancel 2FA activation ?",
+    "openApp": "Open App",
+    "continue2Fa": "Continue to next step if you already have Google Authenticator app",
+    "codeCopy": "Code copied to clipboard",
+    "codeFromEmail": "Code from email",
+    "6-digitCode": "Enter the 6-digit code received at",
+    "yourLevelHasBeenRaised": "Your level increased",
+    "payment": "Payment",
+    "cardHolder": "Name of cardholder",
+    "review": "Review",
+    "haventSMS": "Did not receive the SMS message?",
+    "SMSVerConnected": "SMS verification connected",
+    "phoneNumber": "Phone",
+    "secondPhoneNumber": "Second phone",
+    "invalidPhone": "Invalid phone number",
+    "enterPhone": "Enter phone number to confirm SMS verification",
+    "enterSMSCode": "We have sent a verification code to your phone number. Type the code",
+    "codeFromSMS": "SMS code",
+    "smsVerification": "SMS Verification",
+    "saved": "Saved",
+    "userDataHasBeenSaved": "User data was saved",
+    "workExpAddSuccessful": "Work experience was added correctly",
+    "educationAddSuccessful": "Education was added correctly",
+    "pressSaveBtn": "Press the Save button",
+    "imageLoadedSuccessful": "Image loaded successfully",
+    "success": "Correct operation",
+    "yourRoleHasBeenChanged": "His role changed",
+    "chooseSkills": "Select the necessary skills",
+    "securityCheck": "Security check",
+    "googleConfCode": "Google confirmation code",
+    "enterCode": "Enter the generated key in the Google Authenticator app",
+    "warning": "Warning",
+    "pleaseDescribe": "Describe the reason for changing the role",
+    "ifYouChangeRole": "If you change the role now, you will have to wait a month to change it again. Are you sure you want to continue?",
+    "toYourEmail": "To your email address",
+    "codeHasBeenSent": "the code has been sent",
+    "switchOnGoogleAuth": "Enable two-step authentication",
+    "emailVerificationCode": "Email verification code",
+    "emailPlaceholder": "Enter the verification code by email",
+    "googleVerificationCode": "Google verification code",
+    "codePlaceholder": "Enter Google verification code",
+    "appleStore": "Apple Store",
+    "googlePlay": "Google Play",
+    "useYourGoogleAuth": "Use the Google Authenticator app to scan the QR code.",
+    "installGoogleAuth": "Install Google Authenticator app on your device",
+    "ifYouCantScanBarcode": "If you cannot scan the QR code, manually enter the secret key.",
+    "pleaseSaveThisKey": "Type the Google two-step authentication password below. Save the Google key as it will be used to retrieve your Google Authenticator data.",
+    "step": "Step",
+    "twoFAAuth": "2FA Authentication",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password ",
+    "wrongPassword": "The current password was entered incorrectly",
+    "lengthPassword": "Password must be at least 8 characters long",
+    "mismatchPassword": "Password mismatch",
+    "change": "Change",
+    "title": "Title",
+    "badService": "Bad service",
+    "otherReason": "Another reason",
+    "reviewOnEmployer": "Write a few words to the employer",
+    "paintingWork": "Painting work",
+    "art": "Art",
+    "cooking": "Cooking",
+    "coding": "Programming",
+    "uploadAImages": "Upload images or videos",
+    "uploadADocuments": "Upload documents",
+    "description": "Description",
+    "noDescription": "No description",
+    "addCase": "Add case",
+    "openADispute": "Begin Dispute",
+    "disputeTheme": "Dispute Theme",
+    "noDisputes": "You didn’t open any disputes yet",
+    "numberDispute": "Dispute №:",
+    "reason": "Reason",
+    "lorem": "",
+    "withdraw": "Withdrawal",
+    "sendTo": "Send to",
+    "estimatedPayment": "Estimated payment:",
+    "hello": "Hello...",
+    "value": "Value",
+    "withdrawCard": "Withdraw to bank card",
+    "address": "Address",
+    "notice": "Important notice",
+    "noticeDesc": "For your safety, the WorkQuest team asks you not to make any contact or send messages outside of the WorkQuest platform. Any contact or conversation outside the platform can cause problems when trying to resolve controversial situations.",
+    "toAddress": "For",
+    "fromAddress": "De",
+    "welcomeToWorkQuest": "Welcome to\nWorkQuest",
+    "pleaseTellUsAboutSkills": "Indicate below what your skills are. This will improve your ranking on the platform and allow other users to find your account more easily.",
+    "amount": "Amount",
+    "messageSend": "Message sent",
+    "questAgreed": "Agreed quest",
+    "requestSend": " Request sent",
+    "sendARequest": "Send a request",
+    "message": "Message",
+    "newMessage": "New message",
+    "bodyMessage": "Hello",
+    "areYouSure": "Sure?",
+    "transactionSend": "Transaction sent",
+    "cardHasBeenAdded": "The card was added",
+    "deposit": "Receive",
+    "numberOfCard": "Card number",
+    "date": "Date",
+    "cardDate": "Card expiry date",
+    "expirationDate": "Expiry date (month / year)",
+    "cvv": "CVV",
+    "cardholderName": "Name of the cardholder",
+    "addAnotherCard": "Add another card",
+    "addCard": "Add card",
+    "inviteSend": "Invitation sent",
+    "questCreated": "Quest created",
+    "invitation": "Invitation",
+    "chooseQuest": "Select quest",
+    "raiseViews": "Increase views",
+    "priceOfAClick": "One click price",
+    "city": "City",
+    "period": "Period",
+    "thanks": "Thank you",
+    "couple": "A couple of words",
+    "depositPercentFromAQuest": "Deposit percentage of an quest",
+    "depositRetirementModalTitle": "Select a percentage of the quest amount to make an automatic deposit",
+    "depositRetirementModalPrecentPlaceholder": "0 %, select a percentage",
+    "depositRetirementModalAmountPlaceholder": "0 WUSD, type the amount",
+    "firstDepositAmount": "First deposit amount*",
+    "aboutFirstDeposit": "* The amount of the first deposit is optional. If you do not want to make a deposit, leave this field blank",
+    "pensionIsRegisteredTitle": "Congratulations!",
+    "pensionIsRegisteredDesc": "The pension scheme was successfully initiated.",
+    "currentPercent": "Current percentage",
+    "depositAmount": "Deposit amount",
+    "lockedSavings": "Fixed term savings",
+    "durationDays": "Duration (days)",
+    "depositIsOpened": "The deposit is open",
+    "addLiquidity": "Add liquidity",
+    "amountOfWusd": "Amount of WUSD",
+    "amountOfEth": " Amount of ETH",
+    "tip": "Suggestion:",
+    "tipAbout": "When adding liquidity, you will receive tokens from the fund that represent your position. These tokens automatically generate rewards proportional to your participation in the fund, and can be redeemed at any time.",
+    "byAddingLiquidityYouWillEarn": "By adding liquidity, you will earn 0.3% of all trades in this pair, in proportion to your share in the fund. Rewards are added to the fund, accumulated in real time and can be claimed upon withdrawal of your liquidity.",
+    "amountEthPerWusd": "Amount of ETH per WUSD",
+    "shareOfPool": "Participation in the fund",
+    "removeLiquidity": "Withdraw liquidity",
+    "withdrawalAmount": "Withdrawal amount",
+    "exchangeRate": "Exchange rate",
+    "tempForRemove": "1 ETH = ... WUSD",
+    "currentPoolSize": "Current background size",
+    "yourPoolShare": "Your participation in the fund",
+    "eth": "ETH",
+    "wusd": "WUSD",
+    "howMuchEthWouldYouLikeToLock": "How many ETH do you want to block in your account?",
+    "smallTemp": "",
+    "template": "",
+    "collateralisation": "Provision of security",
+    "percentsCount": "{count} %",
+    "liquidationPrice": "Liquidation price",
+    "currentPrice": "Current price",
+    "stabilityFee": "Stability rate",
+    "liquidationRatio": "Liquidation ratio",
+    "liquidationPenalty": "Liquidation penalty",
+    "confirmDetails": "Confirm details",
+    "depositing": "Deposit",
+    "generating": "Amount",
+    "liquidationFee": "Liquidation fee",
+    "withdrawal": "Withdrawal",
+    "saveCardForNextPayment": "Save the card for future use",
+    "insureCase": "Secure case",
+    "connectWallet": "Connect wallet",
+    "howMuchWusdWouldYouLikeToGenerate": "How many WUSD do you want to generate?",
+    "chooseTheCurrency": "Select currency",
+    "bnb": "BNB",
+    "wqt": "WQT",
+    "howMuchETHWouldYouLikeToOpen": "How many ETH do you want to open in your account?",
+    "howMuchPercentWouldYouLikeToSet": "What percentage do you want to set?",
+    "enterTermToReturnDebtBack": "Specify the repayment term of the debt",
+    "currency": "Currency of the guarantor",
+    "loan": "Loan",
+    "percentage": "Percentage",
+    "loanTerm": "Loan term",
+    "loanIsOpened": "The loan is open",
+    "successCopied": "Public address copied to Clipboard"
+  },
+  "ui": {
+    "jobQuestors": "Job seekers",
+    "workers": "Employees",
+    "wallet": "Wallet",
+    "myQuests": "My quests",
+    "quests": "Quests",
+    "profile": {
+      "addCase": "Add case",
+      "myProfile": "My profile",
+      "settings": "Settings",
+      "disputes": "Disputes",
+      "instruments": "Instruments",
+      "DeFi": "DeFi function",
+      "logout": "Log out"
+    },
+    "locals": {
+      "it": "IT",
+      "ru": "RU",
+      "ba": "BA",
+      "zh": "ZH",
+      "fr": "FR",
+      "hi": "HI",
+      "in": "IN",
+      "po": "PO",
+      "sp": "SP",
+      "ae": "AE"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "invite": "Invites you to complete the quest"
+    },
+    "menu": {
+      "pension": {
+        "title": "Retirement program",
+        "desc": "You can select a percentage of each completed quest that will subsequently be automatically credited to your pension account, or you can simply enter the amount you prefer. Group funds are invested on behalf of the employee, and gains on investments generate income for the worker upon retirement."
+      },
+      "referral": {
+        "title": "Program of recommendations",
+        "desc": "Refer and Earn is a program that allows you to earn rewards for each friend you refer, become a customer, and subsequently complete an quest. Friends you've recommended also save by getting a free registration."
+      },
+      "p2p": {
+        "title": "P2P Insurance",
+        "desc": "P2P (peer-to-peer) insurance is a product that allows a group of policyholders to pool their capital, organize themselves automatically and manage their own insurance. The main idea of P2P is that a group of people with similar ideas and mutual interests group their insurance policies together to create a sense of control, trust and transparency, while reducing costs. This insurance model combines traditional pooling and loss sharing with current innovations and technologies, providing a product for increasingly expert consumers who need transparency in an on-demand economy."
+      },
+      "savings": {
+        "title": "Savings product",
+        "desc": "A cryptocurrency savings account gives you access to the cryptocurrency market, while earning interest, just like a traditional bank savings account. If you're interested in investing in cryptocurrencies for the long term, a cryptocurrency savings account can help you earn interest while keeping your money safe."
+      },
+      "crediting": {
+        "title": "Loan",
+        "desc": "Similar to a traditional loan, the amount of the cryptocurrency loan is credited to the borrower's bank account and subsequently the borrower pays a monthly fee to the lender. After paying off the debt, the lender releases the collateral that served as collateral."
+      },
+      "mining": {
+        "title": "Liquidity mining",
+        "desc": "is a decentralized finance mechanism (DeFi) in which participants add cryptocurrencies to liquidity funds and receive remuneration with commissions and tokens based on their share of the fund's total liquidity."
+      },
+      "menu": "Menu"
+    },
+    "footer": {
+      "rights": "All rights reserved"
+    },
+    "buttons": {
+      "errors": {
+        "manySpec": "You can only add 3 specializations",
+        "manySkill": "You can only add 5 skills"
+      }
+    }
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "wallet": {
+    "amount": "Amount",
+    "max": "Max",
+    "enterAmount": "Enter amount",
+    "chooseCoin": "Choose coin",
+    "enterCoin": "Enter coin",
+    "WUSD": "WUSD Wallet",
+    "cryptoWallet": "Wallet address",
+    "bankCard": "Bank card",
+    "send": "Send",
+    "receive": "Receive",
+    "toThisAddress": "to this address",
+    "wallet": "Wallet",
+    "balance": "Balance",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "transfer": "Transfer",
+    "addCardProposal": "Add your own card for easy withdrawal",
+    "addCard": "Add card",
+    "addCartToContinue": "You have to add your card to continue",
+    "copy": "Wallet address copied to clipboard",
+    "recipientsAddress": "Recipient's address",
+    "enterAddress": "Enter address",
+    "scanQr": "Scan QR Code or copy address to receive payment",
+    "time": "Processing Time",
+    "table": {
+      "trx": "Transactions",
+      "TxHash": "Transaction hash",
+      "status": "Status",
+      "block": "Block",
+      "timestamp": "Timestamp",
+      "transferred": "Tokens transferred",
+      "value": "Quantity",
+      "trxFee": "Transaction fee"
+    }
+  },
+  "chat": {
+    "openDispute": "Open dispute",
+    "owner": "Owner",
+    "approveQuest": "Approve quest",
+    "starredMessage": "Starred message",
+    "starredChat": "Starred chat",
+    "allChat": "All chat",
+    "report": "Report",
+    "createGroupChat": "Create group chat",
+    "favorite": "Add to favorites",
+    "messages": "Messages",
+    "message": "Message",
+    "noMessages": "No messages",
+    "chat": "Chat",
+    "copy": "Copied",
+    "addMembers": "Add members",
+    "today": "Today",
+    "day": "day ago",
+    "days": "days ago",
+    "noChats": "No chats",
+    "quest": "Quest:",
+    "yourUsername": "Your username:",
+    "you": "You:",
+    "invitedYou": "invited you to an quest",
+    "writeYouMessage": "Write your message",
+    "infoMessage": {
+      "groupChatCreate": "Group chat created",
+      "employerRejectResponseOnQuest": "The employer rejected the response to the request",
+      "employerInviteOnQuest": "The employer invited on quest",
+      "workerResponseOnQuest": "The worker responded to the quest",
+      "groupChatAddUser": "User added",
+      "groupChatDeleteUser": "User deleted",
+      "groupChatLeaveUser": "User left chat"
+    },
+    "disputeTheme": {
+      "noResponse": "There is no response from the employer / employee",
+      "badlyDone": "Badly done work",
+      "additionalRequirements": "Additional requirements have been put forward",
+      "inconsistencies": "Inconsistencies in the requirements for the description of the quest",
+      "notConfirmed": "The quest is completed but the employee / employer has not confirmed its completion",
+      "anotherReason": "Another reason"
+    }
+  },
+  "settings": {
+    "enterSMS": "Please enter the code from SMS to SMS Verification",
+    "success": "Success",
+    "profileChanged": "Profile changed successfully",
+    "changeProfile": "Change profile",
+    "placeOfStudying": "Place of study",
+    "specialization": "Specialization",
+    "skillsInput": "Skills",
+    "priority": "Priority",
+    "distantWork": "Distant work",
+    "costPerHour": "Cost per hour",
+    "description": "And you are beautiful",
+    "imgLoaded": "Image loaded correctly",
+    "workExp": "Work experience",
+    "add": "Add",
+    "delete": "Delete",
+    "educations": "Education",
+    "vacancy": "Vacancy",
+    "term": "Term",
+    "getVerification": "Complete the verification",
+    "notVerified": " Notverified",
+    "more": "More",
+    "employmentInfo": "Employment information",
+    "addSpec": "Add specialization",
+    "removeSpec": "Remove specialization",
+    "education": {
+      "from": "From",
+      "to": "To",
+      "educationalInstitution": "Educational center"
+    },
+    "workExps": {
+      "from": "From",
+      "to": "To",
+      "CompanyName": "Company name"
+    },
+    "settings": "Settings",
+    "urgentJobOffers": "Urgent job quests",
+    "shortTermJobOffers": "Short term job quests",
+    "fixedDeliveryJobOffers": "Job quests by work and service",
+    "addInfo": "You can add personal information, upload a profile picture and complete the know your customer  procedure to increase your rating. The rating depends on your profile data and your opinions.",
+    "alsoRating": "The higher your ranking, the easier it will be to find you in searches.",
+    "dontShow": "Do not show again",
+    "profileInfo": "Profile information",
+    "nameInput": "Enter your name",
+    "lastNameInput": "Enter your last name",
+    "addressInput": "Enter your address",
+    "telInput": "Enter your phone number",
+    "userDesc": "Add a short description about yourself",
+    "instagramUsername": "Instagram",
+    "twitterUsername": "Twitter",
+    "linkedInUsername": "LinkedIn",
+    "facebookUsername": "Facebook",
+    "save": "Save changes",
+    "skills": "Skills:",
+    "whoCanSee": "Who can see my profile?",
+    "allUsers": "All registered users",
+    "allInternet": "All people in internet",
+    "onlyWhenSubmittedWork": "Only when submitted work proposal",
+    "filterProposals": "Filter all work proposals",
+    "urgentProposals": "Only urgent proposals",
+    "implementation": "Only implementation",
+    "readyForExecution": "Only ready for execution",
+    "registeredUsers": "All registered users",
+    "allRegistered": "All registered users",
+    "changePass": "Change password",
+    "change": "Change",
+    "enableTwoStepAuth": "Enable two-step authentication",
+    "enable": "Enable",
+    "2FaEnabled": "2FA enabled",
+    "smsVerification": "Profile verification by SMS",
+    "company": "Enter the name of the company",
+    "ceo": "Add a position",
+    "filterAllEmployeeProfiles": "Filter all employee profiles",
+    "website": "Specify the company's website",
+    "changeRole": "Change role",
+    "2FA": "2FA",
+    "smsVerification2": "SMS Verification",
+    "instruments": "Instruments",
+    "pensionProgram": "Pension program",
+    "referralProgram": "Recommendation program",
+    "p2pInsurance": "P2P Insurance",
+    "savingProduct": "Savings product",
+    "crediting": "Credits",
+    "liquidityMining": "Liquidity mining"
+  },
+  "raising-views": {
+    "raisingViews": "Raising views",
+    "choosePeriod": "Choose period",
+    "forOneDay": "For 1 day",
+    "forOneWeek": "For 1 week",
+    "forOneMonth": "For 1 month",
+    "chooseLevel": "Choose level"
+  },
+  "dispute": {
+    "statuses": {
+      "pending": "Pending",
+      "inProgress": "In progress",
+      "closed": "Completed"
+    },
+    "myDispute" : "My Dispute",
+    "theme": "Dispute Theme",
+    "disputes": "Disputes",
+    "dispute": "Number of disputes:",
+    "quest": "Quest:",
+    "employer": "Employer:",
+    "questSalary": "Quest salary:",
+    "status": "Status:",
+    "decision": "Decision:",
+    "Dispute": "Dispute",
+    "pending": "Pending",
+    "chatHistory": "Chat history",
+    "disputeTime": "Opening time of the dispute:"
+  },
+  "workers": {
+    "oneTime": "One time",
+    "searchQuests": "Search quests",
+    "searchWorkers": "Search workers",
+    "topWorkers": "Top employees",
+    "workers": "Employees",
+    "price": "Price",
+    "addedTime": "Creation time",
+    "quests": "Quests",
+    "urgent": "Select the level of urgency",
+    "specialized": "Specialized",
+    "typeOfJob": "Job type",
+    "specializations": "Specializations",
+    "aboutMe": "About me",
+    "giveAQuest": "Send an quest",
+    "inviteQuestor": "Invite plaintiff",
+    "skills": "Skills",
+    "completedQuests": "Completed quests",
+    "openedQuests": "Open quests",
+    "showAll": "Show all",
+    "averageRating": "Average rating",
+    "from": "From",
+    "based": "Based",
+    "reviews": "reviews",
+    "portfolio": "Works",
+    "showAllCases": "Show all cases"
+  },
+  "levels": {
+    "reliableEmp": "EMP. RELIABLE",
+    "checkedByTime": "EMP. VERIFY",
+    "disabled": "DISABLED",
+    "higher": "EMP. HIGHER LEVEL"
+  },
+  "referral": {
+    "inviteFriendsHead": "Invite your friends.",
+    "earnCryptoTogether": "Earn cryptocurrencies together",
+    "headerSubtitle": "Earn up to $ 35 in WQT every time your friends sign up and create their first quest on the WorkQuest platform.",
+    "referralReward": "Referral Reward",
+    "wqtCount": "{count} WQT",
+    "lastRefReward": "Last recommendation Reward",
+    "plusCount": "{count} more",
+    "yourRefers": "Their recommendations",
+    "yourReferralLink": "Your referral link",
+    "howToInviteYourFriends": "How to invite your friends?",
+    "getLink": "Get link",
+    "registerAndGenerate": "Register and generate referral links with a commission recovery rate.",
+    "inviteFriends": "Invite friends",
+    "inviteYourFriends": "Invite your friends to sign up via the referral link and get rewarded when they complete their first quest.",
+    "earnCrypto": "Earn Cryptocurrencies",
+    "everyTimeYourFriends": "Every time your friends create an quest for the first time, you will receive a commission of up to $ 35 in real-time WQT!",
+    "historyOfRewards": "Rewards history",
+    "tableHead": {
+      "name": "Name",
+      "userID": "Id. user",
+      "txHash": "Transaction hash",
+      "time": "Time",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "table": {
+      "userName": "John Doe",
+      "userId": "455dad66544ss",
+      "txHash": "sf998s...ss877d",
+      "time": "Feb.1 december 2021",
+      "status": "Correct operation"
+    }
+  },
+  "pension": {
+    "pensionSavingsBalance": "Pension savings balance",
+    "retirementProgram": "Retirement program",
+    "faq": "Frequently asked questions",
+    "pensionProgram": "Pension program",
+    "applyForAPension": "Apply for a pension",
+    "applyForRetirement": "Apply for retirement",
+    "annualPercent": "Annual percentage",
+    "optional": "Optional",
+    "optionalFirstDeposit": "First deposit",
+    "term": "Term",
+    "castomizable": "Customizable",
+    "configurablePercentage": "Configurable percentage",
+    "depositsFromQuest": "Deposit quests",
+    "howToTakePart": "How to participate in the pension program?",
+    "pensionPlanText": "A pension plan may allow a worker to contribute a portion of his or her current wage income to an investment plan to help fund his or her retirement.",
+    "information": "Detailed information",
+    "download": "Download",
+    "Pension balance": "Pension savings balance",
+    "makeADeposit": "Make an income",
+    "currentPercentFromAQuest": "Current percentage of an quest",
+    "changePercent": "Change percentage",
+    "everyYear": "Annualized",
+    "year": "annual",
+    "timeRemainsUntilTheEndOfThePeriod": "Time remaining until the end of the period:",
+    "transactionHistory": "Transaction history",
+    "withdraw": "Withdraw",
+    "prolong": "Prolong",
+    "templateText": "",
+    "table": {
+      "userName": "John Doe",
+      "userId": "455dad66544ss",
+      "txHash": "sf998s...ss877d",
+      "time": "Feb.1 december 2021",
+      "status": "Correct operation"
+    },
+    "docName": "Some_document.PDF file",
+    "mb": "{count} MB",
+    "percentages": "{count} %",
+    "years": "{count} years",
+    "wusdCount": "{count} WUSD",
+    "plusPercents": " + {count}%",
+    "faq1": {
+      "question": "What are the requirements to apply for a pension?",
+      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each quest you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
+    },
+    "faq2": {
+      "question": "How is the additional percentage calculated?",
+      "answer": "Pension funds shall be blocked in the credit agreement. The annual percentage yield varies according to changes in the credit protocol. Profit can vary by 3-6 %"
+    },
+    "faq3": {
+      "question": "How do pension plans work?",
+      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each quest you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
+    },
+    "faq4": {
+      "question": "How many years do you need to work to be able to collect the pension plan?",
+      "answer": "Under the WorkQuest rules, anyone can open a private sector savings plan. After the first three years, you will be able to receive 100 % of the accumulated funds.\nYou can keep accumulating funds for another year, or you can withdraw all funds to your portfolio."
+    },
+    "faq5": {
+      "question": "What is a good pension?",
+      "answer": "What amount is recommended for a good pension? Some counselors recommend saving 10 times the average wage during your working life at the time of retirement. So, if your average salary is $ 30,000, your pension savings goal should be about $300,000. Another good tip is that you should save 12.5% of your monthly salary."
+    },
+    "faq6": {
+      "question": "Is the monthly pension taxable?",
+      "answer": "The payment of the monthly pension is almost always considered a taxable income, and you will need to ensure that you have an adequate withholding tax on pension payments to meet the requirements of the tax administration"
+    },
+    "faq7": {
+      "question": "Can I withdraw all my pension in one operation?",
+      "answer": "After the minimum 3-year period of the retirement program, you can withdraw some or all of your pension savings in a single operation."
+    },
+    "faq8": {
+      "question": "Can I cancel my pension and get the money?",
+      "answer": "If you withdraw after the minimum of 3 years or on the day of the annual renewal, you will receive all the money you have already paid. If you decide to cancel later, you will not be able to receive a refund of your payments until the end of the extended period (usually 1 year)."
+    },
+    "faq9": {
+      "question": "Can I collect my pension and continue working?",
+      "answer": "Can I get my pension early and continue working? The short answer is yes. Currently, no retirement age has been defined. You can continue to work for as long as you prefer, while also accessing the pension scheme."
+    },
+    "faq10": {
+      "question": "What happens if I add too many funds to my pension?",
+      "answer": "We have no restrictions on the amount of savings. You will be able to have all the accumulated amount at the end of the program period."
+    },
+    "cancel": "Cancel",
+    "renewFor1Year": "Renew for 1 year"
+  },
+  "saving": {
+    "withdrawModalBody": "The amount of blocked funds and accrued interest will be paid into your portfolio",
+    "workQuestSavings": "WorkQuest Savings",
+    "lendAndEarn": "Lend & Earn",
+    "conditions": "Conditions",
+    "maxMinSum": "Max sum./minute.",
+    "depositsAndWithdrawal": "Deposits and withdrawals",
+    "term": "Term",
+    "annualizedInterestRate": "Annualised interest rate",
+    "openADeposit": "Open a deposit",
+    "faq": "Frequently asked questions",
+    "information": "Information",
+    "historyOfDeposits": "Income history",
+    "depositAmount": "Fixed-term amount",
+    "card1": "Annualised interest rate \n 4,51 % \n Duration (days): 7 days",
+    "card2": "Annualised interest rate \n 4,67 % \n Duration (days): 14 days",
+    "card3": "Annualised interest rate \n 4,82 % \n Duration (days): 30 days",
+    "card4": "Annualised interest rate \n 5,11 % \n Duration (days): 90 days",
+    "card5": "Annualised interest rate \n 5,23 % \n Duration (days): 180 days",
+    "templateText": "Are you committed to maintaining your cryptocurrencies?\n A simple way to lend and earn with fixed-term savings.",
+    "faq1": "What are term savings? Are you committed to maintaining your cryptocurrencies?",
+    "faq2": "What will happen to my funds if I subscribe to a term savings product?",
+    "faq3": "What will happen to my funds on the value date of a term savings product?",
+    "faq4": "What will happen to my funds on the amortization date of the term savings product?",
+    "faq5": "How is the average annual return calculated?",
+    "faq6": "What guarantees do I have that I will earn interest on WorkQuest Savings products, even if cryptocurrency markets go down?",
+    "ans1": "Now you can earn interest at the same time! Subscribe your cryptocurrencies to fixed-term savings periods for better-interest earnings.",
+    "ans2": "On the day of the subscription, WorkQuest Savings will deduct the subscription funds from your WUSD portfolio.\n",
+    "ans3": "On the value date, WorkQuest Savings will distribute the fixed-term savings products in its savings portfolio, and your savings product will begin to accrue interest.",
+    "ans4": "On the payback date, you will see both the initial tokens allocated to the subscription and the accumulated interest from balances  of your WorkQuest account. This process will be automatic.",
+    "ans5": "The average annual return uses the average daily interest rate of the previous 7 days, multiplied by 365.",
+    "ans6": "Yes. The interest rate on each product is guaranteed.",
+    "docName": "Some_document.PDF file",
+    "mb": "{count} MB",
+    "percentages": "{count} %",
+    "days": "{count} days",
+    "smallPlug": "??",
+    "possiblePlug": "possiblePlug",
+    "yearPlug": "1 year",
+    "wusdCount": "{count} WUSD",
+    "plusPercents": " + {count}%",
+    "table": {
+      "userName": "John Doe",
+      "userId": "455dad66544ss",
+      "txHash": "sf998s...ss877d",
+      "time": "Feb.1 december 2021",
+      "status": "Correct operation"
+    },
+    "depositModalBody": "Your cryptocurrencies will be blocked for a specific period, and you will start earning interest.",
+    "depositIsOpened": "Transfer confirmed",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw"
+  },
+  "mining": {
+    "liquidityManning": "Liquidity mining",
+    "liquidityMining": "Liquidity mining",
+    "templateText": "",
+    "pools": "Funds",
+    "choose": "Choose",
+    "information": "Information",
+    "docName": "Some_document.PDF file",
+    "download": "Download",
+    "tableHead": {
+      "poolAddress": "Fund address",
+      "assets": "Assets",
+      "sdsdsdsd": "sdsdsdsd",
+      "volume": "Volume"
+    },
+    "table": {
+      "poolAddress": "0sjs3892 ... sd45",
+      "assets": "50% WUSD / 50% ETH",
+      "sdsdsdsd": "sdsdsdsd",
+      "volume": "4.5 mill. $"
+    },
+    "mb": "{count} MB",
+    "back": "Back",
+    "wusdEthPool": "WUSD/ETH Fund",
+    "dollarsCount": "{count}$",
+    "addLiquidity": "Add liquidity",
+    "removeLiquidity": "Withdraw liquidity",
+    "liquidity": "Liquidity",
+    "volume24h": "Volume (24h)",
+    "myPoolShare": "My participation in the fund",
+    "liquidityPoolProviders": "Liquidity fund Providers",
+    "liquidityProvidersEarn": "Liquidity fund providers shall receive a remuneration of 0,3% on all transactions in proportion to their share in the common fund. Rewards are added to the fund, accumulated in real time and can be claimed upon withdrawal of your liquidity.",
+    "transactions": "Transactions"
+  },
+  "crediting": {
+    "lending": "WorkQuest lending protocol",
+    "crediting": "Credits",
+    "templateText": "WorkQuest DeFi credit platform on the Work Net, with four exclusive money markets for volatile assets",
+    "marketSize": "Market size",
+    "deposit": "Deposit",
+    "percent": "Percent",
+    "dollarsCount": "{count}$",
+    "percentsCount": "{count} %",
+    "wantToTakeALoan": "Do you want to borrow?",
+    "borrow": "Borrow",
+    "information": "Information",
+    "openPositions": "Open positions",
+    "usdCount": "{count} USD",
+    "totalCollateralLocked": "Total guarantee blocked",
+    "wusdCount": "{count} WUSD",
+    "totalWusdDebt": "Total debt in WUSD",
+    "tableHead": {
+      "id": "Id.",
+      "currentRatio": "Current ratio",
+      "deposited": "Entered",
+      "availableToWithdraw": "Available for withdrawal",
+      "wusd": "WUSD"
+    },
+    "table": {
+      "reference": 565464,
+      "currentRatio": "500 %",
+      "deposited": " 531 ETH",
+      "availableToWithdraw": "531 ETH",
+      "wusd": "532 WUSD",
+      "manage": "Manage"
+    },
+    "back": "Back",
+    "tempName": "Loan # 56546",
+    "liquidationPrice": "Liquidation price",
+    "collateralizationRatio": "Guarantee ratio",
+    "ethLocked": "ETH blocked",
+    "ethCount": "{count} ETH",
+    "ableToWithdraw": "You can withdraw",
+    "withdraw": "Withdraw",
+    "outstandingWusdDebt": "Outstanding debt in WUSD",
+    "availableToGenerate": "Available to generate",
+    "payback": "Amortization",
+    "generate": "Generate",
+    "history": "History",
+    "credTableHeader": {
+      "activity": "Activity",
+      "amount": "Amount",
+      "time": "Time",
+      "sender": "Sender",
+      "txHash": "Transaction hash"
+    },
+    "credTable": {
+      "activity": "Amortized",
+      "amount": "100 WUSD",
+      "time": "June 12th. december 2021",
+      "sender": "dfgd6...fs65ds",
+      "txHash": "dfgd6...fs65ds"
+    },
+    "faq1": "What are term savings? Are you committed to maintaining your cryptocurrencies?",
+    "faq2": "What will happen to my funds if I subscribe to a term savings product?",
+    "ans2": "On the day of the subscription, WorkQuest Savings will deduct the subscription funds from your WUSD portfolio.\n",
+    "faq3": "What will happen to my funds on the value date of a term savings product?",
+    "faq4": "What will happen to my funds on the amortization date of the term savings product?",
+    "faq5": "How is the average annual return calculated?",
+    "faq": "Frequently asked questions",
+    "lend": "Lend"
+  },
+  "insuring": {
+    "peerToPeerInsuring": "P2P Insurance",
+    "templateText": "",
+    "card1": {
+      "title": "Minimum protection",
+      "pointsText": {
+        "point1": "An annual contribution of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD."
+      }
+    },
+    "card2": {
+      "title": "Standard protection",
+      "pointsText": {
+        "point1": "Annual premium of 2000 WUSD; payment in the case of a covered event of 1666.6667 WUSD."
+      }
+    },
+    "card3": {
+      "title": "Maximum protection",
+      "pointsText": {
+        "point1": "An annual contribution of 3000 USD; payment in case of a covered event of 2500 WUSD."
+      }
+    },
+    "pointTemplate": "",
+    "buy": "Buy",
+    "information": "Information",
+    "docName": "Some_document.PDF file",
+    "mb": "{count} MB",
+    "minimalProtectionPlan": "Minimum protection plan",
+    "standardProtectionPlan": "Standard protection plan",
+    "maximumProtectionPlan": "Maximum protection plan",
+    "yourFundBalance": "Insurance fund balance",
+    "wusdCount": "{count} WUSD",
+    "dollarsCount": "{count}$",
+    "withdrawal": "Withdrawal",
+    "leaveFund": "Abandon fund",
+    "changePlan": "Change plan",
+    "fundParticipants": "Fund participants",
+    "userName": "Cody Fisher",
+    "voting": "Voting",
+    "noVoteAtTheMoment": "There are no votes currently",
+    "countPeoplesInChat": "{count} people in chat",
+    "writeSomething": "Write something",
+    "activeVoting": "Active voting",
+    "paymentOfInsurance": "{value}: insurance payment",
+    "youWillCertifyTheInsuredEvent": "Will the covered event be certified?",
+    "studyTheInsuredEventThoroughly": "Carefully study the event covered",
+    "notAgree": "I disagree",
+    "insuredEvent": "Event covered",
+    "agree": "Accept",
+    "percentsCount": "{count} %",
+    "votesCount": "{count} votes",
+    "planPoints": {
+      "point1": "Annual fee: {count} WUSD",
+      "point2": "Payment in case a covered event occurs: {count} WUSD",
+      "point3": "Contract duration: {count} year",
+      "point4": "Number of fund participants: {count} people"
+    },
+    "faq1": {
+      "question": "What does P2P mean in insurance?",
+      "answer": "P2P (peer-to-peer) insurance is a product that allows a group of policyholders to pool their capital, organize themselves automatically and manage their own insurance"
+    },
+    "faq2": {
+      "question": "How do P2P insurance work?",
+      "answer": "Peer-to-peer (or P2P) insurance allows groups of people to provide insurance coverage to each other. Group fund members pool their money to insure the event of a risk affecting them. If a panel member suffers a covered loss, his or her claim will be paid directly from each member's contributed money fund."
+    },
+    "faq3": {
+      "question": "How does peer-to-peer insurance work?",
+      "answer": "Request a peer review. In a peer review, your guarantee fund will discuss with other fund members the purpose of the service or therapies that may be medically necessary. You can upload to the chat all the documents and medical assessments necessary to prove the legality of your case, and then create a vote so that foundation members can make a decision. If the majority of the fund votes in favor, you will receive the payment in your wallet."
+    },
+    "faq4": {
+      "question": "What happens to the fund if the covered event does not occur within one year?",
+      "answer": "At the end of the year, all users will receive notifications with a vote asking them to vote to expand the fund for another year, which will automatically double the fund and payments in the event of a covered event, or if the fund is divided among participants."
+    },
+    "faq5": {
+      "question": "Who is the administrator of the fund?",
+      "answer": " To ensure that all participants in the fund do not waste time considering all events covered, the administrator may delegate their voting rights to the fund manager in exchange for a small commission"
+    },
+    "faq6": {
+      "question": "What is the standard size of a guarantee fund?",
+      "answer": "The funds are made up of 10 users, according to the level of protection selected"
+    },
+    "faq7": {
+      "question": "How is the amount of the guarantee fund payment calculated?",
+      "answer": "This is an example for calculating the first year fund: minimum protection - an annual premium of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD.\n10 fund members * 1000 USD / 12 months + 833.333333 WUSD.\nIn the event that the fund is continued for another year, the size of the fund and the insurance indemnity will be doubled."
+    },
+    "faq8": {
+      "question": "What is the security guarantee of withdrawals by a fund member?",
+      "answer": "All members of the fund shall hold the funds in a multi-firm portfolio, where all decisions are reached only by a majority vote."
+    }
+  },
+  "errors": {
+    "incorrectPass": "Oops, there was a problem. Check the data and try again.",
+    "emptyData": {
+      "employer": {
+        "myQuests": {
+          "desc": "You have not created an quest yet",
+          "btnText": "Create an quest!"
+        },
+        "allQuests": {
+          "desc": "You have not created an quest yet",
+          "btnText": "Create an quest!"
+        }
+      },
+      "worker": {
+        "myQuests": {
+          "desc": "You have not completed the quests yet",
+          "notQuest": "No performed quests",
+          "btnText": "Create an quest!"
+        },
+        "allQuests": {
+          "desc": "You have not responded to any quests yet",
+          "btnText": "Respond to the quest!"
+        }
+      }
+    },
+    "fieldEmpty": "Field is empty",
+    "incorrectFormat": "Incorrect format",
+    "passwordsNotMatch": "Passwords don't match",
+    "smallNumberWords": "A small number of words",
+    "incorrectMnemonicFormat": "Incorrect mnemonic format",
+    "notInternet": "No internet access",
+    "provideYourAddress": "You have provided your address.",
+    "invalidAmount": "Invalid value amount."
+  },
+  "sharing": {
+    "title": "Share",
+    "sharing": "Sharing",
+    "socialText": "Share in socials",
+    "share": "Share link",
+    "copy": "Link copied to clipboard"
+  },
+  "myQuests": {
+    "statuses": {
+      "all": "All quests",
+      "fav": "Add to favorites",
+      "requested": "Requested",
+      "request": "Request",
+      "completed": "Completed quests",
+      "active": "Active quests",
+      "invited": "Invitations to quests"
+    }
+  }
+}
