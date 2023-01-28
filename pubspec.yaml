@@ -85,6 +85,7 @@ dependencies:
   hex: ^0.2.0
   ed25519_hd_key: ^2.2.0
   decimal: ^2.2.0
+  rational: ^2.2.2
 
   #url & app launcher
   url_launcher: ^6.1.4

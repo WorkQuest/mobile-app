@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:app/constants.dart';
 import 'package:app/keys.dart';
 import 'package:decimal/decimal.dart';
@@ -27,7 +25,7 @@ class Web3Utils {
 
     if (_isNativeToken) {
       final _balanceWQTInWei =
-          (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18).toDecimal())
+          (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.parse(Decimal.fromInt(10).pow(18).toString()))
               .toDouble();
       print('fee: $fee');
       print('_balanceWQTInWei: $_balanceWQTInWei');
@@ -41,7 +39,7 @@ class Web3Utils {
       if (amount > _balanceToken.toDouble()) {
         throw FormatException('errors.notHaveEnoughTxToken'.tr());
       }
-      fee = fee * Decimal.fromInt(10).pow(18).toDecimal();
+      fee = fee * Decimal.parse(Decimal.fromInt(10).pow(18).toString());
       if (_balanceNative.getInWei < fee.toBigInt()) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
@@ -49,8 +47,8 @@ class Web3Utils {
   }
 
   static Future<int> getDegreeToken(Erc20 contract) async {
-    final _decimals = contract as Decimal;
-    return _decimals as int;
+    final _decimals = await Decimal.parse(contract.toString());
+    return int.parse(_decimals.toString());
   }
 
   static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
@@ -88,7 +86,7 @@ class Web3Utils {
     return ((Decimal.parse(estimateGas.toString()) *
                 Decimal.parse(gas.toString()) *
                 Decimal.parse(isETH ? (isTransfer ? '1.05' : '1.1') : '1.0')) /
-            Decimal.fromInt(10).pow(18).toDecimal())
+            Decimal.parse(Decimal.fromInt(10).pow(18).toString()))
         .toDecimal();
   }
 
@@ -96,7 +94,7 @@ class Web3Utils {
     required String amount,
     required int degree,
   }) {
-    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree).toDecimal())
+    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.parse(Decimal.fromInt(10).pow(degree).toString()))
         .toBigInt();
   }
 
