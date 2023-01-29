@@ -260,8 +260,9 @@
     "back": "back",
     "didntCode": "Didn't get code?",
     "changeEmail": "Change Email",
-    "chooseWords": "Choose the {firstIndex}th and {secondIndex}th words of your mnemonic",
-    "thWord": "{index}th word",
+    "chooseWords": "Choose the {firstIndex} and {secondIndex} words of your mnemonic",
+    "firstWord": "{index} word",
+    "secondWord": "{index} word",
     "chosenWrongWords": "You’ve chosen wrong words. Try again"
   },
   "forgot": {

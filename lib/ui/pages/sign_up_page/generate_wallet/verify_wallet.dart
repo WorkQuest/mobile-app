@@ -31,6 +31,32 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
   @override
   Widget build(BuildContext context) {
     final store = context.read<CreateWalletStore>();
+    final String firstWord;
+    final String secondWord;
+    if (store.indexFirstWord == 1) {
+      firstWord = '${store.indexFirstWord}st';
+    }
+    else if (store.indexFirstWord == 2) {
+      firstWord = '${store.indexFirstWord}nd';
+    }
+    else if (store.indexFirstWord == 3) {
+      firstWord = '${store.indexFirstWord}rd';
+    }
+    else {
+      firstWord = '${store.indexFirstWord}th';
+    }
+     if (store.secondWord == 1) {
+      secondWord = '${store.indexSecondWord}st';
+    }
+    else if (store.indexSecondWord == 2) {
+      secondWord = '${store.indexSecondWord}nd';
+    }
+    else if (store.indexSecondWord == 3) {
+      secondWord = '${store.indexSecondWord}rd';
+    }
+    else {
+      secondWord = '${store.indexSecondWord}th';
+    }
     return Observer(
       builder: (_) => Scaffold(
         appBar: CupertinoNavigationBar(),
@@ -45,7 +71,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               ),
               Text(
                 'signUp.chooseWords'.tr(
-                  namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                  namedArgs: {'firstIndex': '$firstWord', 'secondIndex': '$secondWord'},
                 ),
                 style: const TextStyle(
                   fontSize: 24,
@@ -57,10 +83,10 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                'signUp.thWord'.tr(
+                'signUp.firstWord'.tr(
                   namedArgs: {
-                    'index': '${store.indexFirstWord}',
-                  },
+                    'index': '$firstWord',
+                  }
                 ),
                 style: const TextStyle(
                   fontSize: 18,
@@ -80,9 +106,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                'signUp.thWord'.tr(
+                'signUp.secondWord'.tr(
                   namedArgs: {
-                    'index': '${store.indexSecondWord}',
+                    'index': '$secondWord',
                   },
                 ),
                 style: const TextStyle(
