@@ -39,7 +39,7 @@
   "uploader": {
     "loading": "Loading",
     "uploadText": "Upload images or videos",
-    "uploadImage": "Upload images",
+    "uploadQuestMaterials": "Upload quest materials",
     "upload": "Upload",
     "files": "Files"
   },
@@ -311,7 +311,7 @@
     "noQuest": "Quest not found",
     "yourQuest": "Your quest",
     "distantWork": {
-      "title": "Distant work",
+      "title": "Remote work",
       "allWorkplaces": "All workplaces",
       "distantWork": "Distant work",
       "workInOffice": "Work in the office",
@@ -327,7 +327,7 @@
     "addNewQuest": "Create a quest",
     "userDontHaveAny": "User does not have any",
     "questYet": "quests yet",
-    "aboutQuest": "About Quest",
+    "aboutQuest": "Quest description",
     "disputeQuest": "Dispute quest",
     "waitConfirm": "Wait confirm",
     "employerConfirmationPending": "Employer confirmation pending",
@@ -1277,7 +1277,7 @@
     "placeOfStudying": "Place of study",
     "specialization": "Specialization",
     "skillsInput": "Skills",
-    "priority": "Priority",
+    "priority": "Runtime",
     "distantWork": "Distant work",
     "costPerHour": "Cost per hour",
     "description": "And you are beautiful",

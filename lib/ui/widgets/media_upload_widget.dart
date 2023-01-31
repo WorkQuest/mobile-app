@@ -21,7 +21,6 @@ class MediaUpload extends StatefulWidget {
 }
 
 class _MediaUploadState extends State<MediaUpload> {
-
   @override
   void initState() {
     super.initState();
@@ -48,32 +47,30 @@ class _MediaUploadState extends State<MediaUpload> {
         ),
         child: Center(
           child: Observer(
-            builder: (context) => widget.mediaFile.isEmpty &&
-                    (widget.mediaURL?.isEmpty ?? true) &&
-                    widget.mediaFile.isEmpty
-                ? galleryView()
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: mediaView(context),
+            builder: (context) =>
+                widget.mediaFile.isEmpty && (widget.mediaURL?.isEmpty ?? true) && widget.mediaFile.isEmpty
+                    ? galleryView()
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: mediaView(context),
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              final result = await FilePicker.platform.pickFiles(
+                                allowMultiple: true,
+                                type: FileType.image,
+                              );
+                              List<File> files = result!.paths.map((path) => File(path!)).toList();
+                              widget.mediaFile.addAll(files);
+                            },
+                            icon: Icon(
+                              Icons.add_circle,
+                            ),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          final result = await FilePicker.platform.pickFiles(
-                            allowMultiple: true,
-                            type: FileType.image,
-                          );
-                          List<File> files =
-                          result!.paths.map((path) => File(path!)).toList();
-                          widget.mediaFile.addAll(files);
-                        },
-                        icon: Icon(
-                          Icons.add_circle,
-                        ),
-                      ),
-                    ],
-                  ),
           ),
         ),
       ),
@@ -86,8 +83,7 @@ class _MediaUploadState extends State<MediaUpload> {
             allowMultiple: true,
             type: FileType.image,
           );
-          List<File> files =
-          result!.paths.map((path) => File(path!)).toList();
+          List<File> files = result!.paths.map((path) => File(path!)).toList();
           widget.mediaFile.addAll(files);
         },
         child: SizedBox(
@@ -97,7 +93,7 @@ class _MediaUploadState extends State<MediaUpload> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "uploader.uploadImage".tr(),
+                "uploader.uploadQuestMaterials".tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

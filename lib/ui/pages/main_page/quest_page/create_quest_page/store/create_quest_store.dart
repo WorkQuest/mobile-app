@@ -44,9 +44,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ];
 
   final List<String> distantWorkList = [
-    "Distant work",
-    "Work in the office",
-    "Both variant",
+    "Remote work",
+    "In-office",
+    "Hybrid workplace",
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -61,7 +61,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String workplaceValue = "distant";
 
   @observable
-  String workplace = "Distant work";
+  String workplace = "Remote work";
 
   @observable
   String category = 'Choose';
@@ -126,12 +126,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
-  bool get canCreateQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canCreateQuest => !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
-  bool get canSubmitEditQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canSubmitEditQuest => !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @action
   void emptyField(BuildContext context) {
@@ -141,11 +139,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   String getWorkplaceValue() {
     switch (workplace) {
-      case "Distant work":
+      case "Remote work":
         return workplaceValue = "distant";
-      case "Work in the office":
+      case "In-office":
         return workplaceValue = "office";
-      case "Both variant":
+      case "Hybrid workplace":
         return workplaceValue = "both";
     }
     return workplaceValue;
