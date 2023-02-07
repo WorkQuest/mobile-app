@@ -1321,7 +1321,7 @@
     "copyPhrase": "Copy phrase",
     "underConstruction": "Still under construction",
     "chooseWay": "Choose a way to add a wallet",
-    "savePhrase": "Save this phrase to be able to login in next time",
+    "savePhrase": "Save this secret phrase to be able to login next time",
     "chooseAddressType": "Choose address type",
     "savedPhrase": "I’ve saved mnemonic phrase",
     "buyDescriptionWQT": "The easiest way to buy WQT is using USDT.\nNetworks available for purchase: Ethereum, Binance Smart Chain and Polygon. After the purchase, WQT will automatically deposit to your WorkNet network wallet, minus the transaction fee.",
