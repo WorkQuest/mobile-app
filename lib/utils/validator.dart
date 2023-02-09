@@ -34,9 +34,9 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return text!.length >= 8
+    return RegExp(r'^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\\$&*~]).{8,}$').hasMatch(text!)
         ? null
-        : "Password must be at least 8 characters long";
+        : "Use 8 or more characters with letters, numbers & symbols";
   }
 
   static String? firstNameValidator(String? text) {

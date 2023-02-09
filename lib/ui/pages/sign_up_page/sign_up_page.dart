@@ -7,6 +7,7 @@ import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -47,10 +48,7 @@ class SignUpPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         child: SizedBox(
-          height: mq.size.height -
-              kToolbarHeight -
-              mq.padding.top -
-              mq.padding.bottom,
+          height: mq.size.height - kToolbarHeight - mq.padding.top - mq.padding.bottom,
           child: AutofillGroup(
             child: Form(
               key: _signUpPageFormKey,
@@ -174,8 +172,7 @@ class SignUpPage extends StatelessWidget {
                             enabled: store.isLoading,
                             onTap: store.canSignUp
                                 ? () async {
-                                    if (_signUpPageFormKey.currentState!
-                                        .validate()) {
+                                    if (_signUpPageFormKey.currentState!.validate()) {
                                       await store.register();
                                     }
                                   }
