@@ -158,7 +158,7 @@
     "dontHaveCompletedQuest": "You do not have completed quests",
     "dontHavePortfolio": "You do not have any  Portfolio",
     "areYouSurePortfolio": "Are you sure delete portfolio?",
-    "dontHavePortfolioOtherUser": "You do not have any  Portfolio",
+    "dontHavePortfolioOtherUser": "No portfolio",
     "sidebar": {
       "filter": "Filter All quests",
       "choose": "(Choose a simple category or specialized)",
@@ -215,7 +215,7 @@
   "signIn": {
     "title": "Sign in",
     "mnemonic": "Mnemonic",
-    "enterMnemonicPhrase": "Enter mnemonic phrase",
+    "enterMnemonicPhrase": "Enter secret phrase",
     "username": "Username",
     "password": "Password",
     "account": "don't have an account?",
@@ -1137,7 +1137,7 @@
     "message": "Message",
     "newMessage": "New message",
     "bodyMessage": "Hello",
-    "areYouSure": "Sure?",
+    "areYouSure": "Are you sure you want to exit?",
     "transactionSend": "Transaction sent",
     "cardHasBeenAdded": "The card was added",
     "deposit": "Receive",
@@ -1222,7 +1222,7 @@
   },
   "ui": {
     "jobQuestors": "Job seekers",
-    "workers": "Workers",
+    "workers": "Employees",
     "wallet": "Wallet",
     "txInfo": "Transaction info",
     "cryptoAddress": "Crypto address",

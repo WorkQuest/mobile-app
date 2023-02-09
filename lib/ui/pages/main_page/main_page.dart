@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
       onWillPop: () async {
         dialog(
           context,
-          title: "modals.exit".tr(),
+          title: "startPage.workQuest".tr(),
           message: "modals.areYouSure".tr(),
           confirmAction: () =>
               SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
