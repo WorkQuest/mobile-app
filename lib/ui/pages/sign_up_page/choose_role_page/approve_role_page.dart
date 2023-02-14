@@ -159,7 +159,7 @@ class ApproveRolePage extends StatelessWidget {
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
-                    title: "meta.iAgree".tr(),
+                    title: "meta.confirm".tr(),
                   ),
                 ),
                 SizedBox(

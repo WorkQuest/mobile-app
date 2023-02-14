@@ -1,6 +1,5 @@
 import 'package:app/constants.dart';
 import 'package:decimal/decimal.dart';
-import 'package:decimal/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -20,9 +19,9 @@ class QuestConstants {
   ];
 
   static final List<String> distantWorkList = [
-    "Distant work",
-    "Work in the office",
-    "Both variant",
+    "Remote work",
+    "In-office",
+    "Hybrid workplace",
   ];
 
   static final List<String> payPeriodList = [
@@ -97,16 +96,16 @@ class QuestUtils {
         return "Daily";
       case "Weekly":
         return "Weekly";
-      case "BiWeekly":
-        return "BiWeekly";
-      case "Semi monthly":
-        return "SemiMonthly";
+      case "Bi-weekly":
+        return "Bi-weekly";
+      case "Semi-monthly":
+        return "Semi-monthly";
       case "Monthly":
         return "Monthly";
       case "Quarterly":
         return "Quarterly";
-      case "Semi annually":
-        return "SemiAnnually";
+      case "Semi-annually":
+        return "Semi-annually";
       case "Annually":
         return "Annually";
       case "Fixed period":

@@ -45,7 +45,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   String workplaceValue = "Remote";
 
   @observable
-  String workplace = "Distant work";
+  String workplace = "Remote work";
 
   @observable
   String payPeriod = "Hourly";
