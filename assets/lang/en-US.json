@@ -152,8 +152,8 @@
     "portfolio": "Portfolio",
     "editPortfolio": "Edit Portfolio",
     "addPortfolio": "Add Portfolio",
-    "dontHaveActiveQuestOtherUser": "User not have active quests",
-    "dontHaveCompletedQuestOtherUser": "User not have completed quests",
+    "dontHaveActiveQuestOtherUser": "User does not have any active quests",
+    "dontHaveCompletedQuestOtherUser": "User didn’t complete any quests yet",
     "dontHaveActiveQuest": "You do not have active quests",
     "dontHaveCompletedQuest": "You do not have completed quests",
     "dontHavePortfolio": "You do not have any  Portfolio",
@@ -277,14 +277,14 @@
   },
   "role": {
     "employer": "Employer",
-    "worker": "Worker",
+    "worker": "Employee",
     "enter": "Enter",
     "choose": "Choose your role",
     "employerWant": "I want to make a tasks and looking for a workers",
-    "workerWant": "I want to search a tasks and working on freelance",
+    "workerWant": "I want to find tasks and start freelancing",
     "chooseThis": "Select this role",
     "yourRole": "Your role is",
-    "change": "You want to change role on ",
+    "change": "You are going to change role to",
     "right": "right?"
   },
   "privacy": {

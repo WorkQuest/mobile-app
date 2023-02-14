@@ -330,7 +330,7 @@ class AlertDialogUtils {
                 content: Text("modals.unsavedChanges".tr()),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text("meta.ok".tr()),
+                    child: Text("meta.close".tr()),
                     onPressed: Navigator.of(context).pop,
                   ),
                   CupertinoDialogAction(
@@ -346,11 +346,11 @@ class AlertDialogUtils {
                 ],
               )
             : AlertDialog(
-                title: Text("modals.error".tr()),
-                content: Text("modals.dontSave".tr()),
+                title: Text("modals.leave".tr()),
+                content: Text("modals.unsavedChanges".tr()),
                 actions: [
                   TextButton(
-                    child: Text("meta.ok".tr()),
+                    child: Text("meta.close".tr()),
                     onPressed: Navigator.of(context).pop,
                   ),
                   TextButton(
