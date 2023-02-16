@@ -10,17 +10,25 @@ class Validators {
     if (text.isEmpty) {
       return customMessage ?? "Empty field";
     }
-    if (double.parse(text) < 1) return "Please enter a value greater than zero";
+    if (double.parse(text) < 1) return "Must be 1 or more";
     return null;
   }
 
   static String? emailValidator(String? email) {
     String p =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+        r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 
     RegExp regExp = new RegExp(p);
 
     return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
+  }
+
+  static String? signInPasswordValidator(String? text) {
+    if (text!.length < 8) {
+      return "Password must contain at least 8 characters";
+    } else {
+      return null;
+    }
   }
 
   static String? mnemonicValidator(String? value) {

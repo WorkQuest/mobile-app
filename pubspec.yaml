@@ -39,6 +39,8 @@ dependencies:
   #Firebase and Notification
   firebase_core: ^1.19.2
   firebase_notifications_handler: ^1.0.9
+  firebase_core_platform_interface: 4.5.1
+  firebase_messaging: ^12.0.3
 
   # DI.
   get_it: ^7.2.0

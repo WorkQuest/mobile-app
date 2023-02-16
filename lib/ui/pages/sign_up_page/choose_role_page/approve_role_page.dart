@@ -23,9 +23,9 @@ class ApproveRolePage extends StatelessWidget {
 
   String get _baseUrl {
     if (AccountRepository().notifierNetwork.value == Network.mainnet) {
-      return "https://app.workquest.co/";
+      return "https://docs.google.com/viewer?url=https://app.workquest.co/";
     }
-    return Constants.isTestnet ? "https://testnet-app.workquest.co/" : "https://dev-app.workquest.co/";
+    return Constants.isTestnet ? "https://docs.google.com/viewer?url=https://testnet-app.workquest.co/" : "https://docs.google.com/viewer?url=https://dev-app.workquest.co/";
   }
 
   @override

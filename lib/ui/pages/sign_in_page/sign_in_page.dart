@@ -416,6 +416,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
           child: DefaultTextField(
             controller: passwordController,
             isPassword: true,
+            validator: Validators.signInPasswordValidator,
             onChanged: widget.signInStore.setPassword,
             inputFormatters: [],
             prefixIconConstraints: _prefixConstraints,

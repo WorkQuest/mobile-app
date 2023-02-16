@@ -35,26 +35,20 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
     final String secondWord;
     if (store.indexFirstWord == 1) {
       firstWord = '${store.indexFirstWord}st';
-    }
-    else if (store.indexFirstWord == 2) {
+    } else if (store.indexFirstWord == 2) {
       firstWord = '${store.indexFirstWord}nd';
-    }
-    else if (store.indexFirstWord == 3) {
+    } else if (store.indexFirstWord == 3) {
       firstWord = '${store.indexFirstWord}rd';
-    }
-    else {
+    } else {
       firstWord = '${store.indexFirstWord}th';
     }
-     if (store.secondWord == 1) {
+    if (store.indexSecondWord == 1) {
       secondWord = '${store.indexSecondWord}st';
-    }
-    else if (store.indexSecondWord == 2) {
+    } else if (store.indexSecondWord == 2) {
       secondWord = '${store.indexSecondWord}nd';
-    }
-    else if (store.indexSecondWord == 3) {
+    } else if (store.indexSecondWord == 3) {
       secondWord = '${store.indexSecondWord}rd';
-    }
-    else {
+    } else {
       secondWord = '${store.indexSecondWord}th';
     }
     return Observer(
@@ -83,11 +77,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                'signUp.firstWord'.tr(
-                  namedArgs: {
-                    'index': '$firstWord',
-                  }
-                ),
+                'signUp.firstWord'.tr(namedArgs: {
+                  'index': '$firstWord',
+                }),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -148,7 +140,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                     );
                   },
                   child: ElevatedButton(
-                    child: Text('wallet.openWallet'.tr()),
+                    child: Text('wallet.createWallet'.tr()),
                     onPressed: store.statusGenerateButton
                         ? () {
                             AlertDialogUtils.showLoadingDialog(context);
@@ -220,8 +212,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
             height: 20,
           ),
           Padding(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: ElevatedButton(
               child: Text('Ok'),
               onPressed: () {

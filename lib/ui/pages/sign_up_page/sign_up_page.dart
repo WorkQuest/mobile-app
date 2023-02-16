@@ -78,7 +78,9 @@ class SignUpPage extends StatelessWidget {
                         color: Theme.of(context).iconTheme.color,
                       ),
                       hint: "labels.firstName".tr(),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                      ],
                       suffixIcon: null,
                     ),
                   ),
@@ -95,7 +97,9 @@ class SignUpPage extends StatelessWidget {
                         color: Theme.of(context).iconTheme.color,
                       ),
                       hint: "labels.lastName".tr(),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                      ],
                       suffixIcon: null,
                     ),
                   ),
