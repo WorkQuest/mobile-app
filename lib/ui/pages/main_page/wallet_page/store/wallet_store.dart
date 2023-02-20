@@ -45,7 +45,6 @@ abstract class _WalletStore extends IStore<bool> with Store {
       await Future.delayed(const Duration(milliseconds: 250));
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
-
       if (isForce) {
         currentToken = coins.first.symbol;
         GetIt.I.get<TransactionsStore>().setType(currentToken);

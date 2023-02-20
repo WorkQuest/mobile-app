@@ -47,7 +47,7 @@ class Web3Utils {
   }
 
   static Future<int> getDegreeToken(Erc20 contract) async {
-    final _decimals = await Decimal.parse(contract.toString());
+    final _decimals = Decimal.parse(contract.toString());
     return int.parse(_decimals.toString());
   }
 
