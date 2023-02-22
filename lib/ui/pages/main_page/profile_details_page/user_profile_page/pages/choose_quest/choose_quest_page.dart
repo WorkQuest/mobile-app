@@ -150,7 +150,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                           }
                         }
                       : null,
-                  child: Text("quests.addToQuest".tr()),
+                  child: Text("wallet.send".tr()),
                 ),
               ),
             ),
