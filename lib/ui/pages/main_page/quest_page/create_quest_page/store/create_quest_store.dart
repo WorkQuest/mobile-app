@@ -17,6 +17,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:rational/rational.dart';
 import 'package:web3dart/web3dart.dart';
 
 part 'create_quest_store.g.dart';
@@ -176,7 +177,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error checkAllowance');
       final _client = AccountRepository().getClientWorkNet();
-      final _price = Decimal.parse(price) * (Decimal.fromInt(10).pow(18) as Decimal);
+      final _price = Rational.parse(price) * (Rational.fromInt(10).pow(18));
       final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
       if (_isNeedCheckApprove) {
         print('addressQuest: $addressQuest');
@@ -185,7 +186,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         );
         print('allowance: $_allowance');
         final _priceForApprove =
-            _price * Decimal.parse(Constants.commissionForQuest.toString());
+            _price * Rational.parse(Constants.commissionForQuest.toString());
         print('priceForApprove: $_priceForApprove');
         needApprove = _allowance < _priceForApprove.toBigInt();
         onSuccess(CreateQuestStoreState.checkAllowance);
@@ -202,9 +203,9 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       onLoading();
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error approve');
-      final _price = Decimal.parse(price) * (Decimal.fromInt(10).pow(18) as Decimal);
+      final _price = Rational.parse(price) * (Rational.fromInt(10).pow(18));
       final _priceForApprove =
-          _price * Decimal.parse(Constants.commissionForQuest.toString());
+          _price * Rational.parse(Constants.commissionForQuest.toString());
       final _isEdit = contractAddress != null;
       await AccountRepository().getClientWorkNet().approveCoin(
         price: _priceForApprove.toBigInt(),
@@ -331,7 +332,7 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error getGasApprove');
       final _client = AccountRepository().getClientWorkNet();
-      final _price = Decimal.parse(price) * (Decimal.fromInt(10).pow(18) as Decimal);
+      final _price = Rational.parse(price) * (Rational.fromInt(10).pow(18));
       final _gasForApprove = await _client.getEstimateGasForApprove(_price.toBigInt());
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,

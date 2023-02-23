@@ -196,14 +196,14 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         return TokenSymbols.WUSD;
       } else if (_address ==
           _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+              .firstWhere((element) => element.symbolToken == TokenSymbols.BNB)
               .addressToken) {
-        return TokenSymbols.wBNB;
+        return TokenSymbols.BNB;
       } else if (_address ==
           _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+              .firstWhere((element) => element.symbolToken == TokenSymbols.ETH)
               .addressToken) {
-        return TokenSymbols.wETH;
+        return TokenSymbols.ETH;
       } else if (_address ==
           _dataTokens
               .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
@@ -224,15 +224,15 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         } else if (contractAddress ==
             _dataTokens
                 .firstWhere(
-                    (element) => element.symbolToken == TokenSymbols.wBNB)
+                    (element) => element.symbolToken == TokenSymbols.BNB)
                 .addressToken) {
-          return TokenSymbols.wBNB;
+          return TokenSymbols.BNB;
         } else if (contractAddress ==
             _dataTokens
                 .firstWhere(
-                    (element) => element.symbolToken == TokenSymbols.wETH)
+                    (element) => element.symbolToken == TokenSymbols.ETH)
                 .addressToken) {
-          return TokenSymbols.wETH;
+          return TokenSymbols.ETH;
         } else if (contractAddress ==
             _dataTokens
                 .firstWhere(

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
@@ -337,6 +338,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       height: 180,
       width: double.infinity,
@@ -404,7 +406,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                                     )
                                   else
                                     Text(
-                                      '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
+                                      '${ (num.parse(balance.amount!).toStringAsFixed(6))} ${balance.symbol.name}',
                                       style: const TextStyle(
                                         fontSize: 25,
                                         fontWeight: FontWeight.w700,
@@ -421,7 +423,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                                     )
                                   else if (balance.pricePerDollar != null)
                                     Text(
-                                      '\$ ${balance.pricePerDollar}',
+                                      '\$ ${(balance.pricePerDollar)}',
                                       // _getCourseDollar(balance.symbol.name, balance.amount!),
                                       style: const TextStyle(
                                         fontSize: 14,
@@ -514,10 +516,10 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wBNB);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.BNB);
         break;
       case 3:
-        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wETH);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.ETH);
         break;
       case 4:
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);

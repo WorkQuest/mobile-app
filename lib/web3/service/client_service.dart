@@ -12,6 +12,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hex/hex.dart';
+import 'package:rational/rational.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
@@ -200,9 +201,9 @@ class ClientService implements ClientServiceI {
         Erc20(address: EthereumAddress.fromHex(address), client: client!);
     final balance = await contract.balanceOf(
         EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-    final _degree = await Web3Utils.getDegreeToken(contract);
-    return (Decimal.parse(balance.toString()) /
-            (Decimal.fromInt(10).pow(_degree) as Decimal))
+    // final _degree = await Web3Utils.getDegreeToken(contract);
+    return (Rational.parse(balance.toString()) /
+            (Rational.fromInt(10).pow(18)))
         .toDecimal();
   }
 
@@ -264,9 +265,9 @@ class ClientService implements ClientServiceI {
             )
           : null,
     ));
-    return (Decimal.fromBigInt(_estimateGas) *
-            Decimal.fromBigInt(_gas.getInWei) /
-            (Decimal.fromInt(10).pow(18) as Decimal))
+    return (Rational(_estimateGas) *
+        Rational(_gas.getInWei) /
+            (Rational.fromInt(10).pow(18)))
         .toDouble();
   }
 
