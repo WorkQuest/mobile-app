@@ -96,7 +96,7 @@ class QuestsList extends StatelessWidget {
           const SizedBox(height: 10.0),
           Text(
             "quests.youDontHaveAny".tr() +
-                " ${questItemPriorityType.name} " +
+                " ${questItemPriorityType.name} ".toLowerCase() +
                 "quests.questYet".tr(),
             style: TextStyle(
               color: Color(0xFFD8DFE3),

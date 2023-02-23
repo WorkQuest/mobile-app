@@ -42,9 +42,19 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return RegExp(r'^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\\$&*~]).{8,}$').hasMatch(text!)
-        ? null
-        : "Use 8 or more characters with letters, numbers & symbols";
+    final String symbolPattern = r'!@#$%^&*(),.?":{}|<>';
+
+    return _isPasswordValid(text!) ? null : "Use 8 or more characters with letters, numbers & symbols $symbolPattern";
+  }
+
+  static bool _isPasswordValid(String password) {
+    bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    bool hasDigits = password.contains(RegExp(r'[0-9]'));
+    bool hasLowercase = password.contains(RegExp(r'[a-z]'));
+    bool hasSpecialCharacters = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    bool hasMinLength = password.length >= 8;
+
+    return hasDigits & hasUppercase & hasLowercase & hasMinLength & hasSpecialCharacters;
   }
 
   static String? firstNameValidator(String? text) {
