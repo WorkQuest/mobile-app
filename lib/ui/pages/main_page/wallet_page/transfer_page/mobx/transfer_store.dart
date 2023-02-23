@@ -178,10 +178,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       await getFee();
       print('type fee: ${fee.runtimeType}');
       print('fee: $fee');
-      final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
+      final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18).toDecimal();
       final _amount = ((Decimal.parse(_balanceInWei.toString()) -
           (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
-          Decimal.fromInt(10).pow(18))
+          Decimal.fromInt(10).pow(18).toDecimal())
           .toDecimal();
       if (_amount < Decimal.zero) {
         return 0.0.toString();

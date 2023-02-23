@@ -178,7 +178,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     delegate: SliverChildListDelegate(
                       [
                         _TitleWithField(
-                          "settings.priority".tr(),
+                          "settings.runtime".tr(),
                           Container(
                             height: 50,
                             padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -371,7 +371,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                         _TitleWithField(
-                          "quests.distantWork.title".tr(),
+                          "settings.distantWork".tr(),
                           Container(
                             height: 50,
                             padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -507,7 +507,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                         _TitleWithField(
-                          "quests.aboutQuest".tr(),
+                          "quests.description".tr(),
                           TextFormField(
                             key: _warningFields[_descriptionIndex].key,
                             initialValue: store.description,

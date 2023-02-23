@@ -195,7 +195,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       final _degree = await Web3Utils.getDegreeToken(contract);
       final _txHashApprove = await contract.approve(
         _spender,
-        (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
+        (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree).toDecimal()).toBigInt(),
         credentials: _cred,
         transaction: Transaction(
           gasPrice: _gas,

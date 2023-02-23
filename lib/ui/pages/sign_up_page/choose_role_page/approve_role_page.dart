@@ -23,11 +23,9 @@ class ApproveRolePage extends StatelessWidget {
 
   String get _baseUrl {
     if (AccountRepository().notifierNetwork.value == Network.mainnet) {
-      return "https://app.workquest.co/";
+      return "https://docs.google.com/viewer?url=https://app.workquest.co/";
     }
-    return Constants.isTestnet
-        ? "https://testnet-app.workquest.co/"
-        : "https://dev-app.workquest.co/";
+    return Constants.isTestnet ? "https://docs.google.com/viewer?url=https://testnet-app.workquest.co/" : "https://docs.google.com/viewer?url=https://dev-app.workquest.co/";
   }
 
   @override
@@ -47,12 +45,8 @@ class ApproveRolePage extends StatelessWidget {
               children: [
                 Text(
                   !store.isChange
-                      ? "role.yourRole".tr() +
-                          " ${store.userRole.toString().split(".").last} " +
-                          "role.right".tr()
-                      : "role.change".tr() +
-                          " ${store.getRole()} " +
-                          "role.right".tr(),
+                      ? "role.${store.userRole.toString().split(".").last.toLowerCase()}".tr()
+                      : "role.change".tr() + " " + "role.${store.getRole().toLowerCase()}".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -127,9 +121,7 @@ class ApproveRolePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<
-                                                            CreateWalletStore>(),
+                                                    create: (context) => getIt.get<CreateWalletStore>(),
                                                     child: ImportWalletPage(),
                                                   ),
                                                 ),
@@ -137,9 +129,7 @@ class ApproveRolePage extends StatelessWidget {
                                             },
                                             child: Text(
                                               "wallet.importWallet".tr(),
-                                              style: TextStyle(
-                                                  color:
-                                                      AppColor.enabledButton),
+                                              style: TextStyle(color: AppColor.enabledButton),
                                             ),
                                           ),
                                           TextButton(
@@ -149,9 +139,7 @@ class ApproveRolePage extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => Provider(
-                                                    create: (context) =>
-                                                        getIt.get<
-                                                            CreateWalletStore>(),
+                                                    create: (context) => getIt.get<CreateWalletStore>(),
                                                     child: CreateWalletPage(),
                                                   ),
                                                 ),
@@ -159,22 +147,19 @@ class ApproveRolePage extends StatelessWidget {
                                             },
                                             child: Text(
                                               "wallet.createWallet".tr(),
-                                              style: TextStyle(
-                                                  color:
-                                                      AppColor.enabledButton),
+                                              style: TextStyle(color: AppColor.enabledButton),
                                             ),
                                           ),
                                         ],
                                       );
                                     },
                                   )
-                                : Navigator.of(ctx, rootNavigator: true)
-                                    .pushNamed(EnterTotpPage.routeName);
+                                : Navigator.of(ctx, rootNavigator: true).pushNamed(EnterTotpPage.routeName);
 
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
-                    title: "meta.iAgree".tr(),
+                    title: "meta.confirm".tr(),
                   ),
                 ),
                 SizedBox(
@@ -234,9 +219,7 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: role == UserRole.Worker
-                          ? Colors.white
-                          : Color(0xFF1D2127),
+                      color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -246,9 +229,7 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                    color: role == UserRole.Worker
-                        ? Colors.white
-                        : Color(0xFF1D2127),
+                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
                   ),
                 ),
               ],

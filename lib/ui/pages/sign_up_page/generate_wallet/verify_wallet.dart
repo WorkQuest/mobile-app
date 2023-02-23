@@ -31,6 +31,26 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
   @override
   Widget build(BuildContext context) {
     final store = context.read<CreateWalletStore>();
+    final String firstWord;
+    final String secondWord;
+    if (store.indexFirstWord == 1) {
+      firstWord = '${store.indexFirstWord}st';
+    } else if (store.indexFirstWord == 2) {
+      firstWord = '${store.indexFirstWord}nd';
+    } else if (store.indexFirstWord == 3) {
+      firstWord = '${store.indexFirstWord}rd';
+    } else {
+      firstWord = '${store.indexFirstWord}th';
+    }
+    if (store.indexSecondWord == 1) {
+      secondWord = '${store.indexSecondWord}st';
+    } else if (store.indexSecondWord == 2) {
+      secondWord = '${store.indexSecondWord}nd';
+    } else if (store.indexSecondWord == 3) {
+      secondWord = '${store.indexSecondWord}rd';
+    } else {
+      secondWord = '${store.indexSecondWord}th';
+    }
     return Observer(
       builder: (_) => Scaffold(
         appBar: CupertinoNavigationBar(),
@@ -45,7 +65,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               ),
               Text(
                 'signUp.chooseWords'.tr(
-                  namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                  namedArgs: {'firstIndex': '$firstWord', 'secondIndex': '$secondWord'},
                 ),
                 style: const TextStyle(
                   fontSize: 24,
@@ -57,11 +77,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                'signUp.thWord'.tr(
-                  namedArgs: {
-                    'index': '${store.indexFirstWord}',
-                  },
-                ),
+                'signUp.firstWord'.tr(namedArgs: {
+                  'index': '$firstWord',
+                }),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -80,9 +98,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                'signUp.thWord'.tr(
+                'signUp.secondWord'.tr(
                   namedArgs: {
-                    'index': '${store.indexSecondWord}',
+                    'index': '$secondWord',
                   },
                 ),
                 style: const TextStyle(
@@ -122,7 +140,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                     );
                   },
                   child: ElevatedButton(
-                    child: Text('wallet.openWallet'.tr()),
+                    child: Text('wallet.createWallet'.tr()),
                     onPressed: store.statusGenerateButton
                         ? () {
                             AlertDialogUtils.showLoadingDialog(context);
@@ -194,8 +212,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
             height: 20,
           ),
           Padding(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: ElevatedButton(
               child: Text('Ok'),
               onPressed: () {

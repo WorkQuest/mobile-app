@@ -343,7 +343,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.quests.clear();
                 },
                 child: Text(
-                  "quests.addToQuest".tr(),
+                  "chat.giveQuest".tr(),
                 ),
               ),
             ],

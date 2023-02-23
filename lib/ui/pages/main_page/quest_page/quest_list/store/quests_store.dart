@@ -118,10 +118,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     if (role == UserRole.Worker) {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
         final _fromPrice = Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
-            Decimal.fromInt(10).pow(18);
+            Decimal.fromInt(10).pow(18).toDecimal();
         result += '&priceBetween[from]=${_fromPrice.toBigInt()}';
         final _toPrice = Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
-            Decimal.fromInt(10).pow(18);
+            Decimal.fromInt(10).pow(18).toDecimal();
         result += '&priceBetween[to]=${_toPrice.toBigInt()}';
       }
     } else {

@@ -39,6 +39,8 @@ dependencies:
   #Firebase and Notification
   firebase_core: ^1.19.2
   firebase_notifications_handler: ^1.0.9
+  firebase_core_platform_interface: 4.5.1
+  firebase_messaging: ^12.0.3
 
   # DI.
   get_it: ^7.2.0
@@ -77,7 +79,7 @@ dependencies:
   flutter_launcher_icons: ^0.9.3
 
   # Web3
-  web3dart: ^2.3.3
+  web3dart: 2.3.3
   equatable: ^2.0.3
   bip32: ^2.0.0
   bip39: ^1.0.6
@@ -85,6 +87,7 @@ dependencies:
   hex: ^0.2.0
   ed25519_hd_key: ^2.2.0
   decimal: ^2.2.0
+  rational: ^2.2.2
 
   #url & app launcher
   url_launcher: ^6.1.4

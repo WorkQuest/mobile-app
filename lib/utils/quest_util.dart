@@ -19,9 +19,9 @@ class QuestConstants {
   ];
 
   static final List<String> distantWorkList = [
-    "Distant work",
-    "Work in the office",
-    "Both variant",
+    "Remote work",
+    "In-office",
+    "Hybrid workplace",
   ];
 
   static final List<String> payPeriodList = [
@@ -96,16 +96,16 @@ class QuestUtils {
         return "Daily";
       case "Weekly":
         return "Weekly";
-      case "BiWeekly":
-        return "BiWeekly";
-      case "Semi monthly":
-        return "SemiMonthly";
+      case "Bi-weekly":
+        return "Bi-weekly";
+      case "Semi-monthly":
+        return "Semi-monthly";
       case "Monthly":
         return "Monthly";
       case "Quarterly":
         return "Quarterly";
-      case "Semi annually":
-        return "SemiAnnually";
+      case "Semi-annually":
+        return "Semi-annually";
       case "Annually":
         return "Annually";
       case "Fixed period":
@@ -175,7 +175,7 @@ class QuestUtils {
 
   static String getPrice(String price) {
     try {
-      final _price = (Decimal.parse(price) / Decimal.fromInt(10).pow(18)).toDouble();
+      final _price = (Decimal.parse(price) / (Decimal.fromInt(10).pow(18) as Decimal)).toDouble();
       return _price.toStringAsFixed(_price.truncateToDouble() == _price ? 0 : 4);
     } catch (e) {
       return '0.00';

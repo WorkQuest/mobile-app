@@ -22,7 +22,7 @@ class TimerWidget extends StatelessWidget {
         CupertinoButton(
           padding: EdgeInsets.zero,
           child: Text(
-            'Send again',
+            'Resend code',
             style: TextStyle(
               fontSize: 14,
               color: isActiveTimer

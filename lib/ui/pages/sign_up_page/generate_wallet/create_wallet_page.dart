@@ -1,11 +1,9 @@
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/verify_wallet.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/utils/snack_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import '../../../../constants.dart';
@@ -71,10 +69,6 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                _YourPhrase(phrase: store.mnemonic),
-                const SizedBox(
-                  height: 30,
-                ),
                 Row(
                   children: [
                     Text(
@@ -126,63 +120,4 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
   }
 }
 
-class _YourPhrase extends StatelessWidget {
-  final String? phrase;
 
-  const _YourPhrase({
-    required this.phrase,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'wallet.yourPhrase'.tr(),
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 11.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.0),
-            border: Border.all(
-              color: AppColor.disabledButton,
-            ),
-          ),
-          child: Text(
-            phrase ?? "",
-            style: const TextStyle(
-              fontSize: 16,
-              color: Color(0xff1D2127),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        SizedBox(
-          width: 171,
-          child: ElevatedButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: phrase));
-              SnackBarUtils.success(
-                context,
-                title: 'chat.copy'.tr(),
-                duration: const Duration(milliseconds: 250),
-              );
-            },
-            child: Text('wallet.copyPhrase'.tr()),
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -119,7 +119,7 @@ class ClientService implements ClientServiceI {
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
+        (Decimal.parse(amount) * (Decimal.fromInt(10).pow(18) as Decimal)).toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
@@ -176,7 +176,7 @@ class ClientService implements ClientServiceI {
       ),
       amount: isToken
           ? null
-          : (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString(),
+          : (Decimal.parse(amount) * (Decimal.fromInt(10).pow(18) as Decimal)).toString(),
       insertedAt: DateTime.now(),
       block: Block(timestamp: DateTime.now()),
       tokenTransfers: !isToken
@@ -184,7 +184,7 @@ class ClientService implements ClientServiceI {
           : [
               TokenTransfer(
                 amount:
-                    (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!))
+                    (Decimal.parse(amount) * (Decimal.fromInt(10).pow(degree!) as Decimal))
                         .toString(),
               ),
             ],
@@ -202,7 +202,7 @@ class ClientService implements ClientServiceI {
         EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
     return (Decimal.parse(balance.toString()) /
-            Decimal.fromInt(10).pow(_degree))
+            (Decimal.fromInt(10).pow(_degree) as Decimal))
         .toDecimal();
   }
 
@@ -266,7 +266,7 @@ class ClientService implements ClientServiceI {
     ));
     return (Decimal.fromBigInt(_estimateGas) *
             Decimal.fromBigInt(_gas.getInWei) /
-            Decimal.fromInt(10).pow(18))
+            (Decimal.fromInt(10).pow(18) as Decimal))
         .toDouble();
   }
 

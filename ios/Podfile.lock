@@ -1,12 +1,12 @@
 PODS:
-  - DKImagePickerController/Core (4.3.4):
+  - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.4)
-  - DKImagePickerController/PhotoGallery (4.3.4):
+  - DKImagePickerController/ImageDataManager (4.3.2)
+  - DKImagePickerController/PhotoGallery (4.3.2):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.4)
+  - DKImagePickerController/Resource (4.3.2)
   - DKPhotoGallery (0.0.17):
     - DKPhotoGallery/Core (= 0.0.17)
     - DKPhotoGallery/Model (= 0.0.17)
@@ -33,52 +33,47 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (9.2.0):
-    - FirebaseCore (= 9.2.0)
-  - Firebase/Messaging (9.2.0):
+  - Firebase/CoreOnly (8.9.0):
+    - FirebaseCore (= 8.9.0)
+  - Firebase/Messaging (8.9.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 9.2.0)
-  - firebase_core (1.19.2):
-    - Firebase/CoreOnly (= 9.2.0)
+    - FirebaseMessaging (~> 8.9.0)
+  - firebase_core (1.10.6):
+    - Firebase/CoreOnly (= 8.9.0)
     - Flutter
-  - firebase_messaging (12.0.0):
-    - Firebase/Messaging (= 9.2.0)
+  - firebase_messaging (10.0.9):
+    - Firebase/Messaging (= 8.9.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (9.2.0):
-    - FirebaseCoreDiagnostics (~> 9.0)
-    - FirebaseCoreInternal (~> 9.0)
+  - FirebaseCore (8.9.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.6)
+    - GoogleUtilities/Logger (~> 7.6)
+  - FirebaseCoreDiagnostics (8.11.0):
+    - GoogleDataTransport (~> 9.1)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
-  - FirebaseCoreDiagnostics (9.3.0):
-    - GoogleDataTransport (< 10.0.0, >= 9.1.4)
-    - GoogleUtilities/Environment (~> 7.7)
-    - GoogleUtilities/Logger (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCoreInternal (9.3.0):
-    - "GoogleUtilities/NSData+zlib (~> 7.7)"
-  - FirebaseInstallations (9.3.0):
-    - FirebaseCore (~> 9.0)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.11.0):
+    - FirebaseCore (~> 8.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
-    - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (9.2.0):
-    - FirebaseCore (~> 9.0)
-    - FirebaseInstallations (~> 9.0)
-    - GoogleDataTransport (< 10.0.0, >= 9.1.4)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
-    - GoogleUtilities/Environment (~> 7.7)
-    - GoogleUtilities/Reachability (~> 7.7)
-    - GoogleUtilities/UserDefaults (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseMessaging (8.9.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.6)
+    - GoogleUtilities/Environment (~> 7.6)
+    - GoogleUtilities/Reachability (~> 7.6)
+    - GoogleUtilities/UserDefaults (~> 7.6)
+    - nanopb (~> 2.30908.0)
   - Flutter (1.0.0)
   - flutter_custom_tabs (0.0.1):
     - Flutter
   - flutter_downloader (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
-    - Flutter
-  - flutter_native_splash (0.0.1):
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
@@ -90,14 +85,14 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
-  - GoogleDataTransport (9.1.4):
-    - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleDataTransport (9.1.2):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMaps (7.0.0):
-    - GoogleMaps/Maps (= 7.0.0)
-  - GoogleMaps/Base (7.0.0)
-  - GoogleMaps/Maps (7.0.0):
+  - GoogleMaps (6.0.1):
+    - GoogleMaps/Maps (= 6.0.1)
+  - GoogleMaps/Base (6.0.1)
+  - GoogleMaps/Maps (6.0.1):
     - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -135,25 +130,23 @@ PODS:
   - libwebp/webp (1.2.1)
   - local_auth (0.0.1):
     - Flutter
-  - majascan (0.0.5):
-    - Flutter
   - maps_launcher (0.0.1):
     - Flutter
-  - nanopb (2.30909.0):
-    - nanopb/decode (= 2.30909.0)
-    - nanopb/encode (= 2.30909.0)
-  - nanopb/decode (2.30909.0)
-  - nanopb/encode (2.30909.0)
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
-  - PromisesObjC (2.1.1)
-  - SDWebImage (5.13.0):
-    - SDWebImage/Core (= 5.13.0)
-  - SDWebImage/Core (5.13.0)
+  - PromisesObjC (2.0.0)
+  - SDWebImage (5.12.2):
+    - SDWebImage/Core (= 5.12.2)
+  - SDWebImage/Core (5.12.2)
   - share (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -163,19 +156,15 @@ PODS:
     - FMDB (>= 2.7.5)
   - store_redirect (0.0.1):
     - Flutter
-  - SwiftyGif (5.4.3)
-  - uni_links (0.0.1):
-    - Flutter
+  - SwiftyGif (5.4.2)
   - url_launcher_ios (0.0.1):
     - Flutter
-  - video_player_avfoundation (0.0.1):
+  - video_player (0.0.1):
     - Flutter
   - video_thumbnail (0.0.1):
     - Flutter
     - libwebp
   - wakelock (0.0.1):
-    - Flutter
-  - webview_cookie_manager (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
@@ -188,14 +177,12 @@ DEPENDENCIES:
   - flutter_custom_tabs (from `.symlinks/plugins/flutter_custom_tabs/ios`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
-  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - libphonenumber_plugin (from `.symlinks/plugins/libphonenumber_plugin/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
-  - majascan (from `.symlinks/plugins/majascan/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
@@ -204,12 +191,10 @@ DEPENDENCIES:
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - store_redirect (from `.symlinks/plugins/store_redirect/ios`)
-  - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
   - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
-  - webview_cookie_manager (from `.symlinks/plugins/webview_cookie_manager/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
@@ -219,7 +204,6 @@ SPEC REPOS:
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
-    - FirebaseCoreInternal
     - FirebaseInstallations
     - FirebaseMessaging
     - FMDB
@@ -248,8 +232,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_downloader/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
-  flutter_native_splash:
-    :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   geolocator_apple:
@@ -262,8 +244,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/libphonenumber_plugin/ios"
   local_auth:
     :path: ".symlinks/plugins/local_auth/ios"
-  majascan:
-    :path: ".symlinks/plugins/majascan/ios"
   maps_launcher:
     :path: ".symlinks/plugins/maps_launcher/ios"
   package_info_plus:
@@ -280,70 +260,61 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   store_redirect:
     :path: ".symlinks/plugins/store_redirect/ios"
-  uni_links:
-    :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
   video_thumbnail:
     :path: ".symlinks/plugins/video_thumbnail/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
-  webview_cookie_manager:
-    :path: ".symlinks/plugins/webview_cookie_manager/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
+  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
-  Firebase: 4ba896cb8e5105d4b9e247e1c1b6222b548df55a
-  firebase_core: ada8be870601fe3c2684dae2356f634189bd598f
-  firebase_messaging: ce76a2cce70922525bc8815101504f80a943e280
-  FirebaseCore: 0e27f2a15d8f7b7ef11e7d93e23b1cbab55d748c
-  FirebaseCoreDiagnostics: 060eb57cc56dfaf40b1b1b5874a5c17c41ce79f8
-  FirebaseCoreInternal: 635d1c9a612a6502b6377a0c92af83758076ffff
-  FirebaseInstallations: 54b40022cb06e462740c9f2b9fbe38b5e78a825a
-  FirebaseMessaging: 4eaf1b8a7464b2c5e619ad66e9b20ee3e3206b24
+  file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
+  Firebase: 13d8d96499e2635428d5bf0ec675df21f95d9a95
+  firebase_core: c263d7daf1dc92fcd9895e6abdc04872b0ee07ff
+  firebase_messaging: 1109f5449638254c47fb5904d24e11a4d7736c77
+  FirebaseCore: 599ee609343eaf4941bd188f85e3aa077ffe325b
+  FirebaseCoreDiagnostics: 64d9709d804a6c25bd77841371c1fcfd909d5601
+  FirebaseInstallations: 044eede8a049bce71c4541ee68d6e4364fcbe774
+  FirebaseMessaging: 82c4a48638f53f7b184f3cc9f6cd2cbe533ab316
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_custom_tabs: 7a10a08686955cb748e5d26e0ae586d30689bf89
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
-  google_maps_flutter: c59fc576c0d0c7f4dc4bd63832c862d22d5a7c6d
-  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
-  GoogleMaps: 6e9c923ca035989709fcb5771544fda4cc5fa2a4
+  geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
+  google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
+  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleMaps: c213fc2334b7374144cede914da779b99be0ab74
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   libphonenumber_plugin: 7cf755ad1656145935d6c208173a476bd3f12898
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
-  local_auth: 1740f55d7af0a2e2a8684ce225fe79d8931e808c
-  majascan: 473bd426fa19600b6ca287bc948d40b2194d5c0b
+  local_auth: ef62030a2731330b95df7ef1331bd15f6a64b8a6
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
-  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  SDWebImage: 0327043dbb9533e75f2eff8445b3df0f2ceca6ac
+  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
+  SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   store_redirect: 2977747cf81689a39bd62c248c2deacb7a0d131e
-  SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
-  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
-  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
+  SwiftyGif: dec758a9dd3d278e5a855dbf279bf062c923c387
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
+  video_player: ecd305f42e9044793efd34846e1ce64c31ea6fcb
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_cookie_manager: eaf920722b493bd0f7611b5484771ca53fed03f7
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

@@ -90,7 +90,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
       if (coin.addressToken == null) {
         final _balance = await _client.getBalance(AccountRepository().privateKey);
         final _amount =
-            (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18))
+            (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18).toDecimal())
                 .toDouble()
                 .toStringAsFixed(8);
         final _index =
@@ -116,7 +116,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
     for (var i in _list) {
       final _token = Web3Utils.getTokenSymbol(i.symbol!);
       if (_token != null) {
-        final _course = Decimal.parse(i.price!) / Decimal.fromInt(10).pow(18);
+        final _course = Decimal.parse(i.price!) / Decimal.fromInt(10).pow(18).toDecimal();
         result.add(_TokenCourse(_token, _course.toDouble().toString()));
       }
     }

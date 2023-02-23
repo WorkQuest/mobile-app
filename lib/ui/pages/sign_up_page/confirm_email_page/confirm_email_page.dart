@@ -131,7 +131,7 @@ class _ConfirmEmailState extends State<ConfirmEmail> {
                                   child: store.isLoading
                                       ? CircularProgressIndicator.adaptive()
                                       : Text(
-                                          "meta.submit".tr(),
+                                          "meta.continue".tr(),
                                         ),
                                 );
                               },

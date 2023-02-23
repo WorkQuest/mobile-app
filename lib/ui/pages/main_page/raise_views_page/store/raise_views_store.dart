@@ -99,7 +99,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
       );
       print('_allowance: $_allowance');
 
-      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
+      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18).toDecimal()).toBigInt();
       print('_priceForApprove: $_priceForApprove');
       needApprove = _allowance < _priceForApprove!;
       this.onSuccess(RaiseViewStoreState.checkAllowance);
@@ -256,7 +256,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
 
     gas = (Decimal.fromBigInt(_gasForApprove) *
             Decimal.fromBigInt(_gas.getInWei) /
-            Decimal.fromInt(10).pow(18))
+            Decimal.fromInt(10).pow(18).toDecimal())
         .toDouble()
         .toStringAsFixed(17);
   }

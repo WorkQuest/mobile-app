@@ -182,8 +182,8 @@ class SettingsPage extends StatelessWidget {
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(
                                     context,
-                                    title: 'modals.warning'.tr(),
-                                    content: 'modals.serviceUnavailable'.tr(),
+                                    title: "Still under construction",
+                                    content: "Other languages will be added soon",
                                   );
                                 },
                               ),

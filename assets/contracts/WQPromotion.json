@@ -42,37 +42,6 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "quest",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum WQPromotion.PaidTariff",
-        "name": "tariff",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "period",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "promotedAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "PromotedQuest",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
         "name": "user",
         "type": "address"
       },
@@ -85,17 +54,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "period",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "promotedAt",
         "type": "uint256"
       }
     ],
-    "name": "PromotedUser",
+    "name": "Promoted",
     "type": "event"
   },
   {
@@ -230,7 +193,7 @@
     "name": "factory",
     "outputs": [
       {
-        "internalType": "contract WorkQuestFactoryInterface",
+        "internalType": "contract WorkQuestFactory",
         "name": "",
         "type": "address"
       }
@@ -243,7 +206,7 @@
     "name": "feeReceiver",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "",
         "type": "address"
       }
@@ -315,18 +278,13 @@
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "_feeReceiver",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_factory",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_wusd",
         "type": "address"
       }
     ],
@@ -353,9 +311,9 @@
         "type": "uint256"
       }
     ],
-    "name": "promoteQuest",
+    "name": "promote",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -373,7 +331,7 @@
     ],
     "name": "promoteUser",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -577,19 +535,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "wusd",
-    "outputs": [
-      {
-        "internalType": "contract IERC20Upgradeable",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
