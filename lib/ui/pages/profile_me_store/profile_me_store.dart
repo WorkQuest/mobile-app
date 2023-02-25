@@ -125,35 +125,21 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getCompletedQuests({
-    required String userId,
-    required bool newList,
-    required bool isProfileYours,
-  }) async {
+  Future<void> getCompletedQuests(String userId, bool newList) async {
     try {
-      if (newList) {
+      if (newList){
         offset = 0;
         quests.clear();
       }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          isProfileYours
-              ? await _apiProvider.getQuests(
-                  offset: offset,
-                  sort: sort,
-                  statuses: [6],
-                  // performing: true,
-                  // invited: false,
-                )
-              : await _apiProvider.getEmployerQuests(
-                  offset: offset,
-                  sort: sort,
-                  userId: userId,
-                  statuses: [6],
-                  // performing: true,
-                  // invited: false,
-                ),
+          await _apiProvider.getEmployerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [6],
+          ),
         );
         offset += 10;
         this.onSuccess(true);
@@ -163,31 +149,21 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getActiveQuests({
-    required String userId,
-    required bool newList,
-    required bool isProfileYours,
-  }) async {
+  Future<void> getActiveQuests(String userId, bool newList) async {
     try {
-      if (newList) {
+      if (newList){
         offset = 0;
         quests.clear();
       }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          isProfileYours
-              ? await _apiProvider.getQuests(
-                  offset: offset,
-                  sort: sort,
-                  statuses: [1, 3, 5],
-                )
-              : await _apiProvider.getWorkerQuests(
-                  offset: offset,
-                  sort: sort,
-                  userId: userId,
-                  statuses: [1, 3, 5],
-                ),
+          await _apiProvider.getWorkerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [1, 3, 5],
+          ),
         );
         offset += 10;
         this.onSuccess(true);
@@ -218,6 +194,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
 
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {

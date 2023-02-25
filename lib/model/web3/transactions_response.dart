@@ -68,7 +68,7 @@ class Tx {
   bool show = false;
 
   factory Tx.fromJson(Map<String, dynamic> json) => Tx(
-    hash: json["hash"] ?? json["transaction_hash"],
+    hash: json["hash"],
     fromAddressHash: json["from_address_hash"] == null ? null : AddressHash.fromJson(json["from_address_hash"]),
     toAddressHash: json["to_address_hash"] == null ? null : AddressHash.fromJson(json["to_address_hash"]),
     gas: json["gas"],

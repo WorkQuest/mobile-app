@@ -6,9 +6,12 @@ import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/dropdown_adaptive.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:app/utils/validator.dart';
@@ -123,7 +126,7 @@ class SignInPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hint: "signIn.username".tr(),
+                      hint: "signIn.email".tr(),
                       inputFormatters: [],
                       suffixIcon: null,
                     ),
@@ -134,6 +137,7 @@ class SignInPage extends StatelessWidget {
                       controller: passwordController,
                       isPassword: true,
                       onChanged: signInStore.setPassword,
+                      validator: Validators.signInPasswordValidator,
                       inputFormatters: [],
                       prefixIconConstraints: _prefixConstraints,
                       autofillHints: [AutofillHints.password],
@@ -156,8 +160,7 @@ class SignInPage extends StatelessWidget {
                         minSize: 22.0,
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          ClipboardData? data =
-                              await Clipboard.getData(Clipboard.kTextPlain);
+                          ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
                           mnemonicController.text = data?.text ?? "";
                           signInStore.setMnemonic(data?.text ?? "");
                         },
@@ -169,6 +172,28 @@ class SignInPage extends StatelessWidget {
                       ),
                       hint: "signIn.enterMnemonicPhrase".tr(),
                       inputFormatters: [],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: DropDownAdaptiveWidget<Network>(
+                        colorText: Colors.black,
+                        items: Network.values,
+                        value: Network.values[1],
+                        onChanged: (value) {
+                          // setState(() {
+                          final _networkName = (value as Network) == Network.mainnet
+                              ? NetworkName.workNetMainnet
+                              : NetworkName.workNetTestnet;
+                          // AccountRepository().setNetwork(_networkName);
+                          // Storage.write(
+                          //     StorageKeys.networkName.name, _networkName.name);
+                          // });
+                          return value;
+                        },
+                      ),
                     ),
                   ),
                   Padding(
@@ -195,53 +220,53 @@ class SignInPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(top: 20.0),
-                  //   child: Center(
-                  //     child: Text(
-                  //       "signIn.or".tr(),
-                  //       style: TextStyle(
-                  //         color: Color(0xFFCBCED2),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(
-                  //     left: 16,
-                  //     top: 20.0,
-                  //     right: 16,
-                  //   ),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       _iconButton(
-                  //         "assets/google_icon.svg",
-                  //         "google",
-                  //         context,
-                  //       ),
-                  //       // _iconButton(
-                  //       //   "assets/instagram.svg",
-                  //       //   "https://www.instagram.com/zuck/?hl=ru",
-                  //       // ),
-                  //       _iconButton(
-                  //         "assets/twitter_icon.svg",
-                  //         "twitter",
-                  //         context,
-                  //       ),
-                  //       _iconButton(
-                  //         "assets/facebook_icon.svg",
-                  //         "facebook",
-                  //         context,
-                  //       ),
-                  //       _iconButton(
-                  //         "assets/linkedin_icon.svg",
-                  //         "linkedin",
-                  //         context,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Center(
+                      child: Text(
+                        "signIn.or".tr(),
+                        style: TextStyle(
+                          color: Color(0xFFCBCED2),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      top: 20.0,
+                      right: 16,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _iconButton(
+                          "assets/google_icon.svg",
+                          "google",
+                          context,
+                        ),
+                        // _iconButton(
+                        //   "assets/instagram.svg",
+                        //   "https://www.instagram.com/zuck/?hl=ru",
+                        // ),
+                        _iconButton(
+                          "assets/twitter_icon.svg",
+                          "twitter",
+                          context,
+                        ),
+                        _iconButton(
+                          "assets/facebook_icon.svg",
+                          "facebook",
+                          context,
+                        ),
+                        _iconButton(
+                          "assets/linkedin_icon.svg",
+                          "linkedin",
+                          context,
+                        ),
+                      ],
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16.0,
@@ -345,8 +370,7 @@ class SignInPage extends StatelessWidget {
     if (signInStore.errorMessage == "unconfirmed") {
       print("error");
       await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamed(context, ConfirmEmail.routeName,
-          arguments: signInStore.getUsername());
+      Navigator.pushNamed(context, ConfirmEmail.routeName, arguments: signInStore.getUsername());
     } else if (signInStore.errorMessage == "TOTP is invalid") {
       AlertDialogUtils.showAlertDialog(
         context,
@@ -366,13 +390,9 @@ class SignInPage extends StatelessWidget {
         needCancel: true,
         titleCancel: 'Cancel',
         titleOk: 'OK',
-        onTabCancel: () {
-          signInStore.setTotp('');
-        },
+        onTabCancel: null,
         onTabOk: () {
-          _onPressedSignIn(context,
-              signInStore: signInStore,
-              profile: context.read<ProfileMeStore>());
+          _onPressedSignIn(context, signInStore: signInStore, profile: context.read<ProfileMeStore>());
         },
         colorCancel: Colors.red,
         colorOk: AppColor.enabledButton,

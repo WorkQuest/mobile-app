@@ -9,8 +9,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
-
 class QuestMap extends StatefulWidget {
   final void Function() changePage;
 
@@ -25,13 +23,11 @@ class _QuestMapState extends State<QuestMap> {
   late GoogleMapController _controller;
   bool hasPermission = false;
   final GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
-  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
 
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
     mapStore!.createMarkerLoader(context);
-    context.read<SMSVerificationStore>().initTime();
     _getLocation();
     super.initState();
   }
@@ -41,7 +37,7 @@ class _QuestMapState extends State<QuestMap> {
     return Observer(
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator.adaptive())
             : Visibility(
                 visible: hasPermission,
                 maintainState: false,
@@ -49,7 +45,7 @@ class _QuestMapState extends State<QuestMap> {
                   mapType: MapType.normal,
                   rotateGesturesEnabled: false,
                   initialCameraPosition: mapStore!.initialCameraPosition!,
-                  minMaxZoomPreference: MinMaxZoomPreference(4, 20),
+                  zoomControlsEnabled: false,
                 ),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -66,24 +62,23 @@ class _QuestMapState extends State<QuestMap> {
                             mapStore!.getQuestsOnMap(bounds);
                           },
                         );
+                        mapStore!.clusterManager.onCameraMove(position);
                       },
                       mapType: MapType.normal,
+                      zoomControlsEnabled: false,
                       rotateGesturesEnabled: false,
                       myLocationEnabled: true,
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
-                      markers: mapStore!.markers.toSet(),
-                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                      markers: mapStore!.markers,
+                      onCameraIdle: mapStore!.clusterManager.updateMap,
                       onMapCreated: (GoogleMapController controller) async {
                         _controller = controller;
                         LatLngBounds bounds =
                             await _controller.getVisibleRegion();
-                        mapStore!.getQuestsOnMap(bounds);
+                        await mapStore!.getQuestsOnMap(bounds);
+                        mapStore!.clusterManager.setMapId(controller.mapId);
                         _onMyLocationPressed();
-                      },
-                      onTap: (point) {
-                        if (mapStore!.infoPanel != InfoPanel.Nope)
-                          mapStore!.onCloseQuest();
                       },
                     ),
                     QuestQuickInfo(),
@@ -92,10 +87,10 @@ class _QuestMapState extends State<QuestMap> {
                 ),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        floatingActionButton: AnimatedContainer(
+        floatingActionButton: AnimatedPadding(
           padding: EdgeInsets.only(
             left: 25,
-            bottom: mapStore!.infoPanel != InfoPanel.Nope ? 324.0 : 0.0,
+            bottom: mapStore!.hideInfo ? 0.0 : 324.0,
           ),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
@@ -112,13 +107,11 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.infoPanel == InfoPanel.Nope
+                onPressed: mapStore!.hideInfo
                     ? _onMyLocationPressed
-                    : mapStore!.onCloseQuest,
+                    : mapStore!.closeInfo,
                 child: Icon(
-                  mapStore!.infoPanel == InfoPanel.Nope
-                      ? Icons.location_on
-                      : Icons.close,
+                  mapStore!.hideInfo ? Icons.location_on : Icons.close,
                 ),
               ),
             ],
@@ -134,48 +127,20 @@ class _QuestMapState extends State<QuestMap> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Observer(
-              builder: (_) => GestureDetector(
-                onTap: () {
+              builder: (_) => TextFormField(
+                onTap: (){
                   mapStore!.getPrediction(context, _controller);
                 },
-                child: Container(
-                  height: 60,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF7F8FA),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(6.0),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Icon(
-                          Icons.search,
-                          size: 25.0,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Flexible(
-                          child: mapStore!.address.isNotEmpty
-                              ? Text(
-                                  mapStore!.address,
-                                  overflow: TextOverflow.fade,
-                                )
-                              : Text(
-                                  "quests.ui.search".tr(),
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                    color: Color(0xFFD8DFE3),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                        ),
-                      ],
-                    ),
+                readOnly: true,
+                decoration: InputDecoration(
+                  fillColor: Color(0xFFF7F8FA),
+
+                  hintText:mapStore!.address.isNotEmpty
+                      ?  mapStore!.address
+                      : "quests.ui.search".tr(),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    size: 25.0,
                   ),
                 ),
               ),
@@ -190,10 +155,9 @@ class _QuestMapState extends State<QuestMap> {
     setState(() {});
 
     if (!hasPermission) {
-      print('!hasPermission');
       mapStore!.initialCameraPosition = CameraPosition(
-        bearing: 0,
-        target: LatLng(59.42571345925132, 24.73492567301246),
+        bearing: 192.0,
+        target: LatLng(37.4, -122.0),
         zoom: 19,
       );
       return;
@@ -251,7 +215,6 @@ class _QuestMapState extends State<QuestMap> {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-
       return false;
     }
 
@@ -264,7 +227,6 @@ class _QuestMapState extends State<QuestMap> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-
         return false;
       }
     }
@@ -273,10 +235,8 @@ class _QuestMapState extends State<QuestMap> {
       _requestPermissionDialog();
       return false;
     }
-
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-
     return true;
   }
 

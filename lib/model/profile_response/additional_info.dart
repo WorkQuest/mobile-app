@@ -49,7 +49,7 @@ class AdditionalInfo {
     return AdditionalInfo(
       secondMobileNumber: json["secondMobileNumber"] == null
           ? null
-          : Phone(codeRegion: '', fullPhone: json["secondMobileNumber"], phone: ''),
+          : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null

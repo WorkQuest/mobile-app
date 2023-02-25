@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
@@ -11,8 +15,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
-
-import '../../../widgets/user_avatar.dart';
 
 ///Instrument Card
 class InstrumentCard extends StatelessWidget {
@@ -209,10 +211,17 @@ class MyProfileImage extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: UserAvatar(
-                width: null,
-                height: null,
-                url: userStore.userData!.avatar?.url,
+              child: FadeInImage(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                placeholder: MemoryImage(
+                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
+                ),
+                image: NetworkImage(
+                  userStore.userData!.avatar?.url ??
+                      Constants.defaultImageNetwork,
+                ),
+                fit: BoxFit.cover,
               ),
             ),
             Positioned(

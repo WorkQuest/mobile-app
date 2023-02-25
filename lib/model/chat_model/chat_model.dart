@@ -1,5 +1,4 @@
 import 'package:app/model/chat_model/me_member.dart';
-import 'package:app/model/chat_model/quest_chat.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 
@@ -18,7 +17,6 @@ class ChatModel {
     required this.meMember,
     required this.userMembers,
     required this.star,
-    required this.questChat,
   });
 
   String id;
@@ -32,7 +30,6 @@ class ChatModel {
   MeMember? meMember;
   List<ProfileMeResponse> userMembers;
   Star? star;
-  QuestChat? questChat;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
         id: json["id"],
@@ -52,7 +49,6 @@ class ChatModel {
             .map((e) => ProfileMeResponse.fromJson(e as Map<String, dynamic>))
             .toList(),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
-        questChat: json["questChat"] == null ? null : QuestChat.fromJson(json["questChat"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -67,6 +63,5 @@ class ChatModel {
         // "meMember": meMember.toJson(),
         //"userMembers": userMembers.toJson(),
         "star": star,
-        "questChat": questChat,
       };
 }

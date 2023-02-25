@@ -1,3 +1,4 @@
+
 import 'location_full.dart';
 
 class CreateQuestRequestModel {
@@ -34,13 +35,8 @@ class CreateQuestRequestModel {
     final Map<String, dynamic> questData = new Map<String, dynamic>();
     questData['priority'] = this.priority;
     questData['workplace'] = this.workplace;
-    questData['category'] = this.category;
-    questData['adType'] = this.adType;
-    questData['locationPlaceName'] = this.location.locationPlaceName;
-    questData['location'] = {
-      "longitude": this.location.locationCode.longitude,
-      "latitude": this.location.locationCode.latitude
-    };
+    questData['locationFull'] = this.location.toJson();
+
     // questData['locationPlaceName'] = this.locationPlaceName;
     questData['title'] = this.title;
     questData['specializationKeys'] = this.specializationKeys;

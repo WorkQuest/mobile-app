@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
@@ -7,6 +10,8 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -39,9 +44,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ];
 
   final List<String> distantWorkList = [
-    "Distant work",
-    "Work in the office",
-    "Both variant",
+    "Remote work",
+    "In-office",
+    "Hybrid workplace",
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -56,7 +61,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String workplaceValue = "distant";
 
   @observable
-  String workplace = "Distant work";
+  String workplace = "Remote work";
 
   @observable
   String category = 'Choose';
@@ -103,12 +108,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String? idNewQuest;
 
   @action
-  void increaseRuntime() {}
-
-  @action
-  void decreaseRuntime() {}
-
-  @action
   void setQuestTitle(String value) => questTitle = value;
 
   @action
@@ -127,12 +126,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
-  bool get canCreateQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canCreateQuest => !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
-  bool get canSubmitEditQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canSubmitEditQuest => !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @action
   void emptyField(BuildContext context) {
@@ -142,11 +139,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   String getWorkplaceValue() {
     switch (workplace) {
-      case "Distant work":
+      case "Remote work":
         return workplaceValue = "distant";
-      case "Work in the office":
+      case "In-office":
         return workplaceValue = "office";
-      case "Both variant":
+      case "Hybrid workplace":
         return workplaceValue = "both";
     }
     return workplaceValue;
@@ -267,7 +264,22 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           quest: questModel,
           questId: questId,
         );
+        ClientService().handleEvent(WQContractFunctions.editJob, [
+          Uint8List.fromList(
+            utf8.encode(
+              description.padRight(32).substring(0, 32),
+            ),
+          ),
+          BigInt.parse(price)
+        ]);
       } else {
+        ClientService().createNewContract(
+          jobHash: description,
+          cost: price,
+          deadline: 0.toString(),
+          nonce: description,
+        );
+
         idNewQuest = await apiProvider.createQuest(
           quest: questModel,
         );

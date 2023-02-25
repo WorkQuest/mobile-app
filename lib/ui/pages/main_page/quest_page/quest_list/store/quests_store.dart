@@ -35,17 +35,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   Map<int, List<int>> skillFilters = {};
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
-      ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
 
   @observable
   String fromPrice = '';
-
-  @observable
-  bool isLoadingMore = false;
 
   @observable
   String toPrice = '';
@@ -155,16 +151,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     toPrice = to;
   }
 
-  ///CHECK THE REQUEST FROM THE FRONT
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
     if (isWorker) {
-      if (fromPrice.isNotEmpty) result = '&betweenWagePerHour[from]=$fromPrice';
-      if (toPrice.isNotEmpty) result = '&betweenWagePerHour[to]=$toPrice';
+      if (fromPrice.isNotEmpty) result += '&betweenWagePerHour[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
     } else {
-      if (fromPrice.isNotEmpty) result = '&priceBetween[from]=$fromPrice';
-      if (fromPrice.isNotEmpty) result = '&priceBetween[to]=$toPrice';
+      if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
     }
+
     return result;
   }
 
@@ -238,6 +234,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
+      // searchWord.isNotEmpty &&
+      // searchResultList.isEmpty &&
+      // searchWorkersList.isEmpty &&
       workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
@@ -248,9 +247,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         debounce = Timer(const Duration(milliseconds: 300), () async {
           questsList.addAll(await _apiProvider.getQuests(
             price: getFilterPrice(),
-            // statuses: [0],
             searchWord: searchWord,
             offset: offset,
+            statuses: [0, 1],
             employment: employments,
             workplace: workplaces,
             priority: priorities,
@@ -258,6 +257,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
             sort: this.sort,
             specializations: selectedSkill,
           ));
+          //offset review
           offset += 10;
           this.onSuccess(true);
         });
@@ -292,18 +292,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         this.offset = 0;
         questsList.clear();
-      } else {
-        isLoadingMore = true;
       }
       if (this.offset == questsList.length) {
         questsList.addAll(await _apiProvider.getQuests(
           searchWord: searchWord,
           price: getFilterPrice(),
-          // statuses: [0],
+          statuses: [0, 1],
           employment: employments,
           workplace: workplaces,
           priority: priorities,
@@ -321,18 +319,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
-    isLoadingMore = false;
   }
 
   @action
   Future getWorkers(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
-      } else {
-        isLoadingMore = true;
       }
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
@@ -355,6 +350,5 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       print("getWorkers error: $e\n$trace");
       this.onError(e.toString());
     }
-    isLoadingMore = false;
   }
 }

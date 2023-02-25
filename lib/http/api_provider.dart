@@ -15,8 +15,6 @@ import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-import '../model/quests_models/quest_map_point.dart';
-
 @singleton
 class ApiProvider {
   final IHttpClient httpClient;
@@ -37,7 +35,6 @@ extension LoginService on ApiProvider {
       data: {
         'email': email,
         'password': password,
-        if (totp.isNotEmpty) 'totp': totp,
       },
     );
     BearerToken bearerToken = BearerToken.fromJson(
@@ -117,67 +114,42 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
-    final response = await httpClient.get(
-      query: '/v1/quests/map/points' +
-          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-          'north[longitude]=${bounds.northeast.longitude.toString()}' +
-          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-          'south[longitude]=${bounds.southwest.longitude.toString()}',
-    );
-
-    // final response2 = await httpClient.get(
-    //   query: '/v1/quests' +
-    //       '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-    //       'north[longitude]=${bounds.northeast.longitude.toString()}' +
-    //       '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-    //       'south[longitude]=${bounds.southwest.longitude.toString()}',
-    // );
-
-    // print("<-------------->$response <-------------->$response2,");
-
-    return List<QuestMapPoint>.from(
-      response.map(
-        (x) => QuestMapPoint.fromJson(x),
-      ),
-    );
-  }
-
   Future<List<BaseQuestResponse>> questMapPoints(
     LatLngBounds bounds,
   ) async {
-    String query = '/v1/quests/map/points' +
-        '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-        'north[longitude]=${bounds.northeast.longitude.toString()}' +
-        '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-        'south[longitude]=${bounds.southwest.longitude.toString()}';
-    final response = await httpClient.get(
+    String query;
+    query = '/v1/quest/map/get-points'
+            '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+        'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
+        '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
+        'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
+
+    final response = await httpClient.post(
       query: query,
+      data: {
+        "specializations": []
+      }
     );
     return List<BaseQuestResponse>.from(
-      response.map(
+      response["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),
       ),
     );
-  }
-  
-  Future getTestCoinsWQT() async {
-    await httpClient.get(query: '/v1/user/me/faucet/wqt');
-  }
-
-  Future getTestCoinsWUSD() async {
-    await httpClient.get(query: '/v1/user/me/faucet/wusd');
   }
 
   Future<List<ProfileMeResponse>> workerMapPoints(
     LatLngBounds bounds,
   ) async {
-    final response = await httpClient.get(
-      query: '/v1/profile/worker/map/points'
-              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
-          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
-          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
+    final response = await httpClient.post(
+      query: '/v1/profile/workers/map/get-points'
+              '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
+              'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+              'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
+              'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}'
+          ,
+      data: {
+        "specializations": [],
+      }
     );
     return List<ProfileMeResponse>.from(
       response["users"].map(
@@ -300,11 +272,6 @@ extension QuestService on ApiProvider {
     String? north,
     String? south,
   }) async {
-    String specialization = "";
-    specializations.forEach((text) {
-      print(text);
-      specialization += "specializations[]=$text&";
-    });
     String status = "";
     statuses.forEach((text) {
       print(text);
@@ -325,24 +292,23 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort$price',
-      queryParameters: {
+          '/v1/get-quests?$workplaces$employments$status$priorities$sort$price&offset=$offset&limit=$limit',
+      data: {
         // if (workplace.isNotEmpty) "workplaces": workplaces,
         // if (employment.isNotEmpty) "employments": employments,
         // if (statuses.isNotEmpty) "statuses": status,
         // if (specializations.isNotEmpty) "specializations": specialization,
         // if (priority.isNotEmpty) "priorities": priorities,
         // "sort": sort,
-        "offset": offset,
-        "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,
         if (north != null) "north": north,
         if (south != null) "south": south,
+        "specializations": specializations,
       },
     );
 
@@ -366,46 +332,27 @@ extension QuestService on ApiProvider {
     List<String> workplace = const [],
     List<String> specializations = const [],
   }) async {
-    String specialization = "";
     String priorities = "";
     String ratingStatuses = "";
     priority.forEach((text) {
-      priorities += "priority[]=$text&";
+      priorities += "priorities[]=$text&";
     });
     ratingStatus.forEach((text) {
-      String rating = '';
-      switch (text) {
-        case 3:
-          rating = 'noStatus';
-          break;
-        case 2:
-          rating = 'verified';
-          break;
-        case 1:
-          rating = 'reliable';
-          break;
-        case 0:
-          rating = 'topRanked';
-          break;
-      }
-      ratingStatuses += "ratingStatus[]=$rating&";
+      ratingStatuses += "ratingStatuses[]=$text&";
     });
-    specializations.forEach((text) {
-      specialization += "specialization[]=$text&";
-    });
+
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization$price',
-      queryParameters: {
+          '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
+      data: {
         if (searchWord.isNotEmpty) "q": searchWord,
-        "offset": offset,
-        "limit": limit,
         if (north != null) "north": north,
         if (south != null) "south": south,
+        "specializations": specializations,
         //"sort": sort,
       },
     );
@@ -738,21 +685,27 @@ extension UserInfoService on ApiProvider {
     UserRole role,
   ) async {
     try {
-      Map<String, dynamic> body = {
+      Map<String, dynamic> body;
+      body = {
+        "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
+        "phoneNumber": {
+          "codeRegion": userData.tempPhone!.codeRegion,
+          "phone": userData.tempPhone!.phone,
+          "fullPhone": userData.tempPhone!.fullPhone
+        },
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-        "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
+        if (userData.role == UserRole.Worker) "wagePerHour": userData.wagePerHour,
         if (userData.role == UserRole.Worker) "priority": userData.priority.index,
-        "location": {
-          "longitude": userData.locationCode?.longitude ?? 0,
-          "latitude": userData.locationCode?.latitude ?? 0
-        },
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber":
-              (userData.additionalInfo?.secondMobileNumber?.fullPhone.isNotEmpty ?? false)
-                  ? userData.additionalInfo?.secondMobileNumber!.fullPhone
-                  : null,
+          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber != null
+              ? {
+                  "codeRegion": userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                  "phone": userData.additionalInfo?.secondMobileNumber!.phone,
+                  "fullPhone": userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                }
+              : null,
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,
@@ -774,19 +727,38 @@ extension UserInfoService on ApiProvider {
                     ? userData.additionalInfo?.socialNetwork?.facebook
                     : null,
           },
-          if (userData.role == UserRole.Worker) "skills": [],
+          "description": (userData.additionalInfo?.description?.isNotEmpty ?? false)
+              ? userData.additionalInfo?.description
+              : null,
+          if (userData.role == UserRole.Employer)
+            "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.company
+                : null,
+          if (userData.role == UserRole.Employer)
+            "CEO": (userData.additionalInfo?.ceo?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.ceo
+                : null,
+          if (userData.role == UserRole.Employer)
+            "website": (userData.additionalInfo?.website?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.website
+                : null,
           if (userData.role == UserRole.Worker)
             "educations": userData.additionalInfo!.educations,
           if (userData.role == UserRole.Worker)
             "workExperiences": userData.additionalInfo!.workExperiences,
-          "description": (userData.additionalInfo?.description?.isNotEmpty ?? false)
-              ? userData.additionalInfo?.description
-              : null,
+          if (userData.role == UserRole.Worker) "skills": [],
         },
-        if (userData.role == UserRole.Worker) "wagePerHour": userData.wagePerHour,
         if (userData.role == UserRole.Worker)
-          "specializationKeys": userData.userSpecializations
+          "specializationKeys": userData.userSpecializations,
+        "locationFull": {
+          "location": {
+            "longitude": userData.locationCode?.longitude ?? 0,
+            "latitude": userData.locationCode?.latitude ?? 0
+          },
+          "locationPlaceName": userData.locationPlaceName ?? "",
+        }
       };
+
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData;
       if (role == UserRole.Worker)
@@ -857,8 +829,7 @@ extension ChangePassword on ApiProvider {
 ///SMSVerification
 extension SMSVerification on ApiProvider {
   Future<void> submitPhoneNumber(String phone) async {
-      await httpClient
-          .post(query: '/v1/profile/phone/send-code', data: {"phoneNumber": phone});
+    await httpClient.post(query: '/v1/profile/phone/send-code');
   }
 
   Future<void> submitCode({

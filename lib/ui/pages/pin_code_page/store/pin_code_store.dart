@@ -192,10 +192,10 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
-        startAnimation = false;
         return;
       }
       totpValid = false;
+      startAnimation = false;
       this.onError(e.toString());
     }
   }

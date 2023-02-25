@@ -38,8 +38,7 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
           AlertDialogUtils.showAlertDialog(
             context,
             title: const Text('Warning!'),
-            content: const Text(
-                'If you leave the page, you will not link the wallet to your profile.\nAre you sure?'),
+            content: const Text('If you leave the page, you will not link the wallet to your profile.\nAre you sure?'),
             needCancel: true,
             titleCancel: "Cancel",
             titleOk: "Return",
@@ -63,7 +62,7 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                   height: 15,
                 ),
                 const Text(
-                  'Save this phrase to be able to login in next time',
+                  'Save your secret phrase',
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.black,
@@ -80,7 +79,7 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 Row(
                   children: [
                     const Text(
-                      'I’ve saved mnemonic phrase',
+                      'I’ve saved secret phrase',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black,
@@ -99,8 +98,7 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -142,16 +140,6 @@ class _YourPhrase extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Your phrase',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 11.0),
           decoration: BoxDecoration(

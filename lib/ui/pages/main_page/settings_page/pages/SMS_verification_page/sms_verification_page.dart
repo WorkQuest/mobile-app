@@ -29,7 +29,6 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
     _smsController = TextEditingController();
     smsStore = context.read<SMSVerificationStore>();
     profileStore = context.read<ProfileMeStore>();
-    smsStore.initTime();
     super.initState();
   }
 

@@ -87,9 +87,7 @@ import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA"
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -221,9 +219,6 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ChatStore>(),
               ),
-              Provider(
-                create: (context) => getIt.get<SMSVerificationStore>(),
-              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
@@ -276,9 +271,6 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
-                  Provider(
-                    create: (context) => getIt.get<ChatStore>(),
-                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -308,8 +300,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -331,7 +322,7 @@ class Routes {
             create: (context) => getIt.get<ProfileMeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileQuestsPage(settings.arguments as String),
+              child: settings.arguments as ProfileQuestsPage,
             ),
           ),
         );
@@ -460,15 +451,8 @@ class Routes {
 
       case ChangeProfilePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<ProfileMeStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<SMSVerificationStore>(),
-              ),
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ProfileMeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChangeProfilePage(),
@@ -762,7 +746,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ReviewPage(settings.arguments as ReviewPageArguments),
+              child: ReviewPage(settings.arguments as PortfolioStore),
             ),
           ),
         );

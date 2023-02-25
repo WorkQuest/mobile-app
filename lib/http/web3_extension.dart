@@ -24,12 +24,29 @@ extension Web3Requests on ApiProvider {
     try {
       String _transactions(String address) =>
           "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
-      final response = await httpClient.get(
-        query: '${_transactions(address)}?limit=$limit&offset=$offset',
-        useBaseUrl: false,
-      );
+      bool status = true;
+      List<Tx>? result = [];
+      while (status) {
+        final response = await httpClient.get(
+          query: '${_transactions(address)}?limit=$limit&offset=$offset',
+          useBaseUrl: false,
+        );
 
-      return TransactionsResponse.fromJson(response).transactions;
+        final res = TransactionsResponse.fromJson(response);
+        res.transactions!.map((tran) {
+          if (tran.tokenTransfers != null && tran.tokenTransfers!.isEmpty) {
+            result.add(tran);
+          }
+        }).toList();
+        if (result.length >= 10 || res.transactions!.isEmpty) {
+          status = false;
+        } else {
+          offset += 10;
+        }
+        print('offset = $offset');
+        print('len result = ${result.length}');
+      }
+      return result;
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
     }

@@ -31,7 +31,6 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                     : viewOtherUser!.quests.take(2).toList(),
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
-                from: FromQuestList.questSearch,
                 short: true,
               )
             : Center(

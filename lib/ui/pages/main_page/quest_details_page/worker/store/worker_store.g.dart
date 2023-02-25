@@ -94,17 +94,6 @@ mixin _$WorkerStore on _WorkerStore, Store {
   }
 
   @override
-  dynamic setQuestStatus(int value) {
-    final _$actionInfo = _$_WorkerStoreActionController.startAction(
-        name: '_WorkerStore.setQuestStatus');
-    try {
-      return super.setQuestStatus(value);
-    } finally {
-      _$_WorkerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 opinion: ${opinion},

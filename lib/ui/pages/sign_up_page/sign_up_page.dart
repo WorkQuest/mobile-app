@@ -7,6 +7,7 @@ import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -75,8 +76,11 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
+                      validator: store.signUpNameValidator,
                       hint: "labels.firstName".tr(),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                      ],
                       suffixIcon: null,
                     ),
                   ),
@@ -91,8 +95,11 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
+                      validator: store.signUpNameValidator,
                       hint: "labels.lastName".tr(),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                      ],
                       suffixIcon: null,
                     ),
                   ),
@@ -131,7 +138,9 @@ class SignUpPage extends StatelessWidget {
                         "assets/lock.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      inputFormatters: [],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z0-9!@#\$&*~]')),
+                      ],
                       suffixIcon: null,
                     ),
                   ),
@@ -156,8 +165,7 @@ class SignUpPage extends StatelessWidget {
                     padding: _padding.copyWith(top: 30.0),
                     child: ObserverListener<SignUpStore>(
                       onSuccess: () {
-                        Navigator.pushNamed(context, ConfirmEmail.routeName,
-                            arguments: store.email);
+                        Navigator.pushNamed(context, ConfirmEmail.routeName, arguments: store.email);
                       },
                       child: Observer(
                         builder: (context) {
@@ -171,7 +179,7 @@ class SignUpPage extends StatelessWidget {
                                     }
                                   }
                                 : null,
-                          title: "signUp.create".tr(),
+                            title: "signUp.create".tr(),
                           );
                         },
                       ),

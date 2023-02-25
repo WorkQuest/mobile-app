@@ -9,8 +9,6 @@ import 'package:mobx/mobx.dart';
 import '../../../../enums.dart';
 import 'my_quests_item.dart';
 
-enum FromQuestList { questSearch, myQuest }
-
 class QuestsList extends StatelessWidget {
   final QuestItemPriorityType questItemPriorityType;
 
@@ -20,23 +18,19 @@ class QuestsList extends StatelessWidget {
 
   final ScrollPhysics physics;
 
-  final FromQuestList from;
-
   final bool isLoading;
 
   final bool short;
 
-  QuestsList(
-    this.questItemPriorityType,
-    this.questsList, {
-    this.update,
-    this.physics = const BouncingScrollPhysics(
-      parent: AlwaysScrollableScrollPhysics(),
-    ),
-    required this.isLoading,
-    required this.from,
-    this.short = false,
-  });
+  final PageStorageKey _pageStorageKey = PageStorageKey<int>(1);
+
+  QuestsList(this.questItemPriorityType, this.questsList,
+      {this.update,
+      this.physics = const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      required this.isLoading,
+      this.short = false});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +62,6 @@ class QuestsList extends StatelessWidget {
             MyQuestsItem(
               questsList[index],
               itemType: questItemPriorityType,
-              showStar: from == FromQuestList.myQuest && questItemPriorityType == QuestItemPriorityType.Starred,
             ),
             if (short && index == 2)
               Column(
@@ -91,32 +84,28 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getEmptyBody(BuildContext context) {
-    return SingleChildScrollView(
-      physics: physics,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            "assets/empty_quest_icon.svg",
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "assets/empty_quest_icon.svg",
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Text(
+          "quests.userDontHaveAny".tr() +
+              " " +
+              "quests.${questItemPriorityType.name}".toLowerCase().tr().toLowerCase() +
+              " " +
+              "quests.questYet".tr(),
+          style: TextStyle(
+            color: Color(0xFFD8DFE3),
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            "quests.youDontHaveAny".tr() +
-                " ${questItemPriorityType.name} " +
-                "quests.questYet".tr(),
-            style: TextStyle(
-              color: Color(0xFFD8DFE3),
-            ),
-          ),
-          SizedBox(
-            height: 150,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

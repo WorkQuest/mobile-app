@@ -73,14 +73,21 @@ abstract class _SignUpStore extends IStore<bool> with Store {
       Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
     } catch (e) {
-      this.onError(e.toString());
+      if (e.toString() == "Email used") {
+        this.onError("Email adress is already used. Try to log in.");
+      } else {
+        this.onError(e.toString());
+      }
     }
   }
 
   @action
   String? signUpConfirmPasswordValidator(String? text) {
-    return text! == _password
-        ? null
-        : "Does not match password";
+    return text! == _password ? null : "Does not match password";
+  }
+
+  @action
+  String? signUpNameValidator(String? text) {
+    return RegExp("[a-zA-Z]").hasMatch(text!) ? null : "You can use english letters only";
   }
 }

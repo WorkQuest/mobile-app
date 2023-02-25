@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
 
 class UserAvatar extends StatelessWidget {
-  final double? width;
-  final double? height;
+  final double width;
+  final double height;
   final String? url;
 
   const UserAvatar({
@@ -16,28 +19,15 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      url ?? Constants.defaultImageNetwork,
-      fit: BoxFit.cover,
+    return FadeInImage.memoryNetwork(
       width: width,
       height: height,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null)
-          return child;
-        return Center(
-          child: SizedBox(
-            width: width,
-            height: height,
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          ),
-        );
-      },
-
+      fit: BoxFit.cover,
+      fadeOutDuration: const Duration(milliseconds: 250),
+      image: url ?? Constants.defaultImageNetwork,
+      placeholder: Uint8List.fromList(
+        base64Decode(Constants.base64WhiteHolder),
+      ),
     );
   }
 }

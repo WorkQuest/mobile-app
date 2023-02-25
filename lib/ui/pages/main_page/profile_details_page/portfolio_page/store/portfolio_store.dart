@@ -11,7 +11,7 @@ import 'package:mobx/mobx.dart';
 
 part 'portfolio_store.g.dart';
 
-@injectable
+@singleton
 class PortfolioStore extends _PortfolioStore with _$PortfolioStore {
   PortfolioStore(ApiProvider apiProvider) : super(apiProvider);
 }
@@ -166,16 +166,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       }
       if (offset == portfolioList.length) {
         this.onLoading();
-        final result = await _apiProvider.getPortfolio(
-          userId: userId,
-          offset: offset,
+        portfolioList.addAll(
+          ObservableList.of(
+            await _apiProvider.getPortfolio(
+              userId: userId,
+              offset: offset,
+            ),
+          ),
         );
-        if (!isLoading) {
-          portfolioList.addAll(
-            ObservableList.of(result),
-          );
-        }
-
         offset += 10;
         this.onSuccess(true);
       }
@@ -189,9 +187,8 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     required String userId,
     required bool newList,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 250));
     try {
-      if (newList) {
+      if (newList){
         reviewsList.clear();
         offsetReview = 0;
       }

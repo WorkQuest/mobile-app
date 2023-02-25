@@ -24,21 +24,6 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
     });
   }
 
-  final _$questTypeAtom = Atom(name: '_QuestDetailsStore.questType');
-
-  @override
-  QuestItemPriorityType get questType {
-    _$questTypeAtom.reportRead();
-    return super.questType;
-  }
-
-  @override
-  set questType(QuestItemPriorityType value) {
-    _$questTypeAtom.reportWrite(value, super.questType, () {
-      super.questType = value;
-    });
-  }
-
   final _$updateQuestAsyncAction =
       AsyncAction('_QuestDetailsStore.updateQuest');
 
@@ -62,21 +47,9 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
   }
 
   @override
-  QuestItemPriorityType getQuestType(BaseQuestResponse quest, UserRole role) {
-    final _$actionInfo = _$_QuestDetailsStoreActionController.startAction(
-        name: '_QuestDetailsStore.getQuestType');
-    try {
-      return super.getQuestType(quest, role);
-    } finally {
-      _$_QuestDetailsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
-questInfo: ${questInfo},
-questType: ${questType}
+questInfo: ${questInfo}
     ''';
   }
 }

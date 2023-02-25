@@ -163,29 +163,18 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                       profile.assignedWorker = profile.userData!;
                     if (profile.assignedWorker != null) {
                       portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
                         UserProfile.routeName,
                         arguments: profile.assignedWorker,
                       );
                       portfolioStore.clearData();
                       if (widget.role == UserRole.Worker)
-                        portfolioStore.getPortfolio(
-                          userId: widget.myId,
-                          newList: true,
-                        );
+                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
                       else {
                         userProfileStore.quests.clear();
-                        userProfileStore.getQuests(
-                          userId: widget.myId,
-                          role: widget.role,
-                          newList: true,
-                          isProfileYours:
-                              widget.id == widget.myId ? true : false,
-                        );
+                        userProfileStore.getQuests(widget.myId, widget.role, true);
                       }
-                      portfolioStore.getReviews(
-                          userId: widget.myId, newList: true);
+                      portfolioStore.getReviews(userId: widget.myId, newList: true);
                     }
                     profile.assignedWorker = null;
                   },
@@ -208,10 +197,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                     ),
                     subtitle: Text(
                       widget.userRole.tr(),
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Color(0xFF00AA5B),
-                      ),
+                      style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
                     ),
                   ),
                 ),
@@ -387,8 +373,7 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id &&
-                        completedQuests != "0") {
+                    if (userId != profile.userData!.id && completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -405,8 +390,7 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: userId != profile.userData!.id && completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -454,11 +438,7 @@ Widget employerRating({
                   ],
                 ),
                 Text(
-                  "settings.education.from".tr() +
-                      " " +
-                      reviews +
-                      " " +
-                      "workers.reviews".tr(),
+                  "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                   style: TextStyle(
                     color: Color(0xFFD8DFE3),
                     fontSize: 12.0,
@@ -486,7 +466,7 @@ Widget workerQuestStats({
       child: Container(
         padding: EdgeInsets.all(16.0),
         height: 140,
-        width: 161,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Color(0xFFF7F8FA),
           borderRadius: BorderRadius.all(
@@ -511,21 +491,22 @@ Widget workerQuestStats({
             ),
             GestureDetector(
               onTap: () async {
-                if (userId != null &&
-                    context != null &&
-                    userId != profile?.userData?.id &&
-                    thirdLine != "0") {
+                if (userId != null && context != null && userId != profile?.userData?.id && thirdLine != "0") {
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
-                    arguments: userId,
+                    arguments: ProfileQuestsPage(
+                        userId,
+                        title == "quests.activeQuests"
+                            ? QuestItemPriorityType.Active
+                            : QuestItemPriorityType.Performed),
                   );
                 }
               },
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests"
+                  decoration: title == "quests.activeQuests" || title == "quests.completedQuests"
                       ? TextDecoration.underline
                       : null,
                   color: Color(0xFFD8DFE3),
@@ -565,11 +546,15 @@ Widget workerRating({
               context: context,
               profile: profile,
             ),
+            SizedBox(width: 16),
             workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime',
+              thirdLine: 'workers.showAll',
               textColor: Color(0xFF0083C7),
+              userId: userId,
+              context: context,
+              profile: profile,
             ),
           ],
         ),
@@ -611,11 +596,7 @@ Widget workerRating({
                 ],
               ),
               Text(
-                "settings.education.from".tr() +
-                    " " +
-                    reviews +
-                    " " +
-                    "workers.reviews".tr(),
+                "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                 style: TextStyle(
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
@@ -816,7 +797,7 @@ Widget contactDetails({
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Text(
-                      "Number Confirmed",
+                      "Confirmed",
                       style: TextStyle(
                         color: Color(0xFF0083C7),
                         fontSize: 8,
@@ -902,8 +883,7 @@ class SkillsWidget extends StatefulWidget {
   _SkillsWidgetState createState() => _SkillsWidgetState();
 }
 
-class _SkillsWidgetState extends State<SkillsWidget>
-    with TickerProviderStateMixin<SkillsWidget> {
+class _SkillsWidgetState extends State<SkillsWidget> with TickerProviderStateMixin<SkillsWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -914,9 +894,7 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded
-                ? widget.skills
-                : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),

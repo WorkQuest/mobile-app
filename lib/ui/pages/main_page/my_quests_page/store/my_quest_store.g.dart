@@ -141,22 +141,11 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
       ActionController(name: '_MyQuestStore');
 
   @override
-  void changeLists(dynamic json) {
-    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
-        name: '_MyQuestStore.changeLists');
-    try {
-      return super.changeLists(json);
-    } finally {
-      _$_MyQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic deleteQuest(String id) {
+  dynamic deleteQuest(BaseQuestResponse quest) {
     final _$actionInfo = _$_MyQuestStoreActionController.startAction(
         name: '_MyQuestStore.deleteQuest');
     try {
-      return super.deleteQuest(id);
+      return super.deleteQuest(quest);
     } finally {
       _$_MyQuestStoreActionController.endAction(_$actionInfo);
     }

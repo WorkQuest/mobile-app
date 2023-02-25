@@ -1,9 +1,12 @@
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -12,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../constants.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String routeName = "/settingsPageEmployer";
@@ -34,16 +39,18 @@ class SettingsPage extends StatelessWidget {
                 Expanded(
                   child: Text("ui.profile.myProfile".tr()),
                 ),
-                // InkWell(
-                //   onTap: () {
-                //     AlertDialogUtils.showInfoAlertDialog(context,
-                //         title: 'Warning'.tr(),
-                //         content: 'Service temporarily unavailable');
-                //   },
-                //   child: const Icon(
-                //     Icons.settings_outlined,
-                //   ),
-                // ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfileSettings(settingStore),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.settings_outlined,
+                  ),
+                ),
                 const SizedBox(width: 20.0)
               ],
             ),
@@ -88,8 +95,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(TwoFAPage.routeName);
+                                Navigator.of(context, rootNavigator: true).pushNamed(TwoFAPage.routeName);
                               },
                             ),
                           ],
@@ -109,81 +115,76 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title: "settings.smsVerification2".tr(),
-                                onTap: () =>
-                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                onTap: () => Navigator.of(context, rootNavigator: true).pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
                               _spacer,
 
                               ///Change Role
-                              // SettingsCard(
-                              //   icon: GradientIcon(
-                              //     SvgPicture.asset(
-                              //       "assets/settings_role_icon.svg",
-                              //     ),
-                              //     20.0,
-                              //   ),
-                              //   title: "settings.changeRole".tr(),
-                              //   onTap: () => _onChangePressed(
-                              //     context,
-                              //     userStore: userStore,
-                              //     chooseRoleStore: chooseRoleStore,
-                              //   ),
-                              // ),
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_role_icon.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "settings.changeRole".tr(),
+                                onTap: () => _onChangePressed(
+                                  context,
+                                  userStore: userStore,
+                                  chooseRoleStore: chooseRoleStore,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 15.0),
-                        //   child: Row(
-                        //     mainAxisSize: MainAxisSize.max,
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       ///My Disputes
-                        //       SettingsCard(
-                        //         icon: GradientIcon(
-                        //           SvgPicture.asset(
-                        //             "assets/unread_chat.svg",
-                        //           ),
-                        //           20.0,
-                        //         ),
-                        //         title: "btn.myDisputes".tr(),
-                        //         onTap: () {
-                        //           _showAlertInfo(
-                        //             context,
-                        //             title: "Service temporarily unavailable",
-                        //           );
-                        //           // Navigator.of(context, rootNavigator: true)
-                        //           //     .pushNamed(MyDisputesPage.routeName);
-                        //         },
-                        //       ),
-                        //       _spacer,
-                        //
-                        //       ///Change Language
-                        //       SettingsCard(
-                        //         icon: GradientIcon(
-                        //           SvgPicture.asset(
-                        //             "assets/settings_language_icon.svg",
-                        //           ),
-                        //           20.0,
-                        //         ),
-                        //         title:
-                        //             "Language \n${Constants.languageList.keys.firstWhere(
-                        //           (k) => Constants.languageList[k] == context.locale,
-                        //         )}",
-                        //         onTap: () {
-                        //           AlertDialogUtils.showInfoAlertDialog(context,
-                        //               title: 'Warning'.tr(),
-                        //               content: 'Service temporarily unavailable');
-                        //
-                        //           // Navigator.of(context, rootNavigator: true)
-                        //           //     .pushNamed(ChangeLanguagePage.routeName);
-                        //         },
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ///My Disputes
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/unread_chat.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "btn.myDisputes".tr(),
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true).pushNamed(MyDisputesPage.routeName);
+                                },
+                              ),
+                              _spacer,
+
+                              ///Change Language
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_language_icon.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "Language \n${Constants.languageList.keys.firstWhere(
+                                  (k) => Constants.languageList[k] == context.locale,
+                                )}",
+                                onTap: () {
+                                  AlertDialogUtils.showInfoAlertDialog(
+                                    context,
+                                    title: 'Still under construction',
+                                    content: 'Other languages will be added soon',
+                                  );
+
+                                  // Navigator.of(context, rootNavigator: true)
+                                  //     .pushNamed(ChangeLanguagePage.routeName);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -219,36 +220,36 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  // InstrumentCard(
-                  //   urlArgument: "pension",
-                  //   iconPath: "assets/settings_pension_icon.svg",
-                  //   title: "ui.menu.pension.title".tr(),
-                  //   enable: false,
-                  // ),
-                  // InstrumentCard(
-                  //   urlArgument: "referral",
-                  //   iconPath: "assets/settings_referral_icon.svg",
-                  //   title: "ui.menu.referral.title".tr(),
-                  //   enable: false,
-                  // ),
-                  // InstrumentCard(
-                  //   urlArgument: "insuring",
-                  //   iconPath: "assets/settings_p2p_icon.svg",
-                  //   title: "ui.menu.p2p.title".tr(),
-                  //   enable: false,
-                  // ),
-                  // InstrumentCard(
-                  //   urlArgument: "savings",
-                  //   iconPath: "assets/setting_saving_product_icon.svg",
-                  //   title: "ui.menu.savings.title".tr(),
-                  //   enable: false,
-                  // ),
-                  // InstrumentCard(
-                  //   urlArgument: "crediting",
-                  //   iconPath: "assets/settings_wallet.svg",
-                  //   title: "crediting.lending".tr(),
-                  //   enable: false,
-                  // ),
+                  InstrumentCard(
+                    urlArgument: "pension",
+                    iconPath: "assets/settings_pension_icon.svg",
+                    title: "ui.menu.pension.title".tr(),
+                    enable: false,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "referral",
+                    iconPath: "assets/settings_referral_icon.svg",
+                    title: "ui.menu.referral.title".tr(),
+                    enable: false,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "insuring",
+                    iconPath: "assets/settings_p2p_icon.svg",
+                    title: "ui.menu.p2p.title".tr(),
+                    enable: false,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "savings",
+                    iconPath: "assets/setting_saving_product_icon.svg",
+                    title: "ui.menu.savings.title".tr(),
+                    enable: false,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "crediting",
+                    iconPath: "assets/settings_wallet.svg",
+                    title: "crediting.lending".tr(),
+                    enable: false,
+                  ),
                   InstrumentCard(
                     urlArgument: "mining",
                     iconPath: "assets/setting_chart.svg",
@@ -256,17 +257,17 @@ class SettingsPage extends StatelessWidget {
                     enable: true,
                   ),
                   InstrumentCard(
-                    urlArgument: "bridge",
+                    urlArgument: "crosschain",
                     iconPath: "assets/work_quest_icon.svg",
                     title: "WorkQuest Bridge",
                     enable: true,
                   ),
-                  // InstrumentCard(
-                  //   urlArgument: "staking",
-                  //   iconPath: "assets/work_quest_icon.svg",
-                  //   title: "WorkQuest Staking",
-                  //   enable: false,
-                  // ),
+                  InstrumentCard(
+                    urlArgument: "staking",
+                    iconPath: "assets/work_quest_icon.svg",
+                    title: "WorkQuest Staking",
+                    enable: false,
+                  ),
                 ],
               ),
             ),
@@ -281,18 +282,37 @@ class SettingsPage extends StatelessWidget {
     required ProfileMeStore userStore,
     required ChooseRoleStore chooseRoleStore,
   }) async {
-    AlertDialogUtils.showInfoAlertDialog(context,
-        title: 'Warning'.tr(), content: 'Service temporarily unavailable');
+    if (userStore.userData?.isTotpActive == true) {
+      if (userStore.userData!.questsStatistic!.opened != 0) {
+        _showAlertInfo(context, title: "There are active quests");
+      } else {
+        chooseRoleStore.setRole(userStore.userData!.role);
+        chooseRoleStore.isChange = true;
+        await Navigator.of(context, rootNavigator: true).pushNamed(
+          ApproveRolePage.routeName,
+          arguments: chooseRoleStore,
+        );
+      }
+    } else {
+      _showAlertInfo(context, title: "2FA disabled");
+    }
   }
 
   _showAlertInfo(
     BuildContext context, {
     required String title,
   }) {
-    AlertDialogUtils.showInfoAlertDialog(
+    AlertDialogUtils.showAlertDialog(
       context,
-      title: "Warning",
-      content: title,
+      title: Text("Warning"),
+      content: Text(title),
+      needCancel: false,
+      titleCancel: null,
+      titleOk: "Ok",
+      onTabCancel: null,
+      onTabOk: null,
+      colorCancel: null,
+      colorOk: Colors.blue,
     );
   }
 }

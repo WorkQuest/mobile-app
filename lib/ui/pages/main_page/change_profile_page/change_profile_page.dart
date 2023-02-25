@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -48,12 +47,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
     oldPhone = Phone(
-      codeRegion: profile!.userData?.phone?.codeRegion ??
-          (profile!.userData?.tempPhone?.codeRegion ?? ''),
-      fullPhone: profile!.userData?.phone?.fullPhone ??
-          (profile!.userData?.tempPhone?.fullPhone ?? ''),
-      phone:
-          profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
+      codeRegion: profile!.userData?.phone?.codeRegion ?? (profile!.userData?.tempPhone?.codeRegion ?? ''),
+      fullPhone: profile!.userData?.phone?.fullPhone ?? (profile!.userData?.tempPhone?.fullPhone ?? ''),
+      phone: profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
     );
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
@@ -65,10 +61,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       secondPhone = pageStore.secondPhoneNumber ?? PhoneNumber();
       setState(() {});
     });
-    if (profile!.userData!.locationPlaceName != null)
-      pageStore.address = profile!.userData!.locationPlaceName!;
-    _controller = SkillSpecializationController(
-        initialValue: pageStore.userData.userSpecializations);
+    if (profile!.userData!.locationPlaceName != null) pageStore.address = profile!.userData!.locationPlaceName!;
+    _controller = SkillSpecializationController(initialValue: pageStore.userData.userSpecializations);
     _controllerKnowledge = KnowledgeWorkSelectionController();
     _controllerWork = KnowledgeWorkSelectionController();
     super.initState();
@@ -101,20 +95,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       ),
       body: ObserverListener<ProfileMeStore>(
         onSuccess: () async {
-          if (oldPhone != null &&
-              oldPhone!.fullPhone.isNotEmpty &&
-              !pageStore.numberChanged(oldPhone!.fullPhone)) {
+          if (oldPhone != null && oldPhone!.fullPhone.isNotEmpty && !pageStore.numberChanged(oldPhone!.fullPhone)) {
             await AlertDialogUtils.showSuccessDialog(context);
-            await profile!.getProfileMe();
-            Navigator.pop(context, true);
           } else {
-            await AlertDialogUtils.showSuccessDialog(context,
-                text: 'Enter code from SMS in SMS Verification');
-            await profile!.getProfileMe();
-            await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
-              SMSVerificationPage.routeName,
-            );
+            await AlertDialogUtils.showSuccessDialog(context, text: 'Enter code from SMS in SMS Verification');
           }
+          await profile!.getProfileMe();
+          Navigator.pop(context, true);
         },
         child: Observer(
           builder: (_) => profile!.isLoading
@@ -171,7 +158,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               ),
               Observer(
                 builder: (_) => _AddressProfileWidget(
-                  address: pageStore.address.isEmpty ? profile!.userData!.additionalInfo?.address.toString() ?? pageStore.address : pageStore.address,
+                  address: pageStore.address.isEmpty
+                      ? profile!.userData!.additionalInfo?.address.toString() ?? pageStore.address
+                      : pageStore.address,
                   onTap: () {
                     pageStore.getPrediction(context);
                   },
@@ -227,8 +216,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ),
               _InputWidget(
                 title: "settings.twitterUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
+                initialValue: pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.twitter = text;
@@ -238,8 +226,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               ),
               _InputWidget(
                 title: "settings.facebookUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
+                initialValue: pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.facebook = text;
@@ -249,8 +236,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               ),
               _InputWidget(
                 title: "settings.linkedInUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
+                initialValue: pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.linkedin = text;
@@ -260,8 +246,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               ),
               _InputWidget(
                 title: "settings.instagramUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
+                initialValue: pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.instagram = text;
@@ -291,41 +276,22 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onSave() async {
-    if ((pageStore.userData.tempPhone?.fullPhone ?? "").contains("-") ||
-        (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: "Warning",
-        content: "The number must not contain dashes or spaces",
-      );
-      return;
-    }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(
-          _controllerKnowledge!.getListMap(), context)) return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
-        return;
+      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
       pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
       pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
-      if (pageStore.address.isNotEmpty ) {
+      if (pageStore.address.isNotEmpty) {
         pageStore.userData.additionalInfo!.address = pageStore.address;
         pageStore.userData.locationPlaceName = pageStore.address;
       }
-      pageStore.userData.additionalInfo?.educations =
-          _controllerKnowledge!.getListMap();
-      pageStore.userData.additionalInfo?.workExperiences =
-          _controllerWork!.getListMap();
-      pageStore.userData.additionalInfo!.address = pageStore.address;
-      pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
-      if (!profile!.isLoading)
-        pageStore.userData.userSpecializations =
-            _controller!.getSkillAndSpecialization();
+      if (!profile!.isLoading) pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
@@ -378,15 +344,15 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               )
             : AlertDialog(
                 title: Text(
-                  "modals.error".tr(),
+                  "modals.leave".tr(),
                 ),
                 content: Text(
-                  "modals.dontSave".tr(),
+                  "modals.unsavedChanges".tr(),
                 ),
                 actions: [
                   TextButton(
                     child: Text(
-                      "meta.ok".tr(),
+                      "meta.close".tr(),
                     ),
                     onPressed: Navigator.of(context).pop,
                   ),
@@ -637,8 +603,7 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               setSelectorButtonAsPrefixIcon: true,
-              leadingPadding: 8.0,
-              selectorType: PhoneInputSelectorType.DIALOG,
+              selectorType: PhoneInputSelectorType.DROPDOWN,
             ),
             hintText: "modals.phoneNumber".tr(),
             keyboardType: TextInputType.number,

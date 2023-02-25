@@ -34,7 +34,6 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
       setState(() => role = profileMeStore.userData!.role);
       userID = profileMeStore.userData!.id;
       myQuests!.setId(userID);
-      myQuests!.setRole(profileMeStore.userData!.role);
       myQuests!.getQuests(userID, role, true);
     });
     super.initState();
@@ -158,7 +157,6 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                   type,
                   list,
                   isLoading: myQuests!.isLoading,
-                  from: FromQuestList.myQuest,
                 ),
               ),
             ],

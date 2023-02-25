@@ -18,7 +18,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   _MyQuestStore(this._apiProvider) {
-    WebSocket().handlerQuestList = this.changeLists;
+    WebSocket().handlerQuests = this.changeQuest;
   }
 
   @observable
@@ -60,15 +60,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   String myId = "";
 
-  UserRole role = UserRole.Worker;
-
   void setId(String value) => myId = value;
-  void setRole(UserRole value) => role = value;
 
-  @action
-  void changeLists(dynamic json) {
+  void changeQuest(dynamic json) {
     try {
-      print("MyQuestStore");
       var quest =
           BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
       (json["recipients"] as List).forEach((element) {
@@ -84,8 +79,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
-      deleteQuest(quest.id);
-      addQuest(quest, quest.star);
+      deleteQuest(quest);
+      addQuest(quest, true);
     } catch (e) {
       print("ERROR: $e");
     }
@@ -93,50 +88,42 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void sortQuests() {
     active.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     starred.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     performed.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     invited.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
   }
 
   @action
-  deleteQuest(String id) {
-    active.removeWhere((element) => element.id == id);
-    performed.removeWhere((element) => element.id == id);
-    invited.removeWhere((element) => element.id == id);
-    starred.removeWhere((element) {
-      final result = element.id == id;
-      if (result) {
-        _apiProvider.removeStar(id: id);
-      }
-      return result;
-    });
+  deleteQuest(BaseQuestResponse quest) {
+    active.removeWhere((element) => element.id == quest.id);
+    performed.removeWhere((element) => element.id == quest.id);
+    invited.removeWhere((element) => element.id == quest.id);
+    starred.removeWhere((element) => element.id == quest.id);
   }
 
   @action
   addQuest(BaseQuestResponse quest, bool restoreStarred) {
-    if ((quest.status == 0 ||
-            quest.status == 1 ||
-            quest.status == 3 ||
-            quest.status == 5) &&
-        (role != UserRole.Worker || quest.assignedWorker?.id == myId))
+    if (quest.status == 0 ||
+        quest.status == 1 ||
+        quest.status == 3 ||
+        quest.status == 5)
       active.add(quest);
-    else if (quest.status == 4 && (role != UserRole.Worker || quest.assignedWorker?.id == myId)) {
+    else if (quest.status == 4) {
       invited.add(quest);
       // requested.add(quest);
-    } else if (quest.status == 6 && (role != UserRole.Worker || quest.assignedWorker?.id == myId))
-      performed.add(quest);
+    } else if (quest.status == 6) performed.add(quest);
     if (restoreStarred) starred.add(quest);
     sortQuests();
   }
@@ -170,24 +157,18 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
-    await Future.delayed(const Duration(milliseconds: 250));
     try {
-      await Future.delayed(const Duration(milliseconds: 250));
       this.onLoading();
-      print('createNewList: $createNewList');
       if (createNewList) {
         this.offsetActive = 0;
         this.offsetInvited = 0;
         this.offsetPerformed = 0;
         this.offsetStarred = 0;
 
-        active = ObservableList.of([]);
-        invited = ObservableList.of([]);
-        performed = ObservableList.of([]);
-        starred = ObservableList.of([]);
-        // invited.clear();
-        // performed.clear();
-        // starred.clear();
+        active.clear();
+        invited.clear();
+        performed.clear();
+        starred.clear();
 
         loadActive = true;
         loadInvited = true;
@@ -196,7 +177,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       }
 
       if (role == UserRole.Employer) {
-        if (loadActive) if (loadActive)
+        if (loadActive)
           active.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
             sort: sort,

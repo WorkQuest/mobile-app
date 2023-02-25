@@ -98,15 +98,21 @@ class ProfileMeResponse with ClusterItem {
       lastName: json["lastName"] ?? "",
       phone: json["phone"] == null
           ? null
-          : Phone(
-              fullPhone: json["phone"] ?? '',
-              phone: '',
-              codeRegion: '',
+          : Phone.fromJson(
+              json["phone"] ??
+                  {
+                    "codeRegion": "",
+                    "fullPhone": "",
+                    "phone": "",
+                  },
             ),
-      tempPhone: Phone(
-        fullPhone: json["tempPhone"] ?? '',
-        phone: '',
-        codeRegion: '',
+      tempPhone: Phone.fromJson(
+        json["tempPhone"] ??
+            {
+              "codeRegion": "",
+              "fullPhone": "",
+              "phone": "",
+            },
       ),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
@@ -260,20 +266,8 @@ class RatingStatistic {
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
     int? status;
-    switch (json["status"]) {
-      case 'noStatus':
-        status = 3;
-        break;
-      case 'verified':
-        status = 2;
-        break;
-      case 'reliable':
-        status = 1;
-        break;
-      case 'topRanked':
-        status = 0;
-        break;
-    }
+
+    status = json["status"];
 
     return RatingStatistic(
       id: json["id"],

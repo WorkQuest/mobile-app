@@ -10,22 +10,28 @@ class Validators {
     if (text.isEmpty) {
       return "Empty field";
     }
-    if (int.parse(text) < 1) return "Please enter a value greater than zero";
-    return null;
+    return double.parse(text) < 1 ? "Must be 1 or more" : null;
   }
 
   static String? emailValidator(String? email) {
-    String p =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    String p = r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 
     RegExp regExp = new RegExp(p);
 
     return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
   }
 
+  static String? signInPasswordValidator(String? text) {
+    if (text!.length < 8) {
+      return "Password must contain at least 8 characters";
+    } else {
+      return null;
+    }
+  }
+
   static String? mnemonicValidator(String? value) {
     if (value!.length <= 24) {
-      return "A small number of words";
+      return "Entered secret phrase is too short";
     }
     if (value.split(' ').toList().length < 12) {
       return "Incorrect mnemonic format";
@@ -34,21 +40,17 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return text!.length >= 8
+    return RegExp(r'^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$').hasMatch(text!)
         ? null
-        : "Password must be at least 8 characters long";
+        : "Use 8 or more characters with letters, numbers & symbols";
   }
 
   static String? firstNameValidator(String? text) {
-    return (text?.length ?? 0) > 1
-        ? null
-        : "First name must be more than 2 characters";
+    return (text?.length ?? 0) > 1 ? null : "First name must be more than 2 characters";
   }
 
   static String? lastNameValidator(String? text) {
-    return (text?.length ?? 0) > 1
-        ? null
-        : "Last name must be more than 2 characters";
+    return (text?.length ?? 0) > 1 ? null : "Last name must be more than 2 characters";
   }
 
   static String? phoneNumberValidator(String? text) {
@@ -63,34 +65,18 @@ class Validators {
   }
 
   static String? descriptionValidator(String? text) {
-    return (text?.length ?? 0) < 400
-        ? null
-        : "Too many characters ${text!.length}/400";
+    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/400";
   }
 
   static String? nicknameTwitterValidator(String? text) {
-    return (text?.length ?? 0) < 400
-        ? null
-        : "Too many characters ${text!.length}/15";
+    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/15";
   }
 
   static String? nicknameFacebookValidator(String? text) {
-    return (text?.length ?? 0) < 400
-        ? null
-        : "Too many characters ${text!.length}/50";
+    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/50";
   }
 
   static String? nicknameLinkedInValidator(String? text) {
-    return (text?.length ?? 0) < 400
-        ? null
-        : "Too many characters ${text!.length}/30";
-  }
-
-  static String? amountValidator(String? text) {
-    print("TAG: $text");
-    print("TAG: ${double.parse(text ?? "0")}");
-    return double.parse(text ?? "0") > 0.0
-        ? null
-        : "Please enter a value greater than 0";
+    return (text?.length ?? 0) < 400 ? null : "Too many characters ${text!.length}/30";
   }
 }

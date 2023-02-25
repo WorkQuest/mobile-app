@@ -5,7 +5,6 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
-import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -42,9 +41,7 @@ extension CustomAppBar on UserProfileState {
                   color: Colors.white,
                 ),
                 onPressed: () async {
-                  final result =
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
+                  final result = await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChangeProfilePage.routeName,
                   );
                   if (result != null && result as bool) {
@@ -66,16 +63,15 @@ extension CustomAppBar on UserProfileState {
           background: Stack(
             fit: StackFit.expand,
             children: [
-              UserAvatar(
-                width: null,
-                height: null,
-                url: info == null
+              Image.network(
+                info == null
                     ? userStore!.userData!.avatar != null
                         ? userStore!.userData!.avatar!.url ?? standartImage
                         : standartImage
                     : info.avatar != null
                         ? info.avatar!.url ?? standartImage
                         : standartImage,
+                fit: BoxFit.cover,
               ),
               Positioned(
                 bottom: info == null
@@ -158,22 +154,17 @@ extension ReviewsTab on UserProfileState {
                                 : 3);
                         index++)
                       ReviewsWidget(
-                        avatar: portfolioStore!
-                                .reviewsList[index].fromUser.avatar?.url ??
+                        avatar: portfolioStore!.reviewsList[index].fromUser.avatar?.url ??
                             "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                        name: portfolioStore!
-                                .reviewsList[index].fromUser.firstName +
+                        name: portfolioStore!.reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!
-                                .reviewsList[index].fromUser.lastName,
+                            portfolioStore!.reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!
-                                    .reviewsList[index].fromUserId ==
+                        userRole: portfolioStore!.reviewsList[index].fromUserId ==
                                 portfolioStore!.reviewsList[index].quest.userId
                             ? "role.employer"
                             : "role.worker",
-                        questTitle:
-                            portfolioStore!.reviewsList[index].quest.title,
+                        questTitle: portfolioStore!.reviewsList[index].quest.title,
                         cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
@@ -198,19 +189,8 @@ extension ReviewsTab on UserProfileState {
                           await Navigator.pushNamed(
                             context,
                             ReviewPage.routeName,
-                            arguments: ReviewPageArguments(
-                              userId: widget.info == null
-                                  ? userStore!.userData!.id
-                                  : widget.info!.id,
-                              role: widget.info == null
-                                  ? userStore!.userData!.role
-                                  : widget.info!.role,
-                              store: portfolioStore!,
-                            ),
+                            arguments: portfolioStore!,
                           );
-                          print('id user: ${widget.info == null
-                              ? userStore!.userData!.id
-                              : widget.info!.id}');
                           await portfolioStore!.getReviews(
                             userId: widget.info == null
                                 ? userStore!.userData!.id

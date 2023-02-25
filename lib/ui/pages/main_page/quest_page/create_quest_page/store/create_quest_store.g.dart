@@ -323,28 +323,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
       ActionController(name: '_CreateQuestStore');
 
   @override
-  void increaseRuntime() {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.increaseRuntime');
-    try {
-      return super.increaseRuntime();
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void decreaseRuntime() {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.decreaseRuntime');
-    try {
-      return super.decreaseRuntime();
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setQuestTitle(String value) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.setQuestTitle');

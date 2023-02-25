@@ -19,6 +19,7 @@ class InputToolbar extends StatefulWidget {
 
 class _InputToolbarState extends State<InputToolbar> {
   TextEditingController _controller = TextEditingController();
+  bool checkPermission = false;
   FilePickerResult? result;
   List<File> files = [];
 
@@ -37,41 +38,31 @@ class _InputToolbarState extends State<InputToolbar> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              onSelected: widget
-                          .store.chat!.chatModel.questChat?.quest?.status !=
-                      6
-                  ? (value) async {
-                      switch (value) {
-                        case "modals.uploadAImages":
-                          result = await FilePicker.platform.pickFiles(
-                              allowMultiple: true,
-                              type: FileType.custom,
-                              allowedExtensions: [
-                                'jpeg',
-                                'webp',
-                                'mp4',
-                                'mov',
-                                'jpg',
-                                'png'
-                              ]);
-                          break;
-                        case "modals.uploadADocuments":
-                          result = await FilePicker.platform.pickFiles(
-                            allowMultiple: true,
-                            type: FileType.custom,
-                            allowedExtensions: ['pdf', 'doc', 'docx'],
-                          );
-                          break;
-                      }
-                      if (result != null) {
-                        files.addAll(
-                            result!.paths.map((path) => File(path!)).toList());
-                        widget.store.media.addAll(files);
-                        files.clear();
-                        result = null;
-                      }
-                    }
-                  : null,
+              onSelected: (value) async {
+                switch (value) {
+                  case "modals.uploadAImages":
+                    result = await FilePicker.platform.pickFiles(
+                      allowMultiple: true,
+                      type: FileType.custom,
+                      allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']
+                    );
+                    break;
+                  case "modals.uploadADocuments":
+                    result = await FilePicker.platform.pickFiles(
+                      allowMultiple: true,
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf', 'doc', 'docx'],
+                    );
+                    break;
+                }
+                if (result != null) {
+                  files.addAll(
+                      result!.paths.map((path) => File(path!)).toList());
+                  widget.store.media.addAll(files);
+                  files.clear();
+                  result = null;
+                }
+              },
               itemBuilder: (BuildContext context) {
                 return {
                   "modals.uploadAImages",
@@ -89,20 +80,13 @@ class _InputToolbarState extends State<InputToolbar> {
           ),
           Expanded(
             child: TextFormField(
-              readOnly:
-                  widget.store.chat!.chatModel.questChat?.quest?.status != 6
-                      ? false
-                      : true,
               controller: _controller,
               textInputAction: TextInputAction.newline,
               minLines: 1,
               maxLines: 8,
               onChanged: (text) => setState(() {}),
               decoration: InputDecoration(
-                hintText:
-                    widget.store.chat!.chatModel.questChat?.quest?.status != 6
-                        ? 'Text'
-                        : "Chat closed",
+                hintText: 'Text',
               ),
               style: TextStyle(
                 fontSize: 16,
@@ -110,11 +94,10 @@ class _InputToolbarState extends State<InputToolbar> {
             ),
           ),
           Observer(
-            builder: (_) => InkWell(
+            builder:(_) => InkWell(
               onTap: (_controller.text.isNotEmpty ||
                           widget.store.media.isNotEmpty) &&
-                      !widget.store.isLoading &&
-                      widget.store.chat!.chatModel.questChat?.quest?.status != 6
+                      !widget.store.isLoading
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,

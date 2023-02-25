@@ -126,17 +126,6 @@ mixin _$EmployerStore on _EmployerStore, Store {
   }
 
   @override
-  dynamic setQuestStatus(int value) {
-    final _$actionInfo = _$_EmployerStoreActionController.startAction(
-        name: '_EmployerStore.setQuestStatus');
-    try {
-      return super.setQuestStatus(value);
-    } finally {
-      _$_EmployerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void changeQuest(dynamic json) {
     final _$actionInfo = _$_EmployerStoreActionController.startAction(
         name: '_EmployerStore.changeQuest');
