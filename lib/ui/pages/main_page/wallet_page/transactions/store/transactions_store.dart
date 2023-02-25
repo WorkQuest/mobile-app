@@ -62,7 +62,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         case TYPE_COINS.WUSD:
           result = await _apiProvider.getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wUsd,
+            addressToken: AddressCoins.wqt,
             limit: 10,
             offset: isForce ? transactions.length : 0,
           );
@@ -88,7 +88,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       result!.map((tran) {
         if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
           switch (tran.fromAddressHash!.hex!) {
-            case AddressCoins.wUsd:
+            case AddressCoins.wqt:
               tran.coin = TYPE_COINS.WUSD;
               break;
             case AddressCoins.wEth:
@@ -103,7 +103,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           }
         } else {
           switch (tran.toAddressHash!.hex!) {
-            case AddressCoins.wUsd:
+            case AddressCoins.wqt:
               tran.coin = TYPE_COINS.WUSD;
               break;
             case AddressCoins.wEth:
@@ -151,10 +151,10 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
             offset: transactions.length,
           );
           break;
-        case TYPE_COINS.WUSD:
+        case TYPE_COINS.WQT:
           result = await _apiProvider.getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wUsd,
+            addressToken: AddressCoins.wqt,
             limit: 10,
             offset: transactions.length,
           );

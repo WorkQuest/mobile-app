@@ -48,9 +48,9 @@ abstract class AppColor {
 }
 
 class AddressCoins {
-  static const wUsd = '0x0ed13a696fa29151f3064077acb2a281e68df2aa';
-  static const wEth = '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24';
-  static const wBnb = '0x75349c3f2c3cfd94488a71a350ba841c14309c5b';
+  static const wqt = '0x917dc1a9e858deb0a5bdcb44c7601f655f728dfe';
+  static const wEth = '0x75fc17d0c358f19528d5c24f29b37fa2aa725b1e';
+  static const wBnb = '0x9c9fe9a77a3b0ed1d3584afadd5873843baf0e12';
 }
 
 class WorkerBadge {
@@ -59,3 +59,17 @@ class WorkerBadge {
 
   const WorkerBadge(this.title, this.color);
 }
+
+enum Network { mainnet, testnet }
+
+enum NetworkName {
+  workNetMainnet,
+  workNetTestnet,
+  ethereumMainnet,
+  ethereumTestnet,
+  bscMainnet,
+  bscTestnet,
+  polygonMainnet,
+  polygonTestnet
+}
+

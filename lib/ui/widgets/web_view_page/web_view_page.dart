@@ -129,7 +129,7 @@ class _WebViewPageState extends State<WebViewPage> {
   void _onListCookies(WebViewController controller, BuildContext context) async {
     final String cookies = await controller.evaluateJavascript('document.cookie');
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(SnackBar(
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -145,7 +145,7 @@ class _WebViewPageState extends State<WebViewPage> {
     await controller.evaluateJavascript(
         'caches.open("test_caches_entry"); localStorage["test_localStorage"] = "dummy_entry";');
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Added a test entry to cache.'),
     ));
   }
@@ -159,7 +159,7 @@ class _WebViewPageState extends State<WebViewPage> {
   void _onClearCache(WebViewController controller, BuildContext context) async {
     await controller.clearCache();
     // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(const SnackBar(
+     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Cache cleared."),
     ));
   }
@@ -202,8 +202,7 @@ class NavigationControls extends StatelessWidget {
                         await controller.goBack();
                       } else {
                         // ignore: deprecated_member_use
-                        Scaffold.of(context).showSnackBar(
-                          const SnackBar(
+                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("No back history item"),
                           ),
                         );
@@ -220,8 +219,7 @@ class NavigationControls extends StatelessWidget {
                         await controller.goForward();
                       } else {
                         // ignore: deprecated_member_use
-                        Scaffold.of(context).showSnackBar(
-                          const SnackBar(
+                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("No forward history item"),
                           ),
                         );
