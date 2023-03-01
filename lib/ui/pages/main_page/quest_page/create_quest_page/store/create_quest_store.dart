@@ -281,11 +281,11 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState>
           questId: questId,
         );
       } else {
-        final balanceWusd = await _client.getBalanceInUnit(
+        final balanceUsdt = await _client.getBalanceInUnit(
             EtherUnit.ether, WalletRepository().privateKey);
         final gas = await _client.getGas();
 
-        if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
+        if (balanceUsdt < double.parse(price) + (gas.getInEther).toDouble()) {
           throw Exception('Not enough balance.');
         }
 

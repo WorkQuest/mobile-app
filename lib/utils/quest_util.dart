@@ -145,11 +145,11 @@ class QuestUtils {
 
   static int getPriorityToValue(String priority) {
     switch (priority) {
-      case "Fixed delivery":
+      case "Low":
         return 1;
-      case "Short term 1 week":
+      case "Normal":
         return 2;
-      case "Urgent 24-72h":
+      case "Urgent":
         return 3;
       default:
         throw FormatException('Unknown Priority Value');

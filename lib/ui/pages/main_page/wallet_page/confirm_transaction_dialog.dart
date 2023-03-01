@@ -116,7 +116,7 @@ Widget content({
                   textAlign: alignText,
                 ),
                 Text(
-                  "$amount WUSD",
+                  "$amount USDT",
                   style: valueTextStyle,
                   textAlign: alignText,
                 ),

@@ -75,8 +75,7 @@ class _WalletPageState extends State<WalletPage> {
                 child: ValueListenableBuilder<NetworkName?>(
                   valueListenable: WalletRepository().networkName,
                   builder: (_, value, child) {
-                    final _networkName =
-                        Web3Utils.getNetworkNameForSwitch(value!);
+                    final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
                     return SwitchNetworkWidget<SwitchNetworkNames>(
                       value: _networkName,
                       onChanged: _onChangedSwitchNetwork,
@@ -100,9 +99,7 @@ class _WalletPageState extends State<WalletPage> {
             child: Column(
               children: [
                 CopyAddressWalletWidget(
-                  format: WalletRepository().isOtherNetwork
-                      ? FormatAddress.HEX
-                      : FormatAddress.BECH32,
+                  format: WalletRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32,
                 ),
                 const SizedBox(
                   height: 20,
@@ -131,18 +128,14 @@ class _WalletPageState extends State<WalletPage> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: outlinedButton(
-                          route: WithdrawPage.routeName,
-                          title: "wallet.withdraw".tr()),
+                      child: outlinedButton(route: WithdrawPage.routeName, title: "wallet.withdraw".tr()),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       flex: 1,
-                      child: outlinedButton(
-                          route: DepositPage.routeName,
-                          title: "wallet.deposit".tr()),
+                      child: outlinedButton(route: DepositPage.routeName, title: "wallet.deposit".tr()),
                     ),
                     const SizedBox(
                       width: 10,
@@ -152,8 +145,7 @@ class _WalletPageState extends State<WalletPage> {
                       child: ElevatedButton(
                         child: Text('wallet'.tr(gender: 'swap')),
                         onPressed: () async {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushNamed(SwapPage.routeName);
+                          Navigator.of(context, rootNavigator: true).pushNamed(SwapPage.routeName);
                         },
                       ),
                     )
@@ -178,10 +170,7 @@ class _WalletPageState extends State<WalletPage> {
               titlePadding: const EdgeInsets.only(bottom: 18.0),
               title: Text(
                 'wallet.table.trx'.tr(),
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
               ),
             ),
             actions: const [
@@ -248,13 +237,9 @@ class _WalletPageState extends State<WalletPage> {
       return false;
     }
     final _networkName = WalletRepository().networkName.value!;
-    if (_networkName == NetworkName.workNetTestnet ||
-        _networkName == NetworkName.workNetMainnet) {
+    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
       try {
-        final _wqt = GetIt.I
-            .get<WalletStore>()
-            .coins
-            .firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
           return true;
         }
@@ -466,14 +451,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
                     );
@@ -524,10 +503,10 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.BNB);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.ETH);
         break;
       case 3:
-        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.ETH);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.BNB);
         break;
       case 4:
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);

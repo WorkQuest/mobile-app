@@ -75,8 +75,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded:
-                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
+                responded: widget.questInfo.responded ?? widget.questInfo.questChat?.response,
                 role: store.role,
               ),
             Row(
@@ -86,16 +85,13 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   child: UserAvatar(
                     width: 30,
                     height: 30,
-                    url: widget.questInfo.user?.avatar?.url ??
-                        Constants.defaultImageNetwork,
+                    url: widget.questInfo.user?.avatar?.url ?? Constants.defaultImageNetwork,
                   ),
                 ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
-                    widget.questInfo.user!.firstName +
-                        " " +
-                        widget.questInfo.user!.lastName,
+                    widget.questInfo.user!.firstName + " " + widget.questInfo.user!.lastName,
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -198,9 +194,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 Row(
                   children: [
                     PriorityView(
-                      widget.questInfo.priority != 0
-                          ? widget.questInfo.priority - 1
-                          : 0,
+                      widget.questInfo.priority != 0 ? widget.questInfo.priority - 1 : 0,
                     ),
                     const SizedBox(width: 5),
                     PayPeriodView(widget.questInfo.payPeriod),
@@ -208,7 +202,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 ),
                 Flexible(
                   child: Text(
-                    QuestUtils.getPrice(widget.questInfo.price) + "  WUSD",
+                    QuestUtils.getPrice(widget.questInfo.price) + "  USDT",
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       color: AppColor.green,
