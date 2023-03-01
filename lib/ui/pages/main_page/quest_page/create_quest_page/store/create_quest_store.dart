@@ -26,7 +26,8 @@ class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
   CreateQuestStore(ApiProvider questApiProvider) : super(questApiProvider);
 }
 
-abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with Store {
+abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState>
+    with Store {
   final ApiProvider apiProvider;
 
   _CreateQuestStore(this.apiProvider);
@@ -108,7 +109,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   void decreaseRuntime() {}
 
   @action
-  setConfirmUnderstandAboutEdit(bool value) => confirmUnderstandAboutEdit = value;
+  setConfirmUnderstandAboutEdit(bool value) =>
+      confirmUnderstandAboutEdit = value;
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -123,16 +125,19 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) =>
+      employment = selectedEmployment;
 
   @action
   void changedPayPeriod(String value) => payPeriod = value;
 
   @action
-  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) =>
+      workplace = selectedEmployment;
 
   @computed
-  bool get canCreateQuest => locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canCreateQuest =>
+      locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
@@ -176,12 +181,15 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error checkAllowance');
       final _client = WalletRepository().getClientWorkNet();
-      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
+      final _price =
+          Decimal.parse(price) * Decimal.fromInt(10).pow(6).toDecimal();
       final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
       if (_isNeedCheckApprove) {
         print('addressQuest: $addressQuest');
         final _allowance = await _client.allowanceCoin(
-          address: addressQuest == null ? null : EthereumAddress.fromHex(addressQuest),
+          address: addressQuest == null
+              ? null
+              : EthereumAddress.fromHex(addressQuest),
         );
         print('allowance: $_allowance');
         final _priceForApprove =
@@ -202,16 +210,15 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       onLoading();
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error approve');
-      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
+      final _price =
+          Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
       final _priceForApprove =
           _price * Decimal.parse(Constants.commissionForQuest.toString());
       final _isEdit = contractAddress != null;
       await WalletRepository().getClientWorkNet().approveCoin(
-        price: _priceForApprove.toBigInt(),
-        address: _isEdit
-            ? EthereumAddress.fromHex(contractAddress!)
-            : null,
-      );
+            price: _priceForApprove.toBigInt(),
+            address: _isEdit ? EthereumAddress.fromHex(contractAddress!) : null,
+          );
       onSuccess(CreateQuestStoreState.approve);
     } catch (e) {
       onError(e.toString());
@@ -236,7 +243,8 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         ),
       );
       await sendImages(apiProvider);
-      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
+      final _price =
+          Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
       print('employment: $employment');
       print('workplace: $workplace');
       print('payPeriod: $payPeriod');
@@ -297,7 +305,10 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
             await _client.createNewContract(
               jobHash: description,
               price: _price.toBigInt(),
-              deadline: DateTime.now().add(const Duration(days: 1)).millisecondsSinceEpoch.toString(),
+              deadline: DateTime.now()
+                  .add(const Duration(days: 1))
+                  .millisecondsSinceEpoch
+                  .toString(),
               nonce: nonce,
             );
           } else {
@@ -331,10 +342,12 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // await Future.delayed(const Duration(seconds: 1));
       // throw Exception('Error getGasApprove');
       final _client = WalletRepository().getClientWorkNet();
-      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
-      final _gasForApprove = await _client.getEstimateGasForApprove(_price.toBigInt());
+      final _price =
+          Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
+      final _gasForApprove =
+          await _client.getEstimateGasForApprove(_price.toBigInt());
       await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
+        typeCoin: TokenSymbols.USDT,
         fee: Decimal.parse(_gasForApprove.toString()),
         amount: double.parse(price),
         isMain: true,
@@ -355,8 +368,10 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
       // throw Exception('Error getGasEditOrCreateQuest');
       final _client = WalletRepository().getClientWorkNet();
       if (isEdit) {
-        final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
-        final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+        final _price =
+            Decimal.parse(price) * Decimal.fromInt(10).pow(18).toDecimal();
+        final _contract =
+            await _client.getDeployedContract("WorkQuest", contractAddress);
         final _function = _contract.function(WQContractFunctions.editJob.name);
         final _params = [
           _price.toBigInt(),
@@ -364,17 +379,18 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         final _gas = await _client.getEstimateGasCallContract(
             contract: _contract, function: _function, params: _params);
         await Web3Utils.checkPossibilityTx(
-          typeCoin: TokenSymbols.WUSD,
+          typeCoin: TokenSymbols.USDT,
           fee: Decimal.parse(_gas.toString()),
           amount: double.parse(price),
           isMain: true,
         );
-        gas = _gas.toStringAsFixed(17);
+        gas = _gas.toStringAsFixed(6);
         onSuccess(CreateQuestStoreState.getGasEditOrCreateQuest);
       } else {
         final _contract = await _client.getDeployedContract(
             "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-        final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
+        final _function =
+            _contract.function(WQFContractFunctions.newWorkQuest.name);
         final _params = [
           _client.stringToBytes32(description),
           BigInt.zero,
@@ -384,12 +400,12 @@ abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with
         final _gas = await _client.getEstimateGasCallContract(
             contract: _contract, function: _function, params: _params);
         await Web3Utils.checkPossibilityTx(
-          typeCoin: TokenSymbols.WUSD,
+          typeCoin: TokenSymbols.USDT,
           fee: Decimal.parse(_gas.toString()),
           amount: double.parse(price),
           isMain: true,
         );
-        gas = _gas.toStringAsFixed(17);
+        gas = _gas.toStringAsFixed(6);
         onSuccess(CreateQuestStoreState.getGasEditOrCreateQuest);
       }
     } catch (e, trace) {

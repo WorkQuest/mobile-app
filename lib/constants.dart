@@ -49,7 +49,7 @@ class Constants {
   static const String worknetMainnetWQFactory =
       '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
   static const String worknetTestnetWQFactory = isTestnet
-      ? '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'
+      ? '0x9E78feD4106495311632Cdbf5e034557E0b7a372' //Changed to new
       : '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
 
   ///testnet
@@ -66,8 +66,8 @@ class Constants {
   static const String worknetMainnetWUSD =
       '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
   static const String worknetTestnetWUSD = isTestnet
-      ? '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'
-      : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa';
+      ? '0xa8D82fE8c94610645ea3A09aC35739f2d33a8D7a'
+      : '0xa8D82fE8c94610645ea3A09aC35739f2d33a8D7a';
 
   ///testnet
   // static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
@@ -163,7 +163,8 @@ class Configs {
           ),
           DataCoins(
             symbolToken: TokenSymbols.USDT,
-            addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
+            addressToken:
+                '0xa8D82fE8c94610645ea3A09aC35739f2d33a8D7a', //Changed to new
             iconPath: 'assets/tusdt_coin_icon.svg',
           ),
         ],
@@ -197,7 +198,8 @@ class Configs {
           ),
           DataCoins(
             symbolToken: TokenSymbols.USDT,
-            addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+            addressToken:
+                '0xa8D82fE8c94610645ea3A09aC35739f2d33a8D7a', //Changed to new
             iconPath: 'assets/tusdt_coin_icon.svg',
           ),
         ],

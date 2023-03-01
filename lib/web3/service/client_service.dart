@@ -112,12 +112,15 @@ class ClientService implements ClientServiceI {
     final _isETH = Web3Utils.isETH();
     final _gasPrice = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0')).toBigInt()),
+      ((Decimal.fromBigInt(_gas.getInWei) *
+              Decimal.parse(_isETH ? '1.05' : '1.0'))
+          .toBigInt()),
     );
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18).toDecimal()).toBigInt(),
+        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18).toDecimal())
+            .toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(WalletRepository().userAddress);
@@ -133,7 +136,8 @@ class ClientService implements ClientServiceI {
         chainId: _chainId.toInt(),
       );
     } else {
-      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(_addressToken), client: client!);
       // degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
@@ -157,7 +161,8 @@ class ClientService implements ClientServiceI {
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
       if (attempts == 20) {
-        throw FormatException("The waiting time is over. Expect a balance update.");
+        throw FormatException(
+            "The waiting time is over. Expect a balance update.");
       }
     }
     final _tx = Tx(
@@ -170,14 +175,19 @@ class ClientService implements ClientServiceI {
         bech32: AddressService.hexToBech32(isToken ? _addressToken : addressTo),
         hex: isToken ? _addressToken : addressTo,
       ),
-      amount: isToken ? null : (Decimal.parse(amount) * Decimal.fromInt(10).pow(18).toDecimal()).toString(),
+      amount: isToken
+          ? null
+          : (Decimal.parse(amount) * Decimal.fromInt(10).pow(18).toDecimal())
+              .toString(),
       insertedAt: DateTime.now(),
       block: Block(timestamp: DateTime.now()),
       tokenTransfers: !isToken
           ? null
           : [
               TokenTransfer(
-                amount: (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!).toDecimal()).toString(),
+                amount: (Decimal.parse(amount) *
+                        Decimal.fromInt(10).pow(degree!).toDecimal())
+                    .toString(),
               ),
             ],
     );
@@ -185,12 +195,17 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<Decimal> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
+  Future<Decimal> getBalanceFromContract(String address,
+      {bool otherNetwork = false, bool isUSDT = false}) async {
     address = address.toLowerCase();
-    final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
-    final balance = await contract.balanceOf(EthereumAddress.fromHex(WalletRepository().userWallet!.address!));
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(address), client: client!);
+    final balance = await contract.balanceOf(
+        EthereumAddress.fromHex(WalletRepository().userWallet!.address!));
     // final _degree = await Web3Utils.getDegreeToken(contract);
-    return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(18).toDecimal()).toDecimal();
+    return (Decimal.parse(balance.toString()) /
+            Decimal.fromInt(10).pow(18).toDecimal())
+        .toDecimal();
   }
 
   @override
@@ -259,7 +274,8 @@ class ClientService implements ClientServiceI {
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
     final _addressWUSD = Web3Utils.getAddressWUSD();
-    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
+    final _contract =
+        Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final _gasForApprove = await getEstimateGasCallContract(
       contract: _contract.self,
       function: _contract.self.function(WQBridgeTokenFunctions.approve.name),
@@ -333,8 +349,10 @@ extension CreateContract on ClientService {
   }) async {
     print('createNewContract');
     final credentials = await getCredentials(WalletRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-    final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
+    final contract = await getDeployedContract(
+        "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+    final ethFunction =
+        contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     await handleContract(
       contract: contract,
@@ -379,7 +397,8 @@ extension GetContract on ClientService {
     String contractAddress,
   ) async {
     try {
-      final _abiJson = await rootBundle.loadString("assets/contracts/$contractName.json");
+      final _abiJson =
+          await rootBundle.loadString("assets/contracts/$contractName.json");
       // dev.log(_abiJson);
       final _contractAbi = ContractAbi.fromJson(_abiJson, contractName);
       final _contractAddress = EthereumAddress.fromHex(
@@ -400,9 +419,11 @@ extension ApproveCoin on ClientService {
   }) async {
     final credentials = await getCredentials(WalletRepository().privateKey);
     final _addressWUSD = Web3Utils.getAddressWUSD();
-    final contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final hashTx = await contract.approve(
-      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+      address ??
+          EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
       price,
       credentials: credentials,
     );
@@ -423,10 +444,12 @@ extension ApproveCoin on ClientService {
   Future<BigInt> allowanceCoin({EthereumAddress? address}) async {
     final _address = Web3Utils.getAddressWUSD();
 
-    final _contract = Erc20(address: EthereumAddress.fromHex(_address), client: client!);
+    final _contract =
+        Erc20(address: EthereumAddress.fromHex(_address), client: client!);
     final _result = await _contract.allowance(
       EthereumAddress.fromHex(WalletRepository().userAddress),
-      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+      address ??
+          EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
     );
     return _result;
   }
@@ -435,7 +458,8 @@ extension ApproveCoin on ClientService {
 extension CheckFunction on ClientService {
   void checkFunction() async {
     try {
-      final contract = await getDeployedContract("WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
+      final contract = await getDeployedContract(
+          "WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
       final outputs = contract.functions;
       print("Contract function:");
       outputs.forEach((element) {
@@ -451,8 +475,10 @@ extension CheckFunction on ClientService {
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
-      final contract = await getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-      final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
+      final contract = await getDeployedContract(
+          "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+      final ethFunction =
+          contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await client!.call(
         contract: contract,
         function: ethFunction,
@@ -475,7 +501,8 @@ extension Promote on ClientService {
     print('tariff: $tariff');
     print('period: $period');
     print('questAddress: $questAddress');
-    final contract = await getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
+    final contract = await getDeployedContract(
+        "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(WalletRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
