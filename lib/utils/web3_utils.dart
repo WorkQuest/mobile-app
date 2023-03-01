@@ -411,11 +411,11 @@ class Web3Utils {
     if (token == "WQT") {
       return TokenSymbols.WQT;
     } else if (token == "BNB") {
-      return TokenSymbols.wBNB;
+      return TokenSymbols.BNB;
     } else if (token == "USDT") {
       return TokenSymbols.USDT;
     } else if (token == "ETH") {
-      return TokenSymbols.wETH;
+      return TokenSymbols.ETH;
     } else {
       return null;
     }
@@ -427,9 +427,9 @@ class Web3Utils {
         return 'assets/wusd_coin_icon.svg';
       case TokenSymbols.WQT:
         return 'assets/wqt_coin_icon.svg';
-      case TokenSymbols.wBNB:
+      case TokenSymbols.BNB:
         return 'assets/bsc_logo.svg';
-      case TokenSymbols.wETH:
+      case TokenSymbols.ETH:
         return 'assets/eth_coin_icon.svg';
       case TokenSymbols.USDT:
         return 'assets/tusdt_coin_icon.svg';
@@ -447,10 +447,10 @@ class Web3Utils {
       return 'WQT';
     } else if (typeCoin == TokenSymbols.WUSD) {
       return 'WUSD';
-    } else if (typeCoin == TokenSymbols.wETH) {
-      return 'wETH';
-    } else if (typeCoin == TokenSymbols.wBNB) {
-      return 'wBNB';
+    } else if (typeCoin == TokenSymbols.ETH) {
+      return 'ETH';
+    } else if (typeCoin == TokenSymbols.BNB) {
+      return 'BNB';
     } else {
       return 'USDT';
     }

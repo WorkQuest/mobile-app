@@ -76,18 +76,25 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     if (widget.questInfo != null) {
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
       store.payPeriod = widget.questInfo!.payPeriod;
-      store.payPeriodValue = QuestUtils.getPayPeriodValue(widget.questInfo!.payPeriod);
+      store.payPeriodValue =
+          QuestUtils.getPayPeriodValue(widget.questInfo!.payPeriod);
       store.setConfirmUnderstandAboutEdit(true);
-      store.priority = QuestUtils.getPriorityFromValue(widget.questInfo!.priority);
+      store.priority =
+          QuestUtils.getPriorityFromValue(widget.questInfo!.priority);
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.changedDistantWork(QuestUtils.getWorkplace(widget.questInfo!.workplace));
-      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
+      store.changedDistantWork(
+          QuestUtils.getWorkplace(widget.questInfo!.workplace));
+      store.changedEmployment(
+          QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
-      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
+      store.price =
+          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18))
+              .toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(
+          initialValue: widget.questInfo!.questSpecializations);
     }
   }
 
@@ -97,14 +104,16 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       onSuccess: () async {
         if (store.successData == CreateQuestStoreState.checkAllowance) {
           if (store.needApprove) {
-            store.getGasApprove(addressQuest: widget.questInfo?.contractAddress);
+            store.getGasApprove(
+                addressQuest: widget.questInfo?.contractAddress);
           } else {
             store.getGasEditOrCreateQuest(isEdit: isEdit);
           }
         } else if (store.successData == CreateQuestStoreState.getGasApprove) {
           Navigator.of(context, rootNavigator: true).pop();
           _approve();
-        } else if (store.successData == CreateQuestStoreState.getGasEditOrCreateQuest) {
+        } else if (store.successData ==
+            CreateQuestStoreState.getGasEditOrCreateQuest) {
           Navigator.of(context, rootNavigator: true).pop();
           if (isEdit) {
             _onEditQuest();
@@ -162,7 +171,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
               slivers: [
                 CupertinoSliverNavigationBar(
                   largeTitle: Text(
-                    isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
+                    isEdit
+                        ? "registration.edit".tr()
+                        : "quests.createAQuest".tr(),
                   ),
                 ),
                 SliverPadding(
@@ -205,7 +216,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           onChanged: (String? value) {
                                             store.changedPriority(value!);
                                           },
-                                          items: QuestConstants.priorityList.map<DropdownMenuItem<String>>(
+                                          items: QuestConstants.priorityList
+                                              .map<DropdownMenuItem<String>>(
                                             (String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value.tr(),
@@ -233,7 +245,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                         __WarningFields(
-                          warningEnabled: _warningFields[_specializationIndex].warningEnabled,
+                          warningEnabled: _warningFields[_specializationIndex]
+                              .warningEnabled,
                           errorMessage: 'quests.specializationRequired'.tr(),
                           child: Container(
                             key: _warningFields[_specializationIndex].key,
@@ -243,7 +256,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 print('value: $value');
                                 if (value is int && value > 0) {
                                   setState(() {
-                                    _warningFields[_specializationIndex].warningEnabled = false;
+                                    _warningFields[_specializationIndex]
+                                        .warningEnabled = false;
                                   });
                                 }
                               },
@@ -251,7 +265,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                         __WarningFields(
-                          warningEnabled: _warningFields[_addressIndex].warningEnabled,
+                          warningEnabled:
+                              _warningFields[_addressIndex].warningEnabled,
                           errorMessage: 'quests.addressRequired'.tr(),
                           child: _TitleWithField(
                             "quests.address".tr(),
@@ -261,7 +276,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   await store.getPrediction(context);
                                   if (store.locationPlaceName.isNotEmpty) {
                                     setState(() {
-                                      _warningFields[_addressIndex].warningEnabled = false;
+                                      _warningFields[_addressIndex]
+                                          .warningEnabled = false;
                                     });
                                   }
                                 },
@@ -290,7 +306,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       Flexible(
                                         child: store.locationPlaceName.isEmpty
                                             ? Text(
-                                                "Country/City/Address",
+                                                "Ukraine, Kyiv, Khreshiatik, 3",
                                                 style: TextStyle(
                                                   color: Color(
                                                     0xFFD8DFE3,
@@ -338,8 +354,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                         onChanged: (String? value) {
                                           store.changedEmployment(value!);
                                         },
-                                        items:
-                                            QuestConstants.employmentList.map<DropdownMenuItem<String>>((String value) {
+                                        items: QuestConstants.employmentList
+                                            .map<DropdownMenuItem<String>>(
+                                                (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value,
                                             child: new Text(value),
@@ -392,7 +409,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           store.changedDistantWork(value!);
                                         },
                                         items: QuestConstants.distantWorkList
-                                            .map<DropdownMenuItem<String>>((String value) {
+                                            .map<DropdownMenuItem<String>>(
+                                                (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value,
                                             child: new Text(value),
@@ -446,7 +464,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           onChanged: (String? value) {
                                             store.changedPayPeriod(value!.tr());
                                           },
-                                          items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
+                                          items: QuestConstants.payPeriodList
+                                              .map<DropdownMenuItem<String>>(
                                             (String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value.tr(),
@@ -481,10 +500,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             alignment: Alignment.centerLeft,
                             child: TextFormField(
                               onChanged: store.setQuestTitle,
-                              validator: (value) => Validators.emptyValidator(value,
-                                  customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Title'})),
+                              validator: (value) => Validators.emptyValidator(
+                                  value,
+                                  customMessage: 'errors.fieldRequired'
+                                      .tr(namedArgs: {'name': 'Title'})),
                               initialValue: store.questTitle,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               maxLines: 1,
                               enabled: !isEdit,
                               decoration: InputDecoration(
@@ -504,10 +526,12 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             onChanged: store.setAboutQuest,
                             validator: (value) {
                               if (value == null) {
-                                return 'errors.fieldRequired'.tr(namedArgs: {'name': 'Description'});
+                                return 'errors.fieldRequired'
+                                    .tr(namedArgs: {'name': 'Description'});
                               }
                               if (value.isEmpty) {
-                                return 'errors.fieldRequired'.tr(namedArgs: {'name': 'Description'});
+                                return 'errors.fieldRequired'
+                                    .tr(namedArgs: {'name': 'Description'});
                               }
                               if (value.length < 6) {
                                 return 'Description must be at least 6 characters long';
@@ -515,7 +539,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               return null;
                             },
                             keyboardType: TextInputType.multiline,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             enabled: !isEdit,
                             maxLines: 12,
                             decoration: InputDecoration(
@@ -536,11 +561,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CheckboxListTile(
-                                    key: _warningFields[_confirmUnderstandAboutEdit].key,
+                                    key: _warningFields[
+                                            _confirmUnderstandAboutEdit]
+                                        .key,
                                     contentPadding: const EdgeInsets.all(0),
                                     value: store.confirmUnderstandAboutEdit,
-                                    onChanged: (value) => store.setConfirmUnderstandAboutEdit(value!),
-                                    controlAffinity: ListTileControlAffinity.leading,
+                                    onChanged: (value) => store
+                                        .setConfirmUnderstandAboutEdit(value!),
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
                                     title: Text(
                                       'I understand that editing the title and the description of this quest will be '
                                       'impossible after its creation',
@@ -549,7 +578,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   ),
                                   if (!store.confirmUnderstandAboutEdit)
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 4.0, left: 10.0),
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, left: 10.0),
                                       child: Text(
                                         'The field is required',
                                         style: TextStyle(
@@ -581,14 +611,20 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             child: TextFormField(
                               onChanged: store.setPrice,
                               initialValue: store.price.toString(),
-                              validator: (value) => Validators.zeroValidator(value,
-                                  customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Price'})),
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              validator: (value) => Validators.zeroValidator(
+                                  value,
+                                  customMessage: 'errors.fieldRequired'
+                                      .tr(namedArgs: {'name': 'Price'})),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               inputFormatters: [
                                 DecimalFormatter(),
-                                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,18}')),
                               ],
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               decoration: InputDecoration(
                                 hintText: 'quests.price'.tr(),
                               ),
@@ -604,8 +640,12 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           child: Observer(
                             builder: (context) => LoginButton(
                               withColumn: true,
-                              onTap: store.isLoading ? null : _onPressedOnCreateOrEditQuest,
-                              title: isEdit ? "quests.editQuest".tr() : 'quests.createAQuest'.tr(),
+                              onTap: store.isLoading
+                                  ? null
+                                  : _onPressedOnCreateOrEditQuest,
+                              title: isEdit
+                                  ? "quests.editQuest".tr()
+                                  : 'quests.createAQuest'.tr(),
                             ),
                           ),
                         ),
@@ -622,7 +662,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   }
 
   _setWarning(_WarningFieldModel field) {
-    Scrollable.ensureVisible(field.key.currentContext!, duration: const Duration(milliseconds: 350));
+    Scrollable.ensureVisible(field.key.currentContext!,
+        duration: const Duration(milliseconds: 350));
     setState(() {
       field.warningEnabled = true;
     });
@@ -649,7 +690,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       _setWarning(_warningFields[_priceIndex]);
       return;
     } else if (!store.confirmUnderstandAboutEdit) {
-      Scrollable.ensureVisible(_warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
+      Scrollable.ensureVisible(
+          _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
       return;
     }
     AlertDialogUtils.showLoadingDialog(context);
@@ -662,7 +704,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       fee: store.gas!,
       transaction: '${"ui.txInfo".tr()} Approve',
       address: Web3Utils.getAddressWorknetWQFactory(),
-      amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest).toString(),
+      amount:
+          ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
+              .toString(),
       onPressConfirm: () async {
         Navigator.pop(context);
         AlertDialogUtils.showLoadingDialog(
@@ -766,7 +810,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e.tr()))).toList(),
+                      children: children
+                          .map((e) => Center(child: Text(e.tr())))
+                          .toList(),
                     ),
                   ),
                   CupertinoButton(

@@ -118,12 +118,12 @@ class Configs {
           iconPath: 'assets/wusd_coin_icon.svg',
         ),
         DataCoins(
-          symbolToken: TokenSymbols.wETH,
+          symbolToken: TokenSymbols.ETH,
           addressToken: '0x8E52341384F5286f4c76cE1072Aba887Be8E4EB9',
           iconPath: 'assets/eth_coin_icon.svg',
         ),
         DataCoins(
-          symbolToken: TokenSymbols.wBNB,
+          symbolToken: TokenSymbols.BNB,
           addressToken: '0xD7ca5F803807b03D49606D4f8e66551170b1d689',
           iconPath: 'assets/bsc_logo.svg',
         ),
@@ -152,12 +152,12 @@ class Configs {
             iconPath: 'assets/wusd_coin_icon.svg',
           ),
           DataCoins(
-            symbolToken: TokenSymbols.wETH,
+            symbolToken: TokenSymbols.ETH,
             addressToken: '0xD9679C4Bc6E1546cfCb9c70AC81A4CBf400E7D24',
             iconPath: 'assets/eth_coin_icon.svg',
           ),
           DataCoins(
-            symbolToken: TokenSymbols.wBNB,
+            symbolToken: TokenSymbols.BNB,
             addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
             iconPath: 'assets/bsc_logo.svg',
           ),
@@ -186,12 +186,12 @@ class Configs {
             iconPath: 'assets/wusd_coin_icon.svg',
           ),
           DataCoins(
-            symbolToken: TokenSymbols.wETH,
+            symbolToken: TokenSymbols.ETH,
             addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
             iconPath: 'assets/eth_coin_icon.svg',
           ),
           DataCoins(
-            symbolToken: TokenSymbols.wBNB,
+            symbolToken: TokenSymbols.BNB,
             addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
             iconPath: 'assets/bsc_logo.svg',
           ),
@@ -397,4 +397,4 @@ enum Network {
 
 enum SwitchNetworkNames { WORKNET, ETH, BSC, POLYGON }
 
-enum TokenSymbols { WUSD, WQT, wBNB, wETH, USDT, BNB, ETH, MATIC }
+enum TokenSymbols { WUSD, WQT, BNB, ETH, USDT, MATIC }
